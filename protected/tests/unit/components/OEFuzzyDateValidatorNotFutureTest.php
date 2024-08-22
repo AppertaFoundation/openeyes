@@ -20,7 +20,7 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
     protected $validator;
     protected $cModelMock;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->validator = new OEFuzzyDateValidatorNotFuture();
 
@@ -37,7 +37,7 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
         $this->validator->validateAttribute($this->cModelMock, 'bar');
         $validDateMsg  = $this->cModelMock->getErrors('bar');
         $this->assertFalse($this->cModelMock->hasErrors());
-        $this->assertInternalType('array', $validDateMsg);
+        $this->assertIsArray($validDateMsg);
     }
 
     /**
@@ -49,7 +49,7 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
         $this->validator->validateAttribute($this->cModelMock, 'bar');
         $notFutureDateMsg  = $this->cModelMock->getErrors('bar');
         $this->assertTrue($this->cModelMock->hasErrors());
-        $this->assertInternalType('array', $notFutureDateMsg);
+        $this->assertIsArray($notFutureDateMsg);
         $this->assertEquals('The date cannot be in the future', $notFutureDateMsg[0]);
     }
 
@@ -65,9 +65,9 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
         $this->validator->validateAttribute($this->cModelMock, 'foo');
         $notFutureDateMsgFoo  = $this->cModelMock->getErrors('foo');
         $this->assertTrue($this->cModelMock->hasErrors());
-        $this->assertInternalType('array', $notFutureDateMsgBar);
+        $this->assertIsArray($notFutureDateMsgBar);
         $this->assertEquals('The date cannot be in the future', $notFutureDateMsgBar[0]);
-        $this->assertInternalType('array', $notFutureDateMsgFoo);
+        $this->assertIsArray($notFutureDateMsgFoo);
         $this->assertEquals('The date cannot be in the future', $notFutureDateMsgFoo[0]);
     }
 
@@ -118,7 +118,7 @@ class OEFuzzyDateValidatorNotFutureTest extends CTestCase
         $this->assertEquals('Invalid month value', $invalidMonthMsg[0]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->cModelMock);
     }

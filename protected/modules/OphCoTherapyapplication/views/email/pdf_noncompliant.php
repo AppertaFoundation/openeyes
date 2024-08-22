@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,10 +16,11 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $logo_helper = new LogoHelper();
 $institution_id = Institution::model()->getCurrent()->id;
-$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient->id, $institution_id, Yii::app()->session['selected_site_id']);
-$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $patient->id, $institution_id, Yii::app()->session['selected_site_id']);
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $patient->id, $institution_id, Yii::app()->session['selected_site_id']);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $patient->id, $institution_id, Yii::app()->session['selected_site_id']);
 
 ?>
 
@@ -208,19 +210,19 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
                     <tbody>
                     <tr nobr="true">
                         <th>Chief Pharmacist / Deputy Name</th>
-                        <td><?= preg_replace('/\n/', '<br />', Yii::app()->params['OphCoTherapyapplication_chief_pharmacist']) ?></td>
+                        <td><?= preg_replace('/\n/', '<br />', SettingMetadata::model()->getSetting('OphCoTherapyapplication_chief_pharmacist')) ?></td>
                     </tr>
                     <tr nobr="true">
                         <th>Chief Pharmacist / Deputy email &amp; contact number:</th>
-                        <td><?= preg_replace('/\n/', '<br />', Yii::app()->params['OphCoTherapyapplication_chief_pharmacist_contact']) ?></td>
+                        <td><?= preg_replace('/\n/', '<br />', SettingMetadata::model()->getSetting('OphCoTherapyapplication_chief_pharmacist_contact')) ?></td>
                     </tr>
                     <tr nobr="true">
                         <th>Pharmacist name for any queries if different to above</th>
-                        <td><?= preg_replace('/\n/', '<br />', Yii::app()->params['OphCoTherapyapplication_chief_pharmacist_alternate']) ?></td>
+                        <td><?= preg_replace('/\n/', '<br />', SettingMetadata::model()->getSetting('OphCoTherapyapplication_chief_pharmacist_alternate')) ?></td>
                     </tr>
                     <tr nobr="true" class="last">
                         <th>Pharmacist email and contact number:</th>
-                        <td><?= preg_replace('/\n/', '<br />', Yii::app()->params['OphCoTherapyapplication_chief_pharmacist_alternate_contact']) ?></td>
+                        <td><?= preg_replace('/\n/', '<br />', SettingMetadata::model()->getSetting('OphCoTherapyapplication_chief_pharmacist_alternate_contact')) ?></td>
                     </tr>
 
                     </tbody>

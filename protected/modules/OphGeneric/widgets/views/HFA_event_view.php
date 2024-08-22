@@ -14,6 +14,49 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-
 ?>
-<?php ;//TODO View for the hfa element can be added later
+<div class="element-data flex-layout flex-left col-gap" data-test="hfa-view">
+    <?php
+    if ($this->element) {
+        echo \CHtml::activeHiddenField($this->element, "id");
+    }
+
+    $sidedData = $this->element->getSidedData();
+    foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) {
+        ?>
+        <div class="<?= $eye_side ?>-eye cols-full" data-side="<?= $eye_side ?>">
+            <?php
+            if (count($sidedData[$eye_side]) > 0) {
+                $side = $sidedData[$eye_side][0];
+                ?>
+                    <table>
+                    <tr>
+                        <td class="data-label">
+
+                            <?= $element->getAttributeLabel('mean_deviation'); ?>
+                        </td>
+                        <td>
+                            <div class="element-data">
+                                <div class="data-value"><?= $side->mean_deviation; ?></div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="data-label">
+                            <?= $element->getAttributeLabel('visual_field_index'); ?>
+                        </td>
+                        <td>
+                            <div class="element-data">
+                                <div class="data-value"><?= $side->visual_field_index; ?></div>
+                            </div>
+                        </td>
+                    </tr>
+                </table> 
+                <?php
+            }
+            ?>
+        </div>
+        <?php
+    }
+    ?>
+</div>

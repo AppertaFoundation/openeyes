@@ -8,10 +8,14 @@
 class ElementLetterTest extends ActiveRecordTestCase
 {
     protected $fixtures = array(
+        'letter_types' => LetterType::class,
         'letters' => ElementLetter::class,
         'events' => Event::class,
         'episodes' => Episode::class,
         'patients' => Patient::class,
+        'contacts' => Contact::class,
+        'addresses' => Address::class,
+        'address_types' => AddressType::class,
         'users' => User::class,
     );
     private ElementLetter $letter;
@@ -20,11 +24,10 @@ class ElementLetterTest extends ActiveRecordTestCase
 
     public function getModel()
     {
-        // TODO: Implement getModel() method.
         return ElementLetter::model();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $path = Yii::app()->getRuntimePath() . '/test.pdf';
@@ -42,12 +45,13 @@ class ElementLetterTest extends ActiveRecordTestCase
                 )
             )
         );
+        Yii::app()->session['selected_site_id'] = 1;
         Yii::app()->session['selected_firm_id'] = 2;
         Yii::app()->session['selected_institution_id'] = 1;
         $this->letter = $this->letters('letter1');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
 
@@ -66,6 +70,7 @@ class ElementLetterTest extends ActiveRecordTestCase
                 )
             )
         );
+        unset(Yii::app()->session['selected_site_id']);
     }
 
     public function testGetExportUrl(): void
@@ -87,27 +92,26 @@ class ElementLetterTest extends ActiveRecordTestCase
             ->setMethods(array('StoreDocument'))
             ->getMock();
 
-        $client->expects(self::at(0))
-            ->method('StoreDocument')
-            ->willReturn(new ExportResult(true, 1, 1));
-
-        $client->expects(self::at(1))
-            ->method('StoreDocument')
-            ->willReturn(new ExportResult(false, null, null));
+        $client->method('StoreDocument')
+            ->willReturnOnConsecutiveCalls(
+                new ExportResult(true, 1, 1),
+                new ExportResult(false, null, null)
+            );
 
         // Simulate a successful upload.
+        Yii::app()->params['correspondence_export_url'] = 'localhost';
         $result = $this->letter->export($path, 'SOAP', $client);
         self::assertInstanceOf('ExportResult', $result);
-        self::assertTrue($result->StoreDocumentResponse['Success']);
-        self::assertEquals(1, $result->StoreDocumentResponse['DocumentId']);
-        self::assertEquals(1, $result->StoreDocumentResponse['DocumentSupersessionSetId']);
+        self::assertTrue($result->Success);
+        self::assertEquals(1, $result->DocumentId);
+        self::assertEquals(1, $result->DocumentSupersessionSetId);
 
         // Simulate a failed upload.
         $result = $this->letter->export($path, 'SOAP', $client);
         self::assertInstanceOf('ExportResult', $result);
-        self::assertFalse($result->StoreDocumentResponse['Success']);
-        self::assertNull($result->StoreDocumentResponse['DocumentId']);
-        self::assertNull($result->StoreDocumentResponse['DocumentSupersessionSetId']);
+        self::assertFalse($result->Success);
+        self::assertNull($result->DocumentId);
+        self::assertNull($result->DocumentSupersessionSetId);
 
         // Expect an exception if the export URL is null.
         Yii::app()->params['correspondence_export_url'] = null;
@@ -130,15 +134,14 @@ class ElementLetterTest extends ActiveRecordTestCase
 
 class ExportResult
 {
-    public array $StoreDocumentResponse = array();
-
-    public function __construct($Success, $DocumentId, $SupersessionSetId)
+    public $Success;
+    public $DocumentId;
+    public $DocumentSupersessionSetId;
+    public function __construct($Success, $DocumentId, $DocumentSupersessionSetId)
     {
-        $this->StoreDocumentResponse = array(
-            'Success' => $Success,
-            'DocumentId' => $DocumentId,
-            'DocumentSupersessionSetId' => $SupersessionSetId,
-        );
+        $this->Success = $Success;
+        $this->DocumentId = $DocumentId;
+        $this->DocumentSupersessionSetId = $DocumentSupersessionSetId;
     }
 }
 

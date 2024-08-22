@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2020
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <tr data-key="<?= $key ?>">
     <?= \CHtml::activeHiddenField($site, "[{$key}]id", ['class' => 'js-input']); ?>
@@ -22,7 +24,7 @@
                 "[{$key}]{$field}",
                 [
                     'class' => 'cols-full',
-                    'autocomplete' => Yii::app()->params['html_autocomplete']
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                 ]
             ); ?>
         </td>
@@ -35,7 +37,7 @@
                 "[{$key}]{$field}",
                 [
                     'class' => 'cols-full',
-                    'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                     'name' => "SiteAddress[{$key}][{$field}]"
                 ]
             ); ?>
@@ -48,7 +50,7 @@
                 "[{$key}]{$field}",
                 [
                     'class' => 'cols-full',
-                    'autocomplete' => Yii::app()->params['html_autocomplete']
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                 ]
             ); ?>
         </td>

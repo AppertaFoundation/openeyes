@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,14 +16,15 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $event = $this->event;
 $event_type = $event->eventType->name;
 $logo_helper = new LogoHelper();
 $institution_id = Institution::model()->getCurrent()->id;
-$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $this->selectedSiteId);
-$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $this->selectedSiteId);
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $this->patient->id, $institution_id, $this->selectedSiteId);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $this->patient->id, $institution_id, $this->selectedSiteId);
 ?>
 <header class="header">
     <div class="title">
@@ -53,7 +55,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
                 <strong><?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?></strong>
                 <br/>
                 <?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) ?>
-                <strong><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier)) ?></strong>
+                <strong><?= PatientIdentifierHelper::getIdentifierValue($secondary_identifier) ?></strong>
                 <br/>
                 DOB: <strong><?= Helper::convertDate2NHS($this->patient->dob) ?> (<?= $this->patient->getAge() ?>
                     )</strong>

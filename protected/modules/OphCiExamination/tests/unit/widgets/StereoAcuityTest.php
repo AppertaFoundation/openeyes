@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\widgets;
 
+
 use OEModule\OphCiExamination\controllers\DefaultController;
 use OEModule\OphCiExamination\models\StereoAcuity as StereoAcuityElement;
 use OEModule\OphCiExamination\models\StereoAcuity_Entry;
@@ -48,7 +49,7 @@ class StereoAcuityTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains('id="OEModule_OphCiExamination_models_StereoAcuity_form"', $result);
+        $this->assertStringContainsString('id="OEModule_OphCiExamination_models_StereoAcuity_form"', $result);
     }
 
     /** @test */
@@ -82,7 +83,7 @@ class StereoAcuityTest extends \OEDbTestCase
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
         for ($i = 0; $i < count($element->entries); $i++) {
-            $this->assertContains("data-key=\"$i\"", $result);
+            $this->assertStringContainsString("data-key=\"$i\"", $result);
         }
     }
 

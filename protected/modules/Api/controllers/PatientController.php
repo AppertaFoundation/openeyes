@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2020
  * This file is part of OpenEyes.
@@ -60,8 +61,12 @@ class PatientController extends BaseApiController
                 if ($patient_identifier_type) {
                     $primary_identifier = null;
                 } else {
-                    $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
-                        $patient->id, \Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+                    $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                        SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+                        $patient->id,
+                        \Institution::model()->getCurrent()->id,
+                        Yii::app()->session['selected_site_id']
+                    );
                 }
 
                 $result[] = [

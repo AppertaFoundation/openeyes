@@ -1,5 +1,7 @@
 <?php
+
 namespace OEModule\PASAPI\components\Pases;
+
 use OEModule\PASAPI\components\XmlHelper;
 
 /**
@@ -47,7 +49,7 @@ abstract class BasePAS
             $this->curl = new \Curl();
         }
     }
-    public abstract function init($config);
+    abstract public function init($config);
 
     /**
      * Sets the parser
@@ -78,7 +80,7 @@ abstract class BasePAS
      *
      * @return mixed
      */
-    public abstract function isAvailable() : bool;
+    abstract public function isAvailable(): bool;
 
     /**
      * Determinates if the PAS query required or not
@@ -86,7 +88,7 @@ abstract class BasePAS
      * @param $params
      * @return mixed
      */
-    public abstract function isPASqueryRequired($params) : bool;
+    abstract public function isPASqueryRequired($params): bool;
 
     /**
      * Making PAS request
@@ -94,6 +96,5 @@ abstract class BasePAS
      * @param $data
      * @return \OEModule\PASAPI\resources\Patient[]
      */
-    public abstract function request($data) : array;
-
+    abstract public function request($data): array;
 }

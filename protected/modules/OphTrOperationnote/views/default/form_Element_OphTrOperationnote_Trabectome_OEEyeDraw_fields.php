@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,10 @@
  * @copyright Copyright (c) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+$blood_reflux_prefill = array_key_exists('blood_reflux', $template_data) && $template_data['blood_reflux'] === '1' ? 'true' : '';
+$hpmc_prefill = array_key_exists('hpmc', $template_data) && $template_data['hpmc'] === '1' ? 'true' : '';
+
 ?>
 <div class="cols-full">
   <table class="cols-full last-left">
@@ -34,7 +39,7 @@
                     'id',
                     'name'
                 ),
-                array('empty' => 'Select', 'nolabel' => true),
+                array('empty' => 'Select', 'nolabel' => true, 'data-prefilled-value' => $template_data['power_id'] ?? ''),
                 false,
                 array('field' => 3)
             ) ?>
@@ -45,10 +50,16 @@
             <?php echo $element->getAttributeLabel('blood_reflux'); ?>
       </td>
       <td>
-            <?php echo $form->checkbox(
+            <?php
+            $prefill_value = array_key_exists('blood_reflux', $template_data) && $template_data['blood_reflux'] === '1' ? 'true' : '';
+            echo $form->checkbox(
                 $element,
                 'blood_reflux',
-                array('class' => 'clearWithEyedraw', 'no-label' => true)
+                array(
+                    'class' => 'clearWithEyedraw',
+                    'no-label' => true,
+                    'data-prefilled-value' => $prefill_value
+                )
             ) ?>
       </td>
     </tr>
@@ -57,7 +68,17 @@
             <?php echo $element->getAttributeLabel('hpmc'); ?>
       </td>
       <td>
-            <?php echo $form->checkbox($element, 'hpmc', array('class' => 'clearWithEyedraw', 'no-label' => true)) ?>
+            <?php
+            $prefill_value = array_key_exists('hpmc', $template_data) && $template_data['hpmc'] === '1' ? 'true' : '';
+            echo $form->checkbox(
+                $element,
+                'hpmc',
+                array(
+                    'class' => 'clearWithEyedraw',
+                    'no-label' => true,
+                    'data-prefilled-value' => $prefill_value
+                )
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -68,7 +89,9 @@
             <?php echo $form->textArea(
                 $element,
                 'description',
-                array('rows' => 4, 'class' => 'autosize clearWithEyedraw', 'nowrapper' => true)
+                array('rows' => 4, 'class' => 'autosize clearWithEyedraw', 'nowrapper' => true),
+                false,
+                array('data-prefilled-value' => $template_data['description'] ?? '')
             ) ?>
       </td>
     </tr>
@@ -115,7 +138,9 @@
             <?php $form->textArea(
                 $element,
                 'complication_other',
-                array('rows' => 2, 'class' => 'autosize', 'nowrapper' => true)
+                array('rows' => 2, 'class' => 'autosize', 'nowrapper' => true),
+                false,
+                array('data-prefilled-value' => $template_data['complication_other'] ?? '')
             ); ?>
       </td>
     </tr>

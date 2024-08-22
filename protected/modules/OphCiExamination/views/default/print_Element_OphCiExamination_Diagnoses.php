@@ -38,6 +38,7 @@ list($right_principals, $left_principals) = ExaminationHelper::getOtherPrincipal
                 <div class="data-value">
             <?= ($disorder[0]->term) ?><sup>*</sup></span>
                 </div>
+                </div>
             </div>
             <?php
         }

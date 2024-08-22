@@ -16,6 +16,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\widgets;
 
+
 use OEModule\OphCiExamination\controllers\DefaultController;
 use OEModule\OphCiExamination\models\Retinoscopy as RetinoscopyModel;
 use OEModule\OphCiExamination\tests\traits\InteractsWithRetinoscopy;
@@ -41,7 +42,7 @@ class RetinoscopyTest extends \OEDbTestCase
     protected $widget_cls = Retinoscopy::class;
     protected $controller_cls = DefaultController::class;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         \Yii::app()
@@ -75,11 +76,11 @@ class RetinoscopyTest extends \OEDbTestCase
 
         $result = $this->getWidgetRender($widget);
         foreach (['right', 'left'] as $side) {
-            $this->assertContains(
+            $this->assertStringContainsString(
                 $instance->{"{$side}_dilated"} ? "Dilated" : "Not dilated",
                 $result
             );
-            $this->assertContains($instance->{"{$side}_refraction"}, $result);
+            $this->assertStringContainsString($instance->{"{$side}_refraction"}, $result);
         }
     }
 

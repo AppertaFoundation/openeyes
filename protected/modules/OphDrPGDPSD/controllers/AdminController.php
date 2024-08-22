@@ -1,7 +1,10 @@
 <?php
+
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
+
 class AdminController extends BaseAdminController
 {
-    public $group = 'PGD/PSD';
+    public $group = 'Drugs';
     public $delete_url = '/OphDrPGDPSD/admin/deletePGDPSDs';
     public $index_url = '/OphDrPGDPSD/admin/PGDPSDSettings';
     public $add_url = '/OphDrPGDPSD/admin/addPGDPSD';
@@ -12,6 +15,7 @@ class AdminController extends BaseAdminController
         $this->api = \Yii::app()->moduleAPI->get('OphDrPGDPSD');
         return parent::beforeAction($action);
     }
+
     private function adderPopupOptions()
     {
         $team_objs = \Team::model()->findAll('active = 1');
@@ -80,7 +84,7 @@ class AdminController extends BaseAdminController
     {
         $pgdpsd_api = \Yii::app()->moduleAPI->get('OphDrPGDPSD');
         $errors = array();
-        $prefix = get_class($pgdpsd);
+        $prefix = \CHtml::modelName($pgdpsd);
         if (Yii::app()->request->isPostRequest) {
             $transaction = Yii::app()->db->beginTransaction();
             $data = Yii::app()->request->getParam($prefix, array());

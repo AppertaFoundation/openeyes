@@ -94,7 +94,7 @@ class DefaultTypePatientSearchHelper implements PatientSearchHelperInterface
             if ($usage_type === 'GLOBAL') {
                 // use global institution id from settings to query the type
                 $institution_global_id = null;
-                $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => Yii::app()->params['global_institution_remote_id']]);
+                $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => SettingMetadata::model()->getSetting('global_institution_remote_id')]);
                 $count = count($institutions);
                 if ($count === 1) {
                     $institution_global_id = $institutions[0]->id;
@@ -183,11 +183,7 @@ class DefaultTypePatientSearchHelper implements PatientSearchHelperInterface
      */
     private function _search($type, $term, $is_type_searchable, $is_protocol_searchable): array
     {
-        $matches = [];
-        $padded_term = sprintf($type->pad ?: '%s', $term);
-        preg_match($type->validate_regex, $padded_term, $matches);
-
-        $match = $matches[0] ?? null;
+        $match = PatientIdentifierHelper::getPaddedTermRegexResult($term, $type->validate_regex, $type->pad);
 
         if ($match) {
             if (($is_type_searchable) &&
@@ -202,7 +198,7 @@ class DefaultTypePatientSearchHelper implements PatientSearchHelperInterface
         } elseif ($type->usage_type === 'LOCAL') {
             // We need to check if it's a global number
             $institution_global_id = null;
-            $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => Yii::app()->params['global_institution_remote_id']]);
+            $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => SettingMetadata::model()->getSetting('global_institution_remote_id')]);
 
             $count = count($institutions);
             if ($count === 1) {
@@ -214,9 +210,8 @@ class DefaultTypePatientSearchHelper implements PatientSearchHelperInterface
             }
 
             if (isset($global_type)) {
-                $padded_term = sprintf($global_type->pad ?: '%s', $term);
-                preg_match($global_type->validate_regex, $padded_term, $matches);
-                $match = $matches[0] ?? null;
+                $match = PatientIdentifierHelper::getPaddedTermRegexResult($term, $global_type->validate_regex, $global_type->pad);
+
 
                 if ($match) {
                     return [

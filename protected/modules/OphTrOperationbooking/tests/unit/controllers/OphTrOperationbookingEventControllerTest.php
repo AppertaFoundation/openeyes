@@ -1,13 +1,23 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: msmith
- * Date: 22/03/2014
- * Time: 10:50.
+ * OpenEyes
+ *
+ * (C) OpenEyes Foundation, 2021
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2021, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphTrOperationbookingEventControllerTest extends CDbTestCase
+
+class OphTrOperationbookingEventControllerTest extends OEDbTestCase
 {
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::import('application.modules.OphTrOperationbooking.controllers.*');
     }
@@ -75,9 +85,9 @@ class OphTrOperationbookingEventControllerTest extends CDbTestCase
         $c->expects($this->once())
             ->method('checkAccess')
             ->with('Edit')
-            ->will($this->returnValue('werp'));
+            ->will($this->returnValue(true));
 
-        $this->assertEquals('werp', $c->checkScheduleAccess());
+        $this->assertEquals(true, $c->checkScheduleAccess());
     }
 
     public function testCheckScheduleAccess_PassedPriority_CheckAccess()
@@ -93,7 +103,7 @@ class OphTrOperationbookingEventControllerTest extends CDbTestCase
         $c->expects($this->once())
             ->method('checkAccess')
             ->with('wubwubwub')
-            ->will($this->returnValue('booblyboo'));
+            ->will($this->returnValue(true));
 
         $c->expects($this->never())
             ->method('checkEditAccess');
@@ -101,7 +111,7 @@ class OphTrOperationbookingEventControllerTest extends CDbTestCase
         $priority = new OphTrOperationbooking_Operation_Priority();
         $priority->schedule_authitem = 'wubwubwub';
 
-        $this->assertEquals('booblyboo', $c->checkScheduleAccess($priority));
+        $this->assertEquals(true, $c->checkScheduleAccess($priority));
     }
 
     public function testCheckScheduleAccess_PriorityFromEO_CheckAccess()
@@ -128,8 +138,8 @@ class OphTrOperationbookingEventControllerTest extends CDbTestCase
         $c->expects($this->once())
             ->method('checkAccess')
             ->with('wobwobwob')
-            ->will($this->returnValue('woob'));
+            ->will($this->returnValue(true));
 
-        $this->assertEquals('woob', $c->checkScheduleAccess());
+        $this->assertEquals(true, $c->checkScheduleAccess());
     }
 }

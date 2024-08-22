@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -18,21 +19,24 @@
 namespace OEModule\OphCoMessaging\components;
 
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
+use OEModule\OphCoMessaging\models\Mailbox;
+use OEModule\OphCoMessaging\components\MailboxSearch;
 
 class OphCoMessaging_API extends \BaseAPI
 {
-    const DEFAULT_MESSAGES_FOLDER = 'unread_all';
+    private const DEFAULT_MESSAGES_FOLDER = MailboxSearch::FOLDER_UNREAD_ALL;
 
-    public function getMenuItem()
+    public function getMenuItems()
     {
         $user = \Yii::app()->user;
+        $mailbox = Mailbox::model()->forPersonalMailbox($user->id)->find();
         $criteria = new \CDbCriteria();
-        $criteria->addCondition('for_the_attention_of_user_id = :uid');
-        $criteria->addCondition('marked_as_read = :read');
-        $criteria->params = array(':uid' => $user->id, ':read' => false);
-        $criteria->order = 'created_date asc';
+        $criteria->addCondition('recipients.mailbox_id = :mailbox_id');
+        $criteria->addCondition('t.marked_as_read = :read');
+        $criteria->params = [':mailbox_id' => $mailbox->id, ':read' => false];
+        $criteria->order = 't.created_date asc';
 
-        $messages = Element_OphCoMessaging_Message::model()->findAll($criteria);
+        $messages = Element_OphCoMessaging_Message::model()->with('recipients')->findAll($criteria);
         $containsUrgentMessage = false;
         foreach ($messages as $message) {
             if ($message['urgent']) {
@@ -40,434 +44,168 @@ class OphCoMessaging_API extends \BaseAPI
             }
         }
 
-        return array(
-            'title' => 'Messages',
-            'uri' => '/OphCoMessaging/Inbox',
-            'messageCount' => count($messages),
-            'containsUrgentMessage' => $containsUrgentMessage,
-        );
+        return [
+            [
+                'title' => 'Messages',
+                'uri' => '/OphCoMessaging/Inbox',
+                'messageCount' => count($messages),
+                'containsUrgentMessage' => $containsUrgentMessage,
+            ]
+        ];
     }
 
     /**
      * @return array Dashboard widget content and options (No need for title).
      */
-    public function getMessages($user = null)
+    public function getMessages($user = null, $mailbox = null)
     {
-        $unread_all_messages = $this->getInboxMessages($user, false);
-        $unread_urgent_messages = $this->getInboxMessages($user, false, true);
-        $unread_query_messages = $this->getInboxMessages($user, false, false, true);
-        $unread_received_messages = $this->getInboxMessages($user, false, false, false, false);
-        $unread_copied_messages = $this->getInboxMessages($user, false, false, false, true);
-        $unread_replied_messages = $this->getUnreadQueryReplies($user);
-        $read_all_messages = $this->getInboxMessages($user, true);
-        $read_urgent_messages = $this->getInboxMessages($user, true, true);
-        $read_received_messages = $this->getInboxMessages($user, true, false, false, false);
-        $read_copied_messages = $this->getInboxMessages($user, true, false, false, true);
-        $sent_all_messages = $this->getSentMessages($user);
-        $sent_unreplied_messages = $this->getSentMessages($user, false, true);
-        $sent_unread_messages = $this->getSentMessages($user, true);
+        $message_type = array_key_exists('messages', $_GET) && $_GET['messages'] ? $_GET['messages'] : self::DEFAULT_MESSAGES_FOLDER;
+        $mailbox_id = array_key_exists('mailbox', $_GET) && $_GET['mailbox'] ? $_GET['mailbox'] : null;
+
+        $search_parameters = [];
+
+        if ($user == null) {
+            $user = \Yii::app()->user;
+        }
+
+        if (array_key_exists('OphCoMessaging_Search_Mailbox', $_GET)) {
+            $search_mailbox_id = \Yii::app()->request->getQuery('OphCoMessaging_Search_Mailbox', null);
+            $date_from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
+            $date_to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
+
+            $search_parameters = [
+                'date_from' => $date_from ? date("Y-m-d", strtotime($date_from)) : null,
+                'date_to' => $date_to ? date("Y-m-d", strtotime($date_to)) : null,
+                'sender' => \Yii::app()->request->getQuery('OphCoMessaging_Search_Sender', ''),
+                'message_type' => \Yii::app()->request->getQuery('OphCoMessaging_Search_MessageType', ''),
+                'message_content' => \Yii::app()->request->getQuery('OphCoMessaging_Search', ''),
+                'retrieve_all_comments' => \Yii::app()->request->getQuery('OphCoMessaging_All_Comments', 0),
+                'retrieve_original_element' => \Yii::app()->request->getQuery('OphCoMessaging_Original_Element', 0),
+                'allow_unreplied_started_threads' => \Yii::app()->request->getQuery('OphCoMessaging_Unreplied_Started_Threads', 0),
+            ];
+
+            $mailbox_id = $search_mailbox_id;
+        }
+
+        $searcher = new MailboxSearch(\Yii::app()->user, $message_type, $search_parameters);
+
+        if ($mailbox_id !== null) {
+            $mailbox = Mailbox::model()->findByPk($mailbox_id);
+        }
+
+        $recipient_messages = $searcher->retrieveMailboxContentsUsingSQL($user->id, isset($mailbox) ? [$mailbox->id] : null);
+
+        list($mailboxes_with_counts, $count_unread_total) = $this->getMessageCounts($user);
 
         // Generate the dashboard widget HTML.
-        $dashboard_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.dashboard.message_dashboard', array(
-                'unread_all' => $unread_all_messages['list'],
-                'unread_urgent' => $unread_urgent_messages['list'],
-                'unread_query' => $unread_query_messages['list'],
-                'unread_received' => $unread_received_messages['list'],
-                'unread_copied' => $unread_copied_messages['list'],
-                'unread_replies' => $unread_replied_messages['list'],
-                'read_all' => $read_all_messages['list'],
-                'read_urgent' => $read_urgent_messages['list'],
-                'read_received' => $read_received_messages['list'],
-                'read_copied' => $read_copied_messages['list'],
-                'sent_all' => $sent_all_messages['list'],
-                'sent_unreplied' => $sent_unreplied_messages['list'],
-                'sent_unread' => $sent_unread_messages['list'],
-                'number_unread_all' => $unread_all_messages['message_count'],
-                'number_unread_urgent' => $unread_urgent_messages['message_count'],
-                'number_unread_query' => $unread_query_messages['message_count'],
-                'number_unread_received' => $unread_received_messages['message_count'],
-                'number_unread_copied' => $unread_copied_messages['message_count'],
-                'number_unread_replies' => $unread_replied_messages['message_count'],
-                'number_read_all' => $read_all_messages['message_count'],
-                'number_read_urgent' => $read_urgent_messages['message_count'],
-                'number_read_received' => $read_received_messages['message_count'],
-                'number_read_copied' => $read_copied_messages['message_count'],
-                'number_sent_all' => $sent_all_messages['message_count'],
-                'number_sent_unreplied' => $sent_unreplied_messages['message_count'],
-                'number_sent_unread' => $sent_unread_messages['message_count'],
-                'default_folder' => $this::DEFAULT_MESSAGES_FOLDER,
+        $dashboard_view = \Yii::app()->controller->renderPartial('OphCoMessaging.views.dashboard.message_dashboard', [
+                'mailboxes_with_counts' => $mailboxes_with_counts,
+                'count_unread_total' => $count_unread_total,
+                'selected_mailbox' => $mailbox,
+                'message_type' => $message_type,
+                'recipient_messages' => $recipient_messages,
+                'is_a_sent_folder' => $searcher->isSentFolder(),
                 'module_class' => $this->getModuleClass(),
-            ));
+            ]);
 
-        return array(
-            'content' => $dashboard_view,
-            'options' => array(
-                'container-id' => \Yii::app()->user->id.'-dashboard-container',
-            ),
-        );
-    }
-
-    /**
-     * @param null $user
-     * @return array - list with counts of all unread messages for each folder
-     */
-    public function updateMessagesCount($user = null)
-    {
         return [
-            'number_unread_all' => $this->getInboxMessages($user, false)['message_count'],
-            'number_unread_urgent' => $this->getInboxMessages($user, false, true)['message_count'],
-            'number_unread_query' => $this->getInboxMessages($user, false, false, true)['message_count'],
-            'number_unread_received' => $this->getInboxMessages($user, false, false, false, false)['message_count'],
-            'number_unread_copied' => $this->getInboxMessages($user, false, false, false, true)['message_count'],
-            'number_unread_replies' => $this->getUnreadQueryReplies($user)['message_count'],
-            'number_read_all' => $this->getInboxMessages($user, true)['message_count'],
-            'number_read_urgent' => $this->getInboxMessages($user, true, true)['message_count'],
-            'number_read_received' => $this->getInboxMessages($user, true, false, false, false)['message_count'],
-            'number_read_copied' => $this->getInboxMessages($user, true, false, false, true)['message_count'],
-            'number_sent_all' => $this->getSentMessages($user)['message_count'],
-            'number_sent_unreplied' => $this->getSentMessages($user, false, true)['message_count'],
-            'number_sent_unread' => $this->getSentMessages($user, true)['message_count'],
+            'content' => $dashboard_view,
+            'options' => [
+                'container-id' => \Yii::app()->user->id . '-dashboard-container',
+            ],
         ];
     }
 
     /**
-     * Get received messages
-     *
-     * @param \CWebUser $user
-     * @param bool $marked_as_read
-     * @param bool $urgent_only
-     * @param bool $query_only
-     * @param null $copied_only
-     * @return array
-     * @throws \CException
+     * @param User|OEWebUser|null $user
+     * @return array - list with counts of all unread messages for each folder
      */
-    private function getInboxMessages($user = null, $marked_as_read = false, $urgent_only = false, $query_only = false, $copied_only = null)
+    public function updateMessagesCount($user = null)
     {
         if ($user === null) {
             $user = \Yii::app()->user;
         }
 
-        $sort = new \CSort();
+        list($mailboxes_with_counts, $count_unread_total) = $this->getMessageCounts($user);
 
-        $sort->attributes = array(
-            'priority' => array('asc' => 'urgent asc',
-                'desc' => 'urgent desc', ),
-            'is_query' => array('asc' => 'is_query asc',
-                'desc' => 'is_query desc', ),
-            'message_type' => array('asc' => 'lower(message_type.name) asc',
-                'desc' => 'lower(message_type.name) desc'),
-            'event_date' => array('asc' => 't.created_date asc',
-                'desc' => 't.created_date desc', ),
-            'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
-                'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
-            'age' => array('asc' => 'patient.dob desc',
-                'desc' => 'patient.dob asc', ),
-            'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
-                'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc', ),
-            'gender' => array('asc' => 'patient.gender asc',
-                'desc' => 'patient.gender desc', ),
-        );
+        return [
+            'mailboxes_with_counts' => $mailboxes_with_counts,
+            'count_unread_total' => $count_unread_total
+        ];
+    }
 
-        $sort->defaultOrder = 'event_date desc';
+    /**
+     * Get details of mailboxes in an associated array, mapped by their ids.
+     *
+     * For example, this is used by getMessagesCounts which augments
+     * the data returned with counts of the mailbox folders.
+     *
+     * @param User|OEWebUser $user
+     * @return array - [mailbox id => [mailbox id, mailbox name, is personal mailbox]]
+     */
+    public function getAllUserMailboxesById($user)
+    {
+        $mailboxes = MailboxSearch::getAllMailboxesForUser($user->id);
 
-        $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
-        $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
-        $sender = \Yii::app()->request->getQuery('OphCoMessaging_Search_Sender', '');
-        $messageType = \Yii::app()->request->getQuery('OphCoMessaging_Search_MessageType', '');
-        $messageContent = \Yii::app()->request->getQuery('OphCoMessaging_Search', '');
-        $params = array(':uid' => $user->id);
+        $by_id = [];
 
-        if ($marked_as_read === true) {
-            $params[':marked_as_read'] = '1';
-        } else {
-            $params[':marked_as_read'] = '0';
+        foreach ($mailboxes as $mailbox) {
+            $by_id[$mailbox['id']] = $mailbox;
         }
 
-        $criteria = new \CDbCriteria();
-        $criteria->select = array(
-            '*',
-            new \CDbExpression('if (last_comment.created_user_id = :uid, t.created_date, if (last_comment.marked_as_read = 0, last_comment.created_date, t.created_date))  as created_date'),
-            new \CDbExpression('if (last_comment.created_user_id = :uid, t.created_user_id, if (last_comment.marked_as_read = 0, last_comment.created_user_id, t.created_user_id)) as created_user_id'),
-        );
+        return $by_id;
+    }
 
-        $criteria->addCondition('t.for_the_attention_of_user_id = :uid OR copyto_users.user_id = :uid OR t.created_user_id = :uid');
-        $criteria->with = array('event', 'for_the_attention_of_user', 'user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact' , 'last_comment', 'copyto_users');
-        $criteria->together = true;
+    /**
+     * Get counts of messages
+     *
+     * Note: the unread replies count is gather in the sent query
+     * because it counts unread replies in the comments table to a message sent
+     * by the user and thus the table relation between the message and the comments
+     * is more easily expressed in that query.
+     */
+    public function getMessageCounts($user)
+    {
+        $mailboxes = MailboxSearch::getAllMailboxesForUser($user->id);
 
-        if ($from) {
-            $criteria->addCondition('DATE(t.created_date) >= :from');
-            $params[':from'] = date("Y-m-d", strtotime($from));
-        }
-        if ($to) {
-            $criteria->addCondition('DATE(t.created_date) <= :to');
-            $params[':to'] = date("Y-m-d", strtotime($to));
-        }
-        if ($sender) {
-            $criteria->addCondition('t.created_user_id = :sender');
-            $params[':sender'] = $sender;
-        }
-        if ($messageType) {
-            $criteria->addCondition('t.message_type_id = :messageType');
-            $params[':messageType'] = $messageType;
-        }
-        if ($messageContent) {
-            $criteria->addCondition('LOWER(t.message_text) LIKE :messageContent');
-            $params[':messageContent'] = '%'.strtolower(strtr($messageContent, array('%' => '\%'))).'%';
+        $counts_by_id = [];
+        $total_unread_messages = 0;
+
+        foreach ($mailboxes as $mailbox) {
+            $counts_for_mailbox = MailboxSearch::getMailboxFolderCounts($user->id, [$mailbox['id']]);
+            $counts_by_id[$mailbox['id']] = array_merge($mailbox, $counts_for_mailbox);
+            $total_unread_messages += $counts_for_mailbox['unread_all'];
         }
 
-        $criteria->addCondition('event.deleted = 0');
-        $criteria->addCondition('episode.deleted = 0');
+        return [$counts_by_id, $total_unread_messages];
+    }
 
-        if ($urgent_only) {
-            $criteria->addCondition('t.urgent != 0');
-        }
-        if ($query_only) {
-            $message_type_query_id = \Yii::app()->db->createCommand()
-                ->select('id')
-                ->from('ophcomessaging_message_message_type')
-                ->where('name = :name', array(':name' => 'Query'))->queryScalar();
+    /**
+     * @param User|OEWebUser $user
+     * @return void
+     */
+    public function createPersonalMailboxIfDoesNotExist($user)
+    {
+        if (!Mailbox::model()->forPersonalMailbox($user->id)->exists()) {
+            $transaction = \Yii::app()->db->beginInternalTransaction();
 
-            $criteria->addCondition("t.message_type_id = :message_type_id");
-            $params[':message_type_id'] = $message_type_query_id;
-        }
-        if (isset($copied_only)) {
-            if ($copied_only) {
-                $criteria->addCondition('copyto_users.marked_as_read = :marked_as_read AND copyto_users.user_id = :uid');
-            } else {
-                $criteria->addCondition('(t.marked_as_read = :marked_as_read AND t.for_the_attention_of_user_id = :uid) OR
-                (last_comment.marked_as_read = :marked_as_read AND last_comment.created_user_id != :uid AND t.for_the_attention_of_user_id = :uid)');
+            try {
+                $personal_mailbox = new Mailbox();
+
+                $personal_mailbox->name = trim($user->getFullNameAndTitle());
+                $personal_mailbox->is_personal = true;
+                $personal_mailbox->users = [$user];
+
+                if (!$personal_mailbox->save()) {
+                    throw new \Exception('Failed to save new personal mailbox: ' . print_r($personal_mailbox->getErrors(), true));
+                }
+            } catch (\Exception $e) {
+                $transaction->rollback();
+
+                throw $e;
             }
-        } else {
-            $criteria->addCondition('(t.marked_as_read = :marked_as_read AND t.for_the_attention_of_user_id = :uid) OR
-            (last_comment.marked_as_read = :marked_as_read AND last_comment.created_user_id != :uid AND (t.for_the_attention_of_user_id = :uid OR t.created_user_id = :uid))
-            OR (copyto_users.marked_as_read = :marked_as_read AND copyto_users.user_id = :uid)');
+
+            $transaction->commit();
         }
-
-        $criteria->params = $params;
-
-        $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
-
-        $dp = new \CActiveDataProvider(
-            'OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
-            array(
-                'sort' => $sort,
-                'criteria' => $criteria,
-                'pagination' => array(
-                    'pageSize' => 30,
-                    'itemCount' => $total_messages
-                ),
-            )
-        );
-
-        return array(
-            'list' => $dp,
-            'message_count' => $total_messages,
-        );
-    }
-
-    /**
-     * Get sent messages
-     *
-     * @param \CWebUser $user
-     * @param bool $unread_only
-     * @param bool $unreplied_only
-     * @return array
-     * @throws \CException
-     */
-    private function getSentMessages($user = null, $unread_only = false, $unreplied_only = false)
-    {
-        if ($user === null) {
-            $user = \Yii::app()->user;
-        }
-
-        $sort = new \CSort();
-
-        $sort->attributes = array(
-            'priority' => array('asc' => 'urgent asc',
-                'desc' => 'urgent desc', ),
-            'is_query' => array('asc' => 'is_query asc',
-                'desc' => 'is_query desc', ),
-            'message_type' => array('asc' => 'lower(message_type.name) asc',
-                'desc' => 'lower(message_type.name) desc'),
-            'event_date' => array('asc' => 't.created_date asc',
-                'desc' => 't.created_date desc', ),
-            'patient_name' => array('asc' => 'lower(contact.last_name) asc, lower(contact.first_name) asc',
-                'desc' => 'lower(contact.last_name) desc, lower(contact.first_name) desc', ),
-            'hos_num' => array('asc' => 'patient.localIdentifiers asc',
-                'desc' => 'patient.localIdentifiers desc', ),
-            'age' => array('asc' => 'patient.dob desc',
-                'desc' => 'patient.dob asc', ),
-            'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
-                'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc', ),
-        );
-
-        $sort->defaultOrder = 'event_date desc';
-
-        $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
-        $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
-        $messageType = \Yii::app()->request->getQuery('OphCoMessaging_Search_MessageType', '');
-        $messageContent = \Yii::app()->request->getQuery('OphCoMessaging_Search', '');
-        $params = array(':uid' => $user->id);
-
-        $criteria = new \CDbCriteria();
-        $criteria->select = array('*');
-
-        $criteria->addCondition('t.created_user_id = :uid');
-
-        $criteria->with = array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact');
-        $criteria->together = true;
-        if ($from) {
-            $criteria->addCondition('DATE(t.created_date) >= :from');
-            $params[':from'] = date("Y-m-d", strtotime($from));
-        }
-        if ($to) {
-            $criteria->addCondition('DATE(t.created_date) <= :to');
-            $params[':to'] = date("Y-m-d", strtotime($to));
-        }
-        if ($messageType) {
-            $criteria->addCondition('t.message_type_id = :messageType');
-            $params[':messageType'] = $messageType;
-        }
-        if ($messageContent) {
-            $criteria->addCondition('LOWER(t.message_text) LIKE :messageContent');
-            $params[':messageContent'] = '%'.strtolower(strtr($messageContent, array('%' => '\%'))).'%';
-        }
-
-        $criteria->addCondition('event.deleted = 0');
-        $criteria->addCondition('episode.deleted = 0');
-
-        if ($unread_only) {
-            $criteria->addCondition('t.marked_as_read = 0');
-        }
-        if ($unreplied_only) {
-            $message_type_query_id = \Yii::app()->db->createCommand()
-                ->select('id')
-                ->from('ophcomessaging_message_message_type')
-                ->where('name = :name', array(':name' => 'Query'))->queryScalar();
-
-            $criteria->addCondition("t.message_type_id = :message_type_id");
-            $params[':message_type_id'] = $message_type_query_id;
-            $criteria->addCondition('t.id NOT IN (SELECT DISTINCT element_id FROM ophcomessaging_message_comment WHERE element_id = t.id)');
-        }
-
-        $criteria->params = $params;
-
-        $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
-
-        $dp = new \CActiveDataProvider(
-            'OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
-            array(
-                'sort' => $sort,
-                'criteria' => $criteria,
-                'pagination' => array(
-                    'pageSize' => 30,
-                    'itemCount' => $total_messages
-                ),
-            )
-        );
-
-        return array(
-            'list' => $dp,
-            'message_count' => $total_messages,
-        );
-    }
-
-    /**
-     * Get replies of the queries
-     *
-     * @param \CWebUser $user
-     * @return array
-     * @throws \CException
-     */
-    private function getUnreadQueryReplies($user = null)
-    {
-        if ($user === null) {
-            $user = \Yii::app()->user;
-        }
-
-        $sort = new \CSort();
-
-        $sort->attributes = array(
-            'priority' => array('asc' => 'urgent asc',
-                'desc' => 'urgent desc', ),
-            'is_query' => array('asc' => 'is_query asc',
-                'desc' => 'is_query desc', ),
-            'message_type' => array('asc' => 'lower(message_type.name) asc',
-                'desc' => 'lower(message_type.name) desc'),
-            'event_date' => array('asc' => 't.created_date asc',
-                'desc' => 't.created_date desc', ),
-            'user' => array('asc' => 'lower(for_the_attention_of_user.last_name) asc, lower(for_the_attention_of_user.first_name) asc',
-                'desc' => 'lower(for_the_attention_of_user.last_name) desc, lower(for_the_attention_of_user.first_name) desc', ),
-        );
-
-        $sort->defaultOrder = 'event_date desc';
-
-        $from = \Yii::app()->request->getQuery('OphCoMessaging_from', '');
-        $to = \Yii::app()->request->getQuery('OphCoMessaging_to', '');
-        $messageType = \Yii::app()->request->getQuery('OphCoMessaging_Search_MessageType', '');
-        $messageContent = \Yii::app()->request->getQuery('OphCoMessaging_Search', '');
-        $params = array(':uid' => $user->id);
-
-        $criteria = new \CDbCriteria();
-        $criteria->select = array(
-            '*',
-            new \CDbExpression('if (last_comment.created_user_id = :uid, t.created_date, if (last_comment.marked_as_read = 0, last_comment.created_date, t.created_date))  as created_date'),
-            new \CDbExpression('if (last_comment.created_user_id = :uid, t.created_user_id, if (last_comment.marked_as_read = 0, last_comment.created_user_id, t.created_user_id)) as created_user_id'),
-        );
-
-        $criteria->addCondition('t.created_user_id = :uid OR t.for_the_attention_of_user_id = :uid');
-
-        $criteria->with = array('event', 'for_the_attention_of_user', 'message_type', 'event.episode', 'event.episode.patient', 'event.episode.patient.contact', 'comments', 'last_comment');
-        $criteria->together = true;
-        if ($from) {
-            $criteria->addCondition('DATE(t.created_date) >= :from');
-            $params[':from'] = date("Y-m-d", strtotime($from));
-        }
-        if ($to) {
-            $criteria->addCondition('DATE(t.created_date) <= :to');
-            $params[':to'] = date("Y-m-d", strtotime($to));
-        }
-        if ($messageType) {
-            $criteria->addCondition('t.message_type_id = :messageType');
-            $params[':messageType'] = $messageType;
-        }
-        if ($messageContent) {
-            $criteria->addCondition('LOWER(t.message_text) LIKE :messageContent');
-            $params[':messageContent'] = '%'.strtolower(strtr($messageContent, array('%' => '\%'))).'%';
-        }
-
-        $criteria->addCondition('event.deleted = 0');
-        $criteria->addCondition('episode.deleted = 0');
-
-        $message_type_query_id = \Yii::app()->db->createCommand()
-            ->select('id')
-            ->from('ophcomessaging_message_message_type')
-            ->where('name = :name', array(':name' => 'Query'))->queryScalar();
-
-        $criteria->addCondition("t.message_type_id = :message_type_id");
-        $params[':message_type_id'] = $message_type_query_id;
-
-        $criteria->addCondition('last_comment.marked_as_read = 0 AND last_comment.created_user_id != :uid');
-
-        $criteria->params = $params;
-
-        $total_messages = Element_OphCoMessaging_Message::model()->with(array('event'))->count($criteria);
-
-        $dp = new \CActiveDataProvider(
-            'OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message',
-            array(
-                'sort' => $sort,
-                'criteria' => $criteria,
-                'pagination' => array(
-                    'pageSize' => 30,
-                    'itemCount' => $total_messages
-                ),
-            )
-        );
-
-        return array(
-            'list' => $dp,
-            'message_count' => $total_messages,
-        );
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,14 +16,15 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
  $logo_helper = new LogoHelper();
 
 ?>
 <?php
 $event = $this->event;
 $event_type = $event->eventType->name;
-$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, Institution::model()->getCurrent()->id, $this->selectedSiteId);
-$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, Institution::model()->getCurrent()->id, $this->selectedSiteId);
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $this->patient->id, Institution::model()->getCurrent()->id, $this->selectedSiteId);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $this->patient->id, Institution::model()->getCurrent()->id, $this->selectedSiteId);
 ?>
 <header class="header">
     <?= $logo_helper->render() ?>

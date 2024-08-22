@@ -16,7 +16,7 @@ abstract class ActiveRecordTestCase extends OEDbTestCase
 
     public function testTableExists()
     {
-        $connection = $this->getFixtureManager()->dbConnection;
+        $connection = $this->getDbConnection();
         $table_name = $this->getModel()->tableName();
         $this->assertNotNull($connection->schema->getTable($table_name), "Table '{$table_name}' not found, have you migrated?");
     }

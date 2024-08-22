@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -15,6 +14,8 @@
  * @copyright Copyright (c) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "institution_authentication".
@@ -42,6 +43,8 @@
  */
 class InstitutionAuthentication extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const NO_MATCH = 0;
     const EXACT_MATCH = 1;
     const PERMISSIVE_MATCH = 2;
@@ -188,4 +191,3 @@ class InstitutionAuthentication extends BaseActiveRecordVersioned
         return parent::model($className);
     }
 }
-

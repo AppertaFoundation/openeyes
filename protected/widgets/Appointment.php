@@ -22,6 +22,9 @@ class Appointment extends BaseCWidget
     public $patient;
     public $past_worklist_patients_count;
     public $worklist_patients;
+
+    public $did_not_attend_events;
+
     public $pro_theme = '';
     public $is_popup;
 
@@ -48,14 +51,19 @@ class Appointment extends BaseCWidget
         $criteria_past->addCondition('t.when < "' . $start_of_today . '"');
         $criteria_past->order = 't.when desc';
 
-        $this->worklist_patients = WorklistPatient::model()->findAllByAttributes(
-            ['patient_id' => $this->patient->id],
-            $criteria
-        );
-        $this->past_worklist_patients_count = WorklistPatient::model()->countByAttributes(
-            ['patient_id' => $this->patient->id],
-            $criteria_past
-        );
+        $this->worklist_patients = WorklistPatient::model()
+            ->with('worklist', 'worklist_attributes.worklistattribute')
+            ->findAllByAttributes(
+                ['patient_id' => $this->patient->id],
+                $criteria
+            );
+        $this->past_worklist_patients_count = WorklistPatient::model()
+            ->countByAttributes(
+                ['patient_id' => $this->patient->id],
+                $criteria_past
+            );
+
+        $this->loadDidNotAttendEvents();
     }
 
     public function render($view, $data = null, $return = false)
@@ -72,5 +80,16 @@ class Appointment extends BaseCWidget
     public function run()
     {
         $this->render(get_class($this));
+    }
+
+    protected function loadDidNotAttendEvents()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->index = 'worklist_patient_id';
+        $criteria->addColumnCondition(['episode.patient_id' => $this->patient->id, 'eventType.class_name' => 'OphCiDidNotAttend']);
+        $criteria->addNotInCondition('worklist_patient_id', [null]);
+        $this->did_not_attend_events = Event::model()
+            ->with('episode', 'eventType')
+            ->findAll($criteria);
     }
 }

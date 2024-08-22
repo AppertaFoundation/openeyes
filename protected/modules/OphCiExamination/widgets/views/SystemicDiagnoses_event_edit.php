@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -40,12 +41,13 @@ $required_diagnoses_ids = array_map(function ($r) {
             <?= \CHtml::checkBox(
                 $model_name . '[no_systemic_diagnoses]',
                 $element->no_systemic_diagnoses_date ? true : false,
-                array('class' => $model_name. '_no_systemic_diagnoses')
+                array('class' => $model_name . '_no_systemic_diagnoses')
             ); ?>
             No systemic diagnoses
         </label>
     </div>
-    <table class="cols-8" id="<?= $model_name ?>_diagnoses_table">
+    <div class="data-group cols-10">
+    <table class="cols-full" id="<?= $model_name ?>_diagnoses_table">
         <colgroup>
             <col class="cols-3">
             <col class="cols-3">
@@ -90,9 +92,10 @@ $required_diagnoses_ids = array_map(function ($r) {
         ?>
         </tbody>
     </table>
-    <div class="add-data-actions flex-item-bottom" id="systemic-diagnoses-popup"
+    </div>
+    <div class="add-data-actions flex-item-bottom" id="systemic-diagnoses-popup" data-test="systemic-diagnoses-popup"
          style="display: <?php echo $element->no_systemic_diagnoses_date ? 'none' : ''; ?>">
-        <button class="button hint green js-add-select-search" type="button" id="add-history-systemic-diagnoses">
+        <button class="button hint green js-add-select-search" type="button" id="add-history-systemic-diagnoses" data-test="add-systemic-diagnoses-button">
             <i class="oe-i plus pro-theme"></i>
         </button>
     </div>
@@ -129,6 +132,82 @@ $required_diagnoses_ids = array_map(function ($r) {
 </script>
 <script type="text/javascript">
     $(document).ready(function () {
+
+        function refreshDate(e, event_type) {
+            let inp = null;
+            let ISOdate = '';
+            let hidden_target = null;
+            let errors = [];
+            let UKdate;
+
+            if (event_type === 'pickmeup') {
+                inp = $(e.target);
+                UKdate = inp.val();
+                hidden_target = $(inp.data('hidden-input-selector'));
+                let dateObject = e.originalEvent.detail.date;
+                ISOdate = $.datepicker.formatDate('yy-mm-dd',dateObject);
+            } else {
+                inp = $(e.currentTarget);
+                let dateArray = inp.val().split(" ");
+                UKdate = inp.val();
+                if(UKdate.length === 0){
+                    $(hidden_target).val('');
+                    return false;
+                }
+                hidden_target = $(inp.data('hidden-input-selector'));
+
+                switch(dateArray.length) {
+                    case 3:
+                        try {
+                            var dateObject = new Date(UKdate);
+                            $.datepicker.parseDate( 'dd M yy', UKdate );
+                            ISOdate = $.datepicker.formatDate('yy-mm-dd',dateObject);
+                        } catch (e) {
+                            errors.push('Invalid date: '+UKdate);
+                        }
+                        break;
+                    case 2:
+                        try {
+                            createdDate = '01 '+UKdate;
+                            $.datepicker.parseDate( 'dd M yy', createdDate );
+                            ISOdate = $.datepicker.formatDate('yy-mm', new Date( createdDate ));
+                        } catch (e) {
+                            errors.push('Invalid date: '+UKdate);
+                        }
+                        break;
+                    case 1:
+                        if(dateArray[0] > 1970){
+                            ISOdate = dateArray[0];
+                        } else {
+                            errors.push('Invalid date: '+UKdate);
+                        }
+                        break;
+                    default:
+                        errors.push('Invalid date: '+UKdate);
+                        break;
+                }
+            }
+
+            if(errors.length > 0){
+                new OpenEyes.UI.Dialog.Alert({
+                    content: errors.join(', ')
+                }).open();
+                return false;
+            } else {
+                $(hidden_target).val(ISOdate);
+            }
+
+        }
+
+        function addEventListenerToPickMeUp() {
+            $('.systemic-diagnoses-date').on('pickmeup-change', function (e) {
+                refreshDate(e, 'pickmeup')
+            });
+            $('.systemic-diagnoses-date').on('change', function (e) {
+                refreshDate(e);
+            })
+        }
+
         let systemic_diagnoses_controller = new OpenEyes.OphCiExamination.SystemicDiagnosesController({
             element: $('#<?=$model_name?>_element')
         });
@@ -139,32 +218,39 @@ $required_diagnoses_ids = array_map(function ($r) {
                 <?php
                 $criteria = new CDbCriteria();
                 $criteria->addCondition('id IN (SELECT DISTINCT group_id FROM `common_systemic_disorder` WHERE group_id IS NOT NULL)');
-                $valid_common_systemic_disorder_groups = CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
+                $valid_common_systemic_disorder_groups = CommonSystemicDisorderGroup::model()->findAllAtLevels(
+                    ReferenceData::LEVEL_ALL,
+                    $criteria
+                );
                 if (!empty($valid_common_systemic_disorder_groups)) { ?>
-                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    array_map(function ($disorder_group) {
-                        return [
-                            'label' => $disorder_group->name,
-                            'filter-value' => $disorder_group->id,
-                            'is_filter' => true,
-                        ];
-                    },
-                    $valid_common_systemic_disorder_groups)
-                                                    ) ?>, {
-                    'header': 'Disorder Group',
-                    'id': 'disorder-group-filter',
-                    'deselectOnReturn': false,
-                }),
+                    new OpenEyes.UI.AdderDialog.ItemSet(
+                        <?= CJSON::encode(
+                            array_map(function ($disorder_group) {
+                                return [
+                                    'label' => $disorder_group->name,
+                                    'filter-value' => $disorder_group->id,
+                                    'is_filter' => true,
+                                ];
+                            },
+                            $valid_common_systemic_disorder_groups)
+                        ) ?>, {
+                            'header': 'Disorder Group',
+                            'id': 'disorder-group-filter',
+                            'deselectOnReturn': false,
+                        }
+                    ),
                 <?php } ?>
-                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                    array_map(function ($disorder) {
-                        return ['label' => $disorder['term'], 'id' => $disorder['id'], 'is_diabetes' => $disorder['is_diabetes'], 'filter_value' => $disorder['group_id'],];
-                    }, CommonSystemicDisorder::getDisordersWithDiabetesInformation())
-                ) ?>, {
-                    'id': 'disorder-list',
-                    'header': 'Disorder',
-                    'multiSelect': true,
-                })
+                new OpenEyes.UI.AdderDialog.ItemSet(
+                    <?= CJSON::encode(
+                        array_map(function ($disorder) {
+                            return ['label' => $disorder['term'], 'id' => $disorder['id'], 'is_diabetes' => $disorder['is_diabetes'], 'filter_value' => $disorder['group_id'],];
+                        }, CommonSystemicDisorder::getDisordersWithDiabetesInformation())
+                    ) ?>, {
+                        'id': 'disorder-list',
+                        'header': 'Disorder',
+                        'multiSelect': true,
+                    }
+                )
             ],
             onReturn: function (adder_dialog, selected_items) {
                 for (let i in selected_items) {
@@ -172,6 +258,7 @@ $required_diagnoses_ids = array_map(function ($r) {
                     if (!item.is_filter) {
                         systemic_diagnoses_controller.addEntry(item);
                         adder_dialog.popup.find('li[data-id=' + item.id + ']').addClass('js-already-used');
+                        addEventListenerToPickMeUp();
                     }
                 }
                 return true;
@@ -181,7 +268,7 @@ $required_diagnoses_ids = array_map(function ($r) {
                 if (filters.length > 0) {
                     systemic_diagnoses_controller.$popup.find('li').each(function () {
                         let already_used = $(this).hasClass('js-already-used');
-                        if (($(this).data('filter_value') !== $(filters[0]).data('filter-value') || already_used)&&!$(this).data('filter-value')) {
+                        if (($(this).data('filter_value') !== $(filters[0]).data('filter-value') || already_used) && !$(this).data('filter-value')) {
                             $(this).hide();
                         } else {
                             $(this).show();
@@ -215,5 +302,7 @@ $required_diagnoses_ids = array_map(function ($r) {
         systemic_diagnoses_controller.$table.find("input[name$='[disorder_id]']").each(function () {
             systemic_diagnoses_controller.$popup.find('li[data-id=' + $(this).val() + ']').addClass('js-already-used');
         });
+
+        addEventListenerToPickMeUp();
     });
 </script>

@@ -129,12 +129,12 @@ class MenuHelper
                 $setting_key = $menu_item['requires_setting']['setting_key'];
                 $required_value = $menu_item['requires_setting']['required_value'];
 
-                $element_enabled = Yii::app()->params[$setting_key];
+                $element_enabled = \SettingMetadata::model()->getSetting($setting_key);
                 if (isset($element_enabled) && $element_enabled != $required_value)
                 {
                     switch ($required_value) {
                         case 'not-empty':
-                            if ($element_enabled) {
+                            if (!empty($element_enabled)) {
                                 break;
                             }
                         default:
@@ -145,7 +145,7 @@ class MenuHelper
 
             if (isset($menu_item['api'])) {
                 $api = Yii::app()->moduleAPI->get($menu_item['api']);
-                foreach ($api->getMenuItems($menu_item['position']) as $item) {
+                foreach ($api->getMenuItems($menu_item) as $item) {
                     $menu[$position++] = $item;
                 }
             } else {
@@ -160,10 +160,7 @@ class MenuHelper
         }
 
         usort($menu, function ($a, $b) {
-            if ($a['position'] == $b['position']){
-                return strcasecmp($a['title'], $b['title']);
-            }
-            return $a['position'] - $b['position'];
+            return strcmp($a["title"], $b["title"]);
         });
 
         return $menu;

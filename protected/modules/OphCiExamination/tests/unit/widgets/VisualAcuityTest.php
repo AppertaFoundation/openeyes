@@ -47,7 +47,7 @@ class VisualAcuityTest extends \OEDbTestCase
     protected $widget_cls = VisualAcuity::class;
     protected $controller_cls = DefaultController::class;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->stubSession();
@@ -67,11 +67,11 @@ class VisualAcuityTest extends \OEDbTestCase
         $this->assertNotEmpty($result);
         // have to check for mock derived name
         $mock_model_name = \CHtml::modelName($widget->element);
-        $this->assertContains("id=\"{$mock_model_name}_form\"", $result);
+        $this->assertStringContainsString("id=\"{$mock_model_name}_form\"", $result);
 
         foreach (['right', 'left'] as $side) {
             foreach (['unable_to_assess', 'eye_missing'] as $expected_attribute) {
-                $this->assertContains("[{$side}_{$expected_attribute}]", $result);
+                $this->assertStringContainsString("[{$side}_{$expected_attribute}]", $result);
             }
         }
     }
@@ -105,7 +105,7 @@ class VisualAcuityTest extends \OEDbTestCase
         $result = ob_get_clean();
 
         $this->assertNotEmpty($result);
-        $this->assertContains("{$side}_readings", $result);
+        $this->assertStringContainsString("{$side}_readings", $result);
     }
 
     /** @test */
@@ -121,9 +121,9 @@ class VisualAcuityTest extends \OEDbTestCase
         $this->mockCviApi('OphCoCvi', false);
 
         $result = $this->getWidgetRender($widget);
-        $this->assertContains("Unable to assess", $result);
-        $this->assertContains($element->right_readings[0]->unit->name, $result);
-        $this->assertContains($element->left_notes, $result);
+        $this->assertStringContainsString("Unable to assess", $result);
+        $this->assertStringContainsString($element->right_readings[0]->unit->name, $result);
+        $this->assertStringContainsString($element->left_notes, $result);
     }
 
     public function fixation_status_provider()
@@ -151,9 +151,9 @@ class VisualAcuityTest extends \OEDbTestCase
     public function cvi_alert_provider()
     {
         return [
-            // [true, Element_OphCiExamination_VisualAcuity::class, true],
+            [true, Element_OphCiExamination_VisualAcuity::class, true],
             [false, Element_OphCiExamination_VisualAcuity::class, false],
-            // [tr  ue, Element_OphCiExamination_NearVisualAcuity::class, false]
+            [true, Element_OphCiExamination_NearVisualAcuity::class, false]
         ];
     }
 

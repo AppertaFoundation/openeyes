@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -61,7 +62,7 @@ $model_name = \CHtml::modelName($element);
                     </div>
 
                     <!-- using tables in here for better layout control -->
-                    <table class="cols-7">
+                    <table class="cols-7 last-left">
                         <tbody>
                         <tr>
                             <td><?= $element->getAttributeLabel("{$eye_side}_dilated") ?></td>
@@ -76,8 +77,8 @@ $model_name = \CHtml::modelName($element);
                             <td><?= $element->getAttributeLabel("{$eye_side}_working_distance") ?></td>
                             <td><input type="hidden" id="<?= "{$model_name}_{$eye_side}_working_distance_value" ?>"
                                        value="<?= $element->{"{$eye_side}_working_distance"}
-                                           ? $element->{"{$eye_side}_working_distance"}->value
-                                           : $element->{"{$eye_side}_working_distance_options"}[0]->value ?>"
+                                                                                           ? $element->{"{$eye_side}_working_distance"}->value
+                                                                                           : $element->{"{$eye_side}_working_distance_options"}[0]->value ?>"
                                        data-adder-wd-value-field="true"
                                 />
                                 <?= \CHtml::dropDownList(
@@ -91,15 +92,19 @@ $model_name = \CHtml::modelName($element);
                                         'data-adder-wd-select-field' => "true",
                                         'options' => array_combine(
                                             array_map(
-                                                function ($distance) { return $distance->id; },
+                                                function ($distance) {
+                                                    return $distance->id;
+                                                },
                                                 $element->{"{$eye_side}_working_distance_options"}
                                             ),
                                             array_map(
-                                                function ($distance) { return ['data-value' => $distance->value]; },
+                                                function ($distance) {
+                                                    return ['data-value' => $distance->value];
+                                                },
                                                 $element->{"{$eye_side}_working_distance_options"}
                                             )
                                         )
-                                    ]
+                                                                                               ]
                                 );
                                 ?></td>
                         </tr>
@@ -123,7 +128,7 @@ $model_name = \CHtml::modelName($element);
                                        name="<?= "{$model_name}[{$eye_side}_power1]" ?>"
                                        data-adder-input-id="power1"
                                        data-adder-item-set-type="float"
-                                       data-adder-item-set-max="30"
+                                       data-adder-item-set-max="35"
                                        data-adder-item-set-support-sign="true"
                                        data-adder-item-set-support-decimal-values="true"
                                        data-ec-keep-field="true"
@@ -141,7 +146,7 @@ $model_name = \CHtml::modelName($element);
                                        name="<?= "{$model_name}[{$eye_side}_power2]" ?>"
                                        data-adder-input-id="power2"
                                        data-adder-item-set-type="float"
-                                       data-adder-item-set-max="30"
+                                       data-adder-item-set-max="35"
                                        data-adder-item-set-support-sign="true"
                                        data-adder-item-set-support-decimal-values="true"
                                        data-ec-keep-field="true"
@@ -174,9 +179,12 @@ $model_name = \CHtml::modelName($element);
                              style="<?= $element->{"{$eye_side}_comments"} ? "" : "display: none;" ?>">
                             <!-- comment-group, textarea + icon -->
                             <div class="comment-group flex-layout flex-left">
-                                    <textarea placeholder="Comments"
-                                              rows="1"
-                                              class="js-comment-field cols-full"><?= CHtml::encode($element->{"{$eye_side}_comments"}) ?></textarea>
+                                    <?= CHtml::textArea("{$model_name}[{$eye_side}_comments]", $element->{"{$eye_side}_comments"}, [
+                                        'class' => 'js-comment-field autosize cols-full',
+                                        'rows' => '1',
+                                        'placeholder' => 'Comments',
+                                        'autocomplete' => 'off',
+                                    ]) ?>
                                 <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"
                                    data-hide-method="display"></i>
                             </div>

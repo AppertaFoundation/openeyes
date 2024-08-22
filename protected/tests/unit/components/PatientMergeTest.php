@@ -33,7 +33,7 @@
  * @method genetics_study_subject($fixtureId)
  * @method secondary_diagnosis($fixtureId)
  */
-class PatientMergeTest extends CDbTestCase
+class PatientMergeTest extends OEDbTestCase
 {
     public $fixtures = array(
             'patients' => 'Patient',
@@ -63,17 +63,17 @@ class PatientMergeTest extends CDbTestCase
         return false;
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->session['selected_institution_id'] = 1;
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         unset(Yii::app()->session['selected_institution_id']);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         if ($this->shouldTestGenetics()) {
             $this->fixtures = array_merge($this->fixtures, $this->genetic_fixtures);
@@ -87,6 +87,7 @@ class PatientMergeTest extends CDbTestCase
     public function testComparePatientDetails()
     {
         $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
 
         $primary_patient = $this->patients('patient7');
         $secondary_patient = $this->patients('patient8');
@@ -123,6 +124,7 @@ class PatientMergeTest extends CDbTestCase
     public function testUpdateEpisodesWhenPrimaryHasNoEpisodes()
     {
         $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
 
         $primary_patient = $this->patients('patient7');
         $secondary_patient = $this->patients('patient8');
@@ -166,6 +168,7 @@ class PatientMergeTest extends CDbTestCase
     public function testUpdateEpisodesWhenBothHaveEpisodesNoConflict()
     {
         $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
 
         $primary_patient = $this->patients('patient7');
         $secondary_patient = $this->patients('patient8');
@@ -215,6 +218,7 @@ class PatientMergeTest extends CDbTestCase
     public function testUpdateEpisodesWhenBothHaveEpisodesConflict_secondaryEpisodeHasLessStatus()
     {
         $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
 
         // $primary_patient has episode7 and episode8
         $primary_patient = $this->patients('patient7'); // episode7
@@ -289,6 +293,7 @@ class PatientMergeTest extends CDbTestCase
     public function testUpdateEpisodesWhenBothHaveEpisodesConflict_primaryEpisodeHasLessStatus()
     {
         $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
 
         // $primary_patient has episode7 and episode8
         $primary_patient = $this->patients('patient7');
@@ -364,6 +369,7 @@ class PatientMergeTest extends CDbTestCase
     public function testUpdateLegacyEpisodes_primaryNoLegacyEpisodes()
     {
         $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
 
         // $primary_patient has episode7 and episode8
         $primary_patient = $this->patients('patient7');
@@ -405,6 +411,7 @@ class PatientMergeTest extends CDbTestCase
     public function testUpdateLegacyEpisodes_bothHaveLegacyEpisodes_secondaryOlder()
     {
         $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
 
         // $primary_patient has episode7 and episode8
         $primary_patient = $this->patients('patient7');
@@ -460,6 +467,7 @@ class PatientMergeTest extends CDbTestCase
     public function testUpdateLegacyEpisodes_bothHaveLegacyEpisodes_primaryOlder()
     {
         $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
 
         // $primary_patient has episode7 and episode8
         $primary_patient = $this->patients('patient7');
@@ -513,6 +521,7 @@ class PatientMergeTest extends CDbTestCase
     public function testUpdateOphthalmicDiagnoses()
     {
         $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
 
         $primary_patient = $this->patients('patient7');
         $secondary_patient = $this->patients('patient8');
@@ -546,6 +555,7 @@ class PatientMergeTest extends CDbTestCase
     public function testUpdateSystemicDiagnoses()
     {
         $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
 
         $primary_patient = $this->patients('patient7');
         $secondary_patient = $this->patients('patient8');
@@ -584,6 +594,7 @@ class PatientMergeTest extends CDbTestCase
             $this->markTestSkipped('Genetics module needs to be enabled for this test.');
         }
         $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
 
         $primary_patient = $this->patients('patient3'); // is not a genetics patient
         $secondary_patient = $this->patients('patient2'); // it is a genetics patient
@@ -624,6 +635,7 @@ class PatientMergeTest extends CDbTestCase
             $this->markTestSkipped('Genetics module needs to be enabled for this test.');
         }
         $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
 
         $primary_patient = $this->patients('patient1');
         $secondary_patient = $this->patients('patient2');
@@ -686,6 +698,7 @@ class PatientMergeTest extends CDbTestCase
     public function testGetTwoEpisodesStartEndDate()
     {
         $merge_handler = new PatientMerge();
+        $merge_handler->load(new PatientMergeRequest());
 
         $episode7 = $this->episodes('episode7');
         $episode7->start_date = date('Y-m-d', strtotime('-30 days'));

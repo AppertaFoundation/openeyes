@@ -45,11 +45,12 @@ class Element_OphCoDocument_Document extends BaseEventTypeElement
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-            array('event_id, single_document_id, left_document_id, right_document_id, event_sub_type, 
-                single_comment, left_comment, right_comment', 'safe'),
-            array('single_document_id', 'documentRequired'),
-        );
+        return [
+            ['event_id, single_document_id, left_document_id, right_document_id, event_sub_type,
+                single_comment, left_comment, right_comment', 'safe'],
+            ['event_sub_type', 'required'],
+            ['single_document_id', 'documentRequired'],
+        ];
     }
 
     /**

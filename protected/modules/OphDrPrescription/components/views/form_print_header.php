@@ -55,7 +55,7 @@
                             <?php } ?>
                         </tr>
                         <?php
-                        $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+                        $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $this->patient->id, Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
                         if ($form_css_class === 'wpten') { ?>
                             <tr>
                                 <td><?= PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) ?>:</td>

@@ -149,7 +149,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
         $date_from = date('Y-m-d', strtotime('-1 year'));
         $date_to = date('Y-m-d');
 
-        if ( !Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id) ) {
+        if (!Yii::app()->getAuthManager()->checkAccess('Report', Yii::app()->user->id)) {
             $this->surgeon_id = Yii::app()->user->id;
         }
 
@@ -230,8 +230,11 @@ class OphTrOperationnote_ReportOperations extends BaseReport
      *
      * @return array
      */
-    protected function getOperations($filter_procedures = array(), $filter_complications = array(), $from_date, $to_date, $patient_oph_diagnoses, $booking_diagnosis, $theatre, $bookingcomments, $surgerydate, $comorbidities, $target_refraction, $cataract_surgical_management, $first_eye, $va_values, $refraction_values, $anaesthetic_type, $anaesthetic_delivery, $anaesthetic_comments, $anaesthetic_complications, $cataract_report, $incision_site, $cataract_complication_notes, $cataract_predicted_refraction, $cataract_iol_type, $cataract_iol_power, $tamponade_used, $surgeon, $surgeon_role, $assistant, $assistant_role, $supervising_surgeon, $supervising_surgeon_role, $opnote_comments, $surgeon_id)
+    protected function getOperations($filter_procedures, $filter_complications, $from_date, $to_date, $patient_oph_diagnoses, $booking_diagnosis, $theatre, $bookingcomments, $surgerydate, $comorbidities, $target_refraction, $cataract_surgical_management, $first_eye, $va_values, $refraction_values, $anaesthetic_type, $anaesthetic_delivery, $anaesthetic_comments, $anaesthetic_complications, $cataract_report, $incision_site, $cataract_complication_notes, $cataract_predicted_refraction, $cataract_iol_type, $cataract_iol_power, $tamponade_used, $surgeon, $surgeon_role, $assistant, $assistant_role, $supervising_surgeon, $supervising_surgeon_role, $opnote_comments, $surgeon_id)
     {
+        $filter_procedures ??= [];
+        $filter_complications ??= [];
+
         $filter_procedures_method = 'OR';
         $filter_complications_method = 'OR';
 
@@ -284,9 +287,10 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                         ++$matched_complications;
                     }
                 }
-                if (($filter_complications_method == 'AND' && $matched_complications < count(
-                    $filter_complications
-                )) || !$matched_complications
+                if (
+                    ($filter_complications_method == 'AND' && $matched_complications < count(
+                        $filter_complications
+                    )) || !$matched_complications
                 ) {
                     continue;
                 }
@@ -306,15 +310,16 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                         ++$matched_procedures;
                     }
                 }
-                if (($filter_procedures_method == 'AND' && $matched_procedures < count(
-                    $filter_procedures
-                )) || !$matched_procedures
+                if (
+                    ($filter_procedures_method == 'AND' && $matched_procedures < count(
+                        $filter_procedures
+                    )) || !$matched_procedures
                 ) {
                     continue;
                 }
             }
 
-            $patient_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $row['pid'], $this->user_institution_id, $this->user_selected_site_id));
+            $patient_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $row['pid'], $this->user_institution_id, $this->user_selected_site_id));
             $patient_identifiers = PatientIdentifierHelper::getAllPatientIdentifiersForReports($row['pid']);
 
             $record = array(
@@ -367,11 +372,11 @@ class OphTrOperationnote_ReportOperations extends BaseReport
             $diagnoses = array();
             foreach ($patient->episodes as $ep) {
                 if ($ep->diagnosis) {
-                    $diagnoses[] = (($ep->eye) ? $ep->eye->adjective.' ' : '').$ep->diagnosis->term;
+                    $diagnoses[] = (($ep->eye) ? $ep->eye->adjective . ' ' : '') . $ep->diagnosis->term;
                 }
             }
             foreach ($patient->getOphthalmicDiagnoses() as $sd) {
-                $diagnoses[] = $sd->eye->adjective.' '.$sd->disorder->term;
+                $diagnoses[] = $sd->eye->adjective . ' ' . $sd->disorder->term;
             }
             $record['patient_diagnoses'] = implode(', ', $diagnoses);
         }
@@ -395,16 +400,15 @@ class OphTrOperationnote_ReportOperations extends BaseReport
 
                 if ($booking_diagnosis) {
                     $diag_el = $operationElement->getDiagnosis();
-                    $disorder = $diag_el->disorder();
-                    if ($disorder) {
-                        $record['booking_diagnosis'] = $diag_el->eye->adjective.' '.$disorder->term;
+                    if ($diag_el) {
+                        $record['booking_diagnosis'] = $diag_el->eye->adjective . ' ' . $diag_el->disorder->term;
                     } else {
                         $record['booking_diagnosis'] = 'Unknown';
                     }
                 }
 
                 if ($this->theatre && $operationElement && $operationBooking) {
-                    $theatreName = $operationElement->site['name'].' '.$operationBooking->theatre['name'];
+                    $theatreName = $operationElement->site['name'] . ' ' . $operationBooking->theatre['name'];
                     $record['theatre'] = $theatreName;
                 }
 
@@ -525,7 +529,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                 $record['Pre-op VA Pinhole'] = 'Unknown';
                 foreach ($split_preop_values as $split_preop_value) {
                     if ($split_preop_value['va_reading'] != '' && in_array($split_preop_value['method'], array('Glasses', 'Unaided', 'Pinhole'))) {
-                        $index = 'Pre-op VA '.$split_preop_value['method'];
+                        $index = 'Pre-op VA ' . $split_preop_value['method'];
                         $record[$index] = $split_preop_value['va_reading'];
                     }
                 }
@@ -539,7 +543,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                 foreach ($best_post_ops as $best_post_op) {
                     if ($best_post_op && in_array($best_post_op['method'], array('Glasses', 'Unaided', 'Pinhole'))) {
                         $record['Post-op VA (2-6 weeks) date'] = $best_post_op['date'];
-                        $record['2-6 Week value '.$best_post_op['method']] = $best_post_op['reading'];
+                        $record['2-6 Week value ' . $best_post_op['method']] = $best_post_op['reading'];
                     }
                 }
 
@@ -550,7 +554,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                 $record['Most recent post-op Pinhole'] = 'Unknown';
                 foreach ($split_postop_values as $split_postop_value) {
                     if ($split_postop_value['va_reading'] != '' && in_array($split_postop_value['method'], array('Glasses', 'Unaided', 'Pinhole'))) {
-                        $index = 'Most recent post-op '.$split_postop_value['method'];
+                        $index = 'Most recent post-op ' . $split_postop_value['method'];
                         $record[$index] = $split_postop_value['va_reading'];
                     }
                 }
@@ -662,9 +666,9 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                     $res .= ' ';
                 }
                 if ($reading) {
-                    $res .= ucfirst($side).': '.$reading->convertTo($reading->value, $reading->unit_id).' ('.$reading->method->name.')';
+                    $res .= ucfirst($side) . ': ' . $reading->convertTo($reading->value, $reading->unit_id) . ' (' . $reading->method->name . ')';
                 } else {
-                    $res .= ucfirst($side).': Unknown';
+                    $res .= ucfirst($side) . ': Unknown';
                 }
             }
 
@@ -720,10 +724,10 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                             if (strtotime($reading->element->event->event_date) >= $benchmark_date && $method != $reading->method->name) {
                                 $benchmark_date = strtotime($reading->element->event->event_date);
                                 $method = $reading->method->name;
-                                $res[$reading->method->name.'_'.$side]['side'] = $side;
-                                $res[$reading->method->name.'_'.$side]['date'] = date('j M Y', strtotime($reading->element->event->event_date));
-                                $res[$reading->method->name.'_'.$side]['method'] = $reading->method->name;
-                                $res[$reading->method->name.'_'.$side]['reading'] = $reading->convertTo($reading->value, $reading->unit_id);
+                                $res[$reading->method->name . '_' . $side]['side'] = $side;
+                                $res[$reading->method->name . '_' . $side]['date'] = date('j M Y', strtotime($reading->element->event->event_date));
+                                $res[$reading->method->name . '_' . $side]['method'] = $reading->method->name;
+                                $res[$reading->method->name . '_' . $side]['reading'] = $reading->convertTo($reading->value, $reading->unit_id);
                             }
                         }
                     }
@@ -917,7 +921,7 @@ class OphTrOperationnote_ReportOperations extends BaseReport
             $surgeon_element = Element_OphTrOperationnote_Surgeon::model()->findByAttributes(array('event_id' => $event_id));
 
             foreach (array('surgeon', 'assistant', 'supervising_surgeon') as $surgeon_type) {
-                $role = $surgeon_type.'_role';
+                $role = $surgeon_type . '_role';
                 if (${$surgeon_type} || ${$role}) {
                     $surgeon = $surgeon_element->{$surgeon_type};
                     if (${$surgeon_type}) {
@@ -954,7 +958,8 @@ class OphTrOperationnote_ReportOperations extends BaseReport
             $return[] = 'Role';
         }
 
-        foreach (array(
+        foreach (
+            array(
                      'patient_oph_diagnoses',
                      'booking_diagnosis',
                      'theatre',
@@ -987,7 +992,8 @@ class OphTrOperationnote_ReportOperations extends BaseReport
                      'comorbidities',
                      'first_eye',
                      'target_refraction',
-                 ) as $key => $value) {
+                 ) as $key => $value
+        ) {
             if (is_int($key)) {
                 if ($this->$value) {
                     $return[] = $this->getAttributeLabel($value);
@@ -1054,10 +1060,10 @@ class OphTrOperationnote_ReportOperations extends BaseReport
         $description = 'Operations';
 
         if ($this->surgeon_id) {
-            $description .= ' by '.User::model()->find($this->surgeon_id)->fullName;
+            $description .= ' by ' . User::model()->find($this->surgeon_id)->fullName;
         }
 
-        $description .= ' between '.date('j M Y', strtotime($this->date_from)).' and '.date('j M Y', strtotime($this->date_to));
+        $description .= ' between ' . date('j M Y', strtotime($this->date_from)) . ' and ' . date('j M Y', strtotime($this->date_to));
 
         if (!empty($this->Procedures_procs)) {
             $description .= "\nwith procedures: ";
@@ -1091,9 +1097,9 @@ class OphTrOperationnote_ReportOperations extends BaseReport
      */
     public function toCSV()
     {
-        $output = $this->description()."\n\n ";
-        $output .= implode(',', $this->getColumns())."\n";
+        $output = $this->description() . "\n\n ";
+        $output .= implode(',', $this->getColumns()) . "\n";
 
-        return $output.$this->array2Csv($this->operations);
+        return $output . $this->array2Csv($this->operations);
     }
 }

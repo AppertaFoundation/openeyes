@@ -102,7 +102,7 @@ class Element_OphTrOperationchecklists_ProcedureListTest extends ActiveRecordTes
         $this->assertEquals(count($anaestheticTypeId), count($relation_models1));
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach ($this->elementIds as $id) {
             foreach (OphTrOperationchecklists_ProcedurelistProcedureAssignment::model()->findAll('procedurelist_id = :procedurelist_id', array(':procedurelist_id' => $id)) as $t) {

@@ -1,3 +1,10 @@
+<?php
+$selected_firm_id = Yii::app()->session['selected_firm_id'];
+$selected_subspecialty_id = $element->to_subspecialty_id != "" ?
+    $element->to_subspecialty_id :
+    \Firm::model()->findByPk($selected_firm_id)->getSubspecialtyID();
+?>
+
 <div class="required internal-referral-section">
     <hr class="divider"/>
     <h3>Internal Referral to:</h3>
@@ -12,9 +19,7 @@
                 <td>Service</td>
                 <td>
                     <?php
-                    $element->to_subspecialty_id = $element->to_subspecialty_id != "" ?
-                        $element->to_subspecialty_id :
-                        \Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->getSubspecialtyID();
+                    $element->to_subspecialty_id = $selected_subspecialty_id;
 
                     $criteria = new CDbCriteria();
                     $criteria->with = ['serviceSubspecialtyAssignment' =>
@@ -23,18 +28,10 @@
                     $criteria->order = 't.name';
                     $criteria->addCondition('firms.active = 1'); ?>
 
-                    <?= \CHtml::activeDropDownList($element, "to_subspecialty_id",
-                        CHtml::listData(Subspecialty::model()->findAll($criteria), 'id', 'name'),
-                        array('empty' => '- None -', 'class' => 'cols-full')) ?>
-                </td>
-            </tr>
-            <tr>
-                <td><?= Firm::contextLabel() ?></td>
-                <td>
-                    <?=\CHtml::activeDropDownList(
+                    <?= \CHtml::activeDropDownList(
                         $element,
-                        "to_firm_id",
-                        Firm::model()->getListWithSpecialties(),
+                        "to_subspecialty_id",
+                        CHtml::listData(Subspecialty::model()->findAll($criteria), 'id', 'name'),
                         array('empty' => '- None -', 'class' => 'cols-full')
                     ) ?>
                 </td>
@@ -54,6 +51,21 @@
                         $element->getToLocations(true),
                         array('empty' => '- None -', 'class' => 'cols-full')
                     ) ?>
+                </td>
+            </tr>
+            <tr>
+                <td><?= Firm::contextLabel() ?></td>
+                <td>
+                    <?php
+                    $only_service_firms = SettingMetadata::checkSetting('filter_service_firms_internal_referral', 'on');
+                    $applicable_firms = InternalReferralSiteFirmMapping::findInternalReferralFirms($element->to_location_id, $selected_subspecialty_id, $only_service_firms);
+
+                    echo \CHtml::activeDropDownList(
+                        $element,
+                        "to_firm_id",
+                        $applicable_firms,
+                        array('empty' => '- None -', 'class' => 'cols-full')
+                    ); ?>
                 </td>
             </tr>
             <tr>
@@ -77,7 +89,9 @@
                 </td>
             </tr>
             <tr>
-                <td></td>
+                <td>
+                    Flag
+                </td>
                 <td>
                     <label class="inline">
                         <?= \CHtml::activeCheckBox($element, 'is_urgent'); ?>
@@ -88,5 +102,4 @@
             </tbody>
         </table>
     </div>
-    <hr class="divider"/>
 </div>

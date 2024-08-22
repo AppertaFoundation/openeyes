@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
     <h2>Basic information</h2>
     <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
@@ -42,7 +44,7 @@
         <?php echo $form->textField(
             $user,
             'title',
-            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'readonly' => $this->isUserFieldReadOnly('title'),
                 'style' => $this->isUserFieldReadOnly('title') ? 'opacity:0.5' : ''),
             null
@@ -54,7 +56,7 @@
         <?php echo $form->textField(
             $user,
             'first_name',
-            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'readonly' => $this->isUserFieldReadOnly('first_name'),
                 'style' => $this->isUserFieldReadOnly('first_name') ? 'opacity:0.5' : '')
         );?>
@@ -65,7 +67,7 @@
         <?php echo $form->textField(
             $user,
             'last_name',
-            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'readonly' => $this->isUserFieldReadOnly('last_name'),
                 'style' => $this->isUserFieldReadOnly('last_name') ? 'opacity:0.5' : '')
         );?>
@@ -85,7 +87,7 @@
         <?php echo $form->textField(
             $user,
             'email',
-            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'readonly' => $this->isUserFieldReadOnly('email'),
                 'style' => $this->isUserFieldReadOnly('email') ? 'opacity:0.5' : '')
         );?>
@@ -94,9 +96,9 @@
   <tr>
     <td>
         <?php echo $form->textField(
-            $user,
+            $contact,
             'qualifications',
-            array('autocomplete' => Yii::app()->params['html_autocomplete'],
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'readonly' => $this->isUserFieldReadOnly('qualifications'),
                 'style' => $this->isUserFieldReadOnly('qualifications') ? 'opacity:0.5' : '')
         );?>
@@ -126,7 +128,7 @@
                           'nowrapper' => true,
                           'no-label' => true,
                           'checked' => $user_out_of_office->enabled ? true : false,
-                          'style' =>'width:20px;')).'Yes' ?>
+                          'style' => 'width:20px;')) . 'Yes' ?>
                   </label>
               </div>
           </div>
@@ -151,6 +153,26 @@
                              value="<?= $user_out_of_office->to_date ? date('d M Y', strtotime($user_out_of_office->to_date)) : '' ?>"
                              placeholder="to" autocomplete="off">
                   </div>
+              </div>
+          </div>
+      </td>
+  </tr>
+  <tr id="alternate_user_row" style="<?php echo $user_out_of_office->enabled ? '' : 'display: none' ?>">
+      <td>
+          <div class="data-group flex-layout cols-full">
+              <div class="cols-3">
+                  <label for="alternate_user">Alternate User:</label>
+                  <br />
+                  <small class="fade"><em>Senders will be told to direct messages to this user when you're out-of-office</em></small>
+              </div>
+              <div class="cols-5">
+                  <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'alternate_user']); ?>
+                  <span id="alternate_user_display">
+                      <?php if ($user_out_of_office->alternate_user) { ?>
+                          <ul class="oe-multi-select inline"><li> <?= $user_out_of_office->alternate_user->getFullnameAndTitle() ?> <i class="oe-i remove-circle small-icon pad-left"></i></li></ul>
+                      <?php } ?>
+                  </span>
+                  <?php echo $form->hiddenField($user_out_of_office, 'alternate_user_id') ?>
               </div>
           </div>
       </td>
@@ -206,30 +228,16 @@
           </div>
       </td>
   </tr>
-
-  <tr id="alternate_user_row" style="<?php echo $user_out_of_office->enabled ? '' : 'display: none' ?>">
+  <tr>
       <td>
-          <div class="data-group flex-layout cols-full">
-              <div class="cols-2">
-                  <label for="alternate_user">Alternate User:</label>
-              </div>
-              <div class="cols-5">
-                  <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'alternate_user']); ?>
-                  <span id="alternate_user_display">
-                      <?php if ($user_out_of_office->alternate_user) { ?>
-                          <ul class="oe-multi-select inline"><li> <?= $user_out_of_office->alternate_user->getFullnameAndTitle() ?> <i class="oe-i remove-circle small-icon pad-left"></i></li></ul>
-                      <?php } ?>
-                  </span>
-                  <?php echo $form->hiddenField($user_out_of_office, 'alternate_user_id') ?>
-              </div>
-          </div>
+          <?= $form->textArea($user, "correspondence_sign_off_text", array("rows" => 4)) ?>
       </td>
   </tr>
   </tbody>
 </table>
 <?php if (Yii::app()->params['profile_user_can_edit']) {?>
       <div class="profile-actions">
-          <?php echo EventAction::button('Update', 'save', null, array('class'=>'button large hint green'))->toHtml()?>
+          <?php echo EventAction::button('Update', 'save', null, array('class' => 'button large hint green'))->toHtml()?>
         <i class="spinner" title="Loading..." style="display: none;"></i>
       </div>
 <?php }?>
@@ -333,4 +341,3 @@
         }, false);
     });
 </script>
-

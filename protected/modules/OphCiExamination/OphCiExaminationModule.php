@@ -28,6 +28,10 @@ class OphCiExaminationModule extends \BaseEventTypeModule
             'application.modules.OphDrPrescription.models.*',
         ));
         $this->setModules(['ExaminationAdmin']);
+        // import the module-level models and components
+        $this->setImport(array(
+            'OphCiExamination.seeders.*',
+        ));
         parent::init();
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -17,6 +18,7 @@
 
 namespace OEModule\OphCoMessaging\models;
 
+use OE\factories\models\traits\HasFactory;
 use BaseActiveRecord;
 use CActiveDataProvider;
 
@@ -39,15 +41,7 @@ use CActiveDataProvider;
  */
 class OphCoMessaging_Message_MessageType extends \BaseActiveRecordVersioned
 {
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCoMessaging_Message_MessageType|BaseActiveRecord the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    use HasFactory;
 
     /**
      * @return string the associated database table name

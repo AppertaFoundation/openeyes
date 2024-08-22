@@ -133,6 +133,15 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
     }
 
     /**
+     * @inheritdoc
+     * @return bool
+     */
+    public function isDirtyWhenNewRecord(): bool
+    {
+        return true;
+    }
+
+    /**
      * @return array relational rules.
      */
     public function relations()
@@ -277,5 +286,4 @@ class Element_OphCiExamination_AnteriorSegment extends \SplitEventTypeElement
     {
         return 'print_'.$this->getDefaultView();
     }
-    
 }

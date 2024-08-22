@@ -39,7 +39,7 @@
                 $model,
                 $field,
                 ['class' => 'cols-full']
-            ); ?> </td>
+                ); ?> </td>
             </tr>
         <?php } ?>
         <tr>

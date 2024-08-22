@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
     <?=\CHtml::activeHiddenField($document_set, 'id') ?>
@@ -27,12 +29,14 @@
     <table class= "cols-full" id="dm_table" data-macro_id="<?php echo $macro_id; ?>">
             <colgroup>
                 <col>
-                <col class="cols-3">
+                <col class="cols-5">
                 <col class="cols-4">
+                <col class="cols-1">
+                <col>
             </colgroup>
         <thead>
             <tr id="dm_0">
-                <th colspan="4"></th>
+                <th colspan="5"></th>
                 <th class="actions"><img class="docman_loader right" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;"></th>
             </tr>
         </thead>
@@ -40,7 +44,7 @@
             <?php
                     $document_targets = $document_set->document_instance[0]->document_target;
 
-            if ( Yii::app()->request->isPostRequest ) {
+            if (Yii::app()->request->isPostRequest) {
                 $document_targets = array();
                 $post_targets = Yii::app()->request->getPost('DocumentTarget');
 
@@ -74,7 +78,7 @@
                                                 'address_targets' => $element->address_targets,
                                                 'contact_id' => $target->contact_id,
                                                 'contact_name' => $target->contact_name,
-                                                'contact_nickname' =>$contact_nick_name ,
+                                                'contact_nickname' => $contact_nick_name ,
                                                 'contact_type' => $contact_type,
                                                 // Internal referral will always be the first row - indexed 0
                                                 'contact_types' => Document::getContactTypes() + (($element->isInternalReferral() && $row_index == 0) ? Document::getInternalReferralContactType() : []),
@@ -90,7 +94,7 @@
                                             <?php if ($target->contact_modified) {
                                                 echo "<br>(Modified)";
                                             }?>
-                                            <?php echo  CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_type]', $target->contact_type, array('data-rowindex' => $row_index)); ?>
+                                            <?php echo  CHtml::hiddenField('DocumentTarget[' . $row_index . '][attributes][contact_type]', $target->contact_type, array('data-rowindex' => $row_index)); ?>
                                         <?php endif; ?>
                                     </td>
                     <td>
@@ -119,7 +123,7 @@
                     </td>
                     <td>
                         <?php if ($element->draft == "1" && $target->ToCc != 'To') : ?>
-                            <a class="remove_recipient removeItem <?php echo $is_mandatory ? 'hidden' : '' ?>" data-rowindex="<?php echo $row_index ?>">Remove</a>
+                            <a class="remove_recipient removeItem <?php echo $is_mandatory ? 'hidden' : '' ?>" data-rowindex="<?php echo $row_index ?>"><i class="oe-i trash"></i></a>
                         <?php endif; ?>
                     </td>
                 </tr>

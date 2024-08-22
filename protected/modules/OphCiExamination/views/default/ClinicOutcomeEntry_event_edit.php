@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,14 +15,24 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
+if (!isset($template_mode)) {
+    $template_mode = false;
+}
 if (!isset($values)) {
     $risk_status_info = $entry->getRiskStatusLabel();
     $values = array(
         'status_id' => $entry->status_id,
         'status' => $entry->getStatusLabel(),
+        'discharge_status_id' => $entry->discharge_status_id,
+        'discharge_status' => $entry->getDischargeStatusLabel(),
+        'discharge_destination_id' => $entry->discharge_destination_id,
+        'discharge_destination' => $entry->getDischargeDestinationLabel(),
+        'transfer_institution_id' => $entry->transfer_institution_id,
+        'transfer_to' => $entry->getTransferToLabel(),
         'followup_quantity' => $entry->followup_quantity ? $entry->followup_quantity : null,
         'followup_period_id' => $entry->followup_period_id,
         'followup_period' => $entry->getPeriodLabel(),
@@ -32,8 +43,20 @@ if (!isset($values)) {
         'risk_status_id' => $entry->risk_status_id,
         'risk_status_class' => $risk_status_info['class'],
         'risk_status_content' => $risk_status_info['content'],
+        'site_id' => $entry->site_id,
+        'subspecialty_id' => $entry->subspecialty_id,
+        'context_id' => $entry->context_id,
+        'site' => $entry->getSiteLabel(),
+        'subspecialty' => $entry->getSubspecialtyLabel(),
+        'context' => $entry->getContextLabel(),
+        'infos' => $entry->getInfos(),
     );
 }
+
+if (!empty($values['infos']) && !$template_mode) {
+    $values['infos'] = '[ ' . $values['infos'] . ' ]';
+}
+
 ?>
 
 <tr id="<?= $model_name ?>_entries_<?= $row_count ?>" class="row-<?= $row_count ?>" data-key="<?= $row_count ?>"
@@ -44,27 +67,46 @@ if (!isset($values)) {
         <?php } ?>
         <input type="hidden" name="<?= $field_prefix ?>[status_id]" value="<?= $values['status_id'] ?>"/>
         <?php if (!$patient_ticket) { ?>
+            <input type="hidden" name="<?= $field_prefix ?>[discharge_status_id]"
+                   value="<?= $values['discharge_status_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[discharge_destination_id]"
+                   value="<?= $values['discharge_destination_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[transfer_institution_id]"
+                   value="<?= $values['transfer_institution_id'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[followup_quantity]"
                    value="<?= $values['followup_quantity'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[followup_period_id]"
                    value="<?= $values['followup_period_id'] ?>"/>
             <input type="hidden" name="<?= $field_prefix ?>[followup_comments]"
                    value="<?= $values['followup_comments'] ?>"/>
-            <input type="hidden" name="<?= $field_prefix ?>[role_id]" value="<?= $values['role_id'] ?>"/>
-            <input type="hidden" name="<?= $field_prefix ?>[risk_status_id]" value="<?= $values['risk_status_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[role_id]"
+                   value="<?= $values['role_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[risk_status_id]"
+                   value="<?= $values['risk_status_id'] ?>"/>
+
+            <input type="hidden" name="<?= $field_prefix ?>[site_id]"
+                   value="<?= $values['site_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[subspecialty_id]"
+                   value="<?= $values['subspecialty_id'] ?>"/>
+            <input type="hidden" name="<?= $field_prefix ?>[context_id]"
+                   value="<?= $values['context_id'] ?>"/>
         <?php } ?>
         <?= isset($condition_text) ? $condition_text : "{{condition_text}}"; ?>
     </td>
     <td>
         <?php if (!$patient_ticket) { ?>
-            <?=$values['status'] . ' ' . $values['followup_quantity'] . ' ' . $values['followup_period'] . $values['role'] . $values['followup_comments_display'];?>
-            <?php if ($values['risk_status_id']) { ?>
-                <i 
-                class="<?=$values['risk_status_class']?>"
-                data-tooltip-content="<?=$values['risk_status_content']?>"
-                ></i>
-            <?php } ?>
-        <?php } elseif ($patient_ticket && $ticket_api) { ?>
+            <?=$values['status'] ?>
+            <span class="fade">&nbsp;
+                <?=$values['infos'] ?>
+                <?php if ($values['risk_status_id']) { ?>
+                    <i class="<?=$values['risk_status_class']?>"
+                    data-tooltip-content="<?=$values['risk_status_content']?>"
+                    ></i>
+                <?php } ?>
+            </span>
+        <?php } elseif ($patient_ticket && $ticket_api) {
+            $queue_count = count($queues);
+            ?>
             <div data-queue-assignment-form-uri="<?= $ticket_api->getQueueAssignmentFormURI() ?>"
                  id="div_<?= $model_name ?>_patientticket">
                 <!-- TODO, this should be pulled from the ticketing module somehow -->
@@ -80,10 +122,10 @@ if (!isset($values)) {
                 <?php } else { ?>
                     <fieldset class="flex-layout">
                         Virtual Clinic:
-                        <div class="cols-3">
-                            <?php if (count($queues) === 0) { ?>
+                        <div class="cols-3<?= $queue_count > 1 ? ' multi-queue' : ''?>" data-test="queue-details">
+                            <?php if ($queue_count === 0) { ?>
                                 <span>No valid Virtual Clinics available</span>
-                            <?php } elseif (count($queues) === 1) {
+                            <?php } elseif ($queue_count === 1) {
                                 echo reset($queues);
                                 $qid = key($queues);
                                 $_POST['patientticket_queue'] = $qid;
@@ -106,7 +148,12 @@ if (!isset($values)) {
                         <?php if (isset($_POST['patientticket_queue']) && !empty($_POST['patientticket_queue'])) {
                             $this->widget(
                                 $ticket_api::$QUEUE_ASSIGNMENT_WIDGET,
-                                array('queue_id' => $_POST['patientticket_queue'], 'label_width' => 3, 'data_width' => 5)
+                                array(
+                                    'queue_id' => $_POST['patientticket_queue'],
+                                    'label_width' => 3,
+                                    'data_width' => 5,
+                                    'is_template' => (isset($is_template) && $is_template)
+                                )
                             );
                         } ?>
                     </div>

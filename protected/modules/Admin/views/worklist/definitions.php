@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,58 +15,54 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
-<div class="admin box">
+<div id="generic-admin-list" class="admin box">
     <?php if ($definitions) {?>
     <form id="definition-list" method="POST">
         <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
-        <table class="standard">
+        <table class="standard" id="et_sort" data-uri="/Admin/worklist/sortDefinitions">
             <thead>
             <tr>
                 <th>
                     <?= CHtml::link('Add Definition', '/Admin/worklist/definitionUpdate/', [
                         'class' => 'button large green hint',
                     ]) ?>
-                    <?php echo EventAction::button(
-                        'Sort',
-                        'sort',
-                        array(),
-                        array(
-                            'class' => 'button large',
-                            'style' => 'display:none;',
-                            'data-uri' => '/Admin/worklist/definitionSort/',
-                            'data-object' => 'WorklistDefinition',
-                        )
-                    )->toHtml() ?>
                 </th>
             </tr>
             <tr>
                 <th>Order</th>
                 <th>Name</th>
                 <th>Patient Identifier Type</th>
+                <th>Default Pathway Type</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody class="sortable">
-            <?php foreach ($definitions as $i => $definition) {?>
-                <tr>
-                    <td class="reorder">&uarr;&darr;<input type="hidden" name="item_ids[]" value="<?php echo $definition->id ?>"></td>
-                    <td><?=$definition->name?></td>
-                    <td><?=$definition->patient_identifier_type->getTitleWithInstitution() ?></td>
+            <?php foreach ($definitions as $i => $definition) { ?>
+                <?php $worklist_count = $definition->worklistCount; ?>
+                <tr<?= ($worklist_count ? " data-test='has-worklists'" : "") ?>>
+                    <td class="reorder">
+                        &uarr;&darr;
+                        <input type="hidden" name="WorklistDefinition[display_order][]" value="<?= $definition->id ?>">
+                    </td>
+                    <td data-test="definition-name"><?= $definition->name ?></td>
+                    <td><?= $definition->patient_identifier_type->getTitleWithInstitution() ?></td>
+                    <td><?= $definition->pathway_type->name ?></td>
                     <td><?php if ($this->manager->canUpdateWorklistDefinition($definition)) {?>
                         <a class="button small" href="/Admin/worklist/definitionUpdate/<?=$definition->id?>">Edit</a><?php
                         }?>
                         <a class="button small" href="/Admin/worklist/definition/<?=$definition->id?>">View</a>
-                        <a class="button small" href="/Admin/worklist/definitionWorklists/<?=$definition->id?>">Instances (<?=$definition->worklistCount?>)</a>
-                        <a class="button small" href="/Admin/worklist/definitionMappings/<?=$definition->id?>">Mapping Items(<?=$definition->mappingCount?>)</a>
-                        <a class="button small" href="/Admin/worklist/definitionDisplayContexts/<?=$definition->id?>">Display Context (<?=$definition->displayContextCount > 0 ? 'limited' : 'any';?>)</a>
-                        <?php if ($definition->worklistCount) {?>
-                            <a class="button small" href="/Admin/worklist/definitionWorklistsDelete/<?=$definition->id?>">Delete Instances</a>
+                        <a class="button small" href="/Admin/worklist/definitionWorklists/<?=$definition->id?>">Instances (<?= $worklist_count ?>)</a>
+                        <a class="button small" href="/Admin/worklist/definitionMappings/<?=$definition->id?>">Mapping Items(<?= $definition->mappingCount ?>)</a>
+                        <a class="button small" href="/Admin/worklist/definitionDisplayContexts/<?= $definition->id ?>">Display Context (<?= $definition->displayContextCount > 0 ? 'limited' : 'any'; ?>)</a>
+                        <?php if ($worklist_count) { ?>
+                            <a class="button small" href="/Admin/worklist/definitionWorklistsDelete/<?= $definition->id ?>">Delete Instances</a>
                         <?php } else { ?>
-                            <a class="button small" href="/Admin/worklist/definitionGenerate/<?=$definition->id?>">Generate</a>
-                            <a class="button small" href="/Admin/worklist/definitionDelete/<?=$definition->id?>">Delete</a>
-                        <?php }?>
+                            <a class="button small" href="/Admin/worklist/definitionGenerate/<?= $definition->id ?>">Generate</a>
+                            <a class="button small" href="/Admin/worklist/definitionDelete/<?= $definition->id ?>">Delete</a>
+                        <?php } ?>
                     </td>
                 </tr>
             <?php } ?>
@@ -77,17 +74,3 @@
         <div class="alert-box info">No automatic worklists have been defined. You may add one by clicking the button above ...</div>
     <?php } ?>
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('.sortable').sortable({
-            change: function (e, ui) {
-                $('#et_sort').show();
-            }
-        });
-    });
-
-    $('#et_sort').on('click', function() {
-        $('#definition-list').attr('action', $(this).data('uri')).submit();
-    })
-</script>

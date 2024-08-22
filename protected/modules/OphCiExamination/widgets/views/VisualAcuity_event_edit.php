@@ -6,6 +6,7 @@
  */
 
 $model_name = CHtml::modelName($element);
+$test_prefix = $this->isForNear() ? 'near-visual-acuity' : 'visual-acuity';
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath("VisualAcuity.js") ?>"></script>
 <script type="text/javascript">
@@ -99,7 +100,7 @@ if ($this->shouldTrackCviAlert()) {
         </div>
         <div class="inactive-form" style="<?= $element->hasEye('beo') ? 'display: none;' : '' ?> ">
             <div class="add-side">
-                <a href="#">
+                <a href="#" data-test="<?= $test_prefix ?>-add-beo">
                     Add BEO <span class="icon-add-side"></span>
                 </a>
             </div>
@@ -144,11 +145,11 @@ if ($this->shouldTrackCviAlert()) {
                     <div class="data-group no-readings">
                         <div class="cols-8 column end">
                             <?php echo $form->checkBox($element, $eye_side . '_unable_to_assess',
-                                ['class' => 'js-cannot-record js-cannot-assess', 'text-align' => 'right', 'nowrapper' => true]) ?>
+                                ['class' => 'js-cannot-record js-cannot-assess', 'text-align' => 'right', 'nowrapper' => true, 'data-test' => 'unable_to_assess-input']) ?>
                             <?php echo $form->checkBox($element, $eye_side . '_eye_missing',
-                                ['class' => 'js-cannot-record js-cannot-assess', 'text-align' => 'right', 'nowrapper' => true]) ?>
+                                ['class' => 'js-cannot-record js-cannot-assess', 'text-align' => 'right', 'nowrapper' => true, 'data-test' => 'eye_missing-input']) ?>
                             <?php echo $form->checkBox($element, $eye_side . '_behaviour_assessed',
-                                ['class' => 'js-cannot-record', 'text-align' => 'right', 'nowrapper' => true]) ?>
+                                ['class' => 'js-cannot-record', 'text-align' => 'right', 'nowrapper' => true, 'data-test' => 'behaviour_assessed-input']) ?>
                         </div>
                     </div>
                     <div id="<?= $model_name ?>-<?= $eye_side ?>-comments"

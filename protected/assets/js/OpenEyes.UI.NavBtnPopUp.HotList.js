@@ -5,6 +5,10 @@
     function HotList(id, $btn, $content, options) {
         // The date to restrict he closed list to. Default to today
         this.selected_date = new Date();
+        this.confirm_redirect = true;
+        this.patient_search_form = $("#hotlist-search-form");
+        this.patient_search_button = $("#js-hotlist-find-patient");
+        this.patient_search_input = $('#hotlist-search-text-field');
         NavBtnPopUp.call(this, id, $btn, $content, options);
         this.create();
     }
@@ -57,8 +61,30 @@
         });
 
         // When a patient record is clicked
-        $('.activity-list').on('click', '.js-hotlist-open-patient, .js-hotlist-closed-patient', function () {
-            window.location.href = $(this).data('patient-href');
+        $('.activity-list').on('click', '.js-hotlist-open-patient, .js-hotlist-closed-patient, .js-hotlist-draft-event', function () {
+            hotlist.leavePageAlert();
+
+            if (hotlist.confirm_redirect) {
+                window.location.href = $(this).data('patient-href');
+            }
+        });
+
+        hotlist.patient_search_button.off('click').on('click', function(e) {
+            e.preventDefault();
+            hotlist.leavePageAlert();
+
+            if (hotlist.confirm_redirect) {
+                hotlist.patient_search_form.trigger('submit');
+            }
+        });
+
+        hotlist.patient_search_input.off('keyup').on('keyup', function(e) {
+            if (e.which === $.ui.keyCode.ENTER) {
+                hotlist.leavePageAlert();
+                if (hotlist.confirm_redirect) {
+                    hotlist.patient_search_form.trigger('submit');
+                }
+            }
         });
 
         // When the open link in a closed item is clicked
@@ -116,6 +142,21 @@
                 commentRow.find('textarea').focus();
             }
             return false;
+        });
+
+        $('.js-hotlist-event-drafts .overview').on('click', function() {
+            const toggler = $(this);
+            const list = $('.js-hotlist-event-drafts .hidden');
+
+            if (toggler.hasClass('expand')) {
+                toggler.removeClass('expand').addClass('collapse');
+
+                list.show();
+            } else {
+                toggler.removeClass('collapse').addClass('expand');
+
+                list.hide();
+            }
         });
 
         $(".js-hotlist-panel-wrapper").on({
@@ -205,6 +246,21 @@
             data: {hotlist_item_id: itemId, comment: userComment}
         });
     };
+
+    HotList.prototype.leavePageAlert = function() {
+        if (!window.is_editing_event) {
+            this.confirm_redirect = true;
+            return;
+        }
+
+        const onbeforeunload = window.onbeforeunload;
+        window.onbeforeunload = null;
+        this.confirm_redirect = window.confirm("Changes you made may not be saved. Are you sure that you wish to leave the page?");
+
+        if (!this.confirm_redirect) {
+            window.onbeforeunload = onbeforeunload;
+        }
+    }
 
     exports.HotList = HotList;
 

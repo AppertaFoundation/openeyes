@@ -68,21 +68,24 @@ touch $WROOT/protected/runtime/migrate.log
 # disable log to browser during migrate, otherwise it can cause extraneous trace output on the CLI
 export LOG_TO_BROWSER=""
 
-if [ $quiet = 0 ]; then
-	# Show output on screen AND write to log
-	if php $WROOT/protected/yiic migrate --interactive=0 2>&1 | tee $WROOT/protected/runtime/migrate.log; then
-		# don't bother trying to migrate modules if the core failed
-		php $WROOT/protected/yiic migratemodules --interactive=0 2>&1 | tee -a $WROOT/protected/runtime/migrate.log
-	fi
-else
-	# Write output to log only (do not show on screen)
-	if php $WROOT/protected/yiic migrate --interactive=0 >$WROOT/protected/runtime/migrate.log; then
-		# don't bother trying to migrate modules if the core failed
-		php $WROOT/protected/yiic migratemodules --interactive=0 >>$WROOT/protected/runtime/migrate.log
-	fi
+migratelog="$WROOT/protected/runtime/migrate.log"
+
+# Show output on screen AND write to log
+outputredirectnew="2>&1 | tee ${migratelog}"
+outputredirectappend="2>&1 | tee -a ${migratelog}"
+
+if [ $quiet -eq 1 ]; then
+	# write to log only
+	outputredirectnew=">${migratelog}"
+	outputredirectappend=">>${migratelog}"
 fi
 
 founderrors=0
+
+if ! eval "php $WROOT/protected/yiic migrate --all --interactive=0 $outputredirectnew"; then
+	founderrors=1
+fi
+
 if [ $ignorewarnings = "0" ]; then
 	if grep -i 'error\|exception.[^al]\|warning\*' $WROOT/protected/runtime/migrate.log; then
 		founderrors=1
@@ -96,32 +99,35 @@ fi
 if [ $founderrors = 1 ]; then
 	printf "\n\e[5;41;1m\n\nMIGRATE ENCOUNTERED ERRORS - PLEASE SEE LOG - $WROOT/protected/runtime/migrate.log\n\n\n \e[0m\n"
 	echo "The following migration errors were encountered:"
-	grep -B 2 -A 7 -in 'error\|exception.[^al]\|warning\*' $WROOT/protected/runtime/migrate.log
+	grep -B 2 -A 7 -in 'error[^_]\|exception.[^al]\|warning\*' $WROOT/protected/runtime/migrate.log
 	printf "\n\nTo continue with the reset of the script, select option 1"
 	echo "To exit, select option 2"
 
 	printf "\e[41m\e[97m  MIGRATE ERRORS ENCOUNTERED  \e[0m \n"
 	echo ""
 
-	select yn in "Continue" "Exit"; do
-		case $yn in
-		Continue)
-			echo "
+	if [ ${DEBIAN_FRONTEND,,} == "noninteractive" ]; then
+		exit 1
+	else
+		select yn in "Continue" "Exit"; do
+			case $yn in
+			Continue)
+				echo "
 
 Continuing. System is in unknown state and further errors may be encountered...
 
 			"
-			break
-			;;
-		Exit)
-			echo "
+				break
+				;;
+			Exit)
+				echo "
 Exiting. Please fix errors and try again...
 			"
-			exit 1
-			;;
-		esac
-	done
-
+				exit 1
+				;;
+			esac
+		done
+	fi
 elif
 	grep -q "applied" $WROOT/protected/runtime/migrate.log >/dev/null
 then

@@ -70,7 +70,7 @@
             </tr>
         </table>
         <p></p>
-
+        <br /><br />
         <?php if (!$patient->isChild()) {?>
             <p>
                 If this is not convenient or you no longer wish to proceed with surgery, please contact <?php echo $operation->refuseContact?> as soon as possible.
@@ -102,9 +102,7 @@
                 </p>
             <?php }?>
         <?php }?>
-
         <p>To help ensure your admission proceeds smoothly, please follow these instructions:</p>
-
         <ul>
             <?php if ($operation->booking->showWarning('Admission Instruction')) {?>
                 <li>

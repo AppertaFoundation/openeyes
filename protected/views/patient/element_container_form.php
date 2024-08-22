@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $section_classes = array('element full edit');
@@ -44,18 +46,22 @@ $set_id = isset($this->set) ? $this->set->id : null;
             data-element-type-class="<?php echo CHtml::modelName($element->elementType->class_name) ?>"
             data-element-type-name="<?php echo $element->elementType->name ?>"
             data-element-display-order="<?= $element->getDisplayOrder($set_id); ?>"
+            data-mandatory="<?= $this->isRequiredInUI($element) ? "true" : "false"?>"
+            data-test="<?php echo str_replace(' ', '-', $element->elementType->name) . '-element-section' ?>"
+            data-exclude-element-from-empty-discard-check="<?= json_encode($element->exclude_element_from_empty_discard_check) ?>"
   >
         <?php
+
         if (isset($_POST['element_dirty'][$model_name])) {
             $element_dirty = $_POST['element_dirty'][$model_name];
         } elseif ($element->isNewRecord) {
-            $element_dirty = 0;
+            $element_dirty = $element->isDirtyWhenNewRecord() ? 1 : 0;
         } else {
             $element_dirty = 1;
-        } ?>
+        }
+        ?>
 
-        <input type="hidden" name="[element_dirty]<?=$model_name?>"
-               value=<?=$element_dirty ?>>
+        <input type="hidden" name="element_dirty[<?=$model_name?>]" value=<?=$element_dirty ?>>
 
         <?php if (!property_exists($element, 'hide_form_header') || !$element->hide_form_header) { ?>
             <header class="element-header">
@@ -85,17 +91,25 @@ $set_id = isset($this->set) ? $this->set->id : null;
             <div class="element-actions">
                 <!-- order is important for layout because of Flex -->
                 <?php if ($this->canViewPrevious($element) || $this->canCopy($element)) { ?>
-                    <span class="js-duplicate-element">
-            <i class="oe-i duplicate"></i>
-          </span>
+                    <span class="js-duplicate-element" data-test="duplicate-element-<?= str_replace(' ', '-', $element->elementType->name) ?>">
+                        <i class="oe-i duplicate"></i>
+                    </span>
+                <?php }
+                // Remove MUST be last element
+                if ($this->isRequiredInUI($element)) {
+                    if ($this instanceof \OEModule\OphCiExamination\controllers\DefaultController) {
+                        ?>
+                    <span class="disabled js-has-tooltip" data-tooltip-content="<b>Mandatory Element</b><br/>Cannot be left blank">
+                        <i class="oe-i medium-icon <?= $element->hasErrors() ? 'asterisk-red' : 'asterisk' ?>"></i>
+                    </span>
+                    <?php }
+                } else { ?>
+                    <span class="js-remove-element">
+                        <?php if (!isset($no_bin) || $no_bin == false) { ?>
+                            <i class="oe-i trash-blue"></i>
+                        <?php } ?>
+                    </span>
                 <?php } ?>
-                <!-- remove MUST be last element -->
-                <span class="<?= ($this->isRequiredInUI($element)) ? 'disabled' : 'js-remove-element' ?>"
-                      title="<?= ($this->isRequiredInUI($element)) ? 'This is a mandatory element and cannot be closed.' : '' ?>">
-                    <?php if (!isset($no_bin) || $no_bin == false) { ?>
-                        <i class="oe-i trash-blue <?= ($this->isRequiredInUI($element)) ? 'disabled' : '' ?>"></i>
-                    <?php } ?>
-          </span>
             </div>
         <?php } ?>
 

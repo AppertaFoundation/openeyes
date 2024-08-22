@@ -18,6 +18,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_diagnosis".
  *
@@ -30,16 +32,12 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
 {
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiExamination_Diagnosis the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    use HasFactory;
 
+    protected $attr_dirty_check_methods = [
+        "eye_id" => "isIntAttributeDirty",
+        "principal" => "isBoolAttributeDirty"
+    ];
     /**
      * @return string the associated database table name
      */
@@ -92,6 +90,61 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
         );
     }
 
+    /**
+     * Cast attribute types and Check if the model dirty.
+     * Override the parent implementation
+     *
+     * @return bool true if the model dirty
+     */
+    public function isAttributeDirty($attrName)
+    {
+        if (!array_key_exists($attrName, $this->originalAttributes)) {
+            return true;
+        }
+
+        if ($this->{$attrName} === null || is_string($this->{$attrName})) {
+            return parent::isAttributeDirty($attrName);
+        }
+
+        $attr_check_method = $this->attr_dirty_check_methods[$attrName] ?? null;
+
+        // if there is no special attribute dirty check or no attribute check method exits,
+        // execute parent attribute dirty check
+        if (!$attr_check_method || !method_exists($this, $attr_check_method)) {
+            return parent::isAttributeDirty($attrName);
+        }
+
+        return $this->{$attr_check_method}($attrName);
+    }
+
+    /**
+     * Cast the target attribute from bool to string, then compare with the original attribute value
+     *
+     * If the target attribute is not bool type, convert it to string
+     *
+     * @param mixed $attrName
+     * @return bool
+     */
+    private function isBoolAttributeDirty($attrName): bool {
+        $original_attr = $this->originalAttributes[$attrName];
+        $current_attr = $this->getAttributes()[$attrName];
+        if (!is_bool($this->{$attrName})) {
+            return $original_attr !== (string)$current_attr;
+        }
+
+        return $original_attr !== ($current_attr ? "1" : "0");
+    }
+
+    /**
+     * Cast the target attribute to string, then compare with the original attribute value
+     *
+     *
+     * @param mixed $attrName
+     * @return bool
+     */
+    private function isIntAttributeDirty($attrName): bool {
+        return $this->originalAttributes[$attrName] !== (string)$this->getAttributes()[$attrName];
+    }
 
     /**
      * @param \BaseEventTypeElement $element
@@ -129,7 +182,7 @@ class OphCiExamination_Diagnosis extends \BaseActiveRecordVersioned
     public function __toString()
     {
 
-        if (strpos($this->disorder->term, $this->eye->adjective. ' ') === 0) {
+        if (strpos($this->disorder->term, $this->eye->adjective . ' ') === 0) {
             $term = $this->disorder->term;
         } else {
             $term = $this->eye->adjective . ' ' . $this->disorder->term;

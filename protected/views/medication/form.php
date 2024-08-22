@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' => 3, 'field' => 9)));
 
 ?>
@@ -48,24 +50,15 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                 <div class="data-group">
                     <div class="label"></div>
                     <?php
-                    $this->widget(
-                        'zii.widgets.jui.CJuiAutoComplete',
-                        array(
-                            'name' => 'drug_autocomplete',
-                            'source' => new CJavaScriptExpression(
-                                'function (req, res) { $.getJSON('.json_encode($this->createUrl('medication/finddrug')).', req, res); }'
-                            ),
-                            'options' => array(
-                                'minLength' => 3,
-                                'focus' => "js:function(e,ui) {
-                                $('#drug_autocomplete').val(ui.item.label);
-                                e.preventDefault();
-                            }",
-                            ),
-                            'htmlOptions' => array('placeholder' => 'or search'),
-                        )
-                    );
-                    ?>
+                        $this->widget('application.widgets.AutoCompleteSearch',
+                            [
+                            'field_name' => "drug_autocomplete",
+                            'htmlOptions' =>
+                            [
+                            'placeholder' => 'or search',
+                            ]
+                        ]);
+                        ?>
                 </div>
             </div>
         </div>
@@ -106,7 +99,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
         $medication_start_date = null;
         if ($medication->start_date) {
             $medication_start_date = $medication->start_date;
-        } elseif (isset(Yii::app()->params['enable_concise_med_history']) && Yii::app()->params['enable_concise_med_history']) {
+        } elseif (( null !== SettingMetadata::model()->getSetting('enable_concise_med_history')) && SettingMetadata::model()->getSetting('enable_concise_med_history')) {
             $medication_start_date = date('Y-m-d');
         }
         $this->renderPartial(
@@ -128,7 +121,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
                 <label
                     class="inline"><?= CHtml::radioButton('current', $medication->end_date, array('value' => false)) ?>
                     No</label>
-                <?php if (!isset(Yii::app()->params['enable_concise_med_history']) || !Yii::app()->params['enable_concise_med_history']) { ?>
+                <?php if ((null === SettingMetadata::model()->getSetting('enable_concise_med_history')) || !SettingMetadata::model()->getSetting('enable_concise_med_history')) { ?>
                     <button id="medication_from_today" type="button" class="tiny right">From today</button>
                 <?php } ?>
             </div>
@@ -140,7 +133,7 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
             $medication_end_date = null;
             if ($medication->end_date) {
                 $medication_end_date = $medication->end_date;
-            } elseif (isset(Yii::app()->params['enable_concise_med_history']) && Yii::app()->params['enable_concise_med_history']) {
+            } elseif (( null !== SettingMetadata::model()->getSetting('enable_concise_med_history')) && SettingMetadata::model()->getSetting('enable_concise_med_history')) {
                 $medication_end_date = date('Y-m-d');
             }
             $this->renderPartial(
@@ -167,3 +160,25 @@ $form = $this->beginWidget('FormLayout', array('layoutColumns' => array('label' 
 <?php
 
 $this->endWidget();
+?>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        let element = '<?= "{$class}_$field" ?>';
+
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $(`[id="${'<?= "{$class}[$field]" ?>'}"]`),
+            url: <?php json_encode($this->createUrl('medication/finddrug')) ?>,
+            params: {
+
+            },
+            maxHeight: '200px',
+            onSelect: function () {
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                $('#drug_autocomplete').val(response.label);
+            }
+        });
+    });
+</script>

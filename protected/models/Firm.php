@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "firm".
@@ -40,6 +43,9 @@
  */
 class Firm extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+    use OwnedByReferenceData;
+
     const SELECTION_ORDER = 'name';
 
     public $subspecialty_id;
@@ -52,6 +58,11 @@ class Firm extends BaseActiveRecordVersioned
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    protected function getSupportedLevelMask(): int
+    {
+        return ReferenceData::LEVEL_INSTALLATION | ReferenceData::LEVEL_INSTITUTION;
     }
 
     /**
@@ -70,7 +81,7 @@ class Firm extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, subspecialty_id, institution_id', 'required'),
+            array('name, subspecialty_id', 'required'),
             array('service_subspecialty_assignment_id', 'length', 'max' => 10),
             array('pas_code', 'length', 'max' => 20),
             array('cost_code', 'length', 'max' => 5),
@@ -80,7 +91,7 @@ class Firm extends BaseActiveRecordVersioned
             array('name', 'filter', 'filter' => 'htmlspecialchars'),
             array('name, service_email, pas_code, cost_code, subspecialty_id, consultant_id, active, runtime_selectable, can_own_an_episode', 'safe'),
             array('name', 'filter', 'filter' => 'htmlspecialchars'),
-            array('name, pas_code, cost_code, subspecialty_id, consultant_id, active, runtime_selectable, can_own_an_episode', 'safe'),
+            array('name, pas_code, cost_code, subspecialty_id, consultant_id, active, runtime_selectable, can_own_an_episode, institution_id', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array('id, service_subspecialty_assignment_id, pas_code, name, service_email, context_email', 'safe', 'on' => 'search'),
@@ -155,7 +166,7 @@ class Firm extends BaseActiveRecordVersioned
      */
     public static function contextLabel()
     {
-        $label = Yii::app()->params['context_firm_label'] ? : self::getLabelSettings('context_firm_label');
+        $label = SettingMetadata::model()->getSetting('context_firm_label') ? : self::getLabelSettings('context_firm_label');
         return ucwords(strtolower($label));
     }
 
@@ -164,7 +175,7 @@ class Firm extends BaseActiveRecordVersioned
      */
     public static function serviceLabel()
     {
-        $label = Yii::app()->params['service_firm_label'] ? : self::getLabelSettings('service_firm_label');
+        $label = SettingMetadata::model()->getSetting('service_firm_label') ? : self::getLabelSettings('service_firm_label');
         return ucwords(strtolower($label));
     }
 
@@ -207,7 +218,7 @@ class Firm extends BaseActiveRecordVersioned
 
     public static function getFirmsForInstitution($institution_id)
     {
-        return self::model()->findAll('institution_id = :institution_id', [':institution_id' => $institution_id]);
+        return self::model()->findAll('institution_id = :institution_id OR institution_id IS NULL', [':institution_id' => $institution_id]);
     }
 
     /**
@@ -216,31 +227,33 @@ class Firm extends BaseActiveRecordVersioned
      * @param null $include_id
      * @param null $runtime_selectable
      * @param null $can_own_an_episode
+     * @param $include_subspecialty_name Will return name as "<context name> (<subspecialty name)"
      * @return array
      * @throws CException
      */
-    public function getList($institution_id = null, $subspecialty_id = null, $include_id = null, $runtime_selectable = null, $can_own_an_episode = null)
+    public function getList($institution_id = null, $subspecialty_id = null, $include_id = null, $runtime_selectable = null, $can_own_an_episode = null, $include_subspecialty_name = null)
     {
         $bindValues = array();
         /**
          * @var CDbCommand $cmd
          */
         $cmd = Yii::app()->db->createCommand()
-            ->select('f.id, f.name')
+            ->select('f.id, f.name, s.name as subspecialty')
             ->from('firm f')
+            ->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+            ->join('subspecialty s', 's.id = ssa.subspecialty_id')
             ->where('f.active = 1 ' .
                 ($runtime_selectable ? 'and f.runtime_selectable = 1' : '') .
                 ($can_own_an_episode ? 'and f.can_own_an_episode = 1' : '') .
                 ($include_id ? ' or f.id = :include_id' : ''));
 
         if ($institution_id) {
-            $cmd = $cmd->andWhere('f.institution_id = :institution_id');
+            $cmd = $cmd->andWhere('f.institution_id = :institution_id OR f.institution_id IS NULL');
             $bindValues[':institution_id'] = $institution_id;
         }
 
         if ($subspecialty_id) {
-            $cmd = $cmd->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-                ->andWhere('ssa.subspecialty_id = :subspecialty_id');
+            $cmd = $cmd->andWhere('ssa.subspecialty_id = :subspecialty_id');
             $bindValues[':subspecialty_id'] = $subspecialty_id;
         }
 
@@ -254,7 +267,7 @@ class Firm extends BaseActiveRecordVersioned
 
         $result = array();
         foreach ($cmd->queryAll() as $firm) {
-            $result[$firm['id']] = $firm['name'];
+            $result[$firm['id']] = ($include_subspecialty_name ? $firm['name'] . ' (' . $firm['subspecialty'] . ')' : $firm['name']);
         }
 
         natcasesort($result);
@@ -268,7 +281,7 @@ class Firm extends BaseActiveRecordVersioned
      *
      * @return array
      */
-    public function getListWithSpecialties($institution_id = null, $include_non_subspecialty = false, $subspecialty_id = null)
+    public function getListWithSpecialties($institution_id = null, $include_non_subspecialty = false, $subspecialty_id = null, $only_with_consultant = false, $only_service_firms = false)
     {
 
         $join_method = $include_non_subspecialty ? 'leftJoin' : 'join';
@@ -280,12 +293,20 @@ class Firm extends BaseActiveRecordVersioned
             ->$join_method('subspecialty s', 'ssa.subspecialty_id = s.id')
             ->where('f.active = 1');
 
+        if ($only_with_consultant) {
+            $command->andWhere('consultant_id IS NOT NULL');
+        }
+
         if ($subspecialty_id) {
             $command->andWhere('s.id = :id', array(':id' => $subspecialty_id));
         }
 
         if ($institution_id) {
-            $command->andWhere('f.institution_id = :institution_id', array(':institution_id' => $institution_id));
+            $command->andWhere('f.institution_id = :institution_id OR f.institution_id IS NULL', array(':institution_id' => $institution_id));
+        }
+
+        if ($only_service_firms) {
+            $command->andWhere('f.can_own_an_episode = 1');
         }
 
         $firms = $command->order('f.name, s.name')->queryAll();
@@ -332,27 +353,28 @@ class Firm extends BaseActiveRecordVersioned
      * @param $institution_id
      * @return string
      */
-    public function getConsultantNameAndUsername($institution_id, bool $reversed = true): string
+    public function getConsultantNameAndUsername($institution_id, bool $reversed = true, string $username_prefix = '', string $separator = ' '): string
     {
         if ($consultant = $this->consultant) {
             $user_auth_id = Yii::app()->db->createCommand()
                 ->select('ua.id')
                 ->from('institution_authentication ia')
                 ->join('user_authentication ua', 'ua.institution_authentication_id = ia.id')
-                ->where('ia.institution_id = :institution_id AND ua.user_id = :user_id')
+                ->where('(ia.institution_id = :institution_id OR ia.institution_id IS NULL) AND ua.user_id = :user_id')
                 ->limit(1)
-                ->bindValues([':institution_id' => $institution_id, ':user_id' => $this->id])
+                ->bindValues([':institution_id' => $institution_id, ':user_id' => $consultant->id])
                 ->queryScalar();
 
             // Assuming that, despite multiple institution authentications,
             // a user's username is identical for all of them.
             $user_auth = UserAuthentication::model()->findByPk($user_auth_id);
 
-            if (!$user_auth) {
-                return $reversed ? $consultant->getReversedFullNameAndTitle() : $consultant->getFullNameAndTitle();
+            if ($consultant->registration_code) {
+                return ($reversed ? $consultant->getReversedFullNameAndTitle($separator) : $consultant->getFullNameAndTitle($separator)) . " ({$username_prefix}{$consultant->registration_code})";
+            } elseif ($user_auth) {
+                return ($reversed ? $consultant->getReversedFullNameAndTitle($separator) : $consultant->getFullNameAndTitle($separator)) . " ({$username_prefix}{$user_auth->username})";
             }
-            return ($reversed ? $consultant->getReversedFullNameAndTitle() : $consultant->getFullNameAndTitle())
-                . " ({$user_auth->username})";
+            return $reversed ? $consultant->getReversedFullNameAndTitle($separator) : $consultant->getFullNameAndTitle($separator);
         }
 
         return 'NO CONSULTANT';
@@ -472,11 +494,11 @@ class Firm extends BaseActiveRecordVersioned
 
     public function beforeValidate()
     {
-        if ( $this->can_own_an_episode && $this->service_email != '' ) {
+        // get the service_subspeciality_assignment_id from the service_id
+        $serviceSubspecialityAssignmentId = ServiceSubspecialtyAssignment::model()->find('subspecialty_id = ?', array($this->subspecialty_id));
+        if ($this->can_own_an_episode && $this->service_email != '') {
             // check if there is an email already existing for this subspeciality
             $criteria = new CDbCriteria();
-            // get the service_subspeciality_assignment_id from the service_id
-            $serviceSubspecialityAssignmentId = ServiceSubspecialtyAssignment::model()->find('subspecialty_id = ?', array($this->subspecialty_id));
             $criteria->addCondition('service_subspecialty_assignment_id = :service_subspecialty_assignment_id and service_email IS NOT NULL');
             $criteria->params[':service_subspecialty_assignment_id'] = $serviceSubspecialityAssignmentId->id;
             if (!$this->isNewRecord) {
@@ -484,9 +506,28 @@ class Firm extends BaseActiveRecordVersioned
                 $criteria->params[':id'] = $this->id;
             }
             $firm = $this->findAll($criteria);
-            if (count($firm) >= 1  ) {
+            if (count($firm) >= 1) {
                 $this->addError('service_email', 'Email already set for another service of this specialty.');
             }
+        }
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('name = :name AND service_subspecialty_assignment_id = :service_subspecialty_assignment_id');
+        $criteria->params[':name'] = $this->name;
+        $criteria->params[':service_subspecialty_assignment_id'] = $serviceSubspecialityAssignmentId->id;
+
+        if (!$this->isNewRecord) {
+            $criteria->addCondition("id != :id");
+            $criteria->params[":id"] = $this->id;
+        }
+
+        if (isset($this->institution)) {
+            $firm = $this->findAllAtLevels(ReferenceData::LEVEL_ALL, $criteria, $this->institution);
+        } else {
+            $firm = $this->findAll($criteria);
+        }
+
+        if (count($firm) >= 1) {
+            $this->addError('name', 'A firm set with the name ' . $this->name . ' already exists with the following settings: ' . ($firm[0]->institution_id ? $firm[0]->institution->name . ', ' : 'All Institutions, ') . ($serviceSubspecialityAssignmentId ? $serviceSubspecialityAssignmentId->service->name . ', ' . $serviceSubspecialityAssignmentId->subspecialty->name : ''));
         }
         return parent::beforeValidate();
     }
@@ -495,5 +536,32 @@ class Firm extends BaseActiveRecordVersioned
     {
         $contextEmail = $this->context_email;
         return $contextEmail ?? null;
+    }
+
+    public function getDefaultServiceFirm(?Institution $institution = null): ?Firm
+    {
+        $subspecialty = $this->getSubspecialty();
+        if (!$subspecialty) {
+            return null;
+        }
+        return static::getDefaultServiceFirmForSubspecialty($subspecialty, $institution);
+    }
+
+    /**
+     * @param Subspecialty|int $subspecialty
+     * @param ?Institution $institution = null
+     * @return Firm
+     */
+    public static function getDefaultServiceFirmForSubspecialty($subspecialty, ?Institution $institution = null): ?Firm
+    {
+        $subspecialty_id = $subspecialty instanceof Subspecialty ? $subspecialty->id : $subspecialty;
+        if ($institution === null) {
+            $institution = Institution::model()->getCurrent();
+        }
+
+        return self::model()->with('serviceSubspecialtyAssignment')->find(
+            'can_own_an_episode = 1 AND subspecialty_id = :subspecialty_id AND (institution_id = :institution_id OR institution_id IS NULL)',
+            [':subspecialty_id' => $subspecialty_id, ':institution_id' => $institution->id]
+        );
     }
 }

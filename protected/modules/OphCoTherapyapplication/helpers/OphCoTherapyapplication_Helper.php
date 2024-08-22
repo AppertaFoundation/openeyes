@@ -67,6 +67,15 @@ class OphCoTherapyapplication_Helper
         return $this->_va_list;
     }
 
+    public function getVABaseValueMapping()
+    {
+        if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+            return array_flip($api->getVAList());
+        }
+
+        return null;
+    }
+
     private $_va_list_for_form = null;
 
     /**

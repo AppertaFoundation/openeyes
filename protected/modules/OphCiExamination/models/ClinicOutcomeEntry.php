@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,8 +16,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-use \RRule\RRule;
 namespace OEModule\OphCiExamination\models;
+
+use OE\factories\models\traits\HasFactory;
 use Period;
 
 /**
@@ -26,6 +28,12 @@ use Period;
  * @property int $id
  * @property int $element_id
  * @property int $status_id
+ * @property int $site_id
+ * @property int $subspecialty_id
+ * @property int $context_id
+ * @property int $discharge_status_id
+ * @property int $discharge_destination_id
+ * @property int $transfer_institution_id
  * @property int $risk_status_id
  * @property int $followup_quantity
  * @property int $followup_period_id
@@ -38,12 +46,17 @@ use Period;
  *
  * @property Element_OphCiExamination_ClinicOutcome $element
  * @property OphCiExamination_ClinicOutcome_Status $status
+ * @property DischargeStatus $discharge_status
+ * @property DischargeDestination $discharge_destination
+ * @property \Institution $transfer_to
  * @property Period $followupPeriod
  * @property OphCiExamination_ClinicOutcome_Role $role
  * @property OphCiExamination_ClinicOutcome_Risk_Status $risk_status
  */
 class ClinicOutcomeEntry extends \BaseElement
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      * @return ClinicOutcomeEntry static model class
@@ -69,13 +82,13 @@ class ClinicOutcomeEntry extends \BaseElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('id, element_id, status_id, followup_quantity, followup_period_id, role_id, followup_comments', 'safe'),
+            array('id, element_id, status_id, site_id, subspecialty_id, context_id, followup_quantity, followup_period_id, role_id, followup_comments, discharge_status_id, discharge_destination_id, transfer_institution_id', 'safe'),
             array('status_id', 'required'),
             array('status_id', 'statusDependencyValidation'),
             array('role_id', 'roleDependencyValidation'),
             array('followup_quantity, risk_status_id', 'default', 'setOnEmpty' => true, 'value' => null),
             array('followup_quantity', 'numerical', 'integerOnly' => true, 'min' => Element_OphCiExamination_ClinicOutcome::FOLLOWUP_Q_MIN, 'max' => Element_OphCiExamination_ClinicOutcome::FOLLOWUP_Q_MAX),
-            array('element_id, status_id, followup_quantity, followup_period_id, role_id, followup_comments', 'safe', 'on' => 'search'),
+            array('element_id, status_id, site_id, subspecialty_id, context_id, followup_quantity, followup_period_id, role_id, followup_comments', 'safe', 'on' => 'search'),
         );
     }
 
@@ -91,6 +104,14 @@ class ClinicOutcomeEntry extends \BaseElement
             'createdUser' => [self::BELONGS_TO, 'User', 'created_user_id'],
             'lastModifiedUser' => [self::BELONGS_TO, 'User', 'last_modified_user_id'],
             'status' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status', 'status_id'],
+
+            'site' => [self::BELONGS_TO, 'Site', 'site_id'],
+            'subspecialty' => [self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'],
+            'context' => [self::BELONGS_TO, 'Firm', 'context_id'],
+
+            'discharge_status' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\DischargeStatus', 'discharge_status_id'],
+            'discharge_destination' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\DischargeDestination', 'discharge_destination_id'],
+            'transfer_to' => [self::BELONGS_TO, 'Institution', 'transfer_institution_id'],
             'followupPeriod' => [self::BELONGS_TO, 'Period', 'followup_period_id'],
             'role' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role', 'role_id'],
             'risk_status' => [self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status', 'risk_status_id'],
@@ -108,6 +129,9 @@ class ClinicOutcomeEntry extends \BaseElement
             'status_id' => 'Status',
             'followup_quantity' => 'Follow-up',
             'followup_period_id' => 'Follow-up period',
+            'site_id' => 'Site',
+            'subspecialty_id' => 'Subspecialty',
+            'context' => 'Context',
             'followup_comments' => 'Comments',
             'role_id' => 'Role',
         );
@@ -125,6 +149,9 @@ class ClinicOutcomeEntry extends \BaseElement
         $criteria->compare('id', $this->id, true);
         $criteria->compare('element_id', $this->element_id, true);
         $criteria->compare('status_id', $this->status_id);
+        $criteria->compare('site_id', $this->site_id);
+        $criteria->compare('subspecialty_id', $this->subspecialty_id);
+        $criteria->compare('context_id', $this->context_id);
         $criteria->compare('followup_quantity', $this->followup_quantity);
         $criteria->compare('followup_period_id', $this->followup_period_id);
         $criteria->compare('followup_comments', $this->followup_comments);
@@ -155,9 +182,11 @@ class ClinicOutcomeEntry extends \BaseElement
      */
     public function roleDependencyValidation($attribute)
     {
-        if ($this->role && $this->role->requires_comment
-            && !trim($this->followup_comments)) {
-            $this->addError($attribute, '"' .$this->role->name . '" role requires a comment');
+        if (
+            $this->role && $this->role->requires_comment
+            && !trim($this->followup_comments)
+        ) {
+            $this->addError($attribute, '"' . $this->role->name . '" role requires a comment');
         }
     }
 
@@ -177,6 +206,37 @@ class ClinicOutcomeEntry extends \BaseElement
     public function getStatusLabel()
     {
         return $this->status->name;
+    }
+
+    public function getSiteLabel()
+    {
+        return $this->site->name ?? 'Any';
+    }
+
+    public function getSubspecialtylabel()
+    {
+        return $this->subspecialty->name ?? 'N\A';
+    }
+
+    public function getContextLabel()
+    {
+        return $this->context->name ?? 'N\A';
+    }
+
+    public function getDischargeStatusLabel()
+    {
+        return $this->discharge_status->name ?? null;
+    }
+
+    public function getDischargeDestinationLabel()
+    {
+        return $this->discharge_destination->name ?? null;
+    }
+
+    public function getTransferToLabel()
+    {
+        $transfer_to_name = $this->transfer_to->name ?? null;
+        return $transfer_to_name ? " ({$transfer_to_name})" : null;
     }
 
     public function getRoleLabel()
@@ -249,10 +309,36 @@ class ClinicOutcomeEntry extends \BaseElement
     {
         if ($this->isFollowUp()) {
             $risk_status_info = $this->getRiskStatusLabel();
-            return $this->getStatusLabel() . ' ' . $this->followup_quantity . ' ' . $this->getPeriodLabel() . $this->getRoleLabel() . ' ' . $this->getDisplayComments() . $risk_status_info['icon'];
-        } else {
-            return $this->getStatusLabel();
+            $display_comments = $this->getDisplayComments();
+            return $this->followup_quantity
+                . ' ' . $this->getPeriodLabel()
+                . $this->getRoleLabel()
+                . (!empty($display_comments) ? $display_comments : '')
+                . ($this->site ? '. // Site: ' . $this->getSiteLabel() : '')
+                . ($this->subspecialty ? '. // Subspecialty: ' . $this->getSubspecialtylabel() : '')
+                . ($this->context ? '. // Context: ' . $this->getContextLabel() : '');
         }
+
+        if ($this->isDischarge()) {
+            return $this->getDischargeStatusLabel() . ' // ' . $this->getDischargeDestinationLabel() . ($this->transfer_to ? " // " . $this->getTransferToLabel() : '');
+        }
+
+        return null;
+    }
+
+    public function getBasicInfos()
+    {
+        if ($this->isFollowUp()) {
+            return $this->followup_quantity
+                . ' ' . $this->getPeriodLabel()
+                . ($this->subspecialty ? ' for ' . $this->getSubspecialtylabel() : '');
+        }
+
+        if ($this->isDischarge()) {
+            return $this->getDischargeStatusLabel() . ' // ' . $this->getDischargeDestinationLabel();
+        }
+
+        return null;
     }
 
     public function isPatientTicket()
@@ -266,6 +352,14 @@ class ClinicOutcomeEntry extends \BaseElement
     public function isFollowUp()
     {
         if ($this->status->followup) {
+            return true;
+        }
+        return false;
+    }
+
+    public function isDischarge()
+    {
+        if ($this->status->discharge) {
             return true;
         }
         return false;

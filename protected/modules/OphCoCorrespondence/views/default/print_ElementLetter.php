@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 /**
@@ -40,7 +42,8 @@ if (!@$no_header) { ?>
         <?php
         $ccString = $element->getCCString();
         $toAddress = $element->getToAddress();
-        if ((int)SettingMetadata::model()->getSetting('correspondence_address_max_lines')>=0) {
+        if ((string)SettingMetadata::model()->getSetting('correspondence_address_force_city_state_postcode_on_same_line') === "on" ||
+            (int)SettingMetadata::model()->getSetting('correspondence_address_max_lines') >= 0) {
             $letter_address = $toAddress;
         }
 
@@ -71,17 +74,21 @@ if (!@$no_header) { ?>
     <p class="accessible">
         <strong>
             <?php if ($toAddressContactType !== "PATIENT" && $element->re) {
-                echo 'Re: ' . preg_replace("/\, DOB\:|DOB\:/", "<br/>\nDOB:", CHtml::encode($element->re));
+                echo preg_replace("/\, DOB\:|DOB\:/", "<br/>\nDOB:", CHtml::encode($element->re));
             } elseif ($contact_type === "PATIENT") {
                 $institution_id = isset($element->event->institution) ? $element->event->institution->id : null;
                 $site_id = isset($element->event->site) ? $element->event->site->id : null;
                 $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-                    Yii::app()->params['display_primary_number_usage_code'],
-                    $element->event->episode->patient->id, $institution_id, $site_id
+                    SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+                    $element->event->episode->patient->id,
+                    $institution_id,
+                    $site_id
                 );
                 $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-                    Yii::app()->params['display_secondary_number_usage_code'],
-                    $element->event->episode->patient->id, $institution_id, $site_id
+                    SettingMetadata::model()->getSetting('display_secondary_number_usage_code'),
+                    $element->event->episode->patient->id,
+                    $institution_id,
+                    $site_id
                 );
                 if (Yii::app()->params['nhs_num_private'] == true || !$secondary_identifier) {
                     echo PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) . ': ' . PatientIdentifierHelper::getIdentifierValue($primary_identifier);
@@ -89,7 +96,7 @@ if (!@$no_header) { ?>
                     echo PatientIdentifierHelper::getIdentifierPrompt($primary_identifier) . ': ' . PatientIdentifierHelper::getIdentifierValue($primary_identifier) . ', ' . PatientIdentifierHelper::getIdentifierPrompt($secondary_identifier) . ': ' . PatientIdentifierHelper::getIdentifierValue($secondary_identifier);
                 }
             } else {
-                echo 'Re: ' . preg_replace("/\, DOB\:|DOB\:/", "<br/>\nDOB:", CHtml::encode($element->calculateRe($this->patient)));
+                echo preg_replace("/\, DOB\:|DOB\:/", "<br/>\nDOB:", CHtml::encode($element->calculateRe($this->patient)));
             } ?>
         </strong>
     </p>
@@ -100,7 +107,7 @@ if (!@$no_header) { ?>
     <p class="accessible" nobr="true">
         <?php echo $element->renderFooter() ?>
     </p>
-
+    <br/>
     <div class="spacer"></div>
     <h5>
         <?php

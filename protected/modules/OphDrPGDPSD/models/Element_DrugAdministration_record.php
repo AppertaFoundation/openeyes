@@ -1,5 +1,7 @@
 <?php
 
+namespace OEModule\OphDrPGDPSD\models;
+
 /**
  * This is the model class for table "et_drug_administration".
  *
@@ -13,9 +15,13 @@
  * @property OphDrPGDPSD_PGDPSD $assignment_id
  */
 // namespace OEModule\OphDrPGDPSD\models;
+
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
 class Element_DrugAdministration_record extends \EventMedicationUse
 {
+    use HasFactory;
+
     public $taper_support = false;
     public function rules()
     {
@@ -39,7 +45,7 @@ class Element_DrugAdministration_record extends \EventMedicationUse
             parent::relations(),
             array(
                 'event' => array(self::BELONGS_TO, 'Event', 'event_id', 'on' => 'event.deleted = 0'),
-                'element' => array(self::BELONGS_TO, 'Element_DrugAdministration', array('event_id' => 'event_id')),
+                'element' => array(self::BELONGS_TO, Element_DrugAdministration::class, array('event_id' => 'event_id')),
             )
         );
     }

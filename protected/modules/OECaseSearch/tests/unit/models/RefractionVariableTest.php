@@ -8,7 +8,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_Refraction_Reading;
  * @covers RefractionVariable
  * @covers CaseSearchVariable
 */
-class RefractionVariableTest extends CDbTestCase
+class RefractionVariableTest extends OEDbTestCase
 {
     protected RefractionVariable $variable;
 
@@ -24,18 +24,18 @@ class RefractionVariableTest extends CDbTestCase
         'subspecialties' => Subspecialty::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->variable = new RefractionVariable([1, 2, 3]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->variable);
@@ -103,9 +103,15 @@ class RefractionVariableTest extends CDbTestCase
         self::assertEquals('Refraction (mean sph)', $this->variable->x_label);
         self::assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
+        $query = 'SELECT FLOOR(value) refraction, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
+        FROM v_patient_refraction
+        WHERE patient_id IN (1, 2, 3)
+        GROUP BY FLOOR(value)
+        ORDER BY 1';
+        $expected = Yii::app()->db->createCommand("SELECT COUNT(*) FROM ({$query}) t")->queryScalar();
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
 
-        self::assertCount(1, $results[$this->variable->field_name]);
+        self::assertCount($expected, $results[$this->variable->field_name]);
     }
 }

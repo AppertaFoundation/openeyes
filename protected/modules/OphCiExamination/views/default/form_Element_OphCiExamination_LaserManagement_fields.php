@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -28,14 +30,14 @@ $status = null;
 $deferralreason = null;
 
 if (@$_POST[$model_name]) {
-    $status = \OEModule\OphCiExamination\models\OphCiExamination_Management_Status::model()->findByPk(@$_POST[$model_name][$eye.'_laser_status_id']);
+    $status = \OEModule\OphCiExamination\models\OphCiExamination_Management_Status::model()->findByPk(@$_POST[$model_name][$eye . '_laser_status_id']);
 
-    if ($deferral_id = @$_POST[$model_name][$eye.'_laser_deferralreason_id']) {
+    if ($deferral_id = @$_POST[$model_name][$eye . '_laser_deferralreason_id']) {
         $deferralreason = \OEModule\OphCiExamination\models\OphCiExamination_Management_DeferralReason::model()->findByPk($deferral_id);
     }
 } else {
-    $status = $element->{$eye.'_laser_status'};
-    $deferralreason = $element->{$eye.'_laser_deferralreason'};
+    $status = $element->{$eye . '_laser_status'};
+    $deferralreason = $element->{$eye . '_laser_deferralreason'};
 }
 if ($status) {
     if ($status->deferred) {
@@ -58,22 +60,22 @@ $model_name = CHtml::modelName($element);
   <tbody>
     <tr>
       <td>
-        <div id="div_<?= $model_name.'_'.$eye; ?>_laser" class="flex-layout">
+        <div id="div_<?= $model_name . '_' . $eye; ?>_laser" class="flex-layout">
           <div class="column">
-            <label for="<?=$model_name.'_'.$eye.'_laser_status_id';?>">
-                <?=$element->getAttributeLabel($eye.'_laser_status_id') ?>:
+            <label for="<?=$model_name . '_' . $eye . '_laser_status_id';?>">
+                <?=$element->getAttributeLabel($eye . '_laser_status_id') ?>:
             </label>
           </div>
           <div class="column">
                 <?= CHtml::activeDropDownList(
                     $element,
-                    $eye.'_laser_status_id',
+                    $eye . '_laser_status_id',
                     CHtml::listData($statuses, 'id', 'name'),
                     $status_options
                 )?>
             <span id="<?=$eye?>_laser_booking_hint"
                   class="field-info hint"
-                  style="<?= (!$show_booking_hint) ? "style=display:none;": ""?>">
+                  style="<?= (!$show_booking_hint) ? "style=display:none;" : ""?>">
             </span>
           </div>
         </div>
@@ -93,28 +95,28 @@ $model_name = CHtml::modelName($element);
         </div>
       </td>
     </tr>
-    <tr id="div_<?php echo $model_name.'_'.$eye; ?>_laser_deferralreason"
-        style="<?= (!$show_deferral)? "display: none":""?>"
+    <tr id="div_<?php echo $model_name . '_' . $eye; ?>_laser_deferralreason"
+        style="<?= (!$show_deferral) ? "display: none" : ""?>"
     >
       <td>
         <div class="data-group flex-layout flex-top">
           <div class="column">
-            <label for="<?php echo $model_name.'_'.$eye.'_laser_deferralreason_id';?>">
-                <?php echo $element->getAttributeLabel($eye.'_laser_deferralreason_id')?>:
+            <label for="<?php echo $model_name . '_' . $eye . '_laser_deferralreason_id';?>">
+                <?php echo $element->getAttributeLabel($eye . '_laser_deferralreason_id')?>:
             </label>
           </div>
           <div class="column end">
-                <?=\CHtml::activeDropDownList($element, $eye.'_laser_deferralreason_id', CHtml::listData($deferrals, 'id', 'name'), $deferral_options)?>
+                <?=\CHtml::activeDropDownList($element, $eye . '_laser_deferralreason_id', CHtml::listData($deferrals, 'id', 'name'), $deferral_options)?>
             <div class="cols-full"
-                 id="div_<?php echo $model_name.'_'.$eye; ?>_laser_deferralreason_other"
-                 style="<?= (!$show_deferral_other)? "display: none":""?>"
+                 id="div_<?php echo $model_name . '_' . $eye; ?>_laser_deferralreason_other"
+                 style="<?= (!$show_deferral_other) ? "display: none" : ""?>"
             >
                 <?= $form->textArea(
                     $element,
-                    $eye.'_laser_deferralreason_other',
+                    $eye . '_laser_deferralreason_other',
                     array('rows' => '1', 'cols' => '40', 'class' => 'autosize', 'nowrapper' => true)
                 )
-                            ?>
+                        ?>
             </div>
           </div>
         </div>
@@ -122,20 +124,20 @@ $model_name = CHtml::modelName($element);
       </td>
     </tr>
   </tbody>
-  <tbody id="<?php echo $model_name.'_'.$eye;?>_treatment_fields"
-        style="<?= (!$show_treatment)? "display: none":""?>" >
+  <tbody id="<?php echo $model_name . '_' . $eye;?>_treatment_fields"
+        style="<?= (!$show_treatment) ? "display: none" : ""?>" >
     <tr>
       <td>
         <div class="flex-layout cols-full">
           <div class="column">
-            <label for="<?php echo $model_name.'_'.$eye.'_lasertype_id';?>">
-                <?php echo $element->getAttributeLabel($eye.'_lasertype_id'); ?>:
+            <label for="<?php echo $model_name . '_' . $eye . '_lasertype_id';?>">
+                <?php echo $element->getAttributeLabel($eye . '_lasertype_id'); ?>:
             </label>
           </div>
           <div class="column end lasertype">
                 <?=\CHtml::activeDropDownList(
                     $element,
-                    $eye.'_lasertype_id',
+                    $eye . '_lasertype_id',
                     CHtml::listData($lasertypes, 'id', 'name'),
                     array('options' => $lasertype_options, 'empty' => 'Select')
                 )?>
@@ -146,13 +148,15 @@ $model_name = CHtml::modelName($element);
     <?php
     $show_other = false;
     if (@$_POST[$model_name]) {
-        if ($lasertype = \OEModule\OphCiExamination\models\OphCiExamination_LaserManagement_LaserType::model()->findByPk(
-            (int) @$_POST[$model_name][$eye.'_lasertype_id']
-        )) {
+        if (
+            $lasertype = \OEModule\OphCiExamination\models\OphCiExamination_LaserManagement_LaserType::model()->findByPk(
+                (int) @$_POST[$model_name][$eye . '_lasertype_id']
+            )
+        ) {
             $show_other = $lasertype->other;
         }
     } else {
-        if ($lasertype = $element->{$eye.'_lasertype'}) {
+        if ($lasertype = $element->{$eye . '_lasertype'}) {
             $show_other = $lasertype->other;
         }
     }
@@ -161,16 +165,16 @@ $model_name = CHtml::modelName($element);
         style="<?= (!$show_other) ? 'display: none' : ''?>">
       <td class="flex-layout data-group">
             <div class="column">
-              <label for="<?php echo $model_name.'_'.$eye.'_lasertype_other';?>">
-                    <?php echo $element->getAttributeLabel($eye.'_lasertype_other'); ?>:
+              <label for="<?php echo $model_name . '_' . $eye . '_lasertype_other';?>">
+                    <?php echo $element->getAttributeLabel($eye . '_lasertype_other'); ?>:
               </label>
             </div>
             <div class="column">
                 <?= $form->textField(
                     $element,
-                    $eye.'_lasertype_other',
+                    $eye . '_lasertype_other',
                     array(
-                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'max' => 120,
                         'nowrapper' => true
                     )
@@ -182,17 +186,17 @@ $model_name = CHtml::modelName($element);
       <td>
         <div class="cols-full comments flex-layout flex-left">
           <div class="cols-3">
-            <label for="<?=\CHtml::modelName($element)."_".$eye."_comments"?>">
-                <?=\CHtml::encode($element->getAttributeLabel($eye."_comments")).':'?>
+            <label for="<?=\CHtml::modelName($element) . "_" . $eye . "_comments"?>">
+                <?=\CHtml::encode($element->getAttributeLabel($eye . "_comments")) . ':'?>
             </label>
           </div>
           <div class="cols-9">
                 <?= $form->textArea(
                     $element,
-                    $eye.'_comments',
+                    $eye . '_comments',
                     array('rows' => 1, 'nowrapper' => true),
                     false,
-                    array('placeholder' => $element->getAttributeLabel($eye.'_comments')),
+                    array('placeholder' => $element->getAttributeLabel($eye . '_comments')),
                     array('field' => 10, 'label' => 2)
                 )?>
           </div>

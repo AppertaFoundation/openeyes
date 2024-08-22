@@ -16,8 +16,12 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 class Element_OphTrOperationbooking_ContactDetails extends BaseEventTypeElement
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -49,6 +53,7 @@ class Element_OphTrOperationbooking_ContactDetails extends BaseEventTypeElement
             // Please remove those attributes that should not be searched.
             array('id, event_id, collector_name, collector_contact_number, patient_booking_contact_number, ', 'safe', 'on' => 'search'),
             array('patient_booking_contact_number,collector_contact_number','OEPhoneNumberValidator'),
+            array('patient_booking_contact_number,collector_contact_number', 'length', 'max' => 20),
         );
     }
 
@@ -60,7 +65,7 @@ class Element_OphTrOperationbooking_ContactDetails extends BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
+            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
@@ -78,8 +83,7 @@ class Element_OphTrOperationbooking_ContactDetails extends BaseEventTypeElement
             'event_id' => 'Event',
             'collector_name' => '',
             'collector_contact_number' => '',
-            'patient_booking_contact_number'=>''
+            'patient_booking_contact_number' => ''
         );
     }
-
 }

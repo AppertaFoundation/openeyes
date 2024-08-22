@@ -34,7 +34,7 @@ $is_deleted = ((int)$data->booking->status->id === OphTrOperationbooking_Operati
 
 $institution = Institution::model()->getCurrent();
 $event = Event::model()->findByPk($data->event_id);
-$display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
+$display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
 $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $event->episode->patient->id, $institution->id, Yii::app()->session['selected_site_id']);
 
 $cataract_card_list = array(
@@ -255,6 +255,7 @@ $other_card_list = array(
         $this->widget('RiskCard', array(
             'data' => $data,
         )); ?>
+        <i class="spinner" title="Loading..." style="display: none;"></i>
     </div>
     <!--
     Manually specifying a high z-index here as the open/close button and footer
@@ -263,9 +264,14 @@ $other_card_list = array(
     <footer class="wb3-actions down" style="z-index: 9999">
         <?php $this->renderPartial('footer', array(
             'biometry' => false,
+            'consent' => false,
             'booking_id' => $booking_id,
         )); ?>
     </footer>
 </main>
 
-<script src="<?= Yii::app()->assetManager->createUrl('/newblue/dist/js/whiteboardJS/wb_procedure_name.js')?>"></script>
+<?php
+    $assetManager = Yii::app()->getAssetManager();
+    $widgetPath = $assetManager->publish('protected/modules/OphTrOperationbooking/assets/js');
+    Yii::app()->clientScript->registerScriptFile($widgetPath . '/wb_procedure_name.js', \CClientScript::POS_END);
+?>

@@ -22,8 +22,8 @@
 <?php
 $institution = Institution::model()->getCurrent();
 $selected_site_id = Yii::app()->session['selected_site_id'];
-$display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
-$display_secondary_number_usage_code = Yii::app()->params['display_secondary_number_usage_code'];
+$display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
+$display_secondary_number_usage_code = SettingMetadata::model()->getSetting('display_secondary_number_usage_code');
 $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $this->patient->id, $institution->id, $selected_site_id);
 $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $this->patient->id, $institution->id, $selected_site_id);
 ?>
@@ -46,25 +46,17 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
             </a>
     </div>
 
-    <div class="flex-layout">
+
         <div class="patient-details">
             <?php if ($display_primary_number_usage_code) { ?>
                 <div class="hospital-number">
                     <span><?= PatientIdentifierHelper::getIdentifierPrompt($primary_identifier); ?> </span>
-                    <div class="js-copy-to-clipboard hospital-number" style="cursor: pointer;">
+                    <span class="js-copy-to-clipboard number" style="cursor: pointer;">
                         <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier); ?>
-                        <?php
-                        $this->widget(
-                            'application.widgets.PatientIdentifiers',
-                            [
-                                'patient' => $this->patient,
-                                'show_all' => true
-                            ]
-                        ); ?>
                         <?php if ($display_primary_number_usage_code === 'GLOBAL' && $primary_identifier && $primary_identifier->patientIdentifierStatus) { ?>
                             <i class="oe-i <?= isset($primary_identifier->patientIdentifierStatus->icon->class_name) ? $primary_identifier->patientIdentifierStatus->icon->class_name : 'exclamation' ?> small"></i>
                         <?php } ?>
-                    </div>
+                        </span>
                 </div>
             <?php }
             if ($display_secondary_number_usage_code) { ?>
@@ -96,21 +88,21 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
         <div class="flex-layout flex-right">
                     <?php if (!$deceased) { ?>
                         <?php if ($this->patient->allergyAssignments || $this->patient->risks || $this->patient->getDiabetes()) { ?>
-                  <div class="patient-allergies-risks risk-warning js-allergies-risks-btn">
+                  <div class="patient-allergies-risks risk-warning js-allergies-risks-btn" data-test="summary-allergies-alert-btn">
                                         <?= $this->patient->allergyAssignments ? 'Allergies' : ''; ?>
                                         <?= $this->patient->allergyAssignments && $this->patient->risks ? ', ' : ''; ?>
                                         <?= $this->patient->risks || $this->patient->getDiabetes() ? 'Alerts' : ''; ?>
                   </div>
                         <?php } elseif (!$this->patient->hasAllergyStatus() && !$this->patient->hasRiskStatus()) { ?>
-                  <div class="patient-allergies-risks unknown js-allergies-risks-btn">
+                  <div class="patient-allergies-risks unknown js-allergies-risks-btn" data-test="summary-allergies-alert-btn">
                       Allergies, Alerts
                   </div>
                         <?php } elseif ($this->patient->no_risks_date && $this->patient->no_allergies_date) { ?>
-                  <div class="patient-allergies-risks no-risk js-allergies-risks-btn">
+                  <div class="patient-allergies-risks no-risk js-allergies-risks-btn" data-test="summary-allergies-alert-btn">
                       Allergies, Alerts
                   </div>
                         <?php } else { /*either risk or allergy status in unknown*/ ?>
-                  <div class="patient-allergies-risks unknown js-allergies-risks-btn">
+                  <div class="patient-allergies-risks unknown js-allergies-risks-btn" data-test="summary-allergies-alert-btn">
                       Allergies, Alerts
                   </div>
                         <?php }
@@ -134,29 +126,26 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($displa
                   </svg>
               </div>
                     <?php }?>
-
+                    <?php $has_trial_user_role = Yii::app()->user->checkAccess('Trial User'); ?>
                     <?php if ($this->patient->isEditable() && !$this->patient->isDeleted()) : ?>
-              <div class="patient-local-edit js-patient-local-edit-btn"
-                                <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials)) {
-                                    echo 'style ="top: 35px; right: 0px"';
-                                }?>
-              >
-                  <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id' => $this->patient->id, 'prevUrl' => Yii::app()->request->url)); ?>" >
+              <div class="patient-local-edit js-patient-local-edit-btn">
+                  <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id' => $this->patient->id, 'prevUrl' => Yii::app()->request->url)); ?>"
+                  data-test="edit-local-patient-button">
                       <svg viewBox="0 0 30 30" class="icon">
                           <use xlink:href="<?php echo $navIconsUrl; ?>#local-edit-icon"></use>
                       </svg>
                   </a>
               </div>
                     <?php endif; ?>
-                    <?php if ((Yii::app()->moduleAPI->get('OETrial')) && (count($this->patient->trials) !== 0)) { ?>
-              <div class="patient-trials js-trials-btn">
+                    <?php if (Yii::app()->moduleAPI->get('OETrial') && $has_trial_user_role) { ?>
+              <div class="patient-extra js-trials-btn">
                   <svg viewBox="0 0 30 30" class="icon">
                       <use xlink:href="<?php echo $navIconsUrl; ?>#trials-icon"></use>
                   </svg>
               </div>
                     <?php } ?>
         </div>
-    </div>
+
       <?php if (Yii::app()->getAuthManager()->checkAccess('OprnViewClinical', Yii::app()->user->id)) : ?>
         <ul class="patient-widgets" >
             <?php foreach ($this->widgets as $widget) {

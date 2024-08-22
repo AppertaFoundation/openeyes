@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -17,6 +18,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div id="<?=$model_name?>_form_wrapper">
@@ -44,7 +46,7 @@
             <label for="<?=$model_name?>_other_risk">Other Risk:</label>
         </div>
         <div class="cols-3 column end">
-            <?=\CHtml::textField($model_name . '_other_risk', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+            <?=\CHtml::textField($model_name . '_other_risk', '', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')))?>
         </div>
     </div>
 
@@ -53,7 +55,7 @@
             <label for="<?= $model_name ?>_comments">Comments:</label>
         </div>
         <div class="cols-3 column">
-            <?=\CHtml::textField($model_name . '_comments', '', array('autocomplete' => Yii::app()->params['html_autocomplete']))?>
+            <?=\CHtml::textField($model_name . '_comments', '', array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')))?>
         </div>
         <div class="cols-4 column end">
             <button class="button small primary" id="<?= $model_name ?>_add_entry">Add</button>

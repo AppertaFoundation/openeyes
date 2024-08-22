@@ -57,7 +57,6 @@ class GpService extends ModelService
     public function resourceToModel($res, $gp)
     {
         $gp->nat_id = $res->gnc;
-        $gp->obj_prof = $res->gnc;
         $this->saveModel($gp);
 
         $contact = $gp->contact;

@@ -1,10 +1,8 @@
 <?php
+use OE\factories\models\traits\HasFactory;
 
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) Copyright Apperta Foundation 2022
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -13,7 +11,7 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2022, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -42,6 +40,8 @@
  */
 class Site extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -147,6 +147,22 @@ class Site extends BaseActiveRecordVersioned
         ));
     }
 
+    public function getListForInstitutionById($institution_id, $field = 'short_name')
+    {
+        $institution = Institution::model()->findByPk($institution_id);
+        if (!$institution) {
+            return [];
+        }
+
+        return array_reduce(
+            $institution->sites,
+            function ($result, $site) use ($field) {
+                $result[$site->id] = $site->$field;
+                return $result;
+            }
+        );
+    }
+
     public function getListForCurrentInstitution($field = 'short_name')
     {
         $result = array();
@@ -189,7 +205,7 @@ class Site extends BaseActiveRecordVersioned
     {
         $site = null;
 
-        if(isset($institution_id)){
+        if (isset($institution_id)) {
             $site = $this->find('institution_id = :id', [':id' => $institution_id]);
         }
 
@@ -259,13 +275,9 @@ class Site extends BaseActiveRecordVersioned
      */
     public function getCurrent(): Site
     {
-        if (!isset(Yii::app()->session['selected_site_id'])) {
-            throw new Exception('Site id is not set');
-        }
-
-        $site = $this->findByPk(Yii::app()->session['selected_site_id']);
+        $site = Yii::app()->session->getSelectedSite();
         if (!$site) {
-            throw new Exception("Site with id '" . Yii::app()->session['selected_site_id'] . "' not found");
+            throw new RuntimeException('Site is not set for application session');
         }
 
         return $site;

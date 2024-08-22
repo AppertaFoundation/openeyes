@@ -39,7 +39,7 @@ class MedicationTest extends ActiveRecordTestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->model = new Medication();

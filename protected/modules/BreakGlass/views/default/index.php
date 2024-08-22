@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * @var $model BreakGlassModel
+ * @var $patient Patient
+ */
 $this->pageTitle = 'Break Glass';
 $settings = new SettingMetadata();
 $tech_support_provider = Yii::App()->params['tech_support_provider'] ? htmlspecialchars(Yii::App()->params['tech_support_provider']) : htmlspecialchars($settings->getSetting('tech_support_provider'));
@@ -13,23 +18,23 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
       <tbody>
         <tr>
           <td>Name</td>
-          <td><?= $patient->getFullName(); ?></td>
+          <td><?= $patient->getFullName() ?></td>
         </tr>
         <tr>
-          <td>CHI</td>
-          <td><?= $patient->nhs_num; ?></td>
+          <td><?= PatientIdentifierHelper::getIdentifierPrompt($patient_identifier); ?></td>
+          <td><?= PatientIdentifierHelper::getIdentifierValue($patient_identifier); ?></td>
         </tr>
         <tr>
           <td>Date of birth</td>
-          <td><?= $patient->getDOB(); ?></td>
+          <td><?= $patient->getDOB() ?></td>
         </tr>
         <tr>
           <td>Address</td>
-          <td><?= $patient->getSummaryAddress(); ?></td>
+          <td><?= $patient->getSummaryAddress() ?></td>
         </tr>
         <tr>
-          <td>Health Board</p></td>
-          <td><?= $patient_hb ?? "Unknown Health Board"; ?></td>
+          <td>Health Board</td>
+          <td><?= $patient_hb ?? "Unknown Health Board" ?></td>
         </tr>
       </tbody>
     </table>

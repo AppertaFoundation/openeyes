@@ -1,17 +1,16 @@
 <?php
+
 /**
- * OpenEyes
- *
- * (C) OpenEyes Foundation, 2019
+ * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @copyright Copyright (C) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
@@ -21,9 +20,10 @@ $institution = Institution::model()->getCurrent();
 $selected_site_id = Yii::app()->session['selected_site_id'];
 
 $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
-        Yii::app()->params['display_primary_number_usage_code'],
-        $institution->id ,
-        $selected_site_id);
+    SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+    $institution->id,
+    $selected_site_id
+);
 
 $cols = array(
     array(
@@ -62,7 +62,7 @@ $cols = array(
         'header' => $dp->getSort()->link('hosnum', $primary_identifier_prompt, array('class' => 'sort-link')),
         'value' => function ($data) {
             $institution = Institution::model()->getCurrent();
-            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $data->event->episode->patient->id, $institution->id, $this->selectedSiteId);
+            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $data->event->episode->patient->id, $institution->id, $this->selectedSiteId);
             $patient_identifier_widget = $this->widget('application.widgets.PatientIdentifiers', ['patient' => $data->event->episode->patient, 'show_all' => true, 'tooltip_size' => 'small'], true);
             return PatientIdentifierHelper::getIdentifierValue($primary_identifier) . $patient_identifier_widget;
         },

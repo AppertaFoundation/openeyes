@@ -17,12 +17,14 @@
  */
 use OEModule\OphCiExamination\models\OphCiExamination_Workflow;
 
-$current_institution_id = Yii::app()->session['selected_institution_id'];
+$current_institution_id = Institution::model()->getCurrent()->id;
 
 $restrict_to_current_institution = !$this->checkAccess('admin');
+
 $firms = $restrict_to_current_institution
     ? Firm::model()->activeOrPk($model->firm_id)->findAll('institution_id = :id', [':id' => $current_institution_id])
     : Firm::model()->activeOrPk($model->firm_id)->findAll();
+
 $workflows = $restrict_to_current_institution
     ? OphCiExamination_Workflow::model()->findAll('institution_id = :id', [':id' => $current_institution_id])
     : OphCiExamination_Workflow::model()->findAll();
@@ -30,6 +32,33 @@ $workflows = $restrict_to_current_institution
 
 <div class="row divider">
     <h2><?php echo $title ?></h2>
+</div>
+<div class="row divider">
+    <table class="standard cols-full">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-5">
+        </colgroup>
+        <tbody>
+            <tr>
+                <td>Institution</td>
+                <td class="cols-full">
+                    <?php
+                    if (!$restrict_to_current_institution) {
+                        echo CHtml::dropDownList(
+                            'institution_id',
+                            $current_institution_id,
+                            CHtml::listData(Institution::model()->getTenanted(), 'id', 'name'),
+                            ['empty' => 'All institutions', 'id' => 'js-institution', 'class' => 'cols-full']
+                        );
+                    } else {
+                        echo Institution::model()->getCurrent()->name;
+                    }
+                    ?>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 <table class="standard cols-full">
     <colgroup>
@@ -45,18 +74,7 @@ $workflows = $restrict_to_current_institution
             </td>
         </tr>
     <?php endif; ?>
-
-    <tr>
-        <td>Institution</td>
-        <td class="cols-full">
-            <?= CHtml::activeDropDownList(
-                $model,
-                'institution_id',
-                Institution::model()->getList($restrict_to_current_institution),
-                ['class' => 'cols-full', 'id' => 'js-institution']
-            ) ?>
-        </td>
-    </tr>
+    
     <tr>
         <td>Context</td>
         <td class="cols-full">
@@ -65,7 +83,7 @@ $workflows = $restrict_to_current_institution
                 'firm_id',
                 CHtml::listData($firms, 'id', 'nameAndSubspecialty'),
                 ['class' => 'cols-full', 'id' => 'js-firm', 'empty' => '- All -']
-            ) ?>
+            ); ?>
         </td>
     </tr>
     <tr>
@@ -96,11 +114,7 @@ $workflows = $restrict_to_current_institution
             <?= \CHtml::activeDropDownList(
                 $model,
                 'workflow_id',
-                CHtml::listData(
-                    $workflows,
-                    'id',
-                    'name'
-                ),
+                CHtml::listData($workflows, 'id', 'name'),
                 ['class' => 'cols-full', 'id' => 'js-workflow']
             ) ?>
         </td>
@@ -113,20 +127,24 @@ $workflows = $restrict_to_current_institution
         $('#js-institution').change(function() {
             let id = $(this).val();
 
-            $.getJSON('/admin/getInstitutionFirms/' + id, null, function (response) {
-                let options = '';
+            $.getJSON(`/OphCiExamination/admin/getInstitutionFirms/${id}`, null, function (response) {
+                const into = $('#js-firm');
+
+                into.children('[value!=""]').remove();
+
                 $.each(response, function (index, item) {
-                    options += `<option value="${item.id}">${item.name}</option>`;
+                    into.append(`<option value="${item.id}">${item.name}</option>`);
                 });
-                $('#js-firm').innerHTML(options);
             });
 
-            $.getJSON('/admin/getInstitutionWorkflows/' + id, null, function (response) {
-                let options = '';
+            $.getJSON(`/OphCiExamination/admin/getInstitutionWorkflows/${id}`, null, function (response) {
+                const into = $('#js-workflow');
+
+                into.empty();
+
                 $.each(response, function (index, item) {
-                    options += `<option value="${item.id}">${item.name}</option>`;
+                    into.append(`<option value="${item.id}">${item.name}</option>`);
                 });
-                $('#js-workflow').innerHTML(options);
             });
         });
     });

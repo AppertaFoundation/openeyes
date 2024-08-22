@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "common_systemic_disorder".
  *
@@ -31,16 +33,17 @@
  */
 class CommonSystemicDisorder extends BaseActiveRecordVersioned
 {
-    use MappedReferenceData;
+    use HasFactory;
+    use OwnedByReferenceData;
 
-    protected function getSupportedLevels(): int
+    protected function getSupportedLevelMask(): int
     {
-        return ReferenceData::LEVEL_INSTITUTION;
+        return ReferenceData::LEVEL_INSTITUTION | ReferenceData::LEVEL_INSTALLATION;
     }
 
     protected function mappingColumn(int $level): string
     {
-        return $this->tableName().'_id';
+        return $this->tableName() . '_id';
     }
 
 
@@ -70,7 +73,8 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
         return array(
             array('disorder_id', 'required'),
             array('disorder_id', 'length', 'max' => 20),
-            array('id, disorder_id, group_id', 'safe', 'on' => 'search'),
+            array('id, disorder_id, group_id, institution_id', 'safe'),
+            array('id, disorder_id, group_id, institution_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -81,7 +85,7 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
     {
         return array(
             'disorder' => [self::BELONGS_TO, 'Disorder', 'disorder_id', 'on' => 'disorder.active = 1'],
-            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
 
@@ -92,7 +96,7 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
     {
         return array(
             'id' => 'ID',
-            'disorder_id' => 'Disorder',
+            'disorder_id' => 'Disorder'
         );
     }
 
@@ -121,18 +125,19 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
      */
     public static function getDisorders()
     {
-        return Disorder::model()->findAll(array(
-            'condition' => 'specialty_id is null',
-            'join' => 'JOIN common_systemic_disorder csd ON csd.disorder_id = t.id',
-            'order' => 'csd.display_order',
-        ));
+        $common_disorders = self::getCommonSystemicDisorders();
+
+        $disorders = array();
+        foreach ($common_disorders as $common_disorder) {
+            $disorders[] = $common_disorder->disorder_id;
+        }
+
+        return Disorder::model()->findAllByPk(array_unique($disorders));
     }
 
     public static function getCommonSystemicDisorders()
     {
-        return CommonSystemicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, array(
-            'condition' => 'specialty_id is null',//Why is this here? It's causing inconsistent results with configured common systemic disorders, versus their representation in the systemic diagnoses exam element
-            'join' => 'JOIN disorder ON t.disorder_id = disorder.id',
+        return CommonSystemicDisorder::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, array(
             'order' => 't.display_order',
         ));
     }
@@ -160,5 +165,30 @@ class CommonSystemicDisorder extends BaseActiveRecordVersioned
         // it's unclear why this method expects a firm parameter when it is unused
         // possibly a future proofing idea that never bore fruit
         return CHtml::listData(static::getDisorders(), 'id', 'term');
+    }
+
+    /**
+     * Fetch disorders that are in a group
+     *
+     * @return array
+     */
+    public static function getDisordersInGroup()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('group_id IS NOT NULL');
+        $disorders_in_group = new CActiveDataProvider('CommonSystemicDisorder', array(
+            'criteria' => $criteria,
+            'pagination' => false,
+        ));
+        return array_values(
+            array_unique(
+                array_map(
+                    function ($disorder) {
+                        return $disorder->group_id;
+                    },
+                    $disorders_in_group->getData()
+                )
+            )
+        );
     }
 }

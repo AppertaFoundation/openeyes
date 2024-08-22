@@ -1,4 +1,6 @@
-<?php /**
+<?php
+
+/**
  * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
@@ -14,61 +16,67 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($this->open_elements);
 $procedure_readonly = $this->procedure_readonly;
 ?>
 
 <div class="element-fields full-width">
-        <div class="flex-layout">
-            <div class="cols-3">
-                <?php
-                /**
-                 * Check the Subspecialty is 'Cataract', and check opbooking_disable_both_eyes is True.  Used to remove BOTH eyes option for Cataract operations.
-                 */
-                if ($episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
-                }
-                ?>
-                <?php
-                if (Yii::app()->params['opbooking_disable_both_eyes']) {
-                    ?>
-                    <?php echo $form->radioButtons(
-                        $element,
-                        'eye_id',
-                        CHtml::listData(Eye::model()->findAll(array(
+    <div class="flex-layout">
+        <div class="cols-3">
+            <?php
+            /**
+             * Check if opbooking_disable_both_eyes is true.  Used to remove BOTH eyes option for Cataract operations. Default is true, but it can be overridden for different subspecialties.
+             */
+            $episode = $this->patient->getEpisodeForCurrentSubspecialty();
+
+            if (SettingMetadata::model()->getSetting('opbooking_disable_both_eyes') == 'on') {
+                echo $form->radioButtons(
+                    $element,
+                    'eye_id',
+                    CHtml::listData(Eye::model()->findAll(array(
                         'condition' => 'name != "Both"',
                         'order' => 'display_order asc',
-                        )), 'id', 'name'),
-                        $element->eye_id,
-                        '',
-                        '',
-                        '',
-                        '',
-                        array(
-                            'nowrapper' => true,
-                        'label-class' => $event_errors ? 'error' : '')
-                    ) ?>
-                    <?php
-                } else {
-                    ?>
-                    <?php echo $form->radioButtons(
-                        $element,
-                        'eye_id',
-                        CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
-                        null,
-                        '',
-                        '',
-                        '',
-                        '',
-                        array('label-class' => $event_errors ? 'error' : '')
-                    ) ?>
-                    <?php
-                }
-                ?>
-            </div>
-            <div class="cols-2">
-                Procedure(s):
-            </div>
-            <div class="cols-7">
+                    )), 'id', 'name'),
+                    $element->eye_id,
+                    '',
+                    '',
+                    '',
+                    '',
+                    array(
+                        'nowrapper' => true,
+                        'extra_fieldset_attributes' => [
+                            'data-test' => 'procedure-side',
+                        ],
+                        'label-class' => $event_errors ? 'error' : '',
+                    ),
+                    array()
+                );
+            } else {
+                echo $form->radioButtons(
+                    $element,
+                    'eye_id',
+                    CHtml::listData(Eye::model()->findAll(array('order' => 'display_order asc')), 'id', 'name'),
+                    null,
+                    '',
+                    '',
+                    '',
+                    '',
+                    array(
+                        'extra_fieldset_attributes' => [
+                            'data-test' => 'anaesthetic-type',
+                        ],
+                        'label-class' => $event_errors ? 'error' : ''
+                    ),
+                    array()
+                );
+            }
+            ?>
+        </div>
+        <div class="cols-2">
+            Procedure(s):
+        </div>
+        <div class="cols-7">
             <?php $form->widget('application.widgets.ProcedureSelection', array(
                 'element' => $element,
                 'durations' => true,
@@ -76,12 +84,12 @@ $procedure_readonly = $this->procedure_readonly;
                 'complexity' => $element->complexity
             )) ?>
         </div>
-        </div>
-        <hr class="divider">
-        <div class="flex-layout flex-top col-gap data-group">
-            <div class="cols-half">
-                <table class="cols-full last-left">
-                    <tbody>
+    </div>
+    <hr class="divider">
+    <div class="flex-layout flex-top col-gap data-group">
+        <div class="cols-half">
+            <table class="cols-full last-left">
+                <tbody>
                     <tr>
                         <td>
                             Complexity:
@@ -98,6 +106,7 @@ $procedure_readonly = $this->procedure_readonly;
                                 false,
                                 array(
                                     'nowrapper' => true,
+                                    'test' => 'op-complexity'
                                 )
                             ) ?>
                         </td>
@@ -195,7 +204,7 @@ $procedure_readonly = $this->procedure_readonly;
                                 array('rows' => 1),
                                 true,
                                 array(),
-                                array_merge($form->layoutColumns, array('label'=>6,'field' => 12))
+                                array_merge($form->layoutColumns, array('label' => 6, 'field' => 12))
                             ) ?>
                         </td>
                     </tr>
@@ -237,8 +246,7 @@ $procedure_readonly = $this->procedure_readonly;
                                         ?>
                                     </td>
                                     <td>
-                                        <span id="rtt-info" class="rtt-info" style="display: none">Clock start - <span
-                                                    id="rtt-clock-start"></span> Breach - <span id="rtt-breach"></span></span>
+                                        <span id="rtt-info" class="rtt-info" style="display: none">Clock start - <span id="rtt-clock-start"></span> Breach - <span id="rtt-breach"></span></span>
                                     </td>
                                     <?php
                                 } else { ?>
@@ -253,12 +261,12 @@ $procedure_readonly = $this->procedure_readonly;
                                 <?php } ?>
                         </tr>
                     <?php } ?>
-                    </tbody>
-                </table>
-            </div>
-            <div class="cols-half">
-                <table class="cols-full last-left">
-                    <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="cols-half">
+            <table class="cols-full last-left">
+                <tbody>
                     <tr>
                         <td>
                             Anaesthetic Type
@@ -275,11 +283,25 @@ $procedure_readonly = $this->procedure_readonly;
                                 false,
                                 array(
                                     'fieldset-class' => $element->getError('anaesthetic_type') ? 'highlighted-error error' : '',
-                                    'field'=>'AnaestheticType',
+                                    'field' => 'AnaestheticType',
+                                    'test' => 'op-anaesthetic-type'
                                 )
                             ); ?>
                         </td>
                     </tr>
+                    <?php if ($this->module->showLAC()) {?>
+                        <tr>
+                            <td>
+                                Cover
+                            </td>
+                            <td>
+                                <?= CHtml::openTag('label', ['class' => 'inline highlight']); ?>
+                                    <?= CHTML::activeCheckBox($element, 'is_lac_required'); ?>
+                                    <span class="in-txt">Anaesthetist cover required</span>
+                                <?= CHtml::closeTag('label'); ?>
+                            </td>
+                        </tr>
+                    <?php }?>
                     <tr>
                         <td>
                             Anaesthetic choice is
@@ -294,7 +316,10 @@ $procedure_readonly = $this->procedure_readonly;
                                 false,
                                 false,
                                 false,
-                                array('nowrapper' => true)
+                                array(
+                                    'nowrapper' => true,
+                                    'test' => 'op-anaesthetic-choice'
+                                )
                             ) ?>
                         </td>
                     </tr>
@@ -303,14 +328,14 @@ $procedure_readonly = $this->procedure_readonly;
                             Patient needs to stop medication
                         </td>
                         <td>
-                            <?php $form->radioBoolean($element, 'stop_medication', array('nowrapper' => true)) ?>
+                            <?php $form->radioBoolean($element, 'stop_medication', array('nowrapper' => true, 'test' => 'op-stop-medication')) ?>
                             <?php $form->textArea(
                                 $element,
                                 'stop_medication_details',
                                 array('rows' => 1),
                                 true,
                                 array(),
-                                array_merge($form->layoutColumns, array('label'=>6,'field' => 12))
+                                array_merge($form->layoutColumns, array('label' => 6, 'field' => 12))
                             ) ?>
                         </td>
                     </tr>
@@ -322,21 +347,16 @@ $procedure_readonly = $this->procedure_readonly;
                             <?php $form->textArea(
                                 $element,
                                 'stop_medication_details',
-                                array('rows' => 1, 'label' => false,
-                                    'nowrapper' => true),
+                                array(
+                                    'rows' => 1, 'label' => false,
+                                    'nowrapper' => true
+                                ),
                                 true,
-                                array('class' => 'autosize',
+                                array(
+                                    'class' => 'autosize',
                                     'class' => $element->getError('stop_medication_details') ? 'error' : ''
                                 )
                             ); ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Pre-assessment booking required
-                        </td>
-                        <td>
-                            <?php echo $form->radioBoolean($element, 'preassessment_booking_required', array('nowrapper' => true)); ?>
                         </td>
                     </tr>
                     <tr>
@@ -369,19 +389,20 @@ $procedure_readonly = $this->procedure_readonly;
                         </tr>
                     <?php endif; ?>
                     </tr>
-                    </tbody>
-                </table>
-            </div>
+                </tbody>
+            </table>
         </div>
-        <table class="cols-11">
-            <tbody>
+    </div>
+
+    <table class="cols-11">
+        <tbody>
             <tr>
                 <td>
                     Add Comments:
                 </td>
                 <td>
                     <?php echo $form->textArea($element, 'comments', array('rows' => 1, 'nowrapper' => true), '', array('placeholder' =>
-                        'Scheduling guidance for admissions team', 'class' => 'cols-full autosize')) ?>
+                    'Scheduling guidance for admissions team', 'class' => 'cols-full autosize')) ?>
                 </td>
             </tr>
             <tr>
@@ -404,9 +425,7 @@ $procedure_readonly = $this->procedure_readonly;
                     Doctor organising admission
                 </td>
                 <td>
-                    <input type="hidden" name="<?=\CHtml::modelName($element) ?>[organising_admission_user_id]"
-                           id="<?=\CHtml::modelName($element) ?>_organising_admission_user_id"
-                           value="<?php echo $element->organising_admission_user_id ?>"/>
+                    <input type="hidden" name="<?= \CHtml::modelName($element) ?>[organising_admission_user_id]" id="<?= \CHtml::modelName($element) ?>_organising_admission_user_id" value="<?php echo $element->organising_admission_user_id ?>" />
                     <span class="organising_admission_user">
                         <?php echo $element->organising_admission_user ? $element->organising_admission_user->getReversedFullname() . ' <i href="#" class="remove_organising_admission_user oe-i remove-circle small pad-left"></i>' : 'None' ?>
                     </span>
@@ -415,6 +434,6 @@ $procedure_readonly = $this->procedure_readonly;
                     <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
                 </td>
             </tr>
-            </tbody>
-        </table>
-    </div>
+        </tbody>
+    </table>
+</div>

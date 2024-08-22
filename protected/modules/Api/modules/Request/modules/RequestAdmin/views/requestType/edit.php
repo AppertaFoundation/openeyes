@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation 2020
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2020, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="row divider">
@@ -29,11 +31,11 @@
                 <col class="cols-5">
             </colgroup>
             <tbody>
-            <?php $htmlOptions = ['class' => 'cols-full', 'autocomplete' => Yii::app()->params['html_autocomplete']]; ?>
+            <?php $htmlOptions = ['class' => 'cols-full', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')]; ?>
             <tr>
                 <td><?= $model->getAttributeLabel("request_type"); ?></td>
                 <td><?= \CHtml::activeTextField($model, "request_type", array_merge([
-                        'readonly' => (bool)Request::model()->count('request_type = ?', [$model->request_type]),
+                        'readonly' => isset($model->request_type) && (bool)Request::model()->count('request_type = ?', [$model->request_type]),
                     ], $htmlOptions)); ?></td>
             </tr>
             <?php foreach (['title_full', 'title_short'] as $field) : ?>

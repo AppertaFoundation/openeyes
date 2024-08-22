@@ -18,7 +18,7 @@
 ?>
 <h2>Sites you work at</h2>
 <form id="profile_sites" method="post" action="/profile/sites">
-  <table class="standard">
+  <table class="standard" data-test="added-sites-table">
         <thead>
             <tr>
               <th><input type="checkbox" id="checkall" /></th>
@@ -28,26 +28,32 @@
         </thead>
         <tbody>
         <?php foreach ($user->siteSelections as $i => $site) {?>
-          <tr data-attr-id="<?php echo $site->id?>">
-            <td><input type="checkbox" name="sites[]" value="<?php echo $site->id?>" /></td>
-            <td><?php echo $site->name?></td>
+          <tr data-attr-id="<?php echo $site->id?>" class="<?=!$site->active ? 'inactive':''?>">
+            <td><input style="pointer-events: all" type="checkbox" name="sites[]" value="<?php echo $site->id?>" /></td>
+            <td><?php echo $site->name?> <?=!$site->active ? '<i>(inactive)</i>':''?></td>
             <td><?php echo $site->getLetterAddress(array('delimiter' => ', '))?>&nbsp;</td>
           </tr>
         <?php }?>
         </tbody>
   </table>
 </form>
-<div class="data-group">
-  <label for="profile_site_id" class="inline">Add site:</label>
-    <?=\CHtml::dropDownList('profile_site_id', '', CHtml::listData($user->getNotSelectedSiteList(), 'id', 'name'), array('empty' => '- Select -'))?>
-    <?=\CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>
-</div>
-<div class="profile-actions">
-    <?php echo EventAction::button('Remove selected site', 'delete', array(), array('class' => 'button large hint blue'))->toHtml()?>
-</div>
-  <br>
-  <p>Note: you can also set the <?php echo strtolower(Firm::contextLabel())?>s you work at, <?=\CHtml::link('click here', Yii::app()->createUrl('/profile/firms'))?> to do so.</p>
 
+<div class="data-group flex-layout">
+    <div style="flex-grow:1;">
+        <label for="profile_site_id" class="inline">Add site:</label>
+        <?=\CHtml::dropDownList('profile_site_id', '', CHtml::listData($user->getNotSelectedSiteList(), 'id', 'name'), [
+                'empty' => '- Select -',
+                'data-test' => 'site-dropdown'
+        ])?>
+        <?=\CHtml::link('Add all', '#', array('id' => 'add_all', 'class' => 'field-info button green hint'))?>
+    </div>
+    <?php echo EventAction::button('Remove selected site', 'delete', array(), array('class' => 'button large hint blue'))->toHtml(); ?> 
+</div>
+
+<div class="row">
+  <br/>
+  <p>Note: you can also set the <?php echo strtolower(Firm::contextLabel())?>s you work at, <?=\CHtml::link('click here', Yii::app()->createUrl('/profile/firms'))?> to do so.</p>
+</div>
 <script type="text/javascript">
     $('#profile_site_id').change(function(e) {
         var site_id = $(this).val();

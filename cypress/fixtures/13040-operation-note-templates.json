@@ -1,0 +1,145 @@
+{
+    "patientBiometryData": {
+        "lens": "MA60AC",
+        "predictedRefraction": -1.03
+    },
+    "templateData": {
+        "name": "Testing template",
+        "definition": {
+            "states": [
+                ["forUser", 1],
+                ["withProcedures", "Phacoemulsification and Intraocular lens"]
+            ],
+            "attributes": {
+                "template_data": {
+                    "Element_OphTrOperationnote_SiteTheatre": {
+                        "theatre_id": 5
+                    },
+                    "Element_OphTrOperationnote_ProcedureList": {
+                        "eye_id": 1,
+                        "procedures": [308]
+                    },
+                    "Element_OphTrOperationnote_Anaesthetic": {
+                        "anaesthetic_id": 2,
+                        "anaesthetic_type": [3],
+                        "anaesthetic_delivery": [3],
+                        "anaesthetic_agents": [1]
+                    },
+                    "Element_OphTrOperationnote_Cataract": {
+                        "eyedraw": "[{\"scaleLevel\":1,\"version\":1.1,\"subclass\":\"PhakoIncision\",\"apexY\":-330,\"arc\":29,\"rotation\":270,\"radius\":330,\"order\":3},{\"scaleLevel\":1,\"version\":1.1,\"subclass\":\"SidePort\",\"arc\":180,\"rotation\":180,\"order\":4},{\"scaleLevel\":1,\"version\":1.1,\"subclass\":\"SidePort\",\"arc\":180,\"rotation\":0,\"order\":5},{\"tags\":[]},{\"scaleLevel\":1,\"version\":1.1,\"subclass\":\"AntSeg\",\"pupilSize\":\"Large\",\"apexY\":-260,\"rotation\":0,\"pxe\":false,\"coloboma\":false,\"ectropion\":false,\"cornealSize\":\"Not Checked\",\"cells\":\"Not Checked\",\"flare\":\"Not Checked\",\"order\":1},{\"scaleLevel\":1,\"version\":1.1,\"subclass\":\"AntSegAngleMarks\",\"order\":0},{\"scaleLevel\":1,\"version\":1.1,\"subclass\":\"Cornea\",\"shape\":\"Normal\",\"pachymetry\":540,\"csOriginX\":50,\"csApexX\":-363,\"csApexY\":0,\"order\":0},{\"scaleLevel\":1,\"version\":1.1,\"subclass\":\"PCIOL\",\"fixation\":\"In-the-bag\",\"fx\":1,\"originX\":0,\"originY\":0,\"rotation\":0,\"csOriginX\":0,\"order\":0}]",
+                        "eyedraw2": "[{\"scaleLevel\": 1,\"version\":1.1,\"subclass\":\"OperatingTable\",\"order\":0},{\"scaleLevel\": 1,\"version\":1.1,\"subclass\":\"Surgeon\",\"surgeonPosition\":\"Temporal\",\"order\":1},{\"scaleLevel\": 1,\"version\":1.1,\"subclass\":\"OperatingTable\",\"order\":2}, {\"tags\":[]}]",
+                        "incision_site_id": "2",
+                        "incision_type_id": "2",
+                        "iol_position_id":"3",
+                        "iol_type_id":"5",
+                        "length":"2.99",
+                        "meridian":"0",
+                        "report":"Posterior chamber IOL (In-the-bag fixation)\r\nLarge pupil (diameter: 8mm)\r\nLimbal section incision at 3 o'clock\r\nSideport at 6, and 0 o'clock",
+                        "operative_devices":["4"]
+                    },
+                    "Element_OphTrOperationnote_PostOpDrugs": {
+                        "drugs": []
+                    },
+                    "Element_OphTrOperationnote_Comments": {
+                        "comments": "",
+                        "postop_instructions": ""
+                    }
+                }
+            }
+        },
+        "elementData": {
+            "location": {
+                "theatre": "Emergency Theatre 1"
+            },
+            "procedureSide": "1",
+            "procedures": {
+                "Phacoemulsification and Intraocular lens": {
+                    "procedureName": "Phacoemulsification and Intraocular lens",
+                    "values": {
+                        "incisionSite": {
+                            "testid": "incision-site",
+                            "inputType": "select",
+                            "inputValue": "Limbal",
+                            "verifyValue": true
+                        },
+                        "length": {
+                            "testid": "length",
+                            "inputType": "textField",
+                            "inputValue": "2.99",
+                            "verifyValue": true
+                        },
+                        "meridian": {
+                            "testid": "meridian",
+                            "inputType": "textField",
+                            "inputValue": "0",
+                            "verifyValue": false
+                        },
+                        "incisionType": {
+                            "testid": "incision-type",
+                            "inputType": "select",
+                            "inputValue": "Section",
+                            "verifyValue": true
+                        },
+                        "iolPosition": {
+                            "testid": "iol-position",
+                            "inputType": "select",
+                            "inputValue": "In the sulcus",
+                            "verifyValue": true
+                        },
+
+                        "iolType": {
+                            "testid": "iol-type",
+                            "inputType": "select",
+                            "inputValue": "MA60AC",
+                            "verifyValue": false
+                        },
+                        "iolPower": {
+                            "testid": "iol-power",
+                            "inputType": "textField",
+                            "inputValue": "22.5",
+                            "verifyValue": false
+                        },
+                        "predictedRefraction": {
+                            "testid": "predicted-refraction",
+                            "inputType": "textField",
+                            "inputValue": "1.0",
+                            "verifyValue": false
+                        },
+
+                        "complications": {
+                            "testid": "complications",
+                            "inputType": "multiSelect",
+                            "inputValue": ["Anterior Capsular tear"],
+                            "verifyValue": true
+                        }
+                    }
+                }
+            },
+            "pcrRisk": [
+                {"column": "glaucoma", "value": "No Glaucoma"},
+                {"column": "diabetic", "value": "No Diabetes"},
+                {"column": "no_fundal_view", "value": "No"},
+                {"column": "brunescent_white_cataract", "value": "No"},
+                {"column": "axial_length", "value": "< 26"},
+                {"column": "arb", "value": "No"},
+                {"column": "abletolieflat", "value": "Yes"}
+            ],
+            "anaesthetic": {
+                "anaestheticType": "GA"
+            },
+            "comments": {
+                "operationComments": "Testing operation comment",
+                "postOpInstructions": "Testing post op instruction"
+            }
+        }
+    },
+    "operationBookingData": {
+        "procedures": [
+            "Phacoemulsification and Intraocular lens"
+        ],
+        "operation": {
+            "operationComplexity": true,
+            "anaestheticType": "LA"
+        }
+    }
+}

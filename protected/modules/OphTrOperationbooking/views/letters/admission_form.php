@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,14 +16,15 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="booking-admission-form">
 <?php
 $logo_helper = new LogoHelper();
 $institution_id = Institution::model()->getCurrent()->id;
 $site_id = Yii::app()->session['selected_site_id'];
-$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient->id, $institution_id, $site_id);
-$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $patient->id, $institution_id, $site_id);
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $patient->id, $institution_id, $site_id);
+$secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $patient->id, $institution_id, $site_id);
 ?>
     <div class="banner clearfix">
         <?= $logo_helper->render() ?>
@@ -145,7 +147,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
                 <?php
                 echo (empty($operation->consultant_required)) ? 'No' : 'Yes';
                 if ($operation->consultant_required && $operation->consultant) {
-                    echo ', '.$operation->consultant->ReversedFullName;
+                    echo ', ' . $operation->consultant->ReversedFullName;
                 }
                 ?>
             </td>
@@ -176,7 +178,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
             <td><?= $operation->eye->name?></td>
             <?php if ($operation->booking) {?>
                 <th>Theatre session:</th>
-                <td><?= substr($operation->booking->session->start_time, 0, 5).' - '.substr($operation->booking->session->end_time, 0, 5)?></td>
+                <td><?= substr($operation->booking->session->start_time, 0, 5) . ' - ' . substr($operation->booking->session->end_time, 0, 5)?></td>
             </tr>
             <tr>
                 <th>Theatre:</th>
@@ -189,7 +191,7 @@ $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::ap
         <tr>
             <th>Diagnosis:</th>
             <td>
-                <?= $operation->diagnosis->eye->adjective.' '.CHtml::encode($operation->diagnosis->disorder->term)?>
+                <?= $operation->diagnosis->eye->adjective . ' ' . CHtml::encode($operation->diagnosis->disorder->term)?>
             </td>
             <?php if ($operation->booking) {?>
                 <th>Admission time:</th>

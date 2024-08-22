@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -16,6 +17,7 @@
  */
 
 use OEModule\OphCiExamination\models;
+use ReferenceData;
 
 $readings = models\OphCiExamination_IntraocularPressure_Reading::model()->findAll();
 $scale_readings = models\OphCiExamination_Qualitative_Scale::model()->findByAttributes(['name' => 'digital'])->values;
@@ -62,20 +64,23 @@ foreach ($readings as $reading) {
         ?>
         </tbody>
     </table>
-
+    </div>
+    <div class="cols-full restrict-data-height rows-5">
     <table id="<?= $model_name ?>_entry_table" class="cols-full">
         <thead>
         <th>Past IOPs</th>
         <th></th>
         <th></th>
-        <th colspan="2"><i class="oe-i small pad js-patient-expand-btn expand"></i></th>
+        <th colspan="2">
+            <i class="oe-i small pad js-listview-expand-btn expand" data-list="historyiop-<?= $side ?>" data-test="listview-expand-btn"></i>
+        </th>
         </thead>
-        <tbody style="display: none">
+        <tbody id="js-listview-historyiop-<?= $side ?>-full" style="display: none;" data-test="listview-historyiop-<?= $side ?>">
         <?php foreach ($pastIOPs as $iop) { ?>
             <?php $date = $iop->event->event_date; ?>
-            <?php foreach ($iop->{$side.'_values'} as $iop_value) { ?>
+            <?php foreach ($iop->{$side . '_values'} as $iop_value) { ?>
                 <tr>
-                    <td><?= $iop_value->instrument->scale ? $iop_value->qualitative_reading->name : $iop_value->reading->name.'mm Hg' ?></td>
+                    <td><?= $iop_value->instrument->scale ? $iop_value->qualitative_reading->name : $iop_value->reading->name . 'mm Hg' ?></td>
                     <td><?=$iop_value->instrument->name?></td>
                     <td colspan="2">
                         <span class="oe-date"><?=date('d M Y', strtotime($date));?></span>
@@ -86,8 +91,8 @@ foreach ($readings as $reading) {
                       <?=$iop_value->reading_time?>
                     </td>
                     <td>
-                        <?php if (isset($iop->{$side.'_comments'}) && $iop->{$side.'_comments'}) { ?>
-                            <i class="oe-i comments-added medium js-has-tooltip" data-tooltip-content="<?= $iop->{$side.'_comments'} ?>"></i>
+                        <?php if (isset($iop->{$side . '_comments'}) && $iop->{$side . '_comments'}) { ?>
+                            <i class="oe-i comments-added medium js-has-tooltip" data-tooltip-content="<?= $iop->{$side . '_comments'} ?>"></i>
                         <?php } ?>
                     </td>
                 </tr>
@@ -99,7 +104,7 @@ foreach ($readings as $reading) {
 
 <div class="add-data-actions flex-item-bottom">
     <div class="flex-item-bottom">
-        <button type="button" class="button hint green js-add-select-search">
+        <button type="button" class="button hint green js-add-select-search" data-test="add-iop-history-instrument">
             <i class="oe-i plus pro-theme"></i>
         </button>
     </div>
@@ -145,7 +150,7 @@ foreach ($readings as $reading) {
                 new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
                     array_map(function ($instrument) {
                         return ['label' => $instrument->name, 'id' => $instrument->id, 'scale' => isset($instrument->scale->values) ? true : false];
-                    }, OEModule\OphCiExamination\models\OphCiExamination_Instrument::model()->findAllByAttributes(['active' => 1]))
+                    }, models\OphCiExamination_Instrument::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, ['scopes' => ['active']]))
                 ) ?>, {'id': 'instrument', 'header': 'Instrument'}),
                 new OpenEyes.UI.AdderDialog.ItemSet([], {'id': 'reading_value', 'header': 'mm Hg',
                     'splitIntegerNumberColumns': [{'min': 0, 'max': 9},{'min': 0, 'max': 9}],
@@ -275,7 +280,7 @@ foreach ($readings as $reading) {
         // scroll the numbers list so 9 is at top
         side.find('.js-add-select-search').on('click', function () {
             let $selected = side.find('ul.add-options.cols-full.single[data-id="time"] ul.number li[data-time="9"]');
-            side.find('ul.add-options.cols-full.single[data-id="time"]').scrollTop($selected.offset().top - $selected.parent().offset().top);
+            side.find('ul.add-options.cols-full.single[data-id="time"]').scrollTop($selected.top - $selected.parent().top);
         });
 
     });

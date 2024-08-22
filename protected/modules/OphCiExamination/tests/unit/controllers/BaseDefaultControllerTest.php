@@ -22,7 +22,7 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
 {
     use \InteractsWithEventTypeElements;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         // stub out components that will cause failures
@@ -30,6 +30,15 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
         \Yii::app()->setComponent('request', $this->getMockRequest());
         $this->mockSession();
         $_POST = $_GET = $_REQUEST = []; // reset the common globals
+    }
+
+    public function tearDown(): void
+    {
+        \Yii::app()->setComponent('assetManager', null);
+        \Yii::app()->setComponent('request', null);
+        $_REQUEST = [];
+
+        parent::tearDown();
     }
 
     public function getDefaultController($methods = null)
@@ -47,7 +56,7 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
         $episode = $patient->episodes[0];
 
         // enables controller to know what episode the event will be created in.
-        $this->setVariablesInSession($episode->firm_id);
+        $this->mockCurrentContext($episode->firm);
 
         // set up the request data for submitting values
         $_REQUEST['patient_id'] = $patient->id;
@@ -65,12 +74,15 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
 
     protected function performUpdateRequestForEvent(\Event $event)
     {
-        $this->setVariablesInSession($event->episode->firm_id);
+        $this->mockCurrentContext($event->episode->firm);
         $_GET['id'] = $event->id;
 
         $redirectedEventId = $this->performUpdateRequestWithController();
 
-        $this->assertEquals($event->id, $redirectedEventId);
+        $this->assertEquals(
+            $event->id,
+            $redirectedEventId,
+            "update request has failed, response is redirecting to event id {$redirectedEventId} instead of {$event->id}");
     }
 
     /**
@@ -96,10 +108,14 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
      */
     protected function performCreateRequestWithController()
     {
-        $controller = $this->getDefaultController(['checkCreateAccess', 'redirect']);
+        $controller = $this->getDefaultController(['checkCreateAccess', 'redirect', 'render']);
         // not concerned about permissions
         $controller->method('checkCreateAccess')
             ->willReturn(true);
+        $controller->method('render')
+            ->will($this->returnCallback(function (...$args) {
+                $this->fail('Create request unexpectedly attempting to render with params: ' . print_r($args, true));
+            }));
 
         return $this->runActionAndCaptureEventIdRedirect($controller, 'create');
     }
@@ -111,29 +127,16 @@ abstract class BaseDefaultControllerTest extends BaseControllerTest
      */
     protected function performUpdateRequestWithController()
     {
-        $controller = $this->getDefaultController(['checkUpdateAccess', 'redirect']);
+        $controller = $this->getDefaultController(['checkUpdateAccess', 'redirect', 'render']);
         // not concerned about permissions
         $controller->method('checkUpdateAccess')
             ->willReturn(true);
+        $controller->method('render')
+            ->will($this->returnCallback(function (...$args) {
+                $this->fail('Update request unexpectedly attempting to render with params: ' . print_r($args, true));
+            }));
 
         return $this->runActionAndCaptureEventIdRedirect($controller, 'update');
-    }
-
-    /**
-     * Simple helper abstraction
-     *
-     * @param $firm_id
-     * @param $institution_id
-     * @param $site_id
-     */
-    protected function setVariablesInSession($firm_id, $institution_id = 1, $site_id = 1)
-    {
-        \Yii::app()->session->method('get')
-            ->will($this->returnValueMap([
-                ['selected_firm_id', null, $firm_id],
-                ['selected_institution_id', null, $institution_id],
-                ['selected_site_id', null, $site_id],
-            ]));
     }
 
     private function runActionAndCaptureEventIdRedirect($controller, $actionName)

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -82,6 +81,10 @@ class BaseEventTypeController extends BaseModuleController
         'EDTagSearch' => self::ACTION_TYPE_FORM,
         'renderEventImage' => self::ACTION_TYPE_VIEW,
         'removed' => self::ACTION_TYPE_VIEW,
+        'saveTemplate' => self::ACTION_TYPE_FORM,
+        'updateTemplate' => self::ACTION_TYPE_FORM,
+        'saveDraft' => self::ACTION_TYPE_FORM,
+        'deleteDrafts' => self::ACTION_TYPE_FORM,
     );
 
     /**
@@ -95,8 +98,10 @@ class BaseEventTypeController extends BaseModuleController
     public $patient;
     /* @var Site */
     public $site;
-    /* @var Event */
-    public $event;
+    public ?Event $event = null;
+    public ?EventTemplate $template = null;
+    public ?EventDraft $draft = null;
+    public ?EventDraft $existing_draft = null;
     public $editable = true;
     public $editing;
     private $title;
@@ -122,6 +127,8 @@ class BaseEventTypeController extends BaseModuleController
     public $pdf_print_html = null;
     public $attachment_print_title = null;
     public $print_args = null;
+
+    protected ?EventSubType $event_subtype = null;
 
     /**
      * Values to change per event
@@ -173,6 +180,11 @@ class BaseEventTypeController extends BaseModuleController
     public array $external_errors = [];
     protected $has_conflict = false;
 
+    public function hasConflict()
+    {
+        return $this->has_conflict;
+    }
+
     public function behaviors()
     {
         return array_merge(parent::behaviors(), [
@@ -184,17 +196,19 @@ class BaseEventTypeController extends BaseModuleController
     public function getPageTitle()
     {
         $action_type = ucfirst($this->getAction()->getId());
-        return ((in_array($action_type, ['Update', 'Create']) && (string)SettingMetadata::model()->getSetting('use_short_page_titles') == "on") ?
-            'Edit' : $action_type ) .
+        return ((in_array($action_type, ['Update', 'Create']) && (string)SettingMetadata::model()->getSetting(
+            'use_short_page_titles'
+        ) == "on") ?
+                'Edit' : $action_type) .
             ($this->event_type ? ' ' . $this->event_type->name : '') .
             ((string)SettingMetadata::model()->getSetting('use_short_page_titles') != "on" ?
-            ($this->patient ? ' - ' . $this->patient->last_name . ', ' . $this->patient->first_name : '') .
-             ' - OE' : '');
+                ($this->patient ? ' - ' . $this->patient->last_name . ', ' . $this->patient->first_name : '') .
+                ' - OE' : '');
     }
 
     public function getTitle()
     {
-        if ($this->event->firstEventSubtypeItem) {
+        if (isset($this->event) && $this->event->firstEventSubtypeItem) {
             return $this->event->firstEventSubtypeItem->eventSubtype->display_name;
         }
         if (isset($this->title)) {
@@ -266,11 +280,11 @@ class BaseEventTypeController extends BaseModuleController
     public function getElementWidgetMode($action)
     {
         return [
-            static::ACTION_TYPE_CREATE => BaseEventElementWidget::$EVENT_EDIT_MODE,
-            static::ACTION_TYPE_EDIT => BaseEventElementWidget::$EVENT_EDIT_MODE,
-            static::ACTION_TYPE_FORM => BaseEventElementWidget::$EVENT_EDIT_MODE,
-            static::ACTION_TYPE_PRINT => BaseEventElementWidget::$EVENT_PRINT_MODE,
-        ][$this->getActionType($action)]
+                static::ACTION_TYPE_CREATE => BaseEventElementWidget::$EVENT_EDIT_MODE,
+                static::ACTION_TYPE_EDIT => BaseEventElementWidget::$EVENT_EDIT_MODE,
+                static::ACTION_TYPE_FORM => BaseEventElementWidget::$EVENT_EDIT_MODE,
+                static::ACTION_TYPE_PRINT => BaseEventElementWidget::$EVENT_PRINT_MODE,
+            ][$this->getActionType($action)]
             ?? BaseEventElementWidget::$EVENT_VIEW_MODE;
     }
 
@@ -311,7 +325,7 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function setOpenElementsFromCurrentEvent($action)
     {
-        $this->open_elements = $this->getEventElements($action);
+        $this->open_elements = $this->getEventElements();
         $this->setElementOptions($action);
     }
 
@@ -457,11 +471,15 @@ class BaseEventTypeController extends BaseModuleController
                 Yii::app()->assetManager->registerScriptFile('js/nested_elements.js');
                 Yii::app()->assetManager->registerScriptFile("js/OpenEyes.UI.InlinePreviousElements.js");
                 // disable buttons when clicking on save/save_draft/save_print
-                Yii::app()->assetManager->getClientScript()->registerScript('disableSaveAfterClick', '
+                Yii::app()->assetManager->getClientScript()->registerScript(
+                    'disableSaveAfterClick',
+                    '
                       $(document).on("click", "#et_save, #et_save_footer, #et_save_draft, #et_save_draft_footer, #et_save_print, #et_save_print_footer, #et_save_print_form, #et_save_print_form_footer", function () {
                           disableButtons();
                       });
-                ', CClientScript::POS_HEAD);
+                ',
+                    CClientScript::POS_HEAD
+                );
             }
         }
 
@@ -642,11 +660,11 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @param ElementType $element_type
      * @param int $previous_id
-     * @param array()     $additional   - additional attributes for the element
+     * @param array $additional - additional attributes for the element
      *
      * @return \BaseEventTypeElement
      */
-    protected function getElementForElementForm($element_type, $previous_id = 0, $additional)
+    protected function getElementForElementForm($element_type, $previous_id = 0, $additional = [])
     {
         $element_class = $element_type->class_name;
         $element = $element_type->getInstance();
@@ -656,11 +674,10 @@ class BaseEventTypeController extends BaseModuleController
             $previous_element = $element_class::model()->findByPk($previous_id);
             $element->loadFromExisting($previous_element);
         }
-        if ($additional) {
-            foreach (array_keys($additional) as $add) {
-                if ($element->isAttributeSafe($add)) {
-                    $element->$add = $additional[$add];
-                }
+
+        foreach (array_keys($additional) as $add) {
+            if ($element->isAttributeSafe($add)) {
+                $element->$add = $additional[$add];
             }
         }
 
@@ -694,6 +711,7 @@ class BaseEventTypeController extends BaseModuleController
         $this->moduleStateCssClass = 'edit';
 
         $this->setPatient($_REQUEST['patient_id']);
+        $this->validateOrResetActiveWorklistSessionState();
 
         if (!$this->episode = $this->getEpisode()) {
             $this->redirectToPatientLandingPage();
@@ -705,6 +723,45 @@ class BaseEventTypeController extends BaseModuleController
         $this->event->episode_id = $this->episode->id;
         $this->event->event_type_id = $this->event_type->id;
         $this->event->last_modified_user_id = $this->event->created_user_id = Yii::app()->user->id;
+
+        $this->initEventDraftForCreate(Yii::app()->request);
+
+        if (isset($_GET['template_id'])) {
+            $this->template = EventTemplate::model()->findByPk($_GET['template_id']);
+        }
+    }
+
+    protected function initEventDraftForCreate($request): void
+    {
+        $existing_drafts = $this->getExistingEventDraftsForCreate();
+        $requested_draft_id = $request->getParam('draft_id');
+        if (!$requested_draft_id) {
+            if (count($existing_drafts)) {
+                // more than one entry shouldn't arise, and we can handle multiple through the
+                // delete process later, so just grabbing the first should be fine here
+                $this->existing_draft = array_shift($existing_drafts);
+            }
+            return;
+        }
+
+        $this->draft = $existing_drafts[$requested_draft_id] ?? null;
+        if (!$this->draft) {
+            // possibly needs thought
+            throw new CHttpException(404, 'Draft not found.');
+        }
+    }
+
+    // returns drafts indexed by pk
+    protected function getExistingEventDraftsForCreate()
+    {
+        $criteria = new \CDbCriteria();
+        $criteria->index = 'id';
+        $criteria->with = ['episode'];
+        $criteria->condition = 't.event_type_id = :event_type AND episode.patient_id = :patient AND t.last_modified_user_id = :user AND t.event_id IS NULL';
+        $criteria->params = [':event_type' => $this->event_type->id, ':patient' => $this->patient->id, ':user' => Yii::app()->user->id];
+        $criteria->order = 't.last_modified_date DESC'; // Ensure the most recent draft is the first entry.
+
+        return EventDraft::model()->findAll($criteria);
     }
 
     /**
@@ -748,6 +805,17 @@ class BaseEventTypeController extends BaseModuleController
         $this->moduleStateCssClass = 'edit';
 
         $this->initWithEventId(@$_GET['id']);
+        $this->validateOrResetActiveWorklistSessionState();
+
+        $this->draft = $this->event->draft;
+
+        if ($this->draft) {
+            $this->initialiseOpenElementsFromData(json_decode($this->draft->data, true));
+        }
+
+        if (isset($_GET['template_id'])) {
+            $this->template = EventTemplate::model()->findByPk($_GET['template_id']);
+        }
     }
 
     /**
@@ -853,14 +921,13 @@ class BaseEventTypeController extends BaseModuleController
     /**
      * Carries out the base create action.
      *
-     * @return bool|string
-     *
      * @throws CHttpException
      * @throws Exception
      */
     public function actionCreate()
     {
         $this->event->firm_id = $this->selectedFirmId;
+        $errors = [];
         if (!empty($_POST)) {
             // form has been submitted
             if (isset($_POST['cancel'])) {
@@ -885,14 +952,23 @@ class BaseEventTypeController extends BaseModuleController
                         if ($this->eventIssueCreate) {
                             $this->event->addIssue($this->eventIssueCreate);
                         }
-                        //TODO: should not be passing event?
-                        $this->afterCreateElements($this->event);
 
+                        $this->updateEventStep();
+
+                        //TODO: should not be passing event?
+                        $errors = array_merge($errors, $this->afterCreateElements($this->event));
+
+                        if (!empty($errors)) {
+                            $transaction->rollback();
+                            return;
+                        }
                         $this->logActivity('created event.');
 
                         $this->event->audit('event', 'create');
 
-                        Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
+                        Yii::app()->user->setFlash('success', "{$this->getTitle()} created.");
+
+                        Yii::app()->event->dispatch('event_created', ['event' => $this->event, 'action' => 'create']);
 
                         $transaction->commit();
 
@@ -902,23 +978,115 @@ class BaseEventTypeController extends BaseModuleController
                          */
                         $this->afterCreateEvent($this->event);
 
+                        $this->resetActiveWorklistSessionState();
+
                         if ($this->event->parent_id) {
-                            $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
+                            $this->redirect(
+                                Yii::app()->createUrl(
+                                    '/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id
+                                )
+                            );
                         } else {
-                            $this->redirect(array($this->successUri . $this->event->id));
+                            if (!empty($this->event->eventType->template_class_name)) {
+                                if (!empty($this->template)) {
+                                    $existing_template_data = json_decode($this->template->getDetailRecord()->template_data, true);
+                                    $template_status = $this->event->getTemplateUpdateStatusForEvent($existing_template_data);
+
+                                    if ($template_status !== 'UNNEEDED') {
+                                        $this->redirect(array($this->successUri . $this->event->id . '?template=' . $template_status));
+                                    } else {
+                                        $this->redirect(array($this->successUri . $this->event->id));
+                                    }
+                                } else {
+                                    $this->redirect(array($this->successUri . $this->event->id . '?template=' . EventTemplate::UPDATE_CREATE_ONLY));
+                                }
+                            } else {
+                                $this->redirect(array($this->successUri . $this->event->id));
+                            }
                         }
                         return;
-                    } else {
-                        throw new Exception('could not save event');
                     }
+
+                    throw new Exception('could not save event');
                 } catch (Exception $e) {
                     $transaction->rollback();
                     throw $e;
                 }
             }
         } else {
-            $this->setOpenElementsFromCurrentEvent('create');
+            if ($this->draft) {
+                $this->initialiseOpenElementsFromData(json_decode($this->draft->data, true));
+            } else {
+                $this->setOpenElementsFromCurrentEvent('create');
+            }
+
             $this->updateHotlistItem($this->patient);
+
+            if (isset(Yii::app()->session['selected_institution_id'])) {
+                $worklist_manager = new \WorklistManager();
+
+                $user_worklists = $worklist_manager->getCurrentAutomaticWorklistsForUser(null);
+
+                $worklist_patients = array();
+                foreach ($user_worklists as $user_worklist) {
+                    $worklist_patients = array_merge($worklist_patients, \WorklistPatient::model()->findAllByAttributes(array('patient_id' => $this->patient->id, 'worklist_id' => $user_worklist->id)));
+                }
+
+                $applicable_pathstep = null;
+
+                foreach ($worklist_patients as $worklist_patient) {
+                    $pathway = $worklist_patient->pathway;
+
+                    if (isset($pathway)) {
+                        $pathsteps = $pathway->requested_steps;
+                        foreach ($pathsteps as $pathstep) {
+                            $pathstep_data = json_decode($pathstep->state_data);
+
+                            if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
+                                $applicable_pathstep = $pathstep;
+                                break;
+                            }
+                        }
+                    } else {
+                        $pathway_type = $worklist_patient->worklist->worklist_definition->pathway_type;
+                        $pathstep_types = $pathway_type->default_steps;
+                        foreach ($pathstep_types as $pathstep_type) {
+                            $pathstep_type_data = json_decode($pathstep_type->default_state_data);
+
+                            if ($this->isEventApplicableToWorklistPathstepData($pathstep_type_data)) {
+                                $pathway_type->instancePathway($worklist_patient);
+                                $worklist_patient->refresh();
+
+                                foreach ($worklist_patient->pathway->steps as $pathstep) {
+                                    $pathstep_data = json_decode($pathstep->state_data);
+                                    if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
+                                        $applicable_pathstep = $pathstep;
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }
+
+                    if (isset($applicable_pathstep)) {
+                        break;
+                    }
+                }
+
+                if (isset($applicable_pathstep)) {
+                    $applicable_pathstep->nextStatus();
+                    $applicable_pathstep->refresh();
+
+                    $pathway = $applicable_pathstep->pathway;
+
+                    $pathway->updateStatus();
+
+                    if ((int)$applicable_pathstep->status === PathwayStep::STEP_STARTED) {
+                        Yii::app()->event->dispatch('step_started', ['step' => $applicable_pathstep]);
+                    }
+                }
+            }
         }
 
         $this->editable = false;
@@ -934,19 +1102,42 @@ class BaseEventTypeController extends BaseModuleController
             EventAction::link(
                 'Cancel',
                 Yii::app()->createUrl($cancel_url),
-                array('level' => 'cancel')
+                ['level' => 'cancel'],
+                ['class' => 'js-event-action-cancel']
+            ),
+            EventAction::button(
+                'Cancel',
+                'connection-error-cancel',
+                ['level' => 'cancel'],
+                [
+                    'class' => 'js-event-action-connection-error-cancel fade',
+                    'style' => 'display: none'
+                ]
             ),
         );
 
         $params = array(
-            'errors' => @$errors,
+            'errors' => $errors,
         );
         if (isset($this->eur_res) && isset($this->eur_answer_res)) {
             $params['eur_res'] = $this->eur_res;
             $params['eur_answer_res'] = $this->eur_answer_res;
         }
         $params['customErrorHeaderMessage'] = $this->customErrorHeaderMessage ?? '';
+
+        $params['auto_save_enabled'] = SettingMetadata::model()->getSetting('auto_save_enabled') === "on";
+
         $this->render($this->action->id, $params);
+    }
+
+    public function isEventApplicableToWorklistPathstepData($pathstep_data)
+    {
+        $event_type_class_name = \EventType::model()->findByPk($this->event->event_type_id)->class_name;
+
+        return isset($pathstep_data->action_type) &&
+            $pathstep_data->action_type == 'new_event' &&
+            isset($pathstep_data->event_type) &&
+            $pathstep_data->event_type == $event_type_class_name;
     }
 
     /**
@@ -958,10 +1149,13 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function actionView($id)
     {
+        // Clean up any worklist session data that might be lingering around.
+        $this->resetActiveWorklistSessionState();
+
         $this->setOpenElementsFromCurrentEvent('view');
         // Decide whether to display the 'edit' button in the template
         if ($this->editable) {
-            $this->editable = $this->checkEditAccess();
+            $this->editable = !$this->event->delete_pending && $this->checkEditAccess();
         }
 
         $this->logActivity('viewed event');
@@ -977,7 +1171,9 @@ class BaseEventTypeController extends BaseModuleController
         if ($this->editable) {
             $this->event_tabs[] = array(
                 'label' => 'Edit',
-                'href' => Yii::app()->createUrl($this->event->eventType->class_name . '/default/update/' . $this->event->id),
+                'href' => Yii::app()->createUrl(
+                    $this->event->eventType->class_name . '/default/update?id=' . $this->event->id
+                ),
             );
 
             $this->event_tabs[] = array(
@@ -998,16 +1194,18 @@ class BaseEventTypeController extends BaseModuleController
             $this->event_actions = array(
                 EventAction::link(
                     'Delete',
-                    Yii::app()->createUrl($this->event->eventType->class_name . '/default/requestDeletion/' . $this->event->id),
+                    Yii::app()->createUrl(
+                        $this->event->eventType->class_name . '/default/requestDeletion/' . $this->event->id
+                    ),
                     array('level' => 'delete')
                 ),
             );
         }
 
         $viewData = array_merge(array(
-            'elements' => $this->open_elements,
-            'eventId' => $id,
-        ), $this->extraViewProperties);
+                                    'elements' => $this->open_elements,
+                                    'eventId' => $id,
+                                ), $this->extraViewProperties);
 
         $this->jsVars['OE_event_last_modified'] = strtotime($this->event->last_modified_date);
 
@@ -1025,12 +1223,16 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function actionUpdate($id)
     {
+        $errors = [];
+
         if (!empty($_POST)) {
             // somethings been submitted
             if (isset($_POST['cancel'])) {
                 // Cancel button pressed, so just bounce to view
                 $this->redirect(array('default/view/' . $this->event->id));
             }
+
+            $old_template_data = $this->event->getPrefillElementsData();
 
             $errors = $this->setAndValidateElementsFromData($_POST);
 
@@ -1043,29 +1245,100 @@ class BaseEventTypeController extends BaseModuleController
                     $success = $this->saveEvent($_POST);
 
                     if ($success) {
+                        if (isset(Yii::app()->session['selected_institution_id'])) {
+                            $worklist_manager = new \WorklistManager();
+
+                            $user_worklists = $worklist_manager->getCurrentAutomaticWorklistsForUser(null);
+
+                            $worklist_patients = array();
+                            foreach ($user_worklists as $user_worklist) {
+                                $worklist_patients = array_merge($worklist_patients, \WorklistPatient::model()->findAllByAttributes(array('patient_id' => $this->patient->id, 'worklist_id' => $user_worklist->id)));
+                            }
+
+                            $applicable_pathstep = null;
+
+                            foreach ($worklist_patients as $worklist_patient) {
+                                $pathway = $worklist_patient->pathway;
+                                $this->event->worklist_patient_id = $worklist_patient->id;
+
+                                //If pathway hasn't been instanced, it doesn't make sense to complete a started step
+                                if (isset($pathway)) {
+                                    $pathsteps = $pathway->started_steps;
+                                    foreach ($pathsteps as $pathstep) {
+                                        $pathstep_data = json_decode($pathstep->state_data);
+                                        if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
+                                            $applicable_pathstep = $pathstep;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                if (isset($applicable_pathstep)) {
+                                    break;
+                                }
+                            }
+
+                            if (isset($applicable_pathstep)) {
+                                $applicable_pathstep->nextStatus();
+                                $applicable_pathstep->refresh();
+
+                                $pathway = $applicable_pathstep->pathway;
+
+                                $pathway->updateStatus();
+
+                                if ((int)$applicable_pathstep->status === PathwayStep::STEP_COMPLETED) {
+                                    Yii::app()->event->dispatch('step_completed', ['step' => $applicable_pathstep]);
+                                }
+                            }
+                        }
+
                         //TODO: should not be pasing event?
-                        $this->afterUpdateElements($this->event);
-                        $this->logActivity('updated event');
+                        $errors = array_merge($errors, $this->afterUpdateElements($this->event));
 
-                        $this->event->audit('event', 'update');
-
-                        $this->event->user = Yii::app()->user->id;
-
-                        if (!$this->event->save()) {
-                            throw new SystemException('Unable to update event: ' . print_r(
-                                $this->event->getErrors(),
-                                true
-                            ));
-                        }
-
-                        OELog::log("Updated event {$this->event->id}");
-                        $transaction->commit();
-                        if ($this->event->parent_id) {
-                            $this->redirect(Yii::app()->createUrl('/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id));
+                        if (!empty($errors)) {
+                            $transaction->rollback();
                         } else {
-                            $this->redirect([$this->successUri]);
+                            $this->logActivity('updated event');
+
+                            $this->event->audit('event', 'update');
+
+                            $this->event->user = Yii::app()->user->id;
+
+                            if (!$this->event->save()) {
+                                $transaction->rollback();
+                                throw new SystemException(
+                                    'Unable to update event: ' . print_r(
+                                        $this->event->getErrors(),
+                                        true
+                                    )
+                                );
+                            }
+
+                            OELog::log("Updated event {$this->event->id}");
+                            Yii::app()->event->dispatch('event_updated', ['event' => $this->event, 'action' => 'update']);
+                            $transaction->commit();
+
+                            $this->afterUpdateEvent($this->event);
+
+                            $this->resetActiveWorklistSessionState();
+
+                            if ($this->event->parent_id) {
+                                $this->redirect(
+                                    Yii::app()->createUrl(
+                                        '/' . $this->event->parent->eventType->class_name . '/default/view/' . $this->event->parent_id
+                                    )
+                                );
+                            } else {
+                                $template_status = $this->event->getTemplateUpdateStatusForEvent($old_template_data);
+
+                                if ($template_status !== 'UNNEEDED') {
+                                    $this->redirect([$this->successUri . '?template=' . $template_status]);
+                                } else {
+                                    $this->redirect([$this->successUri]);
+                                }
+                            }
+                            return;
                         }
-                        return;
                     } else {
                         throw new Exception('Unable to save edits to event');
                     }
@@ -1076,15 +1349,65 @@ class BaseEventTypeController extends BaseModuleController
             }
         } else {
             // get the elements
-            $this->setOpenElementsFromCurrentEvent('update');
+            if (empty($this->open_elements)) {
+                $this->setOpenElementsFromCurrentEvent('update');
+            }
             $this->updateHotlistItem($this->patient);
+
+            if (isset(Yii::app()->session['selected_institution_id'])) {
+                $worklist_manager = new \WorklistManager();
+
+                $user_worklists = $worklist_manager->getCurrentAutomaticWorklistsForUser(null);
+
+                $worklist_patients = array();
+                foreach ($user_worklists as $user_worklist) {
+                    $worklist_patients = array_merge($worklist_patients, \WorklistPatient::model()->findAllByAttributes(array('patient_id' => $this->patient->id, 'worklist_id' => $user_worklist->id)));
+                }
+
+                $applicable_pathstep = null;
+
+                foreach ($worklist_patients as $worklist_patient) {
+                    $pathway = $worklist_patient->pathway;
+
+                    if (isset($pathway)) {
+                        $pathsteps = $pathway->requested_steps;
+                        foreach ($pathsteps as $pathstep) {
+                            $pathstep_data = json_decode($pathstep->state_data);
+
+                            if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
+                                $applicable_pathstep = $pathstep;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (isset($applicable_pathstep)) {
+                        break;
+                    }
+                }
+
+                if (isset($applicable_pathstep)) {
+                    $applicable_pathstep->nextStatus();
+                    $applicable_pathstep->refresh();
+
+                    $pathway = $applicable_pathstep->pathway;
+
+                    $pathway->updateStatus();
+
+                    if ((int)$applicable_pathstep->status === PathwayStep::STEP_STARTED) {
+                        Yii::app()->event->dispatch('step_started', ['step' => $applicable_pathstep]);
+                    }
+                }
+            }
         }
 
         $this->editing = true;
         $this->event_tabs = array(
             array(
                 'label' => 'View',
-                'href' => Yii::app()->createUrl($this->event->eventType->class_name . '/default/view/' . $this->event->id),
+                'href' => Yii::app()->createUrl(
+                    $this->event->eventType->class_name . '/default/view/' . $this->event->id
+                ),
             ),
             array(
                 'label' => 'Edit',
@@ -1096,11 +1419,21 @@ class BaseEventTypeController extends BaseModuleController
             EventAction::link(
                 'Cancel',
                 Yii::app()->createUrl($this->event->eventType->class_name . '/default/view/' . $this->event->id),
-                array('level' => 'cancel')
+                ['level' => 'cancel'],
+                ['class' => 'js-event-action-cancel']
+            ),
+            EventAction::button(
+                'Cancel',
+                'connection-error-cancel',
+                ['level' => 'cancel'],
+                [
+                    'class' => 'js-event-action-connection-error-cancel fade',
+                    'style' => 'display: none'
+                ]
             ),
         );
         $params = array(
-            'errors' => @$errors,
+            'errors' => $errors,
         );
         if (isset($this->eur_res) && isset($this->eur_answer_res)) {
             $params['eur_res'] = $this->eur_res;
@@ -1108,6 +1441,8 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         $params['customErrorHeaderMessage'] = $this->customErrorHeaderMessage ?? '';
+        $params['auto_save_enabled'] = SettingMetadata::model()->getSetting('auto_save_enabled') === "on";
+
         $this->render($this->action->id, $params);
     }
 
@@ -1168,7 +1503,20 @@ class BaseEventTypeController extends BaseModuleController
             'htmlOptions' => array('class' => 'sliding'),
         ));
 
-        $this->renderElement($element, 'create', $form, null, array(
+        $template_data = array();
+        if ($this->template) {
+            $template_detail = $this->template->getDetailRecord();
+            $template_data = json_decode($template_detail->template_data, true);
+        } elseif ($this->event && $this->event->template) {
+            $template_detail = $this->event->template->getDetailRecord();
+            $template_data = json_decode($template_detail->template_data, true);
+        }
+
+        $element_class = $element->elementType->class_name;
+        $template_data_exists = !empty($template_data) && array_key_exists($element_class, $template_data);
+        $element_template_data = $template_data_exists ? $template_data[$element_class] : [];
+
+        $this->renderElement($element, 'create', $form, null, $element_template_data, array(
             'previous_parent_id' => $previous_id,
         ), false, true);
     }
@@ -1198,11 +1546,118 @@ class BaseEventTypeController extends BaseModuleController
         $this->renderPartial(
             '_previous',
             array(
-            'elements' => $this->getPrevious($element_type),
+                'elements' => $this->getPrevious($element_type),
             ),
             false,
             true // Process output to deal with script requirements
         );
+    }
+
+    /**
+     * Save a draft of the current event
+     *
+     * @return void
+     */
+    public function actionSaveDraft(): void
+    {
+        $form_data = json_decode(Yii::app()->request->getParam('form_data'));
+        $is_auto_save = Yii::app()->request->getParam('is_auto_save');
+        $episode = \Episode::model()->findByPk(Yii::app()->request->getParam('OE_episode_id'));
+        $patient = $episode->patient;
+        $event_id = Yii::app()->request->getParam('OE_event_id');
+        $draft_id = Yii::app()->request->getParam('draft_id');
+        $module_class = Yii::app()->request->getParam('OE_module_class');
+        $originating_url = preg_replace('/&draft_id=\d+/', '', Yii::app()->request->getParam('originating_url'));
+
+        $user_id = Yii::app()->user->id;
+
+        $structured_form_data = null;
+        parse_str($form_data, $structured_form_data);
+
+        $transaction = Yii::app()->db->beginTransaction();
+
+        $draft = !empty($draft_id) ? \EventDraft::model()->findByPk($draft_id) : new \EventDraft();
+
+        if (empty($draft)) {
+            throw new \CHttpException(404, "Cannot find draft with provided ID");
+        }
+
+        if ($draft->isNewRecord) {
+            $draft->created_user_id = $user_id;
+            $draft->is_auto_save = $is_auto_save;
+            $draft->institution_id = Yii::app()->session->get('selected_institution_id');
+            $draft->site_id = Yii::app()->session->get('selected_site_id');
+            $draft->event_id = $event_id;
+            $draft->episode_id = $episode->id;
+            $draft->event_type_id = \EventType::model()->findByAttributes(['class_name' => $module_class])->id;
+        }
+
+        //Try and strip out as much non-element information as possible
+        unset($structured_form_data['YII_CSRF_TOKEN']);
+        unset($structured_form_data['Event']);
+        unset($structured_form_data['draft_id']);
+
+        $draft->last_modified_user_id = $user_id;
+        $draft->originating_url = $originating_url;
+        $draft->data = json_encode($structured_form_data);
+
+        $warnings = [];
+
+        if ($draft->save()) {
+            $transaction->commit();
+
+            $draft->refresh();
+
+            $newer_patient_record_edits = Yii::app()->db->createCommand()
+                ->select('COUNT(*)')
+                ->from('event ev')
+                ->join('episode ep', 'ev.episode_id = ep.id')
+                ->where('ep.patient_id = :patient_id', [':patient_id' => $patient->id])
+                ->andWhere('ev.last_modified_date > :draft_created_date', [':draft_created_date' => $draft->created_date])
+                ->queryScalar();
+
+            if ($newer_patient_record_edits > 0) {
+                $warnings[] = "There are edits to the patient record more recent than this draft";
+            }
+
+            $warnings = count($warnings) > 0 ? ['warnings' => $warnings] : [];
+
+            $return_value = array_merge(['draft_id' => $draft->id], $warnings);
+
+            $this->renderJSON($return_value);
+        } else {
+            $transaction->rollback();
+
+            $return_value = ['errors' => $draft->getErrors()];
+
+            $this->renderJSON($return_value);
+        }
+    }
+
+    public function actionDeleteDrafts(): void
+    {
+        $request = Yii::app()->request;
+        $event_type = EventType::model()->find('class_name = :class_name', [':class_name' => $request->getPost('event_type')]);
+        $criteria = new CDbCriteria();
+        $criteria->index = 'id';
+        $criteria->condition = 't.event_type_id = :event_type AND episode.patient_id = :patient AND t.last_modified_user_id = :user';
+        $criteria->params = [
+            ':event_type' => $event_type->id,
+            ':patient' => $request->getPost('patient_id'),
+            ':user' => Yii::app()->user->id
+        ];
+        $drafts = EventDraft::model()->with('episode')->findAll($criteria);
+        $deleted_draft_ids = array();
+        $transaction = Yii::app()->db->beginTransaction();
+        foreach ($drafts as $draft) {
+            $deleted_draft_ids[] = $draft->id;
+            if (!$draft->delete()) {
+                $transaction->rollback();
+                throw new CHttpException(500, 'Unable to delete existing event creation drafts');
+            }
+        }
+        $transaction->commit();
+        $this->renderJSON($deleted_draft_ids);
     }
 
     /**
@@ -1219,7 +1674,7 @@ class BaseEventTypeController extends BaseModuleController
      *
      * @param $element
      * @param $data
-     * @param null $index
+     * @param string|int|null $index
      */
     protected function setElementAttributesFromData($element, $data, $index = null)
     {
@@ -1292,7 +1747,7 @@ class BaseEventTypeController extends BaseModuleController
          * Check if the element has data , but not the element removed flag
          * or if the element has removed flag set and if its not set to 0
          */
-        if (isset($data[$f_key]) && $is_removed) {
+        if (isset($data[$f_key]) && !empty($data[$f_key]) && $is_removed) {
             $keys = array_keys($data[$f_key]);
             if (is_array($data[$f_key][$keys[0]]) && !count(array_filter(array_keys($data[$f_key]), 'is_string'))) {
                 // there is more than one element of this type
@@ -1340,6 +1795,14 @@ class BaseEventTypeController extends BaseModuleController
         }
     }
 
+    protected function initialiseOpenElementsFromData($data): void
+    {
+        $this->setAndValidateElementsFromData($data);
+        foreach ($this->open_elements as $element) {
+            $element->clearErrors();
+        }
+    }
+
     /**
      * Set the attributes of the given $elements from the given structured array.
      * Returns any validation errors that arise.
@@ -1359,8 +1822,9 @@ class BaseEventTypeController extends BaseModuleController
         $has_last_modified_date_value = isset($data['Event']) && isset($data['Event']['last_modified_date']);
         if (
             !$this->event->isNewRecord
+            && Yii::app()->user->id !== $this->event->last_modified_user_id
             && ($has_last_modified_date_value
-            && $data['Event']['last_modified_date'] !== $this->event->last_modified_date)
+                && $data['Event']['last_modified_date'] !== $this->event->last_modified_date)
         ) {
             $user = $this->event->usermodified->getFullName();
             $this->has_conflict = true;
@@ -1370,6 +1834,7 @@ class BaseEventTypeController extends BaseModuleController
         // only process data for elements that are part of the element type set for the controller event type
         foreach ($this->getAllElementTypes() as $element_type) {
             $from_data = $this->getElementsForElementType($element_type, $data);
+
             if (count($from_data) > 0) {
                 $elements = array_merge($elements, $from_data);
             } elseif ($element_type->required) {
@@ -1491,6 +1956,17 @@ class BaseEventTypeController extends BaseModuleController
      */
     public function saveEvent($data)
     {
+        if (
+            isset(Yii::app()->session['active_step_id'])
+            && Yii::app()->session['active_step_id'] !== $this->event->step_id
+        ) {
+            $step = PathwayStep::model()->findByPk(Yii::app()->session['active_step_id']);
+
+            if ($step->getState('event_type') === $this->event->eventType->class_name) {
+                $this->event->worklist_patient_id = Yii::app()->session['active_worklist_patient_id'];
+                $this->event->step_id = Yii::app()->session['active_step_id'];
+            }
+        }
 
         if (!$this->event->isNewRecord) {
             // this is an edit, so need to work out what we are deleting
@@ -1518,7 +1994,9 @@ class BaseEventTypeController extends BaseModuleController
             }
         } else {
             if (!$this->event->save()) {
-                OELog::log("Failed to create new event for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id);
+                OELog::log(
+                    "Failed to create new event for episode_id={$this->episode->id}, event_type_id=" . $this->event_type->id
+                );
                 throw new Exception('Unable to save event.');
             }
             if (isset($data['eur_result'])) {
@@ -1540,7 +2018,6 @@ class BaseEventTypeController extends BaseModuleController
 
         // update the information attribute on the event
         $this->updateEventInfo();
-
         return true;
     }
 
@@ -1651,7 +2128,7 @@ class BaseEventTypeController extends BaseModuleController
         ) {
             $event_type_id = $this->event->attributes["event_type_id"];
             $event_type = EventType::model()->findByAttributes(array('id' => $event_type_id));
-            $event_name =  preg_replace('/\s+/', '_', $event_type->name);
+            $event_name = preg_replace('/\s+/', '_', $event_type->name);
             $this->renderPartial(('//patient/_patient_manage_elements'), array('event_name' => $event_name));
         }
     }
@@ -1661,7 +2138,7 @@ class BaseEventTypeController extends BaseModuleController
      * Extend the parent method to support inheritance of modules (and rendering the element views from the parent module).
      *
      * @param string $view
-     * @param null $data
+     * @param ?array $data
      * @param bool $return
      * @param bool $processOutput
      *
@@ -1690,7 +2167,8 @@ class BaseEventTypeController extends BaseModuleController
      * @param BaseEventTypeElement $element
      * @param string $action
      * @param BaseCActiveBaseEventTypeCActiveForm $form
-     * @param array $data
+     * @param ?array $data
+     * @param array $template_data
      * @param array $view_data Data to be passed to the view.
      * @param bool $return Whether the rendering result should be returned instead of being displayed to end users.
      * @param bool $processOutput Whether the rendering result should be postprocessed using processOutput.
@@ -1701,10 +2179,11 @@ class BaseEventTypeController extends BaseModuleController
         $element,
         $action,
         $form,
-        $data,
-        $view_data = array(),
-        $return = false,
-        $processOutput = false
+        ?array $data = null,
+        array $template_data = array(),
+        array $view_data = array(),
+        bool $return = false,
+        bool $processOutput = false
     ) {
         if (is_string($action)) {
             if (strcasecmp($action, 'PDFPrint') == 0) {
@@ -1728,11 +2207,13 @@ class BaseEventTypeController extends BaseModuleController
 
             $use_container_view = ($element->useContainerView && $container_view);
             $view_data = array_merge(array(
-                'element' => $element,
-                'data' => $data,
-                'form' => $form,
-                'container_view' => $container_view,
-            ), $view_data);
+                                         'element' => $element,
+                                         'data' => $data,
+                                         'form' => $form,
+                                         'container_view' => $container_view,
+                                         'template_data' => $template_data,
+                                         'prefilled' => !empty($template_data),
+                                     ), $view_data);
 
             // Render the view.
             ($use_container_view) && $this->beginContent($container_view, $view_data);
@@ -1745,6 +2226,8 @@ class BaseEventTypeController extends BaseModuleController
                             'patient' => $this->patient,
                             'element' => $view_data['element'],
                             'data' => $view_data['data'],
+                            'template_data' => $view_data['template_data'],
+                            'prefilled' => !empty($view_data['prefilled']),
                             'mode' => $this->getElementWidgetMode($action),
                         )
                     );
@@ -1752,7 +2235,12 @@ class BaseEventTypeController extends BaseModuleController
                 $widget->form = $view_data['form'];
                 $this->renderPartial('//elements/widget_element', array('widget' => $widget), $return, $processOutput);
             } else {
-                $this->renderPartial($this->getElementViewPathAlias($element) . $view, $view_data, $return, $processOutput);
+                $this->renderPartial(
+                    $this->getElementViewPathAlias($element) . $view,
+                    $view_data,
+                    $return,
+                    $processOutput
+                );
             }
             ($use_container_view) && $this->endContent();
         }
@@ -1841,8 +2329,26 @@ class BaseEventTypeController extends BaseModuleController
         if (count($elements) < 1) {
             return;
         }
+        $template_data = array();
+        if ($this->template) {
+            $template_detail = $this->template->getDetailRecord();
+            $template_data = json_decode($template_detail->template_data, true);
+        } elseif ($this->event && $this->event->template) {
+            $template_detail = $this->event->template->getDetailRecord();
+            $template_data = json_decode($template_detail->template_data, true);
+        }
+
         foreach ($elements as $element) {
-            $this->renderElement($element, $action, $form, $data);
+            $element_class = $element->elementType->class_name;
+            $template_data_exists = !empty($template_data) && array_key_exists($element_class, $template_data);
+            $element_template_data = $template_data_exists ? $template_data[$element_class] : [];
+            $this->renderElement(
+                $element,
+                $action,
+                $form,
+                $data,
+                $element_template_data
+            );
         }
     }
 
@@ -1863,11 +2369,14 @@ class BaseEventTypeController extends BaseModuleController
             ? $el_view
             : $this->getElementViewPathAlias($element) . '_optional_element';
 
-        $this->renderPartial($view, array(
-            'element' => $element,
-            'data' => $data,
-            'form' => $form,
-        ), false, false);
+        $this->renderPartial(
+            $view,
+            array(
+                'element' => $element,
+                'data' => $data,
+                'form' => $form,
+            ),
+        );
     }
 
     /**
@@ -1905,7 +2414,7 @@ class BaseEventTypeController extends BaseModuleController
     /**
      * Get the current episode for the firm and patient.
      *
-     * @return Episode
+     * @return ?Episode
      */
     public function getEpisode()
     {
@@ -1968,7 +2477,7 @@ class BaseEventTypeController extends BaseModuleController
         }
 
         if (!$this->event = Event::model()->findByPk($id)) {
-            throw new Exception("Method not found: " . $id);
+            throw new Exception("Event not found: " . $id);
         }
 
         $this->attachment_print_title = Yii::app()->request->getParam('attachment_print_title', null);
@@ -2014,20 +2523,25 @@ class BaseEventTypeController extends BaseModuleController
         foreach (array('left', 'middle', 'right') as $section) {
             if (isset(Yii::app()->params['puppeteer_footer_' . $section . '_' . $this->event_type->class_name])) {
                 $setMethod = $section . 'FooterTemplate';
-                Yii::app()->puppeteer->$setMethod = Yii::app()->params['puppeteer_footer_' . $section . '_' . $this->event_type->class_name];
+                Yii::app()->puppeteer->$setMethod = Yii::app()
+                    ->params['puppeteer_footer_' . $section . '_' . $this->event_type->class_name];
             }
         }
 
         foreach (array('top', 'bottom', 'left', 'right') as $margin) {
             if (isset(Yii::app()->params['puppeteer_' . $margin . '_margin_' . $this->event_type->class_name])) {
                 $setMethod = $margin . 'Margin';
-                Yii::app()->puppeteer->$setMethod = Yii::app()->params['puppeteer_' . $margin . '_margin_' . $this->event_type->class_name];
+                Yii::app()->puppeteer->$setMethod = Yii::app()
+                    ->params['puppeteer_' . $margin . '_margin_' . $this->event_type->class_name];
             }
         }
 
         foreach (PDFFooterTag::model()->findAll('event_type_id = ?', array($this->event_type->id)) as $pdf_footer_tag) {
             if ($api = Yii::app()->moduleAPI->get($this->event_type->class_name)) {
-                Yii::app()->puppeteer->setCustomTag($pdf_footer_tag->tag_name, $api->{$pdf_footer_tag->method}($this->event->id));
+                Yii::app()->puppeteer->setCustomTag(
+                    $pdf_footer_tag->tag_name,
+                    $api->{$pdf_footer_tag->method}($this->event->id)
+                );
             }
         }
 
@@ -2049,11 +2563,10 @@ class BaseEventTypeController extends BaseModuleController
      * Saves a print to PDF as a ProtectedFile object and file
      *
      * @param $id
-     * @return array
+     * @return array|void
      */
     public function actionSavePDFprint($id)
     {
-
         $auto_print = Yii::app()->request->getParam('auto_print', true);
         $print_footer = Yii::app()->request->getParam('print_footer', 'true') === 'true';
         $inject_autoprint_js = $auto_print == "0" ? false : $auto_print;
@@ -2147,10 +2660,14 @@ class BaseEventTypeController extends BaseModuleController
     public function printHTMLCopy($id, $elements, $template = 'print')
     {
         $this->layout = '//layouts/printCopy';
-        $result = $this->render($template, array(
-            'elements' => $elements,
-            'eventId' => $id,
-        ), true);
+        $result = $this->render(
+            $template,
+            array(
+                'elements' => $elements,
+                'eventId' => $id,
+            ),
+            true
+        );
 
         echo $result;
     }
@@ -2205,10 +2722,12 @@ class BaseEventTypeController extends BaseModuleController
                     if (Event::model()->count('episode_id=?', array($this->event->episode_id)) == 0) {
                         $this->event->episode->deleted = 1;
                         if (!$this->event->episode->save()) {
-                            throw new Exception('Unable to save episode: ' . print_r(
-                                $this->event->episode->getErrors(),
-                                true
-                            ));
+                            throw new Exception(
+                                'Unable to save episode: ' . print_r(
+                                    $this->event->episode->getErrors(),
+                                    true
+                                )
+                            );
                         }
 
                         $this->event->episode->audit('episode', 'delete', false);
@@ -2216,7 +2735,9 @@ class BaseEventTypeController extends BaseModuleController
                         $transaction->commit();
 
                         if (!$this->dont_redirect) {
-                            $this->redirect((new CoreAPI())->generatePatientLandingPageLink($this->event->episode->patient));
+                            $this->redirect(
+                                (new CoreAPI())->generatePatientLandingPageLink($this->event->episode->patient)
+                            );
                         } else {
                             return true;
                         }
@@ -2228,8 +2749,12 @@ class BaseEventTypeController extends BaseModuleController
                     );
                     $transaction->commit();
 
+                    $this->afterDeleteEvent($this->event);
+
                     if (!$this->dont_redirect) {
-                        $this->redirect((new CoreAPI())->generatePatientLandingPageLink($this->event->episode->patient));
+                        $this->redirect(
+                            (new CoreAPI())->generatePatientLandingPageLink($this->event->episode->patient)
+                        );
                     }
 
                     return true;
@@ -2251,7 +2776,9 @@ class BaseEventTypeController extends BaseModuleController
         if ($this->editable) {
             $this->event_tabs[] = array(
                 'label' => 'Edit',
-                'href' => Yii::app()->createUrl($this->event->eventType->class_name . '/default/update/' . $this->event->id),
+                'href' => Yii::app()->createUrl(
+                    $this->event->eventType->class_name . '/default/update?id=' . $this->event->id
+                ),
             );
         }
 
@@ -2259,9 +2786,9 @@ class BaseEventTypeController extends BaseModuleController
 
         $episodes = $this->getEpisodes();
         $viewData = array_merge(array(
-            'eventId' => $id,
-            'errors' => isset($errors) ? $errors : null,
-        ), $episodes);
+                                    'eventId' => $id,
+                                    'errors' => isset($errors) ? $errors : null,
+                                ), $episodes);
 
         $this->render('delete', $viewData);
     }
@@ -2274,22 +2801,56 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function afterCreateEvent($event)
     {
+        if (isset($event->draft)) {
+            $event->draft->delete();
+        }
+
+        $this->updateFollowUpAggregate();
+    }
+
+    /**
+     * Called after the event is saved, transaction is commited
+     * useful for PAS callouts following successful saving of an updated event
+     *
+     * @param \Event $event
+     */
+    protected function afterUpdateEvent($event)
+    {
+        if (isset($event->draft)) {
+            $event->draft->delete();
+        }
+
+        $this->updateFollowUpAggregate();
+    }
+
+    /**
+     * Called after the event is deleted, transaction is commited
+     * useful for PAS callouts following successful deletion of an event
+     *
+     * @param \Event $event
+     */
+    protected function afterDeleteEvent($event)
+    {
+        $this->updateFollowUpAggregate();
     }
 
     /**
      * Called after event (and elements) has been updated.
      *
      * @param Event $event
+     * @return array Validation errors
      */
     protected function afterUpdateElements($event)
     {
         $this->updateUniqueCode($event);
+        return [];
     }
 
     /**
-     * Called after event (and elements) have been created.
+     * Called after event (and elements) has been created.
      *
      * @param Event $event
+     * @return array Validation errors
      */
     protected function afterCreateElements($event)
     {
@@ -2297,7 +2858,10 @@ class BaseEventTypeController extends BaseModuleController
 
         $site_id = \Yii::app()->session->get('selected_site_id');
         $firm_id = \Yii::app()->session->get('selected_firm_id');
-        $this->addToUnbookedWorklist($site_id, $firm_id);
+        if (!$event->worklist_patient_id) {
+            $this->addToUnbookedWorklist($site_id, $firm_id);
+        }
+        return [];
     }
 
     /**
@@ -2309,7 +2873,9 @@ class BaseEventTypeController extends BaseModuleController
             if ($event->eventType->class_name === $unique['event']) {
                 foreach ($event->getElements() as $element) {
                     if (in_array(Helper::getNSShortname($element), $unique['element'])) {
-                        $event_unique_code = UniqueCodeMapping::model()->findAllByAttributes(array('event_id' => $event->id));
+                        $event_unique_code = UniqueCodeMapping::model()->findAllByAttributes(
+                            array('event_id' => $event->id)
+                        );
                         if (!$event_unique_code) {
                             $this->createNewUniqueCodeMapping($event->id, null);
                         }
@@ -2327,8 +2893,10 @@ class BaseEventTypeController extends BaseModuleController
         if ($this->patient) {
             $patient_identifier = PatientIdentifier::model()->find(
                 'patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id',
-                [':patient_id' => $this->patient->id,
-                    ':patient_identifier_type_id' => Yii::app()->params['oelauncher_patient_identifier_type']]
+                [
+                    ':patient_id' => $this->patient->id,
+                    ':patient_identifier_type_id' => SettingMetadata::model()->getSetting('oelauncher_patient_identifier_type')
+                ]
             );
             $this->jsVars['OE_patient_id'] = $this->patient->id;
             $this->jsVars['OE_patient_hosnum'] = $patient_identifier->value ?? null;
@@ -2336,12 +2904,20 @@ class BaseEventTypeController extends BaseModuleController
         if ($this->event) {
             $this->jsVars['OE_event_id'] = $this->event->id;
 
-            if (Yii::app()->params['event_print_method'] == 'pdf') {
-                $this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name . '/default/PDFprint/' . $this->event->id);
+            if (SettingMetadata::model()->getSetting('event_print_method') == 'pdf') {
+                $this->jsVars['OE_print_url'] = Yii::app()->createUrl(
+                    $this->getModule()->name . '/default/PDFprint/' . $this->event->id
+                );
             } else {
-                $this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name . '/default/print/' . $this->event->id);
+                $this->jsVars['OE_print_url'] = Yii::app()->createUrl(
+                    $this->getModule()->name . '/default/print/' . $this->event->id
+                );
             }
         }
+        if ($this->episode) {
+            $this->jsVars['OE_episode_id'] = $this->episode->id;
+        }
+
         $this->jsVars['OE_asset_path'] = $this->assetPath;
         $firm = Firm::model()->findByPk(Yii::app()->session->get('selected_firm_id'));
         $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
@@ -2390,9 +2966,9 @@ class BaseEventTypeController extends BaseModuleController
             } else {
                 $this->event->requestDeletion($_POST['delete_reason']);
 
-                if (Yii::app()->params['admin_email']) {
+                if (SettingMetadata::model()->getSetting('admin_email')) {
                     mail(
-                        Yii::app()->params['admin_email'],
+                        SettingMetadata::model()->getSetting('admin_email'),
                         'Request to delete an event',
                         'A request to delete an event has been submitted.  Please log in to the admin system to review the request.',
                         'From: OpenEyes'
@@ -2401,7 +2977,11 @@ class BaseEventTypeController extends BaseModuleController
 
                 Yii::app()->user->setFlash('success', 'Your request to delete this event has been submitted.');
 
-                header('Location: ' . Yii::app()->createUrl('/' . $this->event_type->class_name . '/default/view/' . $this->event->id));
+                header(
+                    'Location: ' . Yii::app()->createUrl(
+                        '/' . $this->event_type->class_name . '/default/view/' . $this->event->id
+                    )
+                );
 
                 return true;
             }
@@ -2498,9 +3078,14 @@ class BaseEventTypeController extends BaseModuleController
     {
         $pcrRisk = new \PcrRisk();
         $pcrData = Yii::app()->request->getPost('PcrRisk', array());
+        $success = true;
         foreach ($pcrData as $side => $sideData) {
-            $pcrRisk->persist($side, $this->patient, $sideData);
+            $values = $pcrRisk->persist($side, $this->patient, $sideData);
+            if (!empty($values->getErrors())) {
+                return $values->getErrors();
+            }
         }
+        return [];
     }
 
 
@@ -2560,8 +3145,9 @@ class BaseEventTypeController extends BaseModuleController
                 'preview',
                 '',
                 $content,
-                ['width' => Yii::app()->params['lightning_viewer']['image_width'],
-                 'viewport_width' => Yii::app()->params['lightning_viewer']['viewport_width']
+                [
+                    'width' => Yii::app()->params['lightning_viewer']['image_width'],
+                    'viewport_width' => Yii::app()->params['lightning_viewer']['viewport_width']
                 ]
             );
 
@@ -2588,7 +3174,12 @@ class BaseEventTypeController extends BaseModuleController
                         case 'application/pdf':
                         case 'image/jpeg':
                         case 'image/png':
-                            $this->createPdfPreviewImages(null, $attachmentItem->attachmentData->bodySiteSnomedType->getEye(), $attachmentItem->attachmentData, $document_number);
+                            $this->createPdfPreviewImages(
+                                null,
+                                $attachmentItem->attachmentData->bodySiteSnomedType->getEye(),
+                                $attachmentItem->attachmentData,
+                                $document_number
+                            );
                             break;
                         default:
                             break;
@@ -2639,9 +3230,9 @@ class BaseEventTypeController extends BaseModuleController
         $this->setOpenElementsFromCurrentEvent('view');
 
         $viewData = array_merge(array(
-            'elements' => $this->open_elements,
-            'eventId' => $this->event->id,
-        ), $this->extraViewProperties);
+                                    'elements' => $this->open_elements,
+                                    'eventId' => $this->event->id,
+                                ), $this->extraViewProperties);
 
         $this->moduleStateCssClass = 'view';
 
@@ -2656,7 +3247,9 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function getEventAsHtml()
     {
-        $content = Yii::app()->createAbsoluteUrl("{$this->getModule()->name}/{$this->id}/renderEventImage/{$this->event->id}");
+        $content = Yii::app()->createAbsoluteUrl(
+            "{$this->getModule()->name}/{$this->id}/renderEventImage/{$this->event->id}"
+        );
 
         return $content;
     }
@@ -2688,7 +3281,7 @@ class BaseEventTypeController extends BaseModuleController
 
         if (!file_exists(dirname($path))) {
             if (!is_dir(dirname($path)) && !file_exists(dirname($path))) {
-                mkdir(dirname($path), 0775, true);
+                mkdir(dirname($path), 0774, true);
             }
         }
 
@@ -2824,7 +3417,9 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function savePdfPreviewAsEventImage($page, $eye, $document_number, $attachment_data_id)
     {
-        $pagePreviewPath = $this->getPreviewImagePath(['page' => $page, 'eye' => $eye, 'document_number' => $document_number]);
+        $pagePreviewPath = $this->getPreviewImagePath(
+            ['page' => $page, 'eye' => $eye, 'document_number' => $document_number]
+        );
         if (!file_exists($pagePreviewPath)) {
             return false;
         }
@@ -2836,9 +3431,20 @@ class BaseEventTypeController extends BaseModuleController
         $this->whiteOutImageImagickBackground($imagickPage);
 
         // in case some other process removed the file or directory
-        $pagePreviewPath = $this->getPreviewImagePath(['page' => $page, 'eye' => $eye, 'document_number' => $document_number]);
+        $pagePreviewPath = $this->getPreviewImagePath(
+            ['page' => $page, 'eye' => $eye, 'document_number' => $document_number]
+        );
         $imagickPage->writeImage($pagePreviewPath);
-        $this->saveEventImage('CREATED', ['image_path' => $pagePreviewPath, 'page' => $page, 'eye_id' => $eye, 'document_number' => $document_number, 'attachment_data_id' => $attachment_data_id]);
+        $this->saveEventImage(
+            'CREATED',
+            [
+                'image_path' => $pagePreviewPath,
+                'page' => $page,
+                'eye_id' => $eye,
+                'document_number' => $document_number,
+                'attachment_data_id' => $attachment_data_id
+            ]
+        );
 
         if (!Yii::app()->params['lightning_viewer']['keep_temp_files']) {
             @unlink($pagePreviewPath);
@@ -2857,7 +3463,9 @@ class BaseEventTypeController extends BaseModuleController
     {
         if ($imagick->getImageAlphaChannel()) {
             // 11 Is the alphachannel_flatten value , a hack until all machines use the same imagick version
-            $imagick->setImageAlphaChannel(defined('Imagick::ALPHACHANNEL_FLATTEN') ? Imagick::ALPHACHANNEL_FLATTEN : 11);
+            $imagick->setImageAlphaChannel(
+                defined('Imagick::ALPHACHANNEL_FLATTEN') ? Imagick::ALPHACHANNEL_FLATTEN : 11
+            );
             $imagick->setImageBackgroundColor('white');
             $imagick->mergeImageLayers(imagick::LAYERMETHOD_FLATTEN);
         }
@@ -2890,20 +3498,20 @@ class BaseEventTypeController extends BaseModuleController
      */
     protected function setContext(Firm $context)
     {
-            // get the user
-            $user_id = $this->getApp()->user->id;
-            $user = User::model()->findByPk($user_id);
+        // get the user
+        $user_id = $this->getApp()->user->id;
+        $user = User::model()->findByPk($user_id);
 
-            // set the firm on the user (process taken from SiteAndFirmWidget)
-            $user->changeFirm($context->id);
+        // set the firm on the user (process taken from SiteAndFirmWidget)
+        $user->changeFirm($context->id);
         if (!$user->save(false)) {
             throw new CHttpException(404, 'Unexpected error setting user context.');
         }
 
-            $this->selectedFirmId = $context->id;
+        $this->selectedFirmId = $context->id;
 
-            $user->audit('user', 'change-firm', $user->last_firm_id);
-            $this->getApp()->session['selected_firm_id'] = $context->id;
+        $user->audit('user', 'change-firm', $user->last_firm_id);
+        $this->getApp()->session['selected_firm_id'] = $context->id;
     }
 
     /**
@@ -2916,6 +3524,79 @@ class BaseEventTypeController extends BaseModuleController
         $this->initWithEventId(@$_GET['id']);
         if (!$this->event->deleted) {
             $this->redirect($this->event->getEventViewPath());
+        }
+    }
+
+    /**
+     * Find and then associate an appropriate step to the supplied event before updating that step
+     * @param $event - The event to use; if not supplied, defaults to $this->event from the controller
+     */
+    protected function updateEventStep($event = null)
+    {
+        $event ??= $this->event;
+
+        if (isset(Yii::app()->session['selected_institution_id'])) {
+            $worklist_manager = new \WorklistManager();
+
+            $user_worklists = $worklist_manager->getCurrentAutomaticWorklistsForUser(null);
+
+            $worklist_patients = array();
+            foreach ($user_worklists as $user_worklist) {
+                $worklist_patients = array_merge($worklist_patients, \WorklistPatient::model()->findAllByAttributes(array('patient_id' => $this->patient->id, 'worklist_id' => $user_worklist->id)));
+            }
+
+            $applicable_pathstep = null;
+
+            foreach ($worklist_patients as $worklist_patient) {
+                $pathway = $worklist_patient->pathway;
+                $event->worklist_patient_id = $worklist_patient->id;
+
+                //If pathway hasn't been instanced, it doesn't make sense to complete a started step
+                if (isset($pathway)) {
+                    $pathsteps = $pathway->started_steps;
+                    foreach ($pathsteps as $pathstep) {
+                        $pathstep_data = json_decode($pathstep->state_data);
+                        if ($this->isEventApplicableToWorklistPathstepData($pathstep_data)) {
+                            $applicable_pathstep = $pathstep;
+                            break;
+                        }
+                    }
+                }
+
+                if (isset($applicable_pathstep)) {
+                    // bind the step id to the event, when the event_created event is dispatched, only relevant step will be marked as completed
+                    $event->step_id = $applicable_pathstep->id;
+                    break;
+                }
+            }
+
+            if (isset($applicable_pathstep)) {
+                $applicable_pathstep->nextStatus();
+                $applicable_pathstep->refresh();
+
+                $pathway = $applicable_pathstep->pathway;
+
+                $pathway->updateStatus();
+
+                if ((int)$applicable_pathstep->status === PathwayStep::STEP_COMPLETED) {
+                    Yii::app()->event->dispatch('step_completed', ['step' => $applicable_pathstep]);
+                }
+
+                if (isset($pathway->requested_steps[0])) {
+                    $next_pathstep = $pathway->requested_steps[0];
+
+                    if ($next_pathstep->type->type == "hold") {
+                        $next_pathstep->nextStatus();
+                        $next_pathstep->refresh();
+
+                        $pathway->updateStatus();
+
+                        if ((int)$next_pathstep->status === PathwayStep::STEP_STARTED) {
+                            Yii::app()->event->dispatch('step_started', ['step' => $next_pathstep]);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -2950,5 +3631,71 @@ class BaseEventTypeController extends BaseModuleController
         ), $this->extraViewProperties);
         $this->jsVars['OE_event_last_modified'] = strtotime($this->event->last_modified_date);
         $this->render('//deleted_events/removed', $viewData);
+    }
+
+    public function actionSaveTemplate()
+    {
+        $template_name = \Yii::app()->request->getParam('template_name');
+        $event_id = \Yii::app()->request->getParam('event_id');
+        $event = Event::model()->findByPk($event_id);
+
+        if ($event) {
+            $template = $event->createTemplateFromEvent($template_name);
+
+            if ($template) {
+                $this->redirect(array($this->successUri . $event->id));
+            } else {
+                throw new Exception("Could not create template: unable to save data");
+            }
+        } else {
+            throw new Exception("Could not create template: event not found");
+        }
+    }
+
+    public function actionUpdateTemplate()
+    {
+        $template_id = \Yii::app()->request->getParam('template_id');
+        $event_id = \Yii::app()->request->getParam('event_id');
+
+        $event = Event::model()->findByPk($event_id);
+
+        if ($event) {
+            $event->updateTemplateFromEvent($template_id);
+
+            $this->redirect(array($this->successUri . $event->id));
+        } else {
+            throw new Exception("Could not update template: event not found");
+        }
+    }
+
+    protected function resetActiveWorklistSessionState()
+    {
+        unset(
+            Yii::app()->session['active_worklist_patient_id'],
+            Yii::app()->session['active_step_id'],
+            Yii::app()->session['active_step_state_data']
+        );
+    }
+
+    protected function validateOrResetActiveWorklistSessionState()
+    {
+        if (empty(Yii::app()->session['active_worklist_patient_id'])) {
+            return;
+        }
+
+        $worklist_patient = WorklistPatient::model()->findByPk(Yii::app()->session['active_worklist_patient_id']);
+
+        if ($worklist_patient->patient_id === $this->patient->id) {
+            return;
+        }
+
+        $this->resetActiveWorklistSessionState();
+    }
+
+    private function updateFollowUpAggregate()
+    {
+        if (!empty($this->patient)) {
+            \FollowupAnalysisAggregate::updateForPatientExaminationOrDocument($this->patient->id);
+        }
     }
 }

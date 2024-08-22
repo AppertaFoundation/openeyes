@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php $fieldset_class = isset($htmlOptions['fieldset-class']) ? $htmlOptions['fieldset-class'] : '';
@@ -24,7 +26,9 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
     <?php if (!$no_element) { ?>
     <input type="hidden" value="" name="<?=\CHtml::modelName($element) ?>[<?php echo $field ?>]">
     <?php } ?>
-
+    <?php if (@$htmlOptions['container']) {
+        echo('<' . $htmlOptions['container'] . '>');
+    } ?>
     <?php foreach ($data as $id => $data_value) { ?>
         <?php
         $options = array('value' => $id, 'id' => CHtml::modelName($element) . '_' . $field . '_' . $id);
@@ -33,7 +37,14 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
             foreach ($htmlOptions['options'][$id] as $k => $v) {
                 $options[$k] = $v;
             }
-        } ?>
+        }
+        if (array_key_exists('prefilled_value', $htmlOptions) && $htmlOptions['prefilled_value'] !== null) {
+            $options['data-prefilled-value'] = $htmlOptions['prefilled_value'];
+        }
+        if (array_key_exists('test', $htmlOptions) && $htmlOptions['test'] !== null) {
+            $options['data-test'] = $htmlOptions['test'];
+        }
+        ?>
     <label class="inline highlight <?= $label_class ?>">
         <?=\CHtml::radioButton(
             $name,
@@ -43,7 +54,9 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
       <span><?=\CHtml::encode($data_value) ?></span>
     </label>
     <?php } ?>
-
+         <?php if (@$htmlOptions['container']) {
+                echo('</' . $htmlOptions['container'] . '>');
+         } ?>
 <?php } else { ?>
   <fieldset id="<?=\CHtml::modelName($element) . '_' . $field ?>"
             class="cols-full flex-layout flex-left<?= $fieldset_class ?> <?php echo $hidden ? 'hidden' : '' ?>">
@@ -60,7 +73,7 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
     </label>
       <?php if (!$no_element) { ?>
         <input type="hidden" value="" name="<?=\CHtml::modelName($element) ?>[<?php echo $field ?>]">
-        <?php } ?>
+      <?php } ?>
     <div class="cols-<?php echo $layoutColumns['field']; ?> column">
         <?php $i = 0; ?>
         <?php if ($label_above) { ?>
@@ -84,6 +97,10 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
                 }
 
                 $class = isset($options['class']) ? ($options['class'] . " ") : '';
+
+                if (array_key_exists('prefilled_value', $htmlOptions) && $htmlOptions['prefilled_value'] !== null) {
+                    $options['data-prefilled-value'] = $htmlOptions['prefilled_value'];
+                }
                 $options['class'] = $class . str_replace(' ', '', $data_value);
 
                 echo CHtml::radioButton(

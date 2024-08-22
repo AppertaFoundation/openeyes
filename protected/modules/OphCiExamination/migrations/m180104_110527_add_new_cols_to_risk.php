@@ -54,7 +54,7 @@ class m180104_110527_add_new_cols_to_risk extends OEMigration
         $subspecialty_cataract_id = $this->dbConnection->createCommand()->select('id')->from('subspecialty')
             ->where('name=:name', array(':name' => 'Cataract'))
             ->queryScalar();
-            
+
         if ($subspecialty_cataract_id) {
             $this->insert('ophciexamination_risk_set', [
                 'name' => 'Cataract NOD',
@@ -126,6 +126,5 @@ class m180104_110527_add_new_cols_to_risk extends OEMigration
         $this->dropOETable('ophciexamination_risk_set_entry', true);
         $this->dropOETable('ophciexamination_risk_set_assignment', true);
         $this->dropOETable('ophciexamination_risk_set', true);
-
     }
 }

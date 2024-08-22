@@ -50,13 +50,13 @@ $entry_allergy_ids = isset($entry->medication_id) ?
     }, $entry->medication->allergies)) : $allergy_ids ?? '';
 ?>
 
-<tr data-key="<?= $row_count ?>" data-event-medication-use-id="<?php echo $entry->id; ?>" data-allergy-ids="<?php echo $entry_allergy_ids ?>" class="divider col-gap js-first-row <?= $field_prefix ?>_row <?= $is_new ? ' new' : '' ?><?= $entry->hidden === '1' ? ' hidden' : '' ?>">
+<tr data-test="event-medication-management-row" data-key="<?= $row_count ?>" data-event-medication-use-id="<?php echo $entry->id; ?>" data-allergy-ids="<?php echo $entry_allergy_ids ?>" class="divider col-gap js-first-row <?= $field_prefix ?>_row <?= $is_new ? ' new' : '' ?><?= $entry->hidden === '1' ? ' hidden' : '' ?>">
 
     <td id="<?= $model_name . "_entries_" . $row_count . '_duplicate_error' ?>" class="drug-details" rowspan="2">
         <?php if ($entry->originallyStopped) { ?>
             <i class="oe-i stop small pad"></i>
         <?php } ?>
-        <span class="js-medication-display">
+        <span class="js-medication-display" data-test="medication-name">
             <?= is_null($entry->medication_id) ? "{{medication_name}}" : $entry->getMedicationDisplay(true) ?>
         </span>
         <span class="js-prepended_markup">
@@ -103,7 +103,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
             array_keys($entry->errors)
         ); ?>
         <div class="flex-meds-inputs alternative-display-element" id="<?= $model_name . "_entries_" . $row_count . "_dfrl_error" ?>" >
-            <input class="fixed-width-small js-dose" id="<?= $model_name . "_entries_" . $row_count . "_dose" ?>" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
+            <input class="fixed-width-small js-dose input-validate numbers-only decimal" id="<?= $model_name . "_entries_" . $row_count . "_dose" ?>" type="text" name="<?= $field_prefix ?>[dose]" value="<?= $entry->dose ?>" placeholder="Dose" />
             <input type="hidden" name="<?= $field_prefix ?>[dose_unit_term]" value="<?= $entry->dose_unit_term ?>" class="dose_unit_term" />
             <?php if ($is_template) { ?>
                 {{#has_dose_unit_term}}
@@ -148,10 +148,10 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                 $lateralityClass = ($entry->hasErrors('laterality') ? 'error' : '')
                 ?>
                 <label class="inline highlight <?= $lateralityClass ?>">
-                    <input value="2" name="eyelat-select-R" type="checkbox" <?= $entry->laterality === "2" || $entry->laterality === "3" ? "checked" : "" ?>>R
+                    <input data-test="eye-lat-input" value="2" name="eyelat-select-R" type="checkbox" <?= $entry->laterality === "2" || $entry->laterality === "3" ? "checked" : "" ?>>R
                 </label>
                 <label class="inline highlight <?= $lateralityClass ?>">
-                    <input value="1" name="eyelat-select-L" type="checkbox" <?= $entry->laterality === "1" || $entry->laterality === "3" ? "checked" : "" ?>> L
+                    <input data-test="eye-lat-input" value="1" name="eyelat-select-L" type="checkbox" <?= $entry->laterality === "1" || $entry->laterality === "3" ? "checked" : "" ?>> L
                 </label>
             </span>
             <?php echo CHtml::hiddenField(
@@ -160,7 +160,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                 array('class' => 'laterality-input')
             ); ?>
         </div>
-        
+
     </div>
     </td>
     <td>
@@ -184,7 +184,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                     'id',
                     'name'
                 ),
-                array('class' => 'js-dispense-condition cols-5', 'style' => $prescribe_hide_style, 'empty' => 'Select', 'options' => $dispense_condition_options)
+                array('class' => 'js-dispense-condition cols-5', 'style' => $prescribe_hide_style, 'data-test' => 'dispense-condition', 'empty' => 'Select', 'options' => $dispense_condition_options)
             ); ?>
 
             <?php
@@ -223,7 +223,7 @@ $entry_allergy_ids = isset($entry->medication_id) ?
         <?php $tooltip_content_comes_from_history = "This item comes from medication history. " .
             "If you wish to delete it, it must be deleted from the Medication History element. " .
             "Alternatively, mark this item as stopped."; ?>
-        <span data-tooltip-content-comes-from-history="<?= $tooltip_content_comes_from_history ?>">
+        <span data-tooltip-content="<?= $tooltip_content_comes_from_history ?>">
             <i class="oe-i trash js-remove"></i>
         </span>
     </td>
@@ -241,18 +241,18 @@ $entry_allergy_ids = isset($entry->medication_id) ?
                                 <i class="oe-i stop small pad"></i>
                                 <?= Helper::formatFuzzyDate($end_sel_year . '-' . $end_sel_month . '-' . $end_sel_day) ?>
                             <?php else : ?>
-                                <span><button type="button"><i class="oe-i stop small pad-right"></i>Click here to stop</button></span>
+                                <span><button type="button" data-test="<?= "meds-stop-btn-" . $row_count ?>"><i class="oe-i stop small pad-right"></i>Click here to stop</button></span>
                             <?php endif; ?>
                         </a>
                     </div>
                     <fieldset class="js-datepicker-wrapper js-end-date-wrapper" <?= ($entry->hasErrors() && !$is_new) && ($entry->end_date || $entry->stop_reason_id) ? '' : ' style="display:none;"' ?>>
                         <i class="oe-i stop small pad"></i>
-                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" class="js-end-date" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?= date('Y-m-d') ?>" data-reset-value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
+                        <input id="<?= $model_name ?>_entries_<?= $row_count ?>_end_date" autocomplete="new-password" class="js-end-date" name="<?= $field_prefix ?>[end_date]" value="<?= $entry->end_date ?>" data-default="<?= date('Y-m-d') ?>" data-reset-value="<?= $entry->end_date ?>" style="width:80px" placeholder="yyyy-mm-dd" autocomplete="off">
                     </fieldset>
                 </div>
             </span>
             <span id="<?= $model_name . '_entries_' . $row_count . '_stop_reason_id_error' ?>" class="js-stop-reason-select cols-5" style="<?= (($entry->hasErrors() || $is_new) && !($entry->end_date || $entry->stop_reason_id)) || $entry->prescribe || !$entry->hasErrors() ? 'display: none' : '' ?>">
-                <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => 'Reason stopped?', 'class' => ' js-stop-reason')) ?>
+                <?= CHtml::dropDownList($field_prefix . '[stop_reason_id]', $entry->stop_reason_id, $stop_reason_options, array('empty' => 'Reason stopped?', 'class' => ' js-stop-reason', 'data-test' => 'meds-stop-reason-' . $row_count)) ?>
             </span>
             <div class="js-stop-reason-text" style="<?= $is_new || (!$entry->hasErrors() && $entry->end_date && $entry->stop_reason_id) ? "" : "display:none" ?>">
                 <?= !is_null($entry->stop_reason_id) ? '&nbsp;<em class="fade">(' . $entry->stopReason->name . ')</em>' : ''; ?>

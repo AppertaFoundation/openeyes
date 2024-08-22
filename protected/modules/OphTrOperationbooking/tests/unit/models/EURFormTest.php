@@ -1,5 +1,5 @@
 <?php
-class EUREventResultsTest extends CDbTestCase
+class EUREventResultsTest extends OEDbTestCase
 {
     protected $fixtures = array(
         'eur_answer_results' => 'EURAnswerResults',
@@ -7,7 +7,7 @@ class EUREventResultsTest extends CDbTestCase
         'event' => 'Event'
     );
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
     }
@@ -76,7 +76,7 @@ class EUREventResultsTest extends CDbTestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->answerRes);
         unset($this->eventRes);

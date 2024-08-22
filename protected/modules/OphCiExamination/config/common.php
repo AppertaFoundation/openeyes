@@ -13,6 +13,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
+use OEModule\OphCiExamination\listeners\UpdatePatientDiagnosesAfterSoftDelete;
+
 return [
     'components' => [
         'event' => [
@@ -22,6 +25,28 @@ return [
                         'class' => 'OEModule\OphCiExamination\components\HistoryRisksManager',
                         'method' => 'addPatientMedicationRisks'
                     ]
+                ],
+                'step_started' => [
+                    'create_or_update_event' => [
+                        'class' => 'OEModule\OphCiExamination\components\PathstepObserver',
+                        'method' => 'createOrUpdateEvent',
+                    ]
+                ],
+                'event_created' => [
+                    'create_followup_step' => [
+                        'class' => 'OEModule\OphCiExamination\components\PathstepObserver',
+                        'method' => 'createFollowUpStep'
+                    ]
+                ],
+                'event_updated' => [
+                    'create_followup_step' => [
+                        'class' => 'OEModule\OphCiExamination\components\PathstepObserver',
+                        'method' => 'createFollowUpStep'
+                    ]
+                ],
+                [
+                    'system_event' => ClinicalEventSoftDeletedSystemEvent::class,
+                    'listener' => UpdatePatientDiagnosesAfterSoftDelete::class
                 ]
             ]
         ]
@@ -32,6 +57,7 @@ return [
 
         'reports' => [
             'Ready for second eye (unbooked)' => '/OphCiExamination/report/readyForSecondEyeUnbooked',
+            'A&E Patient List' => '/OphCiExamination/report/AE'
         ],
     ],
 

@@ -17,18 +17,14 @@
 
 namespace OEModule\OphGeneric\models;
 
+use OE\factories\models\traits\HasFactory;
+use OEModule\OphGeneric\widgets\DeviceInformation as DeviceInformationWidget;
+
 class DeviceInformation extends \BaseEventTypeElement
 {
-    public $widgetClass = 'OEModule\OphGeneric\widgets\DeviceInformation';
+    use HasFactory;
 
-    /**
-     * Returns the static model of the specified AR class.
-     * @return Comments the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    public $widgetClass = DeviceInformationWidget::class;
 
     /**
      * @return string the associated database table name
@@ -48,6 +44,20 @@ class DeviceInformation extends \BaseEventTypeElement
             array('manufacturer , model_version , software_version', 'length', 'max' => 255),
             // Remove attributes that should not be searched.
             array('manufacturer , model_version , software_version', 'safe', 'on' => 'search'),
+        );
+    }
+
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'event' => array(self::BELONGS_TO, \Event::class, 'event_id'),
+            'createdUser' => array(self::BELONGS_TO, \User::class, 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, \User::class, 'last_modified_user_id'),
         );
     }
 
@@ -92,17 +102,12 @@ class DeviceInformation extends \BaseEventTypeElement
      */
     public function search()
     {
-        $criteria = new CDbCriteria;
+        $criteria = new \CDbCriteria;
 
         $criteria->compare('comment', $this->comment, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
-    }
-
-    public function isAtTip()
-    {
-        return true;
     }
 }

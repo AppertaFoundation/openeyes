@@ -22,7 +22,6 @@ return array(
         'admin_structure' => array(
             'System' => array(
                 'Settings' => '/admin/settings',
-                'System default logos' => array('parameter' => 'letter_logo_upload', 'uri' => '/admin/logo', 'restricted' => array('admin')),
                 'DICOM Log Viewer' => '/DicomLogViewer/list',
             ),
             'Core' => array(
@@ -35,7 +34,7 @@ return array(
                 'LDAP Configurations' => ['uri' => '/admin/ldapconfig', 'restricted' => array('admin')],
                 'Institutions' => ['uri' => '/admin/institutions', 'restricted' => array('admin')],
                 'Sites' => '/admin/sites',
-                'Patient Identifier Types' => '/Admin/PatientIdentifierType/index',
+                'Patient Identifier Types' => ['uri' => '/Admin/PatientIdentifierType/index', 'restricted' => array('admin')],
                 'Commissioning bodies' => ['uri' => '/admin/commissioning_bodies', 'restricted' => array('admin')],
                 'Commissioning body types' => ['uri' => '/admin/commissioning_body_types', 'restricted' => array('admin')],
                 'Commissioning body services' => ['uri' => '/admin/commissioning_body_services', 'restricted' => array('admin')],
@@ -48,6 +47,7 @@ return array(
                 'Subspecialty Subsections' => ['uri' => '/oeadmin/subspecialtySubsections/list', 'restricted' => array('admin')],
                 'Event Type Custom Text' => ['uri' => '/admin/editEventTypeCustomText', 'restricted' => array('admin')],
                 'Element Type Custom Text' => ['uri' => '/admin/editElementTypeCustomText', 'restricted' => array('admin')],
+                'Ethnic Groups' => ['uri' => '/admin/editEthnicGroups', 'restricted' => ['admin']]
             ),
             'SSO Settings' => array(
                 'Default SSO Permissions' => ['uri' => '/sso/defaultssopermissions', 'restricted' => array('admin')],
@@ -55,15 +55,23 @@ return array(
             ),
             'Worklist' => array(
                 'Automatic Worklists Definitions' => '/Admin/worklist/definitions',
+                'Clinical Pathway Presets' => '/Admin/worklist/presetPathways',
+                'Worklist Wait Times' => ['uri' => '/Admin/worklist/waitTimes', 'restricted' => array('admin')],
+                'Worklist custom path steps' => ['uri' => '/Admin/worklist/customPathSteps', 'restricted' => ['admin']],
+                'Visual Field Test Types' => ['uri' => '/Admin/worklist/visualFieldTestTypes', 'restricted' => ['admin']],
+                'Visual Field Test Options' => ['uri' => '/Admin/worklist/visualFieldTestOptions', 'restricted' => ['admin']],
+                'Visual Field Test Presets' => '/Admin/worklist/visualFieldTestPresets',
             ),
-            'Procedure Management' => array(
-                'Procedures' => ['uri' => '/oeadmin/procedure/list', 'restricted' => array('admin')],
-                'Benefits' => ['uri' => '/oeadmin/benefit/list', 'restricted' => array('admin')],
-                'Complications' => ['uri' => '/oeadmin/complication/list', 'restricted' => array('admin')],
-                'OPCS Codes' => ['uri' => '/oeadmin/opcsCode/list', 'restricted' => array('admin')],
+            'Procedure Management' => [
+                'Post-Op Complications' => ['uri' => '/oeadmin/PostOpComplication/list', 'restricted' => ['admin']],
+                'Procedures' => ['uri' => '/oeadmin/procedure/list', 'restricted' => ['admin']],
+                'Benefits' => ['uri' => '/oeadmin/benefit/list', 'restricted' => ['admin']],
+                'Complications' => ['uri' => '/oeadmin/complication/list', 'restricted' => ['admin']],
+                'OPCS Codes' => ['uri' => '/oeadmin/opcsCode/list', 'restricted' => ['admin']],
                 'Procedure - Subspecialty Assignment' =>  '/Admin/procedureSubspecialtyAssignment/edit',
-                'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/SubspecialtySubsectionAssignment/list'
-            ),
+                'Procedure - Subspecialty Subsection Assignment' =>  '/oeadmin/SubspecialtySubsectionAssignment/list',
+                'Clinic Procedure Assignment' => ['uri' => '/oeadmin/ClinicProcedure/list', 'restricted' => ['admin']]
+            ],
             'Drugs' => array(
                 // Hidden for now
                 'Anaesthetic Agent' => ['uri' => '/admin/viewAnaestheticAgent', 'restricted' => array('admin')],
@@ -79,9 +87,8 @@ return array(
                 'Findings' => ['uri' => '/admin/managefindings', 'restricted' => array('admin')],
                 'Disorders' => ['uri' => '/Admin/disorder/list', 'restricted' => array('admin')],
             ),
-            'Consent' => array(
-                'Leaflets' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/Leaflets/list'),
-                'Leaflet Subspecialty context_firm_label Assignment' => array('module' => 'OphTrConsent', 'uri' => '/oeadmin/LeafletSubspecialtyFirm/list'),
+            'Investigation Management' => array(
+                'Investigations' => ['uri' => '/oeadmin/investigation/list', 'restricted' => array('admin')]
             ),
         ),
     ),

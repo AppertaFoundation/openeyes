@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -22,7 +23,7 @@
         <?=\CHtml::timeField(
             $name_stub . '[' . $key . '][treatment_time]',
             isset($treatment) ? substr($treatment->treatment_time, 0, 5) : $treatment_time,
-            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'input-time')
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'input-time')
         ) ?>
     </td>
     <td>

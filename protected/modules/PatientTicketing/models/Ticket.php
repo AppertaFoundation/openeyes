@@ -48,7 +48,7 @@ use Yii;
  * @property TicketQueueAssignment current_queue_assignment
  * @property Queue current_queue
  */
-class Ticket extends \BaseActiveRecordVersioned
+class Ticket extends \BaseActiveRecordVersionedSoftDelete
 {
     /**
      * Returns the static model of the specified AR class.
@@ -66,6 +66,19 @@ class Ticket extends \BaseActiveRecordVersioned
     public function tableName()
     {
         return 'patientticketing_ticket';
+    }
+
+    public function defaultScope()
+    {
+        if ($this->defaultScopeDisabled) {
+            return array();
+        }
+
+        $table_alias = $this->getTableAlias(false, false);
+
+        return array(
+            'condition' => $table_alias . '.deleted = 0',
+        );
     }
 
     /**
@@ -211,6 +224,16 @@ class Ticket extends \BaseActiveRecordVersioned
         $ass = $this->initial_queue_assignment;
 
         return $ass->assignment_firm->name;
+    }
+
+    /**
+     * Gets the firm that is on the event that created the ticket
+     *
+     * @return string
+     */
+    public function getTicketCreatedEventFirm()
+    {
+        return $this->event->firm->name ?? '';
     }
 
     /**
@@ -425,7 +448,7 @@ class Ticket extends \BaseActiveRecordVersioned
                     $ticket_future_steps['?'][] = $outcome->outcome_queue;
                 }
                 $outcomes = null;
-            } else if (count($outcomes) === 1) {
+            } elseif (count($outcomes) === 1) {
                 $outcome_queue = $outcomes[0]->outcome_queue;
                 $ticket_future_steps[] = [$outcome_queue];
                 $outcomes = $outcome_queue->outcomes;
@@ -433,5 +456,12 @@ class Ticket extends \BaseActiveRecordVersioned
         }
 
         return $ticket_future_steps;
+    }
+
+    public function afterDelete()
+    {
+        \FollowupAnalysisAggregate::updateForPatientTickets($this->patient_id, $this->id);
+
+        return parent::afterDelete();
     }
 }

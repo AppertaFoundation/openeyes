@@ -13,18 +13,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class GenericAdminModule extends CWebModule
+namespace OEModule\OphGeneric\modules\OphGenericAdmin;
+
+class OphGenericAdminModule extends \CWebModule
 {
-    public function init()
-    {
-        // this method is called when the module is being created
-        // you may place code here to customize the module or the application
-        // import the module-level models and components
-        /*$this->setImport(array(
-            'OphCoCorrespondence.models.*',
-            'OphCoCorrespondence.views.*',
-            'OphCoCorrespondence.components.*',
-            'OphCoCorrespondence.controllers.*',
-        ));*/
-    }
+    public $controllerNamespace = '\OEModule\OphGeneric\modules\OphGenericAdmin\controllers';
 }

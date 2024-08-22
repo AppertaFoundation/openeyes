@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,11 +16,15 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
-use \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role;
+
+use OEModule\OphCiExamination\models\DischargeDestination;
+use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status;
+use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Role;
 use OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status;
-use \OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Risk_Status;
+
 $current_institution_id = Yii::app()->session['selected_institution_id'];
 
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/ClinicOutcome.js", CClientScript::POS_HEAD);
@@ -36,11 +41,19 @@ $patient_ticket_statuses = [];
 foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=:patientticket', [':patientticket' => 1]) as $status) {
     $patient_ticket_statuses[] = $status->id;
 }
+$sites_list = Site::model()->getListForCurrentInstitution('name');
+$contexts = NewEventDialogHelper::structureAllSubspecialties();
+$subspecialty_contexts = [];
+
+$current_firm = Firm::model()->findByPk($this->selectedFirmId);
+$default_subspecialty_id = $current_firm->serviceSubspecialtyAssignment->subspecialty_id;
+$subspecialty_contexts = $this->getContextFromSubspecialty($contexts, $default_subspecialty_id);
 ?>
 
 <div class="element-fields flex-layout full-width">
     <input id="pt_status_list" type="hidden" data-statuses="<?= htmlspecialchars(json_encode($patient_ticket_statuses)); ?>"/>
     <div class="cols-10">
+        <input type="hidden" name="<?= $model_name ?>[entries]" value="">
         <table id="<?= $model_name ?>_entry_table" class="cols-full">
             <colgroup>
                 <col>
@@ -81,7 +94,7 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                 array('nowrapper' => true),
                 false,
                 array(
-                    'class' => 'autosize js-comment-field',
+                    'class' => 'autosize js-comment-field cols-full',
                     'placeholder' => $element->getAttributeLabel('comments'),
                 )
             ) ?>
@@ -97,16 +110,26 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
             <i class="oe-i comments small-icon"></i>
         </button>
 
-        <button class="button hint green js-add-select-search" id="show-follow-up-popup-btn" type="button">
+        <button class="button hint green js-add-select-search" id="show-follow-up-popup-btn"
+                data-test="show-follow-up-adder" type="button">
             <i class="oe-i plus pro-theme"></i>
         </button>
 
-        <div id="add-to-follow-up" class="oe-add-select-search auto-width" style="display: none;">
+        <!-- FOLLOW UP ADDER DIALOG -->
+        <div id="add-to-follow-up" class="oe-add-select-search auto-width" data-test="adder-dialog" style="display: none; z-index: 101;">
             <div class="close-icon-btn"><i class="oe-i remove-circle medium"></i></div>
-            <button class="button hint green add-icon-btn" id="add-followup-btn" type="button">
+            <button class="button hint green add-icon-btn" id="add-followup-btn" type="button" data-test="add-followup-btn">
                 <i class="oe-i plus pro-theme"></i>
             </button>
             <table class="select-options">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th style="display: none;" class="follow-up-options-discharge-only">Discharge Status</th>
+                    <th style="display: none;" class="follow-up-options-discharge-only">Discharge Destination</th>
+                    <th style="display: none;" class="follow-up-options-discharge-transfer-only">Transfer to Institution</th>
+                </tr>
+                </thead>
                 <tbody>
                 <tr>
                     <td>
@@ -119,13 +142,63 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                                     <li data-id="<?= $opt->id ?>" data-label="<?= $opt->name ?>"
                                         <?= $opt->patientticket && (!count($queues) || !isset($authRoles['Patient Tickets'])) ? 'disabled' : '' ?>
                                         data-followup="<?= $opt->followup ?>"
+                                        data-discharge="<?= $opt->discharge ?>"
                                         data-patient-ticket="<?= $opt->patientticket ?>">
-                                        <span class="fixed-width extended"><?= $opt->name ?></span>
+                                        <span class="extended"><?= $opt->name ?></span>
                                     </li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
                     </td>
+<?php if (!\SettingMetadata::model()->getSetting('hide_addional_followup_options')) : ?>
+                    <!-- Site -->
+                    <td class="follow-up-options-follow-up-only" style="display: none">
+                        <div class="flex-layout flex-top flex-left">
+                            <ul class="add-options" id="follow-up-site-options">
+                                <li data-site_id="0" data-label="Any">
+                                    Any
+                                </li>
+                                <?php foreach ($sites_list as $site_id => $site) : ?>
+                                    <li data-site_id="<?= $site_id ?>" data-label="<?= $site ?>">
+                                        <?= $site ?>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </td>
+
+                    <!-- Subspecialty -->
+                    <td class="follow-up-options-follow-up-only" style="display: none">
+                        <div class="flex-layout flex-top flex-left">
+                            <ul class="add-options" id="followup-outcome-subspecialty_options">
+                                <?php foreach ($contexts as $context) : ?>
+                                    <li data-subspecialty_id="<?= $context['id'] ?>"
+                                        data-label="<?= $context['name'] ?>"
+                                        class="<?= $default_subspecialty_id === $context['id'] ? 'selected' : '' ?>">
+                                        <?= $context['name'] ?>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </td>
+
+                    <!-- Context -->
+                    <td class="follow-up-options-follow-up-only" style="display: none">
+                        <div class="flex-layout flex-top flex-left">
+                            <ul class="add-options" id="follow-up-context-options">
+                                <li data-context_id="0" data-label="N/A">
+                                    N/A
+                                </li>
+                                <?php foreach ($subspecialty_contexts as $context) : ?>
+                                    <li data-context_id="<?= $context['id'] ?>" data-label="<?= $context['name'] ?>" class="<?= $current_firm->id === $context['id'] ? 'selected' : ''?>">
+                                        <?= $context['name'] ?>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </td>
+<?php endif; ?>
+                    <!-- Duration time -->
                     <td class="follow-up-options-follow-up-only" style="display: none">
                         <div class="flex-layout flex-top flex-left">
                             <ul class="add-options number" id="follow-up-quantity-options">
@@ -143,8 +216,9 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                                 <?php endforeach; ?>
                             </ul>
                         </div>
-
                     </td>
+
+                    <!-- Duration period -->
                     <td class="flex-layout flex-top follow-up-options-follow-up-only" style="display: none">
                         <ul class="add-options" id="follow-up-role-options">
                             <?php foreach (OphCiExamination_ClinicOutcome_Role::model()->active()->findAll('institution_id = :id', [':id' => $current_institution_id]) as $role) : ?>
@@ -154,12 +228,14 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                             <?php endforeach; ?>
                         </ul>
                     </td>
+
+                    <!-- Risks -->
                     <td class="follow-up-options-follow-up-only" style="display: none">
                         <ul class="add-options" id="follow-up-risk-status-options">
                             <?php foreach (OphCiExamination_ClinicOutcome_Risk_Status::model()->findAll() as $risk_status_entry) : ?>
                                 <li data-risk-status-id="<?= $risk_status_entry->id ?>" data-label="<?= $risk_status_entry->name ?>" data-display="<?= $risk_status_entry->name?>. <?= $risk_status_entry->alias ?>">
-                                    <span class="fixed-width extended">
-                                        <i 
+                                    <span class="extended">
+                                        <i
                                         class="oe-i triangle-<?=$risk_status_entry->getIndicatorColor()?> small pad-right js-risk-status-details"
                                         ></i><?= $risk_status_entry->alias ?> (<?= $risk_status_entry->name ?>)
                                         <br>
@@ -174,12 +250,39 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                             <input type="text" id="followup_comments" placeholder="Name (optional)">
                         </div>
                     </td>
+                    <td class="follow-up-options-discharge-only" style="display: none;">
+                        <ul class="add-options" id="discharge-status-options">
+                            <?php foreach (\OEModule\OphCiExamination\models\DischargeStatus::model()->findAll() as $status_entry) : ?>
+                                <li data-discharge-status-id="<?= $status_entry->id ?>" data-label="<?= $status_entry->name ?>">
+                                    <span class="restrict-width"><?= $status_entry->name ?></span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </td>
+                    <td class="follow-up-options-discharge-only" style="display: none;">
+                        <ul class="add-options" id="discharge-destination-options">
+                            <?php foreach (DischargeDestination::model()->findAll() as $destination_entry) : ?>
+                                <li data-discharge-destination-id="<?= $destination_entry->id ?>"
+                                    data-label="<?= $destination_entry->name ?>"
+                                    data-institution-required="<?= $destination_entry->institution_required ?>">
+                                    <span class="restrict-width"><?= $destination_entry->name ?></span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </td>
+                    <td class="follow-up-options-discharge-transfer-only" style="display: none;">
+                        <input type="search" placeholder="Institution" class="search" id="transfer-to-search" name="search_institution"/>
+                        <ul class="add-options" id="discharge-transfer-to-options">
+                        </ul>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
+        <!-- / FOLLOW UP ADDER DIALOG -->
     </div>
 </div>
+
 <script type="text/template" id="<?= $model_name . '_followup_entry_template' ?>" style="display: none">
     <?php
     $empty_entry = new \OEModule\OphCiExamination\models\ClinicOutcomeEntry();
@@ -192,9 +295,16 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
             'field_prefix' => $model_name . '[entries][{{row_count}}]',
             'row_count' => '{{row_count}}',
             'patient_ticket' => false,
+            'template_mode' => true,
             'values' => [
                 'status_id' => '{{status_id}}',
                 'status' => '{{status}}',
+                'discharge_status_id' => '{{discharge_status_id}}',
+                'discharge_status' => '{{discharge_status}}',
+                'discharge_destination_id' => '{{discharge_destination_id}}',
+                'discharge_destination' => '{{discharge_destination}}',
+                'transfer_institution_id' => '{{transfer_institution_id}}',
+                'transfer_to' => '{{transfer_to}}',
                 'followup_quantity' => '{{followup_quantity}}',
                 'followup_period_id' => '{{followup_period_id}}',
                 'followup_period' => '{{followup_period}}',
@@ -205,6 +315,14 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                 'risk_status_id' => '{{risk_status_id}}',
                 'risk_status_class' => '{{risk_status_class}}',
                 'risk_status_content' => '{{risk_status_content}}',
+                'is_template' => true,
+                'site' => '{{site}}',
+                'subspecialty' => '{{subspecialty}}',
+                'context' => '{{context}}',
+                'site_id' => '{{site_id}}',
+                'subspecialty_id' => '{{subspecialty_id}}',
+                'context_id' => '{{context_id}}',
+                'infos' => '{{infos}}',
             ],
         ]
     );
@@ -230,6 +348,7 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
                 'status_id' => '{{status_id}}',
                 'status' => '{{status}}',
             ],
+            'is_template' => true
         ]
     );
     ?>
@@ -250,5 +369,10 @@ foreach (OphCiExamination_ClinicOutcome_Status::model()->findAll('patientticket=
         if ($('#div_OEModule_OphCiExamination_models_Element_OphCiExamination_ClinicOutcome_patientticket').length) {
             $('#followup-outcome-options li[data-patient-ticket="1"]').hide();
         }
+    });
+    $(document).ready(function () {
+        let options = {'contexts':'<?= json_encode($contexts); ?>'};
+        let controller = new OpenEyes.OphCiExamination.ClinicOutcomeController(options);
+        $(controller.$element).data('controller', controller);
     });
 </script>

@@ -20,9 +20,12 @@
 /**
  * A base controller class that helps display the firm dropdown and the patient name.
  * It is extended by all other controllers.
+ *
+ * @property CAction $action - defined by magic method in Yii
  */
 class BaseController extends Controller
 {
+    use RenderJsonTrait;
 
     public $renderPatientPanel = false;
     public bool $fixedHotlist = true;
@@ -153,6 +156,11 @@ class BaseController extends Controller
     public function afterAction($action)
     {
         $this->onAfterAction(new \CEvent($this, ["action" => $action]));
+        $puppeteer = $this->getApp()->getComponent('puppeteer', false);
+
+        if ($puppeteer) {
+            $puppeteer->close();
+        }
     }
 
     protected function beforeAction($action)
@@ -160,15 +168,6 @@ class BaseController extends Controller
         $this->onBeforeAction(new \CEvent($this, ["action" => $action]));
 
         $app = Yii::app();
-        if(!in_array($action->id, array('settings'))){
-            foreach (SettingMetadata::model()->findAll() as $metadata) {
-                if (!$metadata->element_type) {
-                    if (!isset(Yii::app()->params[$metadata->key])) {
-                        Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
-                    }
-                }
-            }
-        }
 
         $this->setupAssetManager();
 
@@ -188,14 +187,14 @@ class BaseController extends Controller
             if ($user_authentication && !in_array($user_authentication->username, $special_usernames)) {
                 $user = $user_authentication->user;
                 // if not a active user, force log out
-                if (!$user_authentication->active || PasswordUtils::testStatus('locked', $user_authentication)) {
+                if (!$user_authentication->active || PasswordUtils::testStatus($user_authentication)) {
                     $user->audit('BaseController', 'force-logout', null, "User $user_authentication->username logged out because their account is not active");
                     Yii::app()->user->logout();
                     $this->redirect(Yii::app()->homeUrl);
                 }
                 PasswordUtils::testPasswordExpiry($user_authentication);
 
-                if (PasswordUtils::testStatus('softlocked', $user_authentication) && $user_authentication->password_softlocked_until < date("Y-m-d H:i:s")) {
+                if (PasswordUtils::testStatus($user_authentication, 'softlocked') && $user_authentication->password_softlocked_until < date("Y-m-d H:i:s")) {
                     $user_authentication->password_failed_tries = 0;
                     $user_authentication->password_status = 'current';
                     $user_authentication->saveAttributes(array('password_status', 'password_failed_tries'));
@@ -205,15 +204,16 @@ class BaseController extends Controller
                 $whitelistedRequestCheck = $user->CheckRequestOnExpiryWhitelist($_SERVER['REQUEST_URI']);
 
                 // if user is expired, force them to change their password
-                if (PasswordUtils::testStatus('expired', $user_authentication) && !$whitelistedRequestCheck) {
-                    Yii::app()->user->setFlash('alert', 'Your password has expired, please reset it now.');
+                if (PasswordUtils::testStatus($user_authentication, 'expired') && !$whitelistedRequestCheck) {
+                    if (Yii::app()->params['profile_user_can_change_password']) {
+                        Yii::app()->user->setFlash('alert', 'Your password has expired, please reset it now.');
+                    }
                     $this->redirect(array('/profile/password'));
                 }
             }
         }
 
-        if (isset($app->session['firms']) && count($app->session['firms'])) {
-            $this->firms = $app->session['firms'];
+        if (!empty($app->session['selected_firm_id'])) {
             $this->selectedFirmId = $app->session['selected_firm_id'];
         }
 
@@ -254,8 +254,7 @@ class BaseController extends Controller
     {
         $app = Yii::app();
 
-        if (!empty($app->session['firms'])) {
-            $this->firms = $app->session['firms'];
+        if (!empty($app->session['selected_firm_id'])) {
             $this->selectedFirmId = $app->session['selected_firm_id'];
         }
     }
@@ -278,7 +277,8 @@ class BaseController extends Controller
     public function processJsVars()
     {
         // TODO: Check logged in before setting
-        $this->jsVars['element_close_warning_enabled'] = Yii::app()->params['element_close_warning_enabled'];
+        $this->jsVars['element_close_warning_enabled'] = SettingMetadata::model()->getSetting('element_close_warning_enabled');
+        $this->jsVars['close_incomplete_exam_elements'] = SettingMetadata::model()->getSetting('close_incomplete_exam_elements');
         if (isset(Yii::app()->session['user_auth'])) {
             $user_auth = Yii::app()->session['user_auth'];
             $user = $user_auth->user;
@@ -292,9 +292,11 @@ class BaseController extends Controller
         }
         $this->jsVars['YII_CSRF_TOKEN'] = Yii::app()->request->csrfToken;
         $this->jsVars['OE_core_asset_path'] = Yii::app()->assetManager->getPublishedPathOfAlias('application.assets');
+        $this->jsVars['OE_core_asset_js_path'] = Yii::app()->assetManager->getPublishedPathOfAlias('application.assets.js');
+        $this->jsVars['OE_core_widget_js_path'] = Yii::app()->assetManager->getPublishedPathOfAlias('application.widgets.js');
         $this->jsVars['OE_module_name'] = $this->module ? $this->module->id : false;
-        $this->jsVars['OE_html_autocomplete'] = Yii::app()->params['html_autocomplete'];
-        $this->jsVars['OE_event_print_method'] = Yii::app()->params['event_print_method'];
+        $this->jsVars['OE_html_autocomplete'] = SettingMetadata::model()->getSetting('html_autocomplete');
+        $this->jsVars['OE_event_print_method'] = SettingMetadata::model()->getSetting('event_print_method');
         $this->jsVars['OE_module_class'] = $this->module ? $this->module->id : null;
         $this->jsVars['OE_GP_Setting'] = \SettingMetadata::model()->getSetting('gp_label');
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
@@ -307,19 +309,16 @@ class BaseController extends Controller
         }
     }
 
-    /*
+    /**
      * Convenience function for authorisation checks
      *
-     * @param string $operation
-     * @param mixed $param, ...
-     * @return boolean
+     * @param $operation
+     * @param mixed ...$params
+     * @return bool
      */
-    public function checkAccess($operation)
+    public function checkAccess($operation, ...$params): bool
     {
-        $params = func_get_args();
-        array_shift($params);
-
-        return Yii::app()->user->checkAccess($operation, $params);
+        return (bool)Yii::app()->user->checkAccess($operation, $params);
     }
 
     /**
@@ -345,25 +344,6 @@ class BaseController extends Controller
         }
 
         return $model;
-    }
-
-    /**
-     * Renders data as JSON, turns off any to screen logging so output isn't broken.
-     *
-     * @param $data
-     */
-    protected function renderJSON($data)
-    {
-        header('Content-type: application/json', true);
-        header('Cache-Control: no-store');
-        echo json_encode($data);
-
-        foreach (Yii::app()->log->routes as $route) {
-            if ($route instanceof CWebLogRoute) {
-                $route->enabled = false; // disable any weblogroutes
-            }
-        }
-        Yii::app()->end();
     }
 
     /**
@@ -442,9 +422,7 @@ class BaseController extends Controller
         UniqueCodeMapping::model()->unlock();
         //Yii::app()->db->createCommand("UNLOCK TABLES")->execute();
 
-        if ($record) {
-            return $record["id"];
-        }
+        return $record ? $record["id"] : null;
     }
 
     public function setPageTitle($pageTitle)
@@ -458,7 +436,7 @@ class BaseController extends Controller
 
     public function sanitizeInput($input)
     {
-        $allowable_tags = ["b","strong","p","input","option","select","table","thead","tbody","tr","th","td","i","em","span","br","ul","ol","li","div","col","colgroup","h1","h2","h3","h4","h5"];
+        $allowable_tags = ["hr","b","strong","p","input","option","select","table","thead","tbody","tr","th","td","i","em","span","br","ul","ol","li","div","col","colgroup","h1","h2","h3","h4","h5"];
         if (count($input) > 0) {
             foreach ($input as $key => $value) {
                 if (is_array($value) || is_object($value)) {
@@ -473,5 +451,23 @@ class BaseController extends Controller
             }
         }
         return $input;
+    }
+
+    /**
+     * Get active Clinic Pathway for the patient
+     * @return array|CActiveRecord|mixed|Pathway|null
+     */
+    public function getClinicPathwayInProgress()
+    {
+        $pathway = null;
+        if ($this->patient && $this->checkAccess('OprnWorklist')) {
+            $criteria = new CDbCriteria();
+            $criteria->join = 'JOIN worklist_patient wp ON wp.id = t.worklist_patient_id';
+            $criteria->addCondition('wp.patient_id = :patient_id');
+            $criteria->params = [':patient_id' => $this->patient->id];
+            $criteria->addInCondition('t.status', Pathway::inProgressStatuses());
+            $pathway = Pathway::model()->find($criteria);
+        }
+        return $pathway;
     }
 }

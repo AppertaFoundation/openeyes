@@ -16,14 +16,16 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "Gp".
  *
  * The followings are the available columns in table 'Gp':
  *
  * @property int $id
- * @property string $obj_prof
  * @property string $nat_id
+ * @property string $is_active
  *
  * The followings are the available model relations:
  * @property Contact $contact
@@ -31,8 +33,10 @@
  */
 class Gp extends BaseActiveRecordVersioned
 {
-    const UNKNOWN_SALUTATION = 'Doctor';
-    const UNKNOWN_NAME = 'The General Practitioner';
+    use HasFactory;
+
+    public const UNKNOWN_SALUTATION = 'Doctor';
+    public const UNKNOWN_NAME = 'The General Practitioner';
 
     public $use_pas = true;
 
@@ -86,11 +90,12 @@ class Gp extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('id', 'required', 'on' => array('manage_practice'), 'message'=>'Please select at least one practitioner.'),
-            array('obj_prof, nat_id', 'required'),
-            array('obj_prof, nat_id', 'length', 'max' => 20),
+            array('nat_id, is_active', 'required'),
+            array('is_active', 'boolean'),
+            array('nat_id', 'length', 'max' => 20),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, obj_prof, nat_id', 'safe', 'on' => 'search'),
+            array('id, nat_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -114,8 +119,7 @@ class Gp extends BaseActiveRecordVersioned
     {
         return array(
             'id' => 'ID',
-            'obj_prof' => 'Obj Prof',
-            'nat_id' => 'Nat',
+            'nat_id' => 'National Id',
         );
     }
 
@@ -132,7 +136,6 @@ class Gp extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id);
-        $criteria->compare('obj_prof', $this->obj_prof, true);
         $criteria->compare('nat_id', $this->nat_id, true);
 
         return new CActiveDataProvider(get_class($this), array(
@@ -226,7 +229,7 @@ class Gp extends BaseActiveRecordVersioned
     public function gpCorrespondences()
     {
         $sql = 'SELECT gp.id, CONCAT_WS(" ", title, first_name, last_name) as correspondenceName
-                FROM gp 
+                FROM gp
                 JOIN contact on gp.contact_id = contact.id';
 
         $query = $this->getDbConnection()->createCommand($sql);
@@ -249,7 +252,7 @@ class Gp extends BaseActiveRecordVersioned
 
     public function getGPROle()
     {
-        return ($this->contact->label != null?$this->contact->label->name:'');
+        return ($this->contact->label != null ? $this->contact->label->name : '');
     }
 
     public function GetActiveStatus($id)
@@ -275,5 +278,29 @@ class Gp extends BaseActiveRecordVersioned
             return $practiceDetails;
         }
         return '';
+    }
+
+    /**
+     * GET GP postcode
+     * @param type $params
+     * @return type
+     * @throws Exception
+     */
+    public function getGPPostcode($params = [])
+    {
+        if (!isset($params['patient'])) {
+            throw new Exception('Patient must be passed for GP contacts.');
+        }
+
+        if ($params['patient']->practice) {
+            if (@$params['contact']) {
+                $contactRelation = $params['contact'];
+                $contact = $params['patient']->practice->$contactRelation;
+            } else {
+                $contact = $params['patient']->practice->contact;
+            }
+
+            return !is_null($contact) && isset($contact->address) ? $contact->address->postcode : '';
+        }
     }
 }

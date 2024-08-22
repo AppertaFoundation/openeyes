@@ -55,7 +55,7 @@ $event_errors = OphTrOperationbooking_BookingHelper::validateElementsForEvent($t
         </tbody>
     </table>
     <div class="add-data-actions flex-item-bottom" id="operation-booking-diagnoses-popup">
-        <button class="button hint green js-add-select-search" type="button" id="add-operation-booking-diagnosis">
+        <button class="button hint green js-add-select-search" type="button" id="add-operation-booking-diagnosis" data-test="add-diagnosis-btn">
             <i class="oe-i plus pro-theme"></i>
         </button>
     </div>

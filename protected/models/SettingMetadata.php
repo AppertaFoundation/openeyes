@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -18,6 +17,9 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\concerns\ModelCanBeFaked;
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "setting_metadata".
  *
@@ -35,6 +37,9 @@
  */
 class SettingMetadata extends BaseActiveRecordVersioned
 {
+    use ModelCanBeFaked;
+    use HasFactory;
+
     public static array $CONTEXT_CLASSES = [
         'SettingUser' => 'user_id',
         'SettingFirm' => 'firm_id',
@@ -47,13 +52,20 @@ class SettingMetadata extends BaseActiveRecordVersioned
     ];
 
     /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return SettingMetadata the static model class
+     * static cache properties for performance improvements
      */
-    public static function model($className = __CLASS__)
+    protected static ?bool $sessionSiteValidated = null;
+    protected static ?Site $sessionSite = null;
+    protected static ?bool $sessionFirmValidated = null;
+    protected static ?Firm $sessionFirm = null;
+    protected static array $metadataCacheStore = [];
+
+    public static function resetCache()
     {
-        return parent::model($className);
+        static::$sessionSiteValidated = null;
+        static::$sessionFirmValidated = null;
+        static::$metadataCacheStore = [];
+        Yii::app()->settingCache->flush();
     }
 
     /**
@@ -72,14 +84,15 @@ class SettingMetadata extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('element_type_id, display_order, field_type_id, key, name, default_value', 'required'),
-            array('element_type_id, display_order, field_type_id, key, name, data, default_value', 'safe'),
+            array('element_type_id, display_order, field_type_id, key, name, default_value, description, group_id', 'required'),
+            array('element_type_id, display_order, field_type_id, key, name, data, default_value, group_id, description', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, element_type_id, display_order, field_type_id, key, name, data, default_value', 'safe', 'on' => 'search'),
-            array('default_value,', 'filter', 'filter' => function ($param) {
+            array('id, element_type_id, display_order, field_type_id, key, name, data, default_value, group_id, description', 'safe', 'on' => 'search'),
+            array('default_value', 'filter', 'filter' => function ($param) {
                 return SettingMetadata::getPurifiedValue($param);
             }),
+            array('description', 'filter', 'filter' => array($obj = new CHtmlPurifier(),'purify')),
         );
     }
 
@@ -93,6 +106,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
         return array(
             'element_type' => array(self::BELONGS_TO, 'ElementType', 'element_type_id'),
             'field_type' => array(self::BELONGS_TO, 'SettingFieldType', 'field_type_id'),
+            'group' => array(self::BELONGS_TO, 'SettingGroup', 'group_id'),
         );
     }
 
@@ -134,6 +148,10 @@ class SettingMetadata extends BaseActiveRecordVersioned
      */
     public static function checkSetting($key, $value)
     {
+        if (static::hasBeenFaked()) {
+            return self::model()->getSetting($key) === $value;
+        }
+
         $setting_value = self::model()->findByAttributes(['key' => $key])->getSettingName();
         if (is_string($setting_value)) {
             $setting_value = strtolower($setting_value);
@@ -147,7 +165,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
     protected function getSettingValue($model, $key, $condition_field, $condition_value, $element_type)
     {
-        $criteria = new CDbcriteria();
+        $criteria = new CDbCriteria();
 
         if ($condition_field && $condition_value) {
             $criteria->addCondition($condition_field . ' = :' . $condition_field);
@@ -169,7 +187,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
     protected function getSettingValueWithConditions($model, $key, $conditions, $element_type)
     {
-        $criteria = new CDbcriteria();
+        $criteria = new CDbCriteria();
 
         foreach ($conditions as $condition_field => $condition_value) {
             if ($condition_field && $condition_value) {
@@ -200,83 +218,140 @@ class SettingMetadata extends BaseActiveRecordVersioned
      */
     public function getSetting($key = null, $element_type = null, $return_object = false, $allowed_classes = null, $institution_id = null, $is_setting_page = false)
     {
-        if (!$key) {
-            $key = $this->key;
-        }
+        /***
+         * NOTE: This entire class (together with the other Setting* classes) needs serious refactoring
+         * It is extremely over complicated and has built up a lot of technical debt over the years.
+         *
+         * For now, minimal changes have been made to match existing behaviour, whist incorporating caching to
+         * greatly speed up page loading times.
+         ***/
 
-        // If value is set in the config params (file config), then it always overrides anything set in the database
-        if (!empty(Yii::app()->params[$key] && !$return_object && empty($element_type))) {
-            return Yii::app()->params[$key];
-        }
-
-        if ($element_type) {
-            $metadata = self::model()->find('element_type_id=? and `key`=?', array($element_type->id, $key));
-        } else {
-            $metadata = self::model()->find('element_type_id is null and `key`=?', array($key));
-        }
-
-        if (!$metadata) {
-            return false;
-        }
-
+        // initialise all the values needed to find the setting and set the cache id
         $user_id = Yii::app()->session['user']->id ?? null;
-        $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-        $firm_id = $firm->id ?? null;
-        $subspecialty_id = $firm->subspecialtyID ?? null;
-        $specialty_id = $firm && $firm->specialty ? $firm->specialty->id : null;
-        $site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
-        $site_id = $site->id ?? null;
+        $firm = static::firmForCurrentSession();
+        $firm_id = $firm ? $firm->id : null;
+        $subspecialty_id = $firm && $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+        $specialty_id = $subspecialty_id ? $firm->serviceSubspecialtyAssignment->subspecialty->specialty_id : null;
+        $site = static::siteForCurrentSession();
+        $site_id = $site ? $site->id : null;
+        $element_type_id = $element_type ? $element_type->id : null;
         // initialize is_admin as false
         $is_admin = false;
 
         // if yii command reference SettingsMetadata, there won't be a user
         if (property_exists(Yii::app(), 'user') && isset(Yii::app()->user)) {
+            // only on the admin system settings page and with admin role, the user can view other institution settings
             $is_admin = Yii::app()->user->checkAccess('admin');
         }
-        $institution_id = isset($institution_id) ? $institution_id : ($site->institution_id ?? null);
-        foreach (static::$CONTEXT_CLASSES as $class => $field) {
-            if ($allowed_classes && !in_array($class, $allowed_classes, true)) {
-                continue;
+
+         $institution_id = isset($institution_id) ? $institution_id : ($site->institution_id ?? null);
+
+        // Gets the last combined updated time of the settings_tables and uses as a cache dependency. The cache will be invalidated if the tables have been updated
+        $debounce_val = Yii::app()->settingCache->get('SettingMetaDebounce');
+        if ($debounce_val === false) {
+            $dependency_sql = " SELECT sha1(GROUP_CONCAT(UPDATE_TIME))
+                                FROM   information_schema.tables
+                                WHERE  TABLE_SCHEMA = DATABASE()
+                                AND TABLE_NAME IN (
+                                    'setting_metadata'
+                                    ,'setting_installation'
+                                    ,'setting_institution'
+                                    ,'setting_firm'
+                                    ,'setting_institution_subspecialty'
+                                    ,'setting_site'
+                                    ,'setting_specialty'
+                                    ,'setting_subspecialty'
+                                    ,'setting_user'
+                                )";
+
+            $debounce_val = Yii::app()->db->createCommand($dependency_sql)->queryScalar();
+            // add a debounce of a few seconds before poling for the setting cache dependency, to avoid a DB query for every run.
+            Yii::app()->settingCache->set('SettingMetaDebounce', $debounce_val, 5);
+        };
+
+        // set the last update timestamp = to the latest debounce time
+        if (Yii::app()->settingCache->get('SettingMetaLastUpdate') != $debounce_val) {
+            Yii::app()->settingCache->set('SettingMetaLastUpdate', $debounce_val);
+        }
+
+        // Define the key for the cache item, then atempt to retrieve that key from the cache
+        $id = $key . "_e:" . $element_type_id . "_u:" . $user_id . "_f:" . $firm_id . "_ins:" . $institution_id . "_sub:" . $subspecialty_id . "_sp:" . $specialty_id . "_si:" . $site_id . "_ad:" . $is_admin . "_iset:" . $is_setting_page . "_class:" . md5(serialize($allowed_classes)) . "_obj:" . $return_object;
+        $value = Yii::app()->settingCache->get($id);
+        if ($value === false) {
+            if (!$key) {
+                $key = $this->key;
             }
-            if ($field) {
-                if (getType($field) === 'array') {
-                    $fields = $field;
-                    $conditions = [];
 
-                    foreach ($fields as $field) {
-                        if (${$field}) {
-                            $conditions[$field] = ${$field};
+            // If value is set in the config params (file config), then it always overrides anything set in the database
+            if (!empty(Yii::app()->params[$key] && !$return_object && empty($element_type))) {
+                return Yii::app()->params[$key];
+            }
+
+            $metadata = static::cachedMetadata($key, $element_type ? $element_type->id : null);
+
+            if (!$metadata) {
+                return false;
+            }
+
+            // Loop through all he permutations until a match is found.
+            foreach (static::$CONTEXT_CLASSES as $class => $field) {
+                if ($allowed_classes && !in_array($class, $allowed_classes, true)) {
+                    continue;
+                }
+                if ($field) {
+                    if (getType($field) === 'array') {
+                        $fields = $field;
+                        $conditions = [];
+
+                        foreach ($fields as $field) {
+                            if (${$field}) {
+                                $conditions[$field] = ${$field};
+                            }
                         }
-                    }
 
-                    if (count($conditions) === count($fields) && $setting = $this->getSettingValueWithConditions($class, $key, $conditions, $element_type)) {
+                        if (count($conditions) === count($fields) && $setting = $this->getSettingValueWithConditions($class, $key, $conditions, $element_type)) {
+                            if ($return_object) {
+                                $value =  $setting;
+                                break;
+                            }
+
+                            $value =  $this->parseSetting($setting, $metadata);
+                            break;
+                        }
+                    } elseif (${$field} && $setting = $this->getSettingValue($class, $key, $field, ${$field}, $element_type)) {
                         if ($return_object) {
-                            return $setting;
+                            $value =  $setting;
+                            break;
                         }
 
-                        return $this->parseSetting($setting, $metadata);
+                        $value =  $this->parseSetting($setting, $metadata);
+                        break;
                     }
-                } elseif (${$field} && $setting = $this->getSettingValue($class, $key, $field, ${$field}, $element_type)) {
+                } elseif ($setting = $this->getSettingValue($class, $key, null, null, $element_type)) {
                     if ($return_object) {
-                        return $setting;
+                        $value =  $setting;
+                        break;
                     }
 
-                    return $this->parseSetting($setting, $metadata);
+                    $value =  $this->parseSetting($setting, $metadata);
+                    break;
                 }
-            } elseif ($setting = $this->getSettingValue($class, $key, null, null, $element_type)) {
-                if ($return_object) {
-                    return $setting;
-                }
-
-                return $this->parseSetting($setting, $metadata);
             }
-        }
 
-        if ($return_object) {
-            return false;
-        }
+            // Set to the default value if no result has been found above
+            if ($value === false) {
+                if ($return_object) {
+                    $value = false;
+                } else {
+                    $value =  $metadata->default_value;
+                }
+            }
 
-        return $metadata->default_value;
+            // Set a dependency on the SettingMetaLastUpdate not changing (i.e, the cache is invalidated if any of the setting_* tables receives an update)
+            $dependency = new CExpressionDependency("Yii::app()->settingCache->get('SettingMetaLastUpdate') == '" . Yii::app()->settingCache->get('SettingMetaLastUpdate') . "'");
+            Yii::app()->settingCache->set($id, $value, 1000, $dependency);
+        }
+        return $value;
     }
 
     /**
@@ -407,7 +482,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
      * @param array $substitutions
      * @return false|string
      */
-    public static function performSubstitutions($html, $substitutions = array())
+    public static function performSubstitutions($html, $substitutions = array(), $preserve_empty_substitutions = true)
     {
         $dom = new DOMDocument();
         @$dom->loadHTML($html, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
@@ -425,7 +500,9 @@ class SettingMetadata extends BaseActiveRecordVersioned
                 isset($substitutions[$key]['value']) &&
                 !empty($substitutions[$key]['value'])
             ) {
-                $sub = $substitutions[$key]['value'];
+                $sub = str_replace(array("\r\n", "\r", "\n"), "<br/>", $substitutions[$key]['value']);
+            } elseif ($preserve_empty_substitutions) {
+                $sub = '<span>[' . $key . ']</span>';
             } else {
                 $sub = '<span></span>';
             }
@@ -470,19 +547,19 @@ class SettingMetadata extends BaseActiveRecordVersioned
         $logos = $logo_helper->getLogoURLs(isset($site) ? $site->id : null);
 
         return array(
-            'user_name' => array('label' => 'User Name', 'value' => $user ? self::makeSpan($user->getFullName()) : null),
-            'user_title' => array('label' => 'User Title', 'value' => $user->contact ? self::makeSpan($user->contact->title) : null),
-            'firm_name' => array('label' => 'Firm Name', 'value' => $firm ? self::makeSpan($firm->name) : null),
-            'site_name' => array('label' => 'Site Name', 'value' => $site ? self::makeSpan($site->name) : null),
-            'site_address' => array('label' => 'Site Address', 'value' => $site_address ? self::makeSpan($site_address->getSummary()) : null),
-            'site_phone' => array('label' => 'Site Phone', 'value' => isset($site) && !empty($site->telephone) ? self::makeSpan($site->telephone) : null),
-            'site_fax' => array('label' => 'Site Fax', 'value' => isset($site) && !empty($site->fax) ? self::makeSpan($site->fax) : null),
-            'site_email' => array('label' => 'Site Email', 'value' => !empty($site_address->email) ? self::makeSpan($site_address->email) : null),
-            'site_city' => array('label' => 'Site City', 'value' => !empty($site_address->city) ? self::makeSpan($site_address->city) : null),
-            'site_postcode' => array('label' => 'Site Postcode', 'value' => $site_address ? self::makeSpan($site_address->postcode) : null),
-            'primary_logo' => array('label' => 'Primary Logo', 'value' => isset($logos['primaryLogo']) ? self::makeImg($logos['primaryLogo']) : null),
-            'secondary_logo' => array('label' => 'Secondary Logo', 'value' => isset($logos['secondaryLogo']) ? self::makeImg($logos['secondaryLogo']) : null),
-            'current_date' => array('label' => 'Current Date', 'value' => self::makeSpan(date('d M Y'))),
+        'user_name' => array('label' => 'User Name', 'value' => $user ? self::makeSpan($user->getFullName()) : null),
+        'user_title' => array('label' => 'User Title', 'value' => $user->contact ? self::makeSpan($user->contact->title) : null),
+        'firm_name' => array('label' => 'Firm Name', 'value' => $firm ? self::makeSpan($firm->name) : null),
+        'site_name' => array('label' => 'Site Name', 'value' => $site ? self::makeSpan($site->name) : null),
+        'site_address' => array('label' => 'Site Address', 'value' => $site_address ? self::makeSpan($site_address->getSummary()) : null),
+        'site_phone' => array('label' => 'Site Phone', 'value' => isset($site) && !empty($site->telephone) ? self::makeSpan($site->telephone) : null),
+        'site_fax' => array('label' => 'Site Fax', 'value' => isset($site) && !empty($site->fax) ? self::makeSpan($site->fax) : null),
+        'site_email' => array('label' => 'Site Email', 'value' => !empty($site_address->email) ? self::makeSpan($site_address->email) : null),
+        'site_city' => array('label' => 'Site City', 'value' => !empty($site_address->city) ? self::makeSpan($site_address->city) : null),
+        'site_postcode' => array('label' => 'Site Postcode', 'value' => $site_address ? self::makeSpan($site_address->postcode) : null),
+        'primary_logo' => array('label' => 'Primary Logo', 'value' => isset($logos['primaryLogo']) ? self::makeImg($logos['primaryLogo']) : null),
+        'secondary_logo' => array('label' => 'Secondary Logo', 'value' => isset($logos['secondaryLogo']) ? self::makeImg($logos['secondaryLogo']) : null),
+        'current_date' => array('label' => 'Current Date', 'value' => self::makeSpan(date('d M Y'))),
         );
     }
 
@@ -508,28 +585,28 @@ class SettingMetadata extends BaseActiveRecordVersioned
         }
 
         return array(
-            'patient_full_name' => array('label' => 'Patient Full Name', 'value' => $patient ? self::makeSpan($patient->getFullName()) : null),
-            'patient_first_name' => array('label' => 'Patient First Name', 'value' => $patient_contact ? self::makeSpan($patient_contact->first_name) : null),
-            'patient_last_name' => array('label' => 'Patient Last Name', 'value' => $patient_contact ? self::makeSpan($patient_contact->last_name) : null),
-            'patient_date_of_birth' => array('label' => 'Patient Date Of Birth', 'value' => $patient ? self::makeSpan(\Helper::convertMySQL2NHS($patient->dob)) : null),
-            'patient_gender' => array('label' => 'Patient Sex', 'value' => $patient ? self::makeSpan($patient->getGenderString()) : null),
-            'patient_nhs_num' => array('label' => 'Patient NHS Number', 'value' => $patient ? self::makeSpan($patient->getNhs(
-                $event->institution_id ?? null,
-                $event->site_id ?? null
-            )) : null),
-            'patient_hos_num' => array('label' => 'Patient Hospital Number', 'value' => $patient ? self::makeSpan($patient->getHos(
-                $event->institution_id ?? null,
-                $event->site_id ?? null
-            )) : null),
-            'patient_last_exam_date' => array('label' => 'Patient Last Examination Date', 'value' => $last_exam ? self::makeSpan(\Helper::convertMySQL2NHS($last_exam->event_date)) : null),
+        'patient_full_name' => array('label' => 'Patient Full Name', 'value' => $patient ? self::makeSpan($patient->getFullName()) : null),
+        'patient_first_name' => array('label' => 'Patient First Name', 'value' => $patient_contact ? self::makeSpan($patient_contact->first_name) : null),
+        'patient_last_name' => array('label' => 'Patient Last Name', 'value' => $patient_contact ? self::makeSpan($patient_contact->last_name) : null),
+        'patient_date_of_birth' => array('label' => 'Patient Date Of Birth', 'value' => $patient ? self::makeSpan(\Helper::convertMySQL2NHS($patient->dob)) : null),
+        'patient_gender' => array('label' => 'Patient Sex', 'value' => $patient ? self::makeSpan($patient->getGenderString()) : null),
+        'patient_nhs_num' => array('label' => 'Patient NHS Number', 'value' => $patient ? self::makeSpan($patient->getNhs(
+            $event->institution_id ?? null,
+            $event->site_id ?? null
+        )) : null),
+        'patient_hos_num' => array('label' => 'Patient Hospital Number', 'value' => $patient ? self::makeSpan($patient->getHos(
+            $event->institution_id ?? null,
+            $event->site_id ?? null
+        )) : null),
+        'patient_last_exam_date' => array('label' => 'Patient Last Examination Date', 'value' => $last_exam ? self::makeSpan(\Helper::convertMySQL2NHS($last_exam->event_date)) : null),
         );
     }
 
     public static function getCorrespondenceSubstitutions($element_letter = null, $recipient_address = null)
     {
         // Use the firm and site that the correspondence event was created under
-        $firm = isset($element_letter) ? $element_letter->event->firm : null;
-        $site = isset($element_letter) ? $element_letter->event->site : null;
+        $firm = isset($element_letter) ? $element_letter->event->firm : Yii::app()->session->getSelectedFirm();
+        $site = isset($element_letter) ? $element_letter->event->site : Yii::app()->session->getSelectedSite();
 
         $site_contact = isset($site) ? $site->contact : null;
         $site_address = isset($site_contact) ? $site_contact->address : null;
@@ -537,6 +614,8 @@ class SettingMetadata extends BaseActiveRecordVersioned
 
         $logo_helper = new LogoHelper();
         $logos = $logo_helper->getLogoURLs(isset($site) ? $site->id : null);
+
+        $user = $element_letter->event->user ?? Yii::app()->session['user'];
 
         return array_filter(array(
             'to_address' => array('label' => 'Recipient Address', 'value' => $recipient_address),
@@ -554,6 +633,10 @@ class SettingMetadata extends BaseActiveRecordVersioned
             'site_postcode' => isset($site) ? array('label' => 'Site Postcode', 'value' => isset($site_address) ? self::makeSpan($site_address->postcode) : null) : null,
             'primary_logo' => array('label' => 'Primary Logo', 'value' => !empty($logos['primaryLogo']) ? self::makeImg($logos['primaryLogo']) : null),
             'secondary_logo' => array('label' => 'Secondary Logo', 'value' => !empty($logos['secondaryLogo']) ? self::makeImg($logos['secondaryLogo']) : null),
+            'user_title' => isset($user) ? array('label' => 'User Title', 'value' => self::makeSpan($user->title)) : null,
+            'user_first_name' => isset($user) ? array('label' => 'User First Name', 'value' => self::makeSpan($user->first_name)) : null,
+            'user_last_name' => isset($user) ? array('label' => 'User Last Name', 'value' => self::makeSpan($user->last_name)) : null,
+            'user_name' => isset($user) ? array('label' => 'User Name', 'value' => self::makeSpan($user->first_name . ' ' . $user->last_name)) : null,
         ));
     }
 
@@ -564,7 +647,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
     public static function getDocumentTargetSubstitutions($doc_target = null)
     {
         return array(
-            'doc_target_address' => array('label' => 'Document Target Address', 'value' => isset($doc_target) && !empty($doc_target->address) ? self::makeSpan($doc_target->address) : null),
+        'doc_target_address' => array('label' => 'Document Target Address', 'value' => isset($doc_target) && !empty($doc_target->address) ? self::makeSpan($doc_target->address) : null),
         );
     }
 
@@ -575,7 +658,7 @@ class SettingMetadata extends BaseActiveRecordVersioned
     public static function getRecipientAddressSubstitution($recipient_address = null)
     {
         return array(
-            'recipient_address' => array('label' => 'Recipient Address', 'value' => isset($recipient_address) && !empty($recipient_address) ? self::makeSpan($recipient_address) : null),
+        'recipient_address' => array('label' => 'Recipient Address', 'value' => isset($recipient_address) && !empty($recipient_address) ? self::makeSpan($recipient_address) : null),
         );
     }
 
@@ -595,7 +678,51 @@ class SettingMetadata extends BaseActiveRecordVersioned
     public function scopes()
     {
         return array(
-            'byDisplayOrder' => array('order' => 'display_order DESC, name DESC'),
+        'byDisplayOrder' => array('order' => 'display_order DESC, name DESC'),
         );
+    }
+
+    /**
+     * Retrieve the current site from cache
+     */
+    protected static function siteForCurrentSession()
+    {
+        if (is_null(static::$sessionSiteValidated)) {
+            static::$sessionSiteValidated = true;
+            static::$sessionSite = Site::model()
+            ->with('institution')
+            ->findByPk(Yii::app()->session['selected_site_id']);
+        }
+
+        return static::$sessionSite;
+    }
+
+    /**
+     * Retrieve the current firm from cache
+     */
+    protected static function firmForCurrentSession()
+    {
+        if (is_null(static::$sessionFirmValidated)) {
+            static::$sessionFirm = Firm::model()
+            ->with('serviceSubspecialtyAssignment.subspecialty.specialty')
+            ->findByPk(Yii::app()->session['selected_firm_id']);
+            static::$sessionFirmValidated = true;
+        }
+
+        return static::$sessionFirm;
+    }
+
+    /**
+     * Retrieve the SettingMetadata model from cache
+     */
+    protected static function cachedMetadata($key, $elementTypeId = null)
+    {
+        $cacheKey = "{$key}.{$elementTypeId}";
+        if (!array_key_exists($cacheKey, static::$metadataCacheStore)) {
+            static::$metadataCacheStore[$cacheKey] = $elementTypeId
+            ? self::model()->find('element_type_id=? and `key`=?', [$elementTypeId, $key])
+            : self::model()->find('element_type_id is null and `key`=?', [$key]);
+        }
+        return static::$metadataCacheStore[$cacheKey];
     }
 }

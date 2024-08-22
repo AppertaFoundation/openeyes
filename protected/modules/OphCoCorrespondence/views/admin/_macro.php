@@ -1,9 +1,7 @@
 <?php
+
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) Copyright Apperta Foundation 2022
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,9 +10,10 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (C) 2022, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/InitMethod.js", \CClientScript::POS_HEAD);
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/OpenEyes.OphCoCorrespondence.LetterMacro.js", \CClientScript::POS_HEAD);
 /**
@@ -69,15 +68,8 @@ $recipients_data = $recipients_data + $none_option;
         <tr>
             <td>Institution</td>
             <td>
-            <?= $form->multiSelectList(
-                    $macro,
-                    'LetterMacro[levels][institutions]',
-                    'institutions',
-                    'id',
-                    Institution::model()->getTenantedList(),
-                    null,
-                    ['class' => 'cols-full', 'div-class' => 'typeInstitution', 'empty' => '- Institution -', 'nowrapper' => true, 'hidden' => true],
-                ) ?>
+                <?= $institution['name'] ?>
+                <input type="hidden" name="LetterMacro[levels][institutions][]" value="<?= $institution['id']; ?>" />
             </td>
             <td></td>
             <td></td>
@@ -86,14 +78,14 @@ $recipients_data = $recipients_data + $none_option;
             <td>Site</td>
             <td>
             <?= $form->multiSelectList(
-                    $macro,
-                    'LetterMacro[levels][sites]',
-                    'sites',
-                    'id',
-                    Site::model()->getListForCurrentInstitution(),
-                    null,
-                    array('empty' => '- Site -', 'div-class' => 'typeSite', 'class' => 'cols-full', 'nowrapper' => true, 'hidden' => true),
-                ) ?>
+                $macro,
+                'LetterMacro[levels][sites]',
+                'sites',
+                'id',
+                $site_options,
+                $default_sites,
+                array('empty' => '- Site -', 'div-class' => 'typeSite', 'class' => 'cols-full', 'nowrapper' => true, 'hidden' => true),
+            ) ?>
             </td>
             <td></td>
             <td></td>
@@ -102,14 +94,14 @@ $recipients_data = $recipients_data + $none_option;
             <td>Subspecialty</td>
             <td>
             <?= $form->multiSelectList(
-                    $macro,
-                    'LetterMacro[levels][subspecialties]',
-                    'subspecialties',
-                    'id',
-                    CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-                    null,
-                    array('empty' => '- Subspecialty -', 'div-class' => 'typeSubspecialty', 'class' => 'cols-full', 'nowrapper' => true, 'hidden' => true),
-                ) ?>
+                $macro,
+                'LetterMacro[levels][subspecialties]',
+                'subspecialties',
+                'id',
+                CHtml::listData(Subspecialty::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
+                null,
+                array('empty' => '- Subspecialty -', 'div-class' => 'typeSubspecialty', 'class' => 'cols-full', 'nowrapper' => true, 'hidden' => true),
+            ) ?>
             </td>
             <td></td>
             <td></td>
@@ -118,14 +110,14 @@ $recipients_data = $recipients_data + $none_option;
             <td>Firm</td>
             <td>
             <?= $form->multiSelectList(
-                    $macro,
-                    'LetterMacro[levels][firms]',
-                    'firms',
-                    'id',
-                    Firm::model()->getListWithSpecialties(Yii::app()->session['selected_institution_id'], true),
-                    null,
-                    array('empty' => '- ' . Firm::contextLabel() . ' -', 'div-class' => 'typeFirm', 'class' => 'cols-full', 'nowrapper' => true, 'hidden' => true),
-                ) ?>
+                $macro,
+                'LetterMacro[levels][firms]',
+                'firms',
+                'id',
+                $firm_options,
+                $default_firms,
+                array('empty' => '- ' . Firm::contextLabel() . ' -', 'div-class' => 'typeFirm', 'class' => 'cols-full', 'nowrapper' => true, 'hidden' => true),
+            ) ?>
             </td>
             <td></td>
             <td></td>
@@ -149,7 +141,7 @@ $recipients_data = $recipients_data + $none_option;
                 <?php echo $form->textField(
                     $macro,
                     'name',
-                    array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'cols-full', 'nowrapper' => true,)
+                    array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'cols-full', 'nowrapper' => true,)
                 ) ?>
             </td>
 

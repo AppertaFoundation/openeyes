@@ -21,7 +21,9 @@
 $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-logo.svg';
 $settings = new SettingMetadata();
 $tech_support_provider = Yii::App()->params['tech_support_provider'] ? htmlspecialchars(Yii::App()->params['tech_support_provider']) : htmlspecialchars($settings->getSetting('tech_support_provider'));
-$tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yii::App()->params['tech_support_url']) : htmlspecialchars($settings->getSetting('tech_support_url'))
+$tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yii::App()->params['tech_support_url']) : htmlspecialchars($settings->getSetting('tech_support_url'));
+$training_hub_text = Yii::App()->params['training_hub_text'] ? htmlspecialchars(Yii::App()->params['training_hub_text']) : htmlspecialchars($settings->getSetting('training_hub_text'));
+$training_hub_url = Yii::App()->params['training_hub_url'] ? htmlspecialchars(Yii::App()->params['training_hub_url']) : htmlspecialchars($settings->getSetting('training_hub_url'));
 ?>
 <div class="oe-logo" id="js-openeyes-btn">
   <svg viewBox="0 0 300.06 55.35" class="oe-openeyes">
@@ -42,6 +44,23 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
   </div>
 
   <div class="group">
+
+    <h4>Feedback</h4>
+    <p>Send us <a href="<?= Yii::app()->params['feedback_link'] ?>">feedback or suggestions.</a></p>
+  </div>
+
+    <?php
+    if ($training_hub_text && $training_hub_url) { ?>
+        <div class="group">
+            <h4>Training documentation</h4>
+            <p>
+                <a href="<?= $training_hub_url ?>"
+                   target=blank><?= $training_hub_text ?></a>
+            </p>
+        </div>
+    <?php } ?>
+
+  <div class="group">
     <h4>Legal</h4>
 
     <p>OpenEyes is released under the AGPL3 license and is free to download and use.</p>
@@ -51,19 +70,19 @@ $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yi
 
   <div class="group">
     <h4>Support</h4>
-	<?php if(Yii::app()->params['enable_default_support_text']){ ?>
-        <p>Paid for support and maintenance is available from our Accredited Professional Services Partner network.<br>A list of available partners can be found at the following link <a href="http://openeyes.apperta.org" target="_blank">openeyes.apperta.org</a></p>
-	<?php } else { ?>
-	<p>
-            <?php if (Yii::app()->params['helpdesk_phone'] || Yii::app()->params['helpdesk_email']) : ?>
-	        <?= Yii::app()->params['helpdesk_phone'] ? Yii::app()->params['helpdesk_phone'] : null ?>
-	        <?= Yii::app()->params['helpdesk_email'] ? Yii::app()->params['helpdesk_email'] : null ?>
-	        <?= Yii::app()->params['helpdesk_hours'] ? "<br/>(" . Yii::app()->params['helpdesk_hours'] . ")" : null ?>
-            <?php elseif ($tech_support_provider) : ?>
-                <a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a>
-	    <?php endif; ?>
-	</p>
-        <?php } ?>
+
+    <p>
+    <span class="large-text"> Need Help?&nbsp;
+        <?php  $purifier = new CHtmlPurifier(); ?>
+        <?php if (SettingMetadata::model()->getSetting('helpdesk_phone') || SettingMetadata::model()->getSetting('helpdesk_email')) : ?>
+            <?= SettingMetadata::model()->getSetting('helpdesk_phone') ? $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_phone')) : null ?>
+            <?= SettingMetadata::model()->getSetting('helpdesk_email') ? $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_email')) : null ?>
+            <?= SettingMetadata::model()->getSetting('helpdesk_hours') ? "<br/>(" . $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_hours')) . ")" : null ?>
+        <?php elseif ($tech_support_provider) : ?>
+          <a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a>
+        <?php endif; ?>
+    </p>
+
   </div>
   <div class="group">
     <h4>Version: <?= Yii::App()->params['oe_version'] ?></h4>

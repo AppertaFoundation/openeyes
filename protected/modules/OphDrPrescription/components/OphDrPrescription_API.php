@@ -15,6 +15,9 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
+
 class OphDrPrescription_API extends BaseAPI
 {
     public $createOprn = 'OprnCreatePrescription';
@@ -82,6 +85,33 @@ class OphDrPrescription_API extends BaseAPI
         </table>
 
             <?php  return ob_get_clean();
+        }
+    }
+
+    /**
+     * get the prescription letter long text for the latest prescription in the episode for the patient.
+     *
+     * @param Patient $patient
+     * @param Episode $episode
+     *
+     * @return string
+     */
+    public function getLetterLongPrescription($patient)
+    {
+
+        $details = $this->getElements('Element_OphDrPrescription_Details', $patient);
+        if ($details) {
+            $result = "\n";
+            $latest =  $this->getLatestElement('Element_OphDrPrescription_Details', $patient);
+
+            foreach ($details as $detail) {
+                $detail_date = substr($detail->event->event_date, 0, 10);
+                $latest_date = substr($latest->event->event_date, 0, 10);
+                if (strtotime($detail_date) === strtotime($latest_date)) {
+                    $result .= $detail->getLetterTextLongFrequency()."\n";
+                }
+            }
+            return $result;
         }
     }
 

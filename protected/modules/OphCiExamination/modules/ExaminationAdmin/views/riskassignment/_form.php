@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -17,6 +18,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?=\CHtml::errorSummary(
     array_merge([$model], $model->entries),
@@ -25,13 +27,13 @@
     ["class" => "alert-box alert with-icon"]
 ); ?>
 
-<div class="cols-5">
+<div class="cols-full">
     <table class="standard cols-full">
         <h2><?=$title ?></h2>
         <hr class="divider">
         <colgroup>
             <col class="cols-3">
-            <col class="cols-5">
+            <col class="cols-full">
         </colgroup>
         <tbody>
         <tr>
@@ -91,7 +93,7 @@
                 'name' => 'age_min',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_min]", $data->age_min, ["style" => "width:55px;","class"=>"js-age js-age-min"]);
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_min]", $data->age_min, ["style" => "width:55px;","class" => "js-age js-age-min"]);
                 }
             ],
             [
@@ -99,7 +101,7 @@
                 'name' => 'age_max',
                 'type' => 'raw',
                 'value' => function ($data, $row) {
-                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_max]", $data->age_max, ["style" => "width:55px;", "class"=>"js-age js-age-max"]);
+                    return CHtml::numberField("OEModule_OphCiExamination_models_OphCiExaminationRiskSetEntry[$row][age_max]", $data->age_max, ["style" => "width:55px;", "class" => "js-age js-age-max"]);
                 }
             ],
             [
@@ -240,5 +242,3 @@
         }
     })
 </script>
-
-

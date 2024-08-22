@@ -18,6 +18,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_visualacuity_method".
  *
@@ -27,6 +29,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_VisualAcuity_Method extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public static $UNAIDED_FLAG_TYPE = 1;
     public static $AIDED_FLAG_TYPE = 2;
 

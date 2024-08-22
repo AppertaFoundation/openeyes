@@ -59,7 +59,7 @@ class UserHotlistItemController extends BaseController
         $core_api = new CoreAPI();
         $institution_id = Institution::model()->getCurrent()->id;
         $site_id = Yii::app()->session['selected_site_id'];
-        $display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
+        $display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
         foreach (UserHotlistItem::model()->getHotlistItems($is_open, $date) as $hotlistItem) {
             echo $this->renderPartial('//base/_hotlist_item', [
                 'hotlistItem' => $hotlistItem,

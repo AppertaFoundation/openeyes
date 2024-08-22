@@ -101,7 +101,7 @@ const analytics_cataract = (function () {
         };
 
         // instantiate jsPDF
-        const doc = new jsPDF({
+        const doc = new jspdf.jsPDF({
             orientation: "landscape",
             unit: "pt",
             format: "a4",

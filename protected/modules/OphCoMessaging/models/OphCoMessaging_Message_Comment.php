@@ -17,17 +17,20 @@
 
 namespace OEModule\OphCoMessaging\models;
 
+use OE\factories\models\traits\HasFactory;
+
+/**
+ * @property string $comment_text
+ * @property string|int $mailbox_id
+ * @property string|int $element_id
+ * @property Element_OphCoMessaging_Message $element
+ * @property Mailbox $sender_mailbox
+ * @property User $user
+ * @property User $usermodified
+ */
 class OphCoMessaging_Message_Comment extends \BaseActiveRecordVersioned
 {
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    use HasFactory;
 
     /**
      * @return string the associated database table name
@@ -44,7 +47,7 @@ class OphCoMessaging_Message_Comment extends \BaseActiveRecordVersioned
     {
         return array(
             array('comment_text', 'safe'),
-            array('comment_text', 'required'),
+            array('comment_text, mailbox_id', 'required'),
             array('id, comment_text', 'safe', 'on' => 'search'),
         );
     }
@@ -56,6 +59,7 @@ class OphCoMessaging_Message_Comment extends \BaseActiveRecordVersioned
     {
         return array(
             'element' => array(self::BELONGS_TO, 'OEModule\\OphCoMessaging\\models\\Element_OphCoMessaging_Message', 'element_id'),
+            'sender_mailbox' => array(self::BELONGS_TO, 'OEModule\\OphCoMessaging\\models\\mailbox', 'mailbox_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );

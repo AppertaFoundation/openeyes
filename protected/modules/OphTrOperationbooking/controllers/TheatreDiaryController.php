@@ -25,7 +25,7 @@ class TheatreDiaryController extends BaseModuleController
     {
         return array(
             array('allow',
-                'actions' => array('index', 'search', 'filterFirms', 'filterTheatres', 'filterWards', 'setDiaryFilter', 'getSessionTimestamps', 'checkRequired'),
+                'actions' => array('index', 'search', 'filterFirms', 'filterTheatres', 'filterWards', 'setDiaryFilter', 'checkRequired'),
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
@@ -105,7 +105,12 @@ class TheatreDiaryController extends BaseModuleController
         $this->jsVars['NHSDateFormat'] = Helper::NHS_DATE_FORMAT;
 
         $used_firms = CHtml::listData(OphTrOperationbooking_Operation_Session::model()->getFirmsBeenUsed(@$_POST['subspecialty-id']), "id", "name");
-        $this->render('index', array('wards' => $wards, 'theatres' => $theatres, 'used_firms' => $used_firms));
+        $this->render('index', [
+            'wards' => $wards,
+            'theatres' => $theatres,
+            'used_firms' => $used_firms,
+            'autoload' => (SettingMetadata::model()->getSetting('ophtroperation_booking_autoload_theatre_diary') ?? 'off') === 'on'
+        ]);
     }
 
     /**
@@ -139,6 +144,7 @@ class TheatreDiaryController extends BaseModuleController
             'diary' => $this->getDiaryTheatres($_POST),
             'assetPath' => $this->assetPath,
             'ward_id' => @$_POST['ward-id'],
+            'show_patient_summary_popup' => (SettingMetadata::model()->getSetting('ophtroperation_booking_theatre_diary_show_patient_popup') ?? 'on') === 'on'
         ), true, true);
         $this->renderJSON(array('status' => 'success', 'data' => $list));
     }
@@ -156,6 +162,7 @@ class TheatreDiaryController extends BaseModuleController
         $error = false;
         $errorMessage = '';
 
+        $emergency_list = isset($data['emergency_list']) && $data['emergency_list'] === '1' ? true : false;
         $data['date-start'] = Helper::convertNHS2MySQL(@$data['date-start']);
         $data['date-end'] = Helper::convertNHS2MySQL(@$data['date-end']);
 
@@ -201,7 +208,7 @@ class TheatreDiaryController extends BaseModuleController
             ':endDate' => $endDate,
         );
 
-        if (@$data['emergency_list']) {
+        if ($emergency_list) {
             $criteria->addCondition('firm.id is null');
         } else {
             $criteria->addCondition('firm.id is not null');
@@ -230,9 +237,6 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->addCondition('activeBookings.ward_id is not null');
             }
         }
-
-        $criteria->addCondition('site.institution_id = :institution_id');
-        $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
 
         $criteria->order = 'site.short_name, `t`.display_order, `t`.code, sessions.date, sessions.start_time, sessions.end_time';
 
@@ -287,9 +291,12 @@ class TheatreDiaryController extends BaseModuleController
      */
     public function getBookingList($data)
     {
-        foreach (array('date-start', 'date-end', 'subspecialty-id', 'site-id') as $required) {
-            if (!isset($data[$required])) {
-                throw new Exception('invalid request for booking list');
+        $emergency_list = isset($data['emergency_list']) && $data['emergency_list'] === '1' ? true : false;
+        if (!$emergency_list) {
+            foreach (array('date-start', 'date-end', 'subspecialty-id', 'site-id') as $required) {
+                if (!isset($data[$required])) {
+                    throw new Exception('invalid request for booking list');
+                }
             }
         }
 
@@ -301,27 +308,34 @@ class TheatreDiaryController extends BaseModuleController
         $criteria->params[':dateFrom'] = Helper::convertNHS2MySQL($data['date-start']);
         $criteria->params[':dateTo'] = Helper::convertNHS2MySQL($data['date-end']);
 
-        if (@$data['emergency_list']) {
+        if ($emergency_list) {
             $criteria->addCondition('firm.id IS NULL');
         } else {
-            $criteria->addCondition('theatre.site_id = :siteId and subspecialty_id = :subspecialtyId');
-            $criteria->params[':siteId'] = $data['site-id'];
-            $criteria->params[':subspecialtyId'] = $data['subspecialty-id'];
-        }
+            if (isset($data['firm-id']) && strtolower($data['firm-id']) !== 'all') {
+                $criteria->addCondition('firm.id = :firmId');
+                $criteria->params[':firmId'] = $data['firm-id'];
+            }
 
-        if (@$data['ward-id']) {
-            $criteria->addCondition('ward.id = :wardId');
-            $criteria->params[':wardId'] = $data['ward-id'];
-        }
+            if (strtolower($data['site-id']) !== 'all') {
+                $criteria->addCondition('theatre.site_id = :siteId');
+                $criteria->params[':siteId'] = $data['site-id'];
+            }
 
-        if (@$data['firm-id']) {
-            $criteria->addCondition('firm.id = :firmId');
-            $criteria->params[':firmId'] = $data['firm-id'];
+            if (strtolower($data['subspecialty-id']) !== 'all') {
+                $criteria->addCondition('subspecialty_id = :subspecialtyId');
+                $criteria->params[':subspecialtyId'] = $data['subspecialty-id'];
+            }
+
+            if (isset($data['ward-id']) && strtolower($data['ward-id']) !== 'all') {
+                $criteria->addCondition('ward.id = :wardId');
+                $criteria->params[':wardId'] = $data['ward-id'];
+            }
         }
 
         $criteria->addCondition('`t`.booking_cancellation_date is null');
+        $criteria->addCondition('patient_identifier_not_deleted.patient_identifier_type_id=1');
 
-        $criteria->order = 'ward.code, patient.hos_num';
+        $criteria->order = 'ward.code, patient_identifier_not_deleted.value';
 
         Yii::app()->event->dispatch('start_batch_mode');
 
@@ -346,7 +360,7 @@ class TheatreDiaryController extends BaseModuleController
                                 'episode' => array(
                                     'with' => array(
                                         'patient' => array(
-                                            'with' => 'contact',
+                                            'with' => 'identifiers'
                                         ),
                                     ),
                                 ),
@@ -377,7 +391,7 @@ class TheatreDiaryController extends BaseModuleController
             $subspecialty_id = ServiceSubspecialtyAssignment::model()->find(
                 'service_id=?',
                 array($_POST['service_id'])
-            )->subspecialty_id;
+            )->subspecialty_id ?? null;
         }
 
         if (isset($subspecialty_id)) {
@@ -416,7 +430,7 @@ class TheatreDiaryController extends BaseModuleController
      */
     public function actionFilterWards()
     {
-        echo CHtml::tag('option', array('value' => ''), CHtml::encode('All wards'), true);
+        echo CHtml::tag('option', array('value' => 'All'), CHtml::encode('All wards'), true);
 
         if (!empty($_POST['site_id'])) {
             $wards = $this->getFilteredWards($_POST['site_id']);
@@ -471,7 +485,7 @@ class TheatreDiaryController extends BaseModuleController
 
                     if (!$booking->validate()) {
                         $formErrors = $booking->getErrors();
-                        $errors[(integer)$m[1]] = $formErrors['admission_time'][0];
+                        $errors[(int)$m[1]] = $formErrors['admission_time'][0];
                     }
                 }
             }
@@ -529,10 +543,12 @@ class TheatreDiaryController extends BaseModuleController
                 // Check if relative position of booking has changed or if the display_order or booking id are lower
                 // than the previous booking. If so update display order. This is necessary for cases where there are duplicate
                 // display_orders and booking_id is used as a tie breaker
-                if ($booking_data['booking_id'] != $original_booking_ids[$new_position]
+                if (
+                    $booking_data['booking_id'] != $original_booking_ids[$new_position]
                     || $booking_data['booking']->display_order < $previous_booking_display_order
                     || ($booking_data['booking']->display_order == $previous_booking_display_order
-                        && $booking_data['booking_id'] < $previous_booking_booking_id)) {
+                        && $booking_data['booking_id'] < $previous_booking_booking_id)
+                ) {
                     $booking_data['booking']->display_order = $previous_booking_display_order + 1;
                     $booking_data['changed'] = true;
                     $order_is_changed = true;
@@ -645,22 +661,6 @@ class TheatreDiaryController extends BaseModuleController
     }
 
     /**
-     * Ajax action to retrieve the modification data for a given session.
-     */
-    public function actionGetSessionTimestamps()
-    {
-        if (isset($_POST['session_id'])) {
-            if ($session = Session::model()->findByPk($_POST['session_id'])) {
-                $ex = explode(' ', $session->last_modified_date);
-                $last_modified_date = $ex[0];
-                $last_modified_time = $ex[1];
-                $user = User::model()->findByPk($session->last_modified_user_id);
-                echo 'Modified on ' . Helper::convertMySQL2NHS($last_modified_date) . ' at ' . $last_modified_time . ' by ' . $user->first_name . ' ' . $user->last_name;
-            }
-        }
-    }
-
-    /**
      * Ajax method to check whether various attributes are required on a given session
      * (used to prevent them being turned off when they are needed on the session).
      *
@@ -708,13 +708,15 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->addInCondition('anaesthetic_type.code', ['Sed', 'GA']);
                 $criteria->params[':sessionId'] = $session->id;
 
-                if (Element_OphTrOperationbooking_Operation::model()
+                if (
+                    Element_OphTrOperationbooking_Operation::model()
                     ->with(array(
                         'booking' => array(
                             'with' => 'session',
                         ),
                     ))
-                    ->find($criteria)) {
+                    ->find($criteria)
+                ) {
                     echo '1';
                 } else {
                     echo '0';
@@ -722,7 +724,6 @@ class TheatreDiaryController extends BaseModuleController
 
                 return;
             case 'general_anaesthetic':
-
                 $anaesthetic_GA_id = Yii::app()->db->createCommand()->select('id')->from('anaesthetic_type')->where('code=:code', array(':code' => 'GA'))->queryScalar();
 
                 $criteria = new CDbCriteria();
@@ -731,14 +732,16 @@ class TheatreDiaryController extends BaseModuleController
                 $criteria->params[':sessionId'] = $session->id;
                 $criteria->params[':anaestheticType'] = $anaesthetic_GA_id;
 
-                if (Element_OphTrOperationbooking_Operation::model()
+                if (
+                    Element_OphTrOperationbooking_Operation::model()
                     ->with(array(
                         'booking' => array(
                             'with' => 'session',
                         ),
                         'anaesthetic_type',
                     ))
-                    ->find($criteria)) {
+                    ->find($criteria)
+                ) {
                     echo '1';
                 } else {
                     echo '0';

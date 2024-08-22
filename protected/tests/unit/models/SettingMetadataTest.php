@@ -40,7 +40,7 @@ class SettingMetadataTest extends ActiveRecordTestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->model = new SettingMetadata();
@@ -87,6 +87,7 @@ class SettingMetadataTest extends ActiveRecordTestCase
      */
     public function testGetSettingName($key, $value, $expected, $allowedClasses): void
     {
+        SettingMetadata::resetCache();
         Yii::app()->session['selected_site_id'] = 1;
         $settingMetadata = new SettingMetadata();
         $setting = $settingMetadata->getSettingName($key, $allowedClasses);

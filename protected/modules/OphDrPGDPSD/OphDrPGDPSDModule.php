@@ -1,11 +1,14 @@
 <?php
-class OphDrPGDPSDmodule extends BaseEventTypeModule
+
+class OphDrPGDPSDModule extends BaseEventTypeModule
 {
     public function init()
     {
         $this->setImport(array(
             'OphDrPGDPSD.models.*',
             'OphDrPGDPSD.components.*',
+            'OphDrPGDPSD.seeders.*',
+            'OphDrPGDPSD.factories.*',
             'OphDrPGDPSD.views.*',
             'OphDrPGDPSD.widgets.*',
             'OphDrPGDPSD.controllers.*',

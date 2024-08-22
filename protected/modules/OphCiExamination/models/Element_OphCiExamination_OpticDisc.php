@@ -46,6 +46,8 @@ class Element_OphCiExamination_OpticDisc extends \SplitEventTypeElement
     // used for the letter string method in the eyedraw element behavior
     public $letter_string_prefix = "Optic Disc:\n";
 
+    public $exclude_element_from_empty_discard_check = true;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -105,6 +107,8 @@ class Element_OphCiExamination_OpticDisc extends \SplitEventTypeElement
         $side = $side[0];
         if ($this->{$side.'_diameter'} && !$this->$attribute) {
             $this->addError($attribute, ucfirst($side).' vertical diameter requires lens');
+        } elseif (strcmp($this->$attribute, "") == 0) {
+            $this->$attribute = NULL;
         }
     }
 
@@ -114,6 +118,15 @@ class Element_OphCiExamination_OpticDisc extends \SplitEventTypeElement
     }
 
     public function canCopy()
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     * @return bool
+     */
+    public function isDirtyWhenNewRecord(): bool
     {
         return true;
     }

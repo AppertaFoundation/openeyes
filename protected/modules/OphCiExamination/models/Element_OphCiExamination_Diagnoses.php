@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -18,6 +19,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_ophciexamination_diagnoses". It's worth noting that this Element was originally
  * designed to provide a shortcut interface to setting patient diagnoses. Recording the specifics in the element as well
@@ -36,8 +39,12 @@ namespace OEModule\OphCiExamination\models;
 class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+    use HasFactory;
+
     protected $default_view_order = 10;
     public $no_ophthalmic_diagnoses = false;
+
+    protected $has_other_subspecialties_diagnoses = null;
 
     protected $errorExceptions = [
             'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses' => 'OEModule_OphCiExamination_models_Element_OphCiExamination_Diagnoses_diagnoses_table'
@@ -132,7 +139,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     {
         if ($attribute === \CHtml::modelName($this) . '_diagnoses') {
             if (preg_match('/(\d+)/', $message, $match) === 1) {
-                return $attribute . '_entries_row_' . ($match[1]+1);
+                return $attribute . '_entries_row_' . ($match[1] + 1);
             }
         }
         return parent::errorAttributeException($attribute, $message);
@@ -193,6 +200,49 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     }
 
     /**
+     * Return cached value $has_other_subspecialties_diagnoses,
+     * if $has_other_subspecialties_diagnoses is null, run the checkForOtherSubspecialtiesDiagnoses
+     * and assign the result to $has_other_subspecialties_diagnoses
+     *
+     * @return bool cached value has_other_subspecialties_diagnoses
+     */
+    public function patientHasOtherSubspecialtiesDiagnoses()
+    {
+        if ($this->has_other_subspecialties_diagnoses === null) {
+            $this->has_other_subspecialties_diagnoses = $this->checkForOtherSubspecialtiesDiagnoses();
+        }
+
+        return $this->has_other_subspecialties_diagnoses;
+    }
+
+    /**
+     * Check if the patient has diagnoses in other subspecialties
+     *
+     * @return bool
+     * @throws Exception if there is no event, episode or patient data present, throw exception
+     */
+    public function checkForOtherSubspecialtiesDiagnoses()
+    {
+        if (!$this->event || !$this->event->episode || !$this->event->episode->patient) {
+            throw new \RuntimeException("No event, episode or patient data found");
+        }
+
+        $current_episode = $this->event->episode;
+
+        $patient = $current_episode->patient;
+
+        foreach ($patient->episodes as $ep) {
+            /**
+             * return true once find a diagnosis that belongs to other subspecialties
+             */
+            if ($ep->id !== $current_episode->id && $ep->disorder_id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Update the diagnoses for this element using a hash structure of
      * [{
      *      'disorder_id' => integer,
@@ -238,7 +288,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                 $cd->date = $disorder_to_update[$cd->id]['date'];
                 if (!$cd->save()) {
                     throw new \Exception('save failed' . print_r($cd->getErrors(), true));
-                };
+                }
                 $added_diagnoses[] = $cd;
             }
         }
@@ -285,7 +335,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                     $this->event->episode->patient->addDiagnosis(
                         $diagnosis->disorder_id,
                         $diagnosis->eye_id,
-                        $diagnosis->date
+                        $diagnosis->date,
                     );
                 }
             }
@@ -379,10 +429,12 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
         }
 
         //Get further findings from examination
-        if ($et_findings = Element_OphCiExamination_FurtherFindings::model()
+        if (
+            $et_findings = Element_OphCiExamination_FurtherFindings::model()
             ->find('event_id=?', array($this->event_id))
         ) {
-            foreach (OphCiExamination_FurtherFindings_Assignment::model()
+            foreach (
+                OphCiExamination_FurtherFindings_Assignment::model()
                          ->findAll('element_id=?', array($et_findings->id)) as $finding_assignment
             ) {
                 $finding = $finding_assignment->finding;
@@ -459,12 +511,14 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     {
         $result = array();
         foreach ($disorder_ids as $disorder_id) {
-            foreach (\SecondaryToCommonOphthalmicDisorder::model()
+            foreach (
+                \SecondaryToCommonOphthalmicDisorder::model()
                          ->with('parent')
                          ->findAll(
                              't.disorder_id=? and parent.subspecialty_id=?',
                              array($disorder_id, $subspecialty->id)
-                         ) as $secto_disorder) {
+                         ) as $secto_disorder
+            ) {
                 if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == "") {
                     continue;
                 }
@@ -487,12 +541,14 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     {
         $result = array();
         foreach ($finding_ids as $finding_id) {
-            foreach (\SecondaryToCommonOphthalmicDisorder::model()
+            foreach (
+                \SecondaryToCommonOphthalmicDisorder::model()
                          ->with('parent')
                          ->findAll(
                              't.finding_id=? and parent.subspecialty_id=?',
                              array($finding_id, $subspecialty->id)
-                         ) as $secto_disorder) {
+                         ) as $secto_disorder
+            ) {
                 if ($secto_disorder->letter_macro_text == null || $secto_disorder->letter_macro_text == "") {
                     continue;
                 }
@@ -504,11 +560,53 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
     }
 
     /**
+     * Check if the model dirty.
+     * Override the parent implementation
+     *
+     * @return bool true if the model dirty
+     */
+    public function isModelDirty()
+    {
+        // execute the isModelDirty from parent to perform basic model attributes check
+        if (parent::isModelDirty()) {
+            return true;
+        }
+
+        // compare the diagnoses count between the original record and the current record
+        if ($this->getOriginalDiagnosesCount() !== count($this->diagnoses)) {
+            return true;
+        }
+
+        // if the element itself is NOT dirty, check if any associated diagnose is dirty
+        foreach ($this->diagnoses as $diagnosis) {
+            if ($diagnosis->isModelDirty()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the original diagnoses count
+     *
+     * @return int
+     */
+    protected function getOriginalDiagnosesCount(): int
+    {
+        return OphCiExamination_Diagnosis::model()->count('element_diagnoses_id = :id', [':id' => $this->id]);
+    }
+
+    /**
      * Ensure a principal diagnosis is set for the episode.
      */
     public function afterValidate()
     {
         if (count($this->diagnoses)) {
+            if ($this->isModelDirty() && !$this->isAtTip()) {
+                $this->addError('diagnoses', 'Diagnoses cannot be changed because a newer record supersedes this record.');
+                return;
+            }
             $principal = false;
 
             $validator = new \OEFuzzyDateValidator();
@@ -520,7 +618,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
                 $term = isset($diagnosis->disorder)  ? $diagnosis->disorder->term : "($key)";
                 if (!$diagnosis->eye_id) {
-                    // without this OE tries to perform a save / or at least run the saveComplexAttributes_Element_OphCiExamination_Diagnoses()
+                    // without this OE tries to perform a save
                     // where we need to have an eye_id - probably this need further investigation and refactor
                     $this->addError('diagnoses', $term . ': Eye is required');
 
@@ -529,28 +627,31 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                     $diagnosis->addError('diagnoses', $term . ': Eye is required');
                 }
 
+                $diagnosis->validate('time');
+
                 $validator->validateAttribute($diagnosis, 'date');
 
                 //dirty hack here to set the correct error for the date
                 $_date_error = $diagnosis->getError('date');
+                $_time_error = $diagnosis->getError('time');
                 if ($_date_error) {
                     $this->addError('diagnoses', $term . ': ' . $_date_error);
                     $diagnosis->clearErrors('date');
+                }
+                if ($_time_error) {
+                    $this->addError('diagnoses', $term . ': ' . $_time_error);
+                    $diagnosis->clearErrors('time');
                 }
             }
 
             if (!$principal) {
                 $this->addError('diagnoses', 'Principal diagnosis required.');
             }
-        } elseif (!isset($this->no_ophthalmic_diagnoses_date) && !$this->diagnoses) {
-            $this->addError('no_ophthalmic_diagnoses_date', 'Please confirm patient has no ophthalmic diagnoses.');
         } else {
             // This isn't very nice but there isn't a clean alternative at the moment
             $controller = \Yii::app()->getController();
 
             if ($controller instanceof \BaseEventTypeController) {
-                $et_diagnoses = \ElementType::model()->find('class_name=?', array('OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses'));
-
                 $have_further_findings = false;
 
                 foreach ($controller->getElements() as $element) {
@@ -559,8 +660,18 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
                     }
                 }
 
-                if (!$have_further_findings && !$this->diagnoses && !isset($this->no_ophthalmic_diagnoses_date)) {
-                    $this->addError('diagnoses', 'Please select at least one diagnosis or please confirm patient has no ophthalmic diagnoses.');
+                /**
+                 * At this stage, for sure there is no diagnoses submitted for the current episode.
+                 * only check if the patient has diagnoses from other subspecialties when there is no "no_ophthalmic_diagnoses_date" recorded and no further findings record
+                 */
+                if (!isset($this->no_ophthalmic_diagnoses_date) && !$have_further_findings) {
+                    /**
+                     * as per the comment in ticket OE-13745, as long as the patient has diagnoses (from any subspecialty),
+                     * the validation should pass
+                     */
+                    if (!$this->patientHasOtherSubspecialtiesDiagnoses()) {
+                        $this->addError('diagnoses', 'Please select at least one diagnosis, one further findings from the Further findings element or please confirm patient has no ophthalmic diagnoses.');
+                    }
                 }
             }
         }
@@ -570,7 +681,7 @@ class Element_OphCiExamination_Diagnoses extends \BaseEventTypeElement
 
     public function getPrint_view()
     {
-        return 'print_'.$this->getDefaultView();
+        return 'print_' . $this->getDefaultView();
     }
 
     public function getViewTitle()

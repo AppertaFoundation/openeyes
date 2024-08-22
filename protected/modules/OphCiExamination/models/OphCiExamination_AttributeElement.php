@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -18,6 +19,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_attribute_element".
  *
@@ -30,7 +33,9 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_AttributeElement extends \BaseActiveRecordVersioned
 {
-    const SELECTION_ORDER = 'element_type_id,attribute_id';
+    use HasFactory;
+
+    public const SELECTION_ORDER = 'element_type_id,attribute_id';
 
     /**
      * @return string the associated database table name
@@ -65,7 +70,7 @@ class OphCiExamination_AttributeElement extends \BaseActiveRecordVersioned
 
     public function getName()
     {
-        return $this->element_type->name.' - '.$this->attribute->name;
+        return $this->element_type->name . ' - ' . $this->attribute->name;
     }
 
     /**
@@ -77,7 +82,6 @@ class OphCiExamination_AttributeElement extends \BaseActiveRecordVersioned
             'attribute.name' => 'Attribute Name',
             'attribute.label' => 'Attribute Label',
             'element_type.name' => 'Element Mapping',
-            'attribute_elements.name' => 'Element Mapping',
             'institution' => 'Institution Mapping',
         );
     }

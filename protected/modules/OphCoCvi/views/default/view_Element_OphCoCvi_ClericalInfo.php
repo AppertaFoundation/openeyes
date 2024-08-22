@@ -1,125 +1,159 @@
 <?php
 /**
- * OpenEyes
- *
- * (C) OpenEyes Foundation, 2019
+ * (C) Copyright Apperta Foundation 2021
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
  * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
- * @package OpenEyes
  * @link http://www.openeyes.org.uk
+ *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2019, OpenEyes Foundation
+ * @copyright Copyright (C) 2021, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
 ?>
 
 <div class="element-data">
-  <div class="element-fields">
-    <div class="cols-12 column">
-      <table>
-        <thead>
-        <tr>
-          <th>Other relevant factors about the patient</th>
-          <th>Y/N</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        $model = OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo::model();
-        ?>
-        <?php foreach ($model->patientFactorList($element->id) as $factor) {
-            $is_factor = $factor['is_factor'];
-            $comments = $factor['comments']; ?>
-          <tr>
-            <td><?=\CHtml::encode($factor['name']) ?>
-                <?php if ($factor['is_comments'] == 1) { ?>
-                  <div class="data-group"><br/>
-                    <div class="cols-4 column large-push-1"
-                         style="font-style: italic;"><?=\CHtml::encode($factor['label']) ?></div>
-                    <div class="cols-6 column large-push-1 end"><?php echo $comments; ?></div>
-                  </div>
-                <?php } ?>
-            </td>
-            <td><?php if (isset($is_factor) && $is_factor == 1) {
-                    echo "Y";
-                } elseif (isset($is_factor) && $is_factor == 0) {
-                    echo "N";
-                } elseif (isset($is_factor) && $is_factor == 2) {
-                    echo "Unknown";
-                } else {
-                    echo "None";
-                } ?></td>
-          </tr>
-        <?php } ?>
-        <tr>
-          <td>
-                <?=\CHtml::encode($element->getAttributeLabel('employment_status_id')) ?>
-          </td>
-          <td>
-                <?php echo $element->employment_status ? $element->employment_status->name : 'None' ?>
-          </td>
-        </tr>
-        <tr>
-          <td>
-                <?=\CHtml::encode($element->getAttributeLabel('preferred_info_fmt_id')) ?>
-          </td>
-          <td>
-                <?php echo $element->preferred_info_fmt ? $element->preferred_info_fmt->name : 'None' ?>
-          </td>
-        </tr>
-        <?php
-        $preferredInfoFormatEmail = OEModule\OphCoCvi\models\OphCoCvi_ClericalInfo_PreferredInfoFmt::model()->findAll(
-            '`require_email` = ?',
-            array(1)
-        );
-        if (sizeof($preferredInfoFormatEmail) == 1) {
-            ?>
-          <tr>
-            <td>
-              <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('info_email')) ?></div>
-            </td>
-            <td>
-              <div class="data-value"><?=\CHtml::encode($element->info_email) ?></div>
-            </td>
-          </tr>
-        <?php } ?>
-        <tr>
-          <td>
-                <?=\CHtml::encode($element->getAttributeLabel('contact_urgency_id')) ?>
-          </td>
-          <td>
-                <?php echo $element->contact_urgency ? $element->contact_urgency->name : 'None' ?>
-          </td>
-        </tr>
-        <tr>
-          <td>
-                <?=\CHtml::encode($element->getAttributeLabel('preferred_language_id')) ?>
-          </td>
-          <td>
+    <div class="element-fields row">
+        <div class="large-12 column">
+            <table>
+                <thead>
+                <tr>
+                    <th>Other relevant factors about the patient</th>
+                    <th>Y/N</th>
+                </tr>
+                </thead>
+                <tbody>
                 <?php
-                if ($element->preferred_language_text) {
-                    echo $element->preferred_language_text;
-                } else {
-                    echo $element->preferred_language ? $element->preferred_language->name : 'None';
-                }
+                $model = OEModule\OphCoCvi\models\Element_OphCoCvi_ClericalInfo::model();
                 ?>
-          </td>
-        </tr>
-        <tr>
-          <td>
-                <?=\CHtml::encode($element->getAttributeLabel('social_service_comments')) ?>
-          </td>
-          <td>
-                <?=\CHtml::encode($element->social_service_comments) ?>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+                <?php
+                foreach ($model->patientFactorList($element->id) as $factor) {
+                    $is_factor = $factor['is_factor'];
+                    $comments = $factor['comments']; ?>
+                    <tr>
+                        <td><?php echo CHtml::encode($factor['name']) ?>
+                            <?php if ($factor['is_comments'] == 1) { ?>
+                                <div class="row data-row"><br/>
+                                    <div class="large-4 column large-push-1"
+                                         style="font-style: italic;"><?php echo CHtml::encode($factor['label']) ?></div>
+                                    <div class="large-6 column large-push-1 end"><?php echo CHtml::encode($comments); ?></div>
+                                </div>
+                            <?php } ?>
+                        </td>
+                        <td><?php if (isset($is_factor) && $is_factor == 1) {
+                                echo "Y";
+                            } elseif (isset($is_factor) && $is_factor == 0) {
+                                echo "N";
+                            } elseif (isset($is_factor) && $is_factor == 2) {
+                                echo "Unknown";
+                            } else {
+                                echo "None";
+                            } ?></td>
+                    </tr>
+                <?php } ?>
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
+
+    <div class="element-fields row">
+        <div class="large-12 column">
+            <div class="row data-row">
+                <div class="large-6 column">
+                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('preferred_info_fmt_id')) ?></div>
+                </div>
+                <div class="large-6 column end">
+                    <div class="data-value"><?php echo $element->preferred_info_fmt ? CHtml::encode($element->preferred_info_fmt->name) : 'None' ?></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="element-fields row">
+        <div class="large-12 column">
+            <div class="row data-row">
+                <div class="large-6 column">
+                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('preferred_comm')) ?>:</div>
+                </div>
+                <div class="large-6 column end">
+                    <div class="data-value">
+                        <?php echo $element->preferred_comm ? CHtml::encode($element->preferred_comm) : 'None' ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="element-fields row">
+        <div class="large-12 column">
+            <div class="row data-row">
+                <div class="large-6 column">
+                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('preferred_format_id')) ?></div>
+                </div>
+                <div class="large-6 column end">
+                    <div class="data-value">
+                        <?php
+                        if ($element->preferred_format_other) {
+                            echo CHtml::encode($element->preferred_format_other);
+                        }
+                        if (!empty($element->preferred_format_assignments)) {
+                            echo $element->preferred_format_other ? ', ' : '';
+                            $formats = '';
+                            foreach ($element->preferred_format_assignments as $preferred_format) {
+                                $formats .= $preferred_format->preferred_format->name.', ';
+                            }
+                            echo CHtml::encode(substr($formats, 0, -2));
+                        }
+                        if (empty($element->preferred_format_assignments) && !$element->preferred_format_other) {
+                            echo 'None';
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="element-fields row">
+        <div class="large-12 column">
+            <div class="row data-row">
+                <div class="large-6 column">
+                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('preferred_language_id')) ?></div>
+                </div>
+                <div class="large-6 column end">
+                    <div class="data-value"><?php
+                        echo $element->preferred_language ? CHtml::encode($element->preferred_language->name) : '';
+                    if ($element->preferred_language_text) {
+                        echo $element->preferred_language ? ', ' : '';
+                        echo CHtml::encode($element->preferred_language_text);
+                    }
+                    if (!$element->preferred_language_text && !$element->preferred_language) {
+                        echo 'None';
+                    }
+
+                    ?></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="element-fields row">
+        <div class="large-12 column">
+            <div class="row data-row">
+                <div class="large-6 column">
+                    <div class="data-label"><?php echo CHtml::encode($element->getAttributeLabel('interpreter_required')) ?></div>
+                </div>
+                <div class="large-6 column end">
+                    <div class="data-value">
+                        <?php echo ($element->interpreter_required == 1) ? "Yes" :'No'; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 

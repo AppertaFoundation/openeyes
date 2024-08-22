@@ -67,5 +67,4 @@ class SiteSubspecialtyOperativeDevice extends BaseActiveRecordVersioned
             'devices' => array(self::BELONGS_TO, 'OperativeDevice', 'operative_device_id'),
         );
     }
-
 }

@@ -18,6 +18,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_element_set".
  *
@@ -29,15 +31,7 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
 {
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiExamination_ElementSet the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    use HasFactory;
 
     /**
      * @return string the associated database table name
@@ -52,10 +46,10 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
      */
     public function rules()
     {
-        return array(
-                array('name', 'required'),
-                array('id, name, display_order_edited', 'safe', 'on' => 'search'),
-        );
+        return [
+            ['name', 'required'],
+            ['id, name, display_order_edited', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**
@@ -63,18 +57,20 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
      */
     public function relations()
     {
-        return array(
-                'workflow' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExamination_Workflow', 'workflow_id'),
-                'items' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ElementSetItem', 'set_id',
-                        'with' => 'element_type',
-                        'order' => 'items.display_order, element_type.display_order',
-                ),
-                'visibleItems' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ElementSetItem', 'set_id',
-                    'with' => 'element_type',
-                    'condition' => 'is_hidden = 0',
-                    'order' => 'element_type.name',
-            ),
-        );
+        return [
+            'workflow' => [self::BELONGS_TO, OphCiExamination_Workflow::class, 'workflow_id'],
+            'items' => [
+                self::HAS_MANY, OphCiExamination_ElementSetItem::class, 'set_id',
+                'with' => 'element_type',
+                'order' => 'items.display_order, element_type.display_order',
+            ],
+            'visibleItems' => [
+                self::HAS_MANY, OphCiExamination_ElementSetItem::class, 'set_id',
+                'with' => 'element_type',
+                'condition' => 'is_hidden = 0',
+                'order' => 'element_type.name',
+            ],
+        ];
     }
 
     public function getNextStep()
@@ -202,10 +198,10 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
      */
     public function attributeLabels()
     {
-        return array(
-                'id' => 'ID',
-                'name' => 'Name',
-        );
+        return [
+            'id' => 'ID',
+            'name' => 'Name',
+        ];
     }
 
     /**
@@ -219,8 +215,8 @@ class OphCiExamination_ElementSet extends \BaseActiveRecordVersioned
         $criteria->compare('id', $this->id, true);
         $criteria->compare('name', $this->name, true);
 
-        return new \CActiveDataProvider(get_class($this), array(
-                'criteria' => $criteria,
-        ));
+        return new \CActiveDataProvider(get_class($this), [
+            'criteria' => $criteria,
+        ]);
     }
 }

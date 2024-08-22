@@ -15,27 +15,45 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-return array(
-    'params' => array(
-        'dashboard_items' => array(
-            array(
+use OEModule\OESysEvent\events\UserSavedSystemEvent;
+use OEModule\OphCoMessaging\listeners\CreatePersonalMailboxForUser;
+
+return [
+    'components' => [
+        'event' => [
+            'observers' => [
+                [
+                    'system_event' => UserSavedSystemEvent::class,
+                    'listener' => CreatePersonalMailboxForUser::class
+                ]
+            ]
+        ]
+    ],
+    'params' => [
+        'dashboard_items' => [
+            [
                 'module' => 'OphCoMessaging',
                 // default action is the 'renderDashboard' if 'actions' array is  not set
-                'actions' => array(
+                'actions' => [
                     'getMessages',
-                 ),
+                 ],
                 'js' => 'dashboard.js', // assets/js
                 'position' => 5,
-            ),
-        ),
-        'admin_structure' => array(
-            'Message' => array(
-                'Message sub type settings' => array(
+            ],
+        ],
+        'admin_structure' => [
+            'Message' => [
+                'Message sub type settings' => [
                     'module' => 'OphCoMessaging',
                     'uri' => '/OphCoMessaging/MessageSubTypesSettings',
-                    'restricted' => array('admin'),
-                ),
-            ),
-        ),
-    )
-);
+                    'restricted' => ['admin'],
+                ],
+                'Shared mailboxes' => [
+                    'module' => 'OphCoMessaging',
+                    'uri' => '/OphCoMessaging/SharedMailboxSettings',
+                    'restricted' => ['admin'],
+                ],
+            ],
+        ],
+    ]
+];

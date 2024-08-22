@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="cols-7">
@@ -68,7 +70,7 @@
                         $field,
                         [
                             'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete']
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                         ]
                     ); ?>
                 </td>
@@ -85,7 +87,7 @@
                         $field,
                         [
                             'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete']
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                         ]
                     ); ?>
                 </td>
@@ -98,6 +100,16 @@
                     $address,
                     'country_id',
                     CHtml::listData(Country::model()->findAll(), 'id', 'name'),
+                    ['class' => 'cols-full']
+                ); ?>
+            </td>
+        </tr>
+        <tr>
+            <td><?=$cb->contact->getAttributeLabel('email');?></td>
+            <td>
+                <?= \CHtml::activeEmailField(
+                    $cb->contact,
+                    'email',
                     ['class' => 'cols-full']
                 ); ?>
             </td>

@@ -22,6 +22,7 @@ SCRIPT=$(basename "$0")
 
 extraparams=""
 region=${OE_HSCIC_REGION:-'england'}
+optom="false"
 
 while [[ $# -gt 0 ]]; do
     p="${1,,}"
@@ -30,6 +31,9 @@ while [[ $# -gt 0 ]]; do
     -region | --region)
         region=$2
         shift
+        ;;
+    -optom | --optom)
+        optom="true"
         ;;
     *)
         [ -n "$p" ] && extraparams+="${p} " || :
@@ -58,39 +62,62 @@ EOF
 
 yiicroot="${WROOT}/protected"
 
-# Do quarterly files first - belt and braces catch up in case of previous issues.
+if [ ! -z "$HSCIC_GP_DATA_URL" ] && [ ! -z "$HSCIC_PRACTICE_DATA_URL" ]; then
 
-if ! php "$yiicroot"/yiic processhscicdata downloadall --region="${region,,}" "$extraparams"; then
-    error_exit "Failed to download all data"
-fi
-
-if ! php "$yiicroot"/yiic processhscicdata import --type=gp --interval=full --region="${region,,}" --audit=false "$extraparams"; then
-    error_exit "Failed to import GP data"
-fi
-
-if ! php "$yiicroot"/yiic processhscicdata import --type=practice --interval=full --region="${region,,}" --audit=false "$extraparams"; then
-    error_exit "Failed to import Practice data"
-fi
-
-# CCG and monthly updates are avialable for England only).
-if [ "${region,,}" = "england" ]; then
-
-    if ! php "$yiicroot"/yiic processhscicdata import --type=ccg --interval=full --audit=false "$extraparams"; then
-        error_exit "Failed to import CCG data"
+    if ! php "$yiicroot"/yiic processhscicdata downloadAndImportFromUrl --type=gp --interval=full --region="${region,,}" --audit=false --url=$HSCIC_GP_DATA_URL "$extraparams"; then
+        error_exit "Failed to import GP data"
     fi
 
-    if ! php "$yiicroot"/yiic processhscicdata import --type=ccgAssignment --interval=full --audit=false "$extraparams"; then
-        error_exit "Failed to import CCG Assignment data"
+    if ! php "$yiicroot"/yiic processhscicdata downloadAndImportFromUrl --type=practice --interval=full --region="${region,,}" --audit=false --url=$HSCIC_PRACTICE_DATA_URL "$extraparams"; then
+        error_exit "Failed to import GP Practice  data"
     fi
 
-    # Now do monthly
+    if [ "${optom}" = "true" ] && [ ! -z "$HSCIC_OPTOM_URL" ]; then
+        if ! php "$yiicroot"/yiic processhscicdata downloadAndImportFromUrl --type=optom --interval=full --region="${region,,}" --audit=false --url=$HSCIC_OPTOM_URL "$extraparams"; then
+            error_exit "Failed to import Optometrist data"
+        fi
+    fi
+else
+    # Do quarterly files first - belt and braces catch up in case of previous issues.
 
-    if ! php "$yiicroot"/yiic processhscicdata download --type=gp --interval=monthly "$extraparams"; then
-        error_exit "Failed to download monthly GP/Practice data"
+    if ! php "$yiicroot"/yiic processhscicdata downloadall --region="${region,,}" "$extraparams"; then
+        error_exit "Failed to download all data"
     fi
 
-    if ! php "$yiicroot"/yiic processhscicdata import --type=gp --interval=monthly "$extraparams"; then
-        error_exit "Failed to import monthly GP/Practice data"
+    if ! php "$yiicroot"/yiic processhscicdata import --type=gp --interval=full --region="${region,,}" --audit=false "$extraparams"; then
+        error_exit "Failed to import GP data"
+    fi
+
+    if ! php "$yiicroot"/yiic processhscicdata import --type=practice --interval=full --region="${region,,}" --audit=false "$extraparams"; then
+        error_exit "Failed to import Practice data"
+    fi
+
+    if [ "${optom}" = "true" ]; then
+        if ! php "$yiicroot"/yiic processhscicdata import --type=optom --interval=full --region="${region,,}" --audit=false "$extraparams"; then
+            error_exit "Failed to import Optometrist data"
+        fi
+    fi
+
+    # CCG and monthly updates are avialable for England only).
+    if [ "${region,,}" = "england" ]; then
+
+        if ! php "$yiicroot"/yiic processhscicdata import --type=ccg --interval=full --audit=false "$extraparams"; then
+            error_exit "Failed to import CCG data"
+        fi
+
+        if ! php "$yiicroot"/yiic processhscicdata import --type=ccgAssignment --interval=full --audit=false "$extraparams"; then
+            error_exit "Failed to import CCG Assignment data"
+        fi
+
+        # Now do monthly
+
+        if ! php "$yiicroot"/yiic processhscicdata download --type=gp --interval=monthly "$extraparams"; then
+            error_exit "Failed to download monthly GP/Practice data"
+        fi
+
+        if ! php "$yiicroot"/yiic processhscicdata import --type=gp --interval=monthly "$extraparams"; then
+            error_exit "Failed to import monthly GP/Practice data"
+        fi
     fi
 fi
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -37,7 +38,7 @@ class BaseReport extends CModel
             $model = array_pop($explode);
         }
 
-        return '_'.strtolower(preg_replace('/^Report/', '', $model));
+        return '_' . strtolower(preg_replace('/^Report/', '', $model));
     }
 
     public function attributeNames()
@@ -67,6 +68,6 @@ class BaseReport extends CModel
 
     public function getPatientIdentifierPrompt()
     {
-        return PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $this->user_institution_id, $this->user_selected_site_id);
+        return PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $this->user_institution_id, $this->user_selected_site_id);
     }
 }

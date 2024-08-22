@@ -20,6 +20,7 @@ namespace OEModule\OphCiExamination\models;
 
 use OEModule\OphCiExamination\models\interfaces\BEOSidedData;
 use OEModule\OphCiExamination\widgets\VisualAcuity as VisualAcuityWidget;
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the main record element for Visual Acuity, which records VA for left, right and BEO eyes.
@@ -74,6 +75,7 @@ class Element_OphCiExamination_VisualAcuity extends \BaseEventTypeElement implem
     use traits\CustomOrdering;
     use traits\HasBEOSidedData;
     use traits\HasChildrenWithEventScopeValidation;
+    use HasFactory;
 
     const RECORD_MODE_COMPLEX = 'complex';
     const RECORD_MODE_SIMPLE = 'simple';
@@ -283,8 +285,10 @@ class Element_OphCiExamination_VisualAcuity extends \BaseEventTypeElement implem
     public function getUnits($excluded_unit_id, $is_near)
     {
         $criteria = new \CDbCriteria();
-        $criteria->condition = 'id <> :unit_id AND active = 1 AND is_near = :is_near';
-        $criteria->params = array(':unit_id' => $excluded_unit_id, 'is_near' => $is_near);
+        $criteria->condition = 'id <> :unit_id AND active = 1';
+        $criteria->addCondition($is_near ? 'is_near = 1' : 'is_va = 1');
+
+        $criteria->params = array(':unit_id' => $excluded_unit_id);
         $criteria->order = 'name';
         return OphCiExamination_VisualAcuityUnit::model()->findAll($criteria);
     }
@@ -600,6 +604,17 @@ class Element_OphCiExamination_VisualAcuity extends \BaseEventTypeElement implem
         return round($sum / count($values));
     }
 
+    /**
+     * @param \BaseEventTypeElement $element
+     */
+    public function loadFromExisting($element)
+    {
+        parent::loadFromExisting($element);
+
+        $this->unit_id = null; // Potentially set to default value which affects the result from getUnit()
+        $this->unit_id = $this->getUnit()->id ?? null;
+    }
+
     protected function getDefaultUnitId()
     {
         return $this->getSetting('unit_id');
@@ -665,7 +680,9 @@ class Element_OphCiExamination_VisualAcuity extends \BaseEventTypeElement implem
 
     protected function letterStringSimple(OphCiExamination_VisualAcuityUnit $va_unit = null)
     {
-        return $this->getApp()->controller->renderPartial(
+        $controller = $this->getApp()->controller;
+
+        return $controller->renderPartial(
             'application.modules.OphCiExamination.views.default.letter.va',
             [
                 'left' => $this->getNamedReadings('left', $va_unit ? $va_unit->id : null),

@@ -31,7 +31,10 @@ class DefaultController extends BaseEventTypeController
 
             if ($unlinkedEvent->save()) {
                 $importedEvent->is_linked = 1;
-                $importedEvent->save();
+
+                if ($importedEvent->save()) {
+                    $this->updateEventStep($unlinkedEvent);
+                }
             }
 
             $transaction->commit();
@@ -659,17 +662,7 @@ class DefaultController extends BaseEventTypeController
      */
     protected function isManualEntryDisabled()
     {
-        $state = Yii::app()->db->createCommand()
-            ->select('value')
-            ->from('setting_installation')
-            ->where('`key`=:id', array(':id' => 'disable_manual_biometry'))
-            ->queryRow();
-
-        if ($state['value'] === 'off') {
-            return true;
-        } else {
-            return false;
-        }
+        return SettingMetadata::model()->getSetting('disable_manual_biometry') === 'off';
     }
 
     public function formatAconst($aconst)

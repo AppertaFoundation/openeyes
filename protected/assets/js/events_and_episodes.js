@@ -25,16 +25,16 @@ $(document).ready(function () {
 
     function markElementDirty(element) {
         if (typeof element !== "undefined" && element) {
-            $(element).find('input[name*="[element_dirty]"]').val(1);
+            $(element).find('input[name*="element_dirty"]').val(1);
         } else {
-            $(this).closest('.element').find('input[name*="[element_dirty]"]').val(1);
+            $(this).closest('.element').find('input[name*="element_dirty"]').val(1);
         }
     }
 
     $(document).on('click', '.add-icon-btn', function () {
         markElementDirty($(this).closest('.element'));
     });
-    $('#event-content').on('change', 'select, input, textarea', function () {
+    $('#event-content').on('change', 'select:not(.dirty-check-ignore), input:not(.dirty-check-ignore), textarea:not(.dirty-check-ignore)', function () {
         markElementDirty($(this).closest('.element'));
     });
 
@@ -153,7 +153,7 @@ $(document).ready(function () {
         e.preventDefault();
         var $parent = $(this).closest('.element');
         var class_name = $parent.data('element-type-class');
-        if (element_close_warning_enabled === 'on' && $parent.find('input[name*="[element_dirty]"]').val() === "1") {
+        if (element_close_warning_enabled === 'on' && $parent.find('input[name*="element_dirty"]').val() === "1") {
             let dialog = new OpenEyes.UI.Dialog.Confirm({
                 content: "Are you sure that you wish to close the " +
                     $parent.data('element-type-name') +

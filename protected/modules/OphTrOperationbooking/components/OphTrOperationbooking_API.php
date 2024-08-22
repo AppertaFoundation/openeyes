@@ -212,7 +212,7 @@ class OphTrOperationbooking_API extends BaseAPI
                 $operation->operation_completion_date = date('Y:m:d H:i:s');
             }
 
-            if (!$operation->save()) {
+            if (!$operation->saveAttributes(['status_id', 'operation_completion_date'])) {
                 throw new Exception('Unable to save operation: ' . print_r($operation->getErrors(), true));
             }
 
@@ -631,7 +631,7 @@ class OphTrOperationbooking_API extends BaseAPI
             $schedule_options = Element_OphTrOperationbooking_ScheduleOperation::model()->find('event_id = ?', array($operation->event->id));
 
             if ($session) {
-                $transaction = Yii::app()->db->beginTransaction();
+                $transaction = Yii::app()->db->beginInternalTransaction();
 
                 try {
                     $ward = OphTrOperationbooking_Operation_Ward::model()->find('site_id = ?', array($operation->site->id));

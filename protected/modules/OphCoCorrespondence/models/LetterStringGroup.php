@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
 /**
  * The followings are the available columns in table '':.
  *
@@ -28,6 +29,8 @@
  */
 class LetterStringGroup extends BaseEventTypeElement
 {
+    use HasFactory;
+
     protected $auto_update_relations = true;
 
     /**
@@ -149,7 +152,7 @@ class LetterStringGroup extends BaseEventTypeElement
         foreach ($this->letterStrings as $lm) {
             if (!in_array($lm->name, $string_names)) {
                 if ($lm->shouldShow($patient, $event_types)) {
-                    $strings[$lm->id] = $string_names[] = $lm->name;
+                    $strings['site'.$lm->id] = $string_names[] = $lm->name;
                 }
             }
         }

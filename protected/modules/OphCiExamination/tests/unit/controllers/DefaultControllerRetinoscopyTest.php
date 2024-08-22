@@ -16,6 +16,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\controllers;
 
+
 use OEModule\OphCiExamination\models\interfaces\SidedData;
 use OEModule\OphCiExamination\models\Retinoscopy;
 use OEModule\OphCiExamination\tests\traits\InteractsWithRetinoscopy;
@@ -39,13 +40,20 @@ class DefaultControllerRetinoscopyTest extends BaseDefaultControllerTest
     public function saving_a_simple_element()
     {
         $data = $this->generateRetinoscopyData();
-        $data['eye_id'] = SidedData::RIGHT | SidedData::LEFT;
 
         $savedElement = $this->createElementWithDataWithController($data);
 
         $this->assertNotNull($savedElement);
+
+        $attrs_to_not_check = ['id', 'event_id', 'created_date', 'last_modified_date'];
         foreach ($data as $attr => $value) {
-            $this->assertEquals($value, $savedElement->$attr, "{$attr} should be set to {$value}");
+            if (in_array($attr, $attrs_to_not_check)) {
+                continue;
+            }
+
+            $value = $this->formatAttributeValueForComparison($attr, $value);
+
+            $this->assertEquals($value, $savedElement->getAttribute($attr), "{$attr} should be set to {$value}");
         }
     }
 
@@ -68,7 +76,10 @@ class DefaultControllerRetinoscopyTest extends BaseDefaultControllerTest
 
         foreach ($element->sidedFields() as $fld) {
             $this->assertEmpty($element->{"{$sideToRemove}_$fld"});
-            $this->assertEquals($updateData["{$sideToKeep}_$fld"], $element->{"{$sideToKeep}_$fld"});
+            $this->assertEquals(
+                $this->formatAttributeValueForComparison($fld, $updateData["{$sideToKeep}_$fld"]),
+                $element->{"{$sideToKeep}_$fld"}
+            );
         }
     }
 
@@ -80,5 +91,14 @@ class DefaultControllerRetinoscopyTest extends BaseDefaultControllerTest
         $event_id = $this->performCreateRequestForRandomPatient();
 
         return Retinoscopy::model()->findByAttributes(['event_id' => $event_id]);
+    }
+
+    protected function formatAttributeValueForComparison($attribute, $value)
+    {
+        if (strpos($attribute, 'power') !== false) {
+            return sprintf("%.2f", $value);
+        }
+
+        return $value;
     }
 }

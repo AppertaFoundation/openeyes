@@ -43,6 +43,13 @@ class Admin
     public $div_wrapper_class = 'cols-full';
 
     /**
+     * Determines whether to display an 'All institutions' option in the institution drop-down list.
+     *
+     * @var boolean
+     */
+    public bool $has_global_institution_option = false;
+
+    /**
      * @var string
      */
     protected $listTemplate = '//admin/generic/list';
@@ -96,6 +103,20 @@ class Admin
      * @var string
      */
     protected $customSaveURL;
+
+    /**
+     * Asset manager.
+     *
+     * @var CAssetManager
+     */
+    protected $assetManager;
+
+    /**
+     * Current HTTP request.
+     *
+     * @var CHttpRequest
+     */
+    protected $request;
 
     /**
      * @var string
@@ -572,11 +593,7 @@ class Admin
         $this->assetManager->registerScriptFile('/js/oeadmin/edit.js');
         $errors = array();
         if (Yii::app()->request->isPostRequest) {
-            $post = Yii::app()->request->getPost($this->modelName);
-            if (empty($post)) {
-                $this->modelName = str_replace('\\', '_', $this->modelName);
-                $post = Yii::app()->request->getPost($this->modelName);
-            }
+            $post = Yii::app()->request->getPost(\CHtml::modelName($this->modelName));
             if (array_key_exists('id', $post) && $post['id']) {
                 $this->model->attributes = $post;
             } else {
@@ -592,6 +609,16 @@ class Admin
                 if (method_exists($this, $type.'Format')){
                     $this->model->$editField = $this->{$type.'Format'}($this->model->attributes[$editField]);
                 }
+            }
+
+            if ($this->model->hasAttribute('display_order') && !$this->model->display_order) {
+                $table = $this->model->tableName();
+
+                $max_order = (int)Yii::app()->db->createCommand()
+                    ->select('MAX(display_order)')
+                    ->from($table)
+                    ->queryScalar();
+                $this->model->display_order = ++$max_order;
             }
 
             if (!$this->model->validate()) {

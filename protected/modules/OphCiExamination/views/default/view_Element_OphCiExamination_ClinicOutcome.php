@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $row_count = 0;
@@ -33,10 +35,7 @@ $non_ticket_entries = [];
             $non_ticket_entries[] = $entry;
         }
     } ?>
-    <?php if ($non_ticket_entries) {
-        if (count($non_ticket_entries) === 1) { ?>
-            <div class="large-text"><?= $non_ticket_entries[0]->getInfos(); ?></div>
-        <?php } else { ?>
+    <?php if ($non_ticket_entries) { ?>
             <div class="cols-10">
                 <table class="last-left large-text">
                     <colgroup>
@@ -46,14 +45,18 @@ $non_ticket_entries = [];
                     <?php foreach ($non_ticket_entries as $entry) { ?>
                         <tr>
                             <td><?= $row_count ? 'AND' : '' ?></td>
-                            <td><?= $entry->getInfos(); ?></td>
+                            <?php $infos = $entry->getInfos(); ?>
+                            <td>
+                                <?= $entry->getStatusLabel() ?> <span class="fade"><?= !empty($infos) ? '&nbsp;[ ' . $entry->getInfos() . ' ] ' : ''; ?></span>
+                                <?= !empty($entry->getRiskStatusLabel()['icon']) ? $entry->getRiskStatusLabel()['icon'] : '' ?>
+                            </td>
+                            
                         </tr>
                         <?php $row_count++; ?>
                     <?php } ?>
                     </tbody>
                 </table>
             </div>
-        <?php } ?>
     <?php } ?>
     <?php if ($non_ticket_entries && $ticket_entries) { ?>
         <hr class="divider">
@@ -140,7 +143,7 @@ $non_ticket_entries = [];
                 }
             } ?>
         </div>
-        <?php } ?>
+    <?php } ?>
     </div>
     <?php if ($element->comments) { ?>
         <hr class="divider">
@@ -149,7 +152,7 @@ $non_ticket_entries = [];
                 <col class="cols-1">
             </colgroup>
             <tr>
-                <td>Comments</td>
+                <td>Comments:</td>
                 <td><?= $element->comments ?></td>
             </tr>
         </table>

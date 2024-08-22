@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -25,14 +26,14 @@
         )
     );
     if ($patient_overview_popup_mode == 'side') {
-        $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopup' . ($page === 'worklist' ? 'Worklist' : '') . 'Side', []);
+        $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopupSide', []);
     } elseif ($patient_overview_popup_mode == 'float') {
-        $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopup' . ($page === 'worklist' ? 'Worklist' : 'Multi') . 'Float', []);
+        $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopupMultiFloat', []);
     }
     ?>
+
 <script type="application/javascript">
     $(function () {
-        PatientPanel.patientPopups.init(false,<?= $data->id?>);
+        PatientPanel.patientPopups.init(false,<?= $data->id ?>);
     });
 </script>
-

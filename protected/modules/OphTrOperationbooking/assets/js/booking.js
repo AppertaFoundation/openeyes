@@ -182,15 +182,20 @@ $(document).ready(function() {
 	});
 
 	$('#bookingForm button#confirm_slot').on('click',function(e) {
-		if($(this).data('there-is-place-for-complex-booking') === true) {
-			$('#bookingForm').submit();
+		$(this).prop('disabled', true);
+		if ($(this).data('there-is-place-for-complex-booking') === true) {
+			$('#bookingForm').trigger('submit');
 		} else {
 			e.preventDefault();
 			let dialog = new OpenEyes.UI.Dialog.Confirm({
-				content: "The allowed number of complex bookings has been already been reached for this session. Are you sure you want to add another complex booking?"
+				content: "The allowed number of complex bookings has already been reached for this session. Are you sure you want to add another complex booking?",
+				dataTest: 'complex-bookings-warning'
 			});
 			dialog.on('ok', function () {
 				$('#bookingForm').submit();
+			});
+			dialog.on('cancel', function () {
+				$('#bookingForm button#confirm_slot').prop('disabled', false);
 			});
 			dialog.open();
 		}
@@ -214,7 +219,7 @@ $(document).ready(function() {
 
 	$(this).on('click','#btn_print-letter',function() {
 		var m = window.location.href.match(/\/view\/([0-9]+)$/);
-		printIFrameUrl(baseUrl+'/OphTrOperationbooking/waitingList/printLetters',{'event_id': m[1]});
+		printIFrameUrl(baseUrl+'/OphTrOperationbooking/waitingList/printLettersPdf',{'event_id': m[1]});
 	});
 
   $(this).on('click','#btn_print-admissionletter',function() {

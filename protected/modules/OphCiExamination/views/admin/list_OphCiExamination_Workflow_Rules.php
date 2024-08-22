@@ -32,12 +32,25 @@
 </div>
 
 <div class="cols-5">
+    <div>
+    <?php
+    if ($this->checkAccess('admin')) {
+        echo 'Institution: ' . CHtml::dropDownList(
+            'institution_id',
+            $institution_id,
+            CHtml::listData(Institution::model()->getTenanted(), 'id', 'name'),
+            array('empty' => 'All institutions', 'id' => 'js-institution-setting-filter')
+        );
+    } elseif ($institution_id !== null) {
+        echo 'Institution: ' . Institution::model()->findByPk($institution_id)->name;
+    }
+    ?>
+    </div>
     <form id="admin_workflowrules">
         <table class="standard">
             <thead>
             <tr>
                 <th><input type="checkbox" name="selectall" id="selectall"/></th>
-                <th>Institution</th>
                 <th>Subspecialty</th>
                 <th><?php echo Firm::contextLabel() ?></th>
                 <th>Episode status</th>
@@ -49,11 +62,10 @@
                 <tr class="clickable" data-id="<?php echo $model->id ?>"
                     data-uri="OphCiExamination/admin/editWorkflowRule/<?php echo $model->id ?>">
                     <td><input type="checkbox" name="workflowrules[]" value="<?php echo $model->id ?>"/></td>
-                    <td><?php echo $model->institution ? $model->institution->name : 'All' ?></td>
                     <td><?php echo $model->subspecialty ? $model->subspecialty->name : 'All' ?></td>
                     <td><?php echo $model->firm ? $model->firm->name : 'All' ?></td>
                     <td><?php echo $model->episode_status ? $model->episode_status->name : 'All' ?></td>
-                    <td><?php echo $model->workflow->name ?></td>
+                    <td data-test="workflow-name"><?php echo $model->workflow->name ?></td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -85,3 +97,14 @@
         </table>
     </form>
 </div>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#js-institution-setting-filter').change(function(e) {
+            let url = new URL(window.location.href);
+
+            url.searchParams.set('institution_id', $(this).val());
+
+            window.location = url;
+        });
+    });
+</script>

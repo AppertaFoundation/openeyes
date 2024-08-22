@@ -16,6 +16,25 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+$formatted_subsections = array_merge(
+    [['label' => 'None', 'id' => 'none', 'source' => 'subsections']],
+    array_map(
+    function ($key, $item) {
+        return ['label' => $item, 'id' => $key, 'source' => 'subsections'];
+    },
+    array_keys($subsections),
+    $subsections
+));
+
+if ($templates) {
+    $formatted_templates = array_map(
+        static function ($template) {
+            return ['label' => $template->name, 'id' => $template->id, 'source' => 'unbooked_templates'];
+        },
+        $templates
+    );
+}
 ?>
 <div class="flex-layout procedure-selection eventDetail<?= $last ? 'eventDetailLast' : '' ?>" id="typeProcedure" style="<?= $hidden ? 'display: none;' : '' ?>">
     <?php if ($label && sizeof($label)) { ?>
@@ -61,8 +80,9 @@
                         </td>
                     </tr>
 
-            <?php endforeach;
-            } ?>
+                <?php endforeach;
+            }
+            ?>
 
             <?php
             if (isset($_POST[$class]['total_duration_' . $identifier])) {
@@ -94,7 +114,7 @@
     </table>
 
     <div class="add-data-actions flex-item-bottom">
-        <button class="button hint green add-entry" type="button" id="add-procedure-list-btn-<?= $identifier ?>">
+        <button class="button hint green add-entry" type="button" id="add-procedure-list-btn-<?= $identifier ?>" data-test="add-procedure-btn">
             <i class="oe-i plus pro-theme"></i>
         </button>
     </div>
@@ -277,7 +297,7 @@
         }
 
         function updateProcedureDialog(subsection) {
-            if (subsection !== '') {
+            if (subsection !== '' && subsection !== 'none') {
                 $.ajax({
                     'url': '<?php echo Yii::app()->createUrl('procedure/list') ?>',
                     'type': 'POST',
@@ -297,7 +317,7 @@
                 <?php
                 $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
                 $subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
-                $subspecialty_procedures = ProcedureSubspecialtyAssignment::model()->getProcedureListFromSubspecialty($subspecialty_id);
+                $subspecialty_procedures = $subspecialty_id ? Procedure::model()->getListBySubspecialty($subspecialty_id) : [];
                 $formatted_procedures = "";
                 foreach ($subspecialty_procedures as $proc_id => $subspecialty_procedure) {
                     $formatted_procedures .= "<li data-label='$subspecialty_procedure'data-id='$proc_id' class=''>" .
@@ -449,30 +469,35 @@
             new OpenEyes.UI.AdderDialog({
                 id: 'procedure_popup_<?= $identifier ?: ''; ?>',
                 openButton: $('#add-procedure-list-btn-<?= $identifier ?>'),
+                showEmptyItemSets: true,
                 itemSets: [
+                    <?php if ($templates) { ?>
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                                                            array_map(
-                                                                function ($key, $item) {
-                                                                    return ['label' => $item, 'id' => $key, 'source' => 'subsections'];
-                                                                },
-                                                                array_keys($subsections),
-                                                                $subsections
-                                                            )
+                        $formatted_templates
                                                         ) ?>, {
-                        'id': 'subsections'
+                        'id': 'templates',
+                        'header': 'Templates'
+                    }),
+                    <?php } ?>
+                    new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                        $formatted_subsections
+                    ) ?>, {
+                        'id': 'subsections',
+                        'header': 'Subsections'
                     }),
                     new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                                                            array_map(function ($key, $item) {
-                                                                return ['label' => $item, 'id' => $key];
-                                                            }, array_keys($procedures), $procedures)
-                                                        ) ?>, {
+                        array_map(function ($key, $item) {
+                            return ['label' => $item, 'id' => $key];
+                        }, array_keys($procedures), $procedures)
+                    ) ?>, {
                         'id': 'select',
                         'multiSelect': true,
-                        'liClass': ' restrict-width extended'
-                    })
+                        'liClass': ' restrict-width extended',
+                        'header': 'Procedures'
+                    }),
                 ],
                 liClass: 'restrict-width extended',
-                popupClass: 'oe-add-select-search',
+                popupClass: 'oe-add-select-search js-test-adder',
                 onReturn: function(adderDialog, selectedItems) {
                     //on multiselect: sort selected items alphabetically as the list could have a different display order
                     if (selectedItems.length > 1) {
@@ -493,6 +518,11 @@
                     for (let index = 0; index < selectedItems.length; index++) {
                         if (selectedItems[index]['source'] === 'subsections') {
                             continue;
+                        }
+                        if (selectedItems[index]['source'] === 'unbooked_templates') {
+                            const eye = $('input[name="Element_OphTrOperationnote_ProcedureList\\[eye_id\\]"]:checked').val();
+
+                            loadOrClearTemplate(selectedItems[index]['id'], eye)
                         }
                         var existingProc = document.querySelector('#procedureList_' + identifier + ' .body input[value="' + selectedItems[index]['id'] + '"]');
                         if (existingProc) {

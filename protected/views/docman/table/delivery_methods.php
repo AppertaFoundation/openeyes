@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -24,8 +26,13 @@
     $print_output = null;
     $email_output = null;
     $email_delayed_output = null;
+    $email_delayed_enabled = \SettingMetadata::model()->getSetting('send_email_delayed') == 'on';
+    $email_immediate_enabled = \SettingMetadata::model()->getSetting('send_email_immediately') == 'on';
+    $email_enabled = $email_delayed_enabled || $email_immediate_enabled;
+    $gp_label = \SettingMetadata::model()->getSetting('gp_label');
+    $electronic_sending_method_label = \SettingMetadata::model()->getSetting('electronic_sending_method_label');
     $is_new_record = !isset($target) || $target->isNewRecord ? true : false;
-if ( isset($target->document_output)) {
+if (isset($target->document_output)) {
     foreach ($target->document_output as $output_key => $doc_output) {
         switch ($doc_output->output_type) {
             case \DocumentOutput::TYPE_DOCMAN:
@@ -50,7 +57,7 @@ if ( isset($target->document_output)) {
 }
 ?>
 
-<?php if ($contact_type == \SettingMetadata::model()->getSetting('gp_label')) : ?>
+<?php if ($contact_type == $gp_label) : ?>
     <?php if ($can_send_electronically) : ?>
         <div>
             <label class="inline highlight electronic-label docman">
@@ -62,13 +69,13 @@ if ( isset($target->document_output)) {
                 $is_checked = 'checked disabled';
                 ?>
                 <input type="checkbox" value="Docman" name="DocumentTarget_<?php echo $row_index; ?>_DocumentOutput_<?php echo $pre_output_key; ?>_output_type"
-                    <?php echo $is_checked; ?>> <?php echo (isset(Yii::app()->params['electronic_sending_method_label']) ? Yii::app()->params['electronic_sending_method_label'] : 'Electronic'); ?>
+                    <?php echo $is_checked; ?>> <?php echo ($electronic_sending_method_label ?? 'Electronic'); ?>
                 <input type="hidden" value="Docman" name="DocumentTarget[<?php echo $row_index; ?>][DocumentOutput][<?php echo $pre_output_key; ?>][output_type]" >
             </label>
         </div>
 
         <?php if ($document_output) :?>
-            <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $document_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
+            <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $document_output->id, array('class' => 'document_target_' . $row_index . '_document_output_id')); ?>
 
         <?php endif; ?>
 
@@ -80,8 +87,8 @@ if ( isset($target->document_output)) {
 
 <?php if ($contact_type == 'INTERNALREFERRAL') : ?>
     <?php
-    if ( !$is_new_record ) {
-        $elementLetter = ElementLetter::model()->find('event_id = '. $target->document_instance->correspondence_event_id);
+    if (!$is_new_record) {
+        $elementLetter = ElementLetter::model()->find('event_id = ' . $target->document_instance->correspondence_event_id);
         $serviceEmail = $elementLetter->toSubspecialty ? $elementLetter->toSubspecialty->getSubspecialtyEmail() : null;
         $contextEmail = $elementLetter->toFirm ? $elementLetter->toFirm->getContextEmail() : null;
     } else {
@@ -90,9 +97,9 @@ if ( isset($target->document_output)) {
                 Subspecialty::model()->findByPk($_POST['ElementLetter']['to_subspecialty_id'])->getSubspecialtyEmail() : null ) : null ;
         $contextEmail = isset($_POST['ElementLetter']['to_firm_id']) ?
             ( Firm::model()->findByPk($_POST['ElementLetter']['to_firm_id']) ?
-                Firm::model()->findByPk($_POST['ElementLetter']['to_firm_id'])->getContextEmail() : null ): null ;
+                Firm::model()->findByPk($_POST['ElementLetter']['to_firm_id'])->getContextEmail() : null ) : null ;
     }
-    if ($serviceEmail && !$contextEmail ) {
+    if ($serviceEmail && !$contextEmail) {
         // Only Service is selected and email exists for the service
         $label = 'Email: ' . $serviceEmail;
         $value = 'Email';
@@ -120,7 +127,7 @@ if ( isset($target->document_output)) {
         </label>
     </div>
     <?php if ($internalreferral_output) :?>
-        <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $internalreferral_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
+        <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $internalreferral_output->id, array('class' => 'document_target_' . $row_index . '_document_output_id')); ?>
 
     <?php endif; ?>
 
@@ -131,9 +138,9 @@ if ( isset($target->document_output)) {
 <div>
     <label class="inline highlight">
         <?php
-        $is_checked = ($print_output || $is_new_record) && !$email;
+        $is_checked = ($print_output || $is_new_record) && (empty($email) || !$email_enabled);
         $is_post_checked = isset($_POST['DocumentTarget'][$row_index]['DocumentOutput'][$pre_output_key]['output_type']);
-        if ( $contact_type == \SettingMetadata::model()->getSetting('gp_label') || $contact_type == 'INTERNALREFERRAL') {
+        if ($contact_type == $gp_label || $contact_type == 'INTERNALREFERRAL') {
             $is_checked = $is_post_checked || $print_output;
         } else {
             $is_checked = !(Yii::app()->request->isPostRequest && !$is_post_checked) && $is_checked;
@@ -141,19 +148,19 @@ if ( isset($target->document_output)) {
         ?>
 
         <?php
-        if (isset(Yii::app()->params['OphCoCorrespondence_event_actions']['create']['saveprint']) && Yii::app()->params['OphCoCorrespondence_event_actions']['create']['saveprint'] ) : ?>
+        if (( null !== SettingMetadata::model()->getSetting('OphCoCorrespondence_event_actions')['create']['saveprint']) && SettingMetadata::model()->getSetting('OphCoCorrespondence_event_actions')['create']['saveprint']) : ?>
             <input type="checkbox" value="Print" name="DocumentTarget[<?= $row_index ?>][DocumentOutput][<?= $pre_output_key ?>][output_type]" <?= $is_checked ? 'checked' : '' ?>>  Print
         <?php endif; ?>
     </label>
 </div>
 <?php if ($print_output) : ?>
-    <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $print_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
+    <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $print_output->id, array('class' => 'document_target_' . $row_index . '_document_output_id')); ?>
 
 <?php endif; ?>
 
 <?php $pre_output_key++; ?>
 
-<?php if ( $contact_type != 'INTERNALREFERRAL' && Yii::app()->params['send_email_immediately'] === "on" ) : ?>
+<?php if ($contact_type != 'INTERNALREFERRAL' && $email_immediate_enabled) : ?>
 <div>
     <label class="inline highlight">
         <?php
@@ -219,7 +226,7 @@ if ( isset($target->document_output)) {
     <?php endif; ?>
 </div>
     <?php if ($email_output) : ?>
-        <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $email_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
+        <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $email_output->id, array('class' => 'document_target_' . $row_index . '_document_output_id')); ?>
 
     <?php endif; ?>
 
@@ -227,7 +234,7 @@ if ( isset($target->document_output)) {
 
 <?php endif; ?>
 
-<?php if ( Yii::app()->params['send_email_delayed'] === "on" ) : ?>
+<?php if ($email_delayed_enabled) : ?>
 <div>
     <label class="inline highlight">
         <?php
@@ -293,9 +300,8 @@ if ( isset($target->document_output)) {
     <?php endif; ?>
 </div>
     <?php if ($email_delayed_output) : ?>
-        <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $email_delayed_output->id, array('class'=>'document_target_' . $row_index . '_document_output_id')); ?>
+        <?=\CHtml::hiddenField("DocumentTarget[$row_index][DocumentOutput][" . $pre_output_key . "][id]", $email_delayed_output->id, array('class' => 'document_target_' . $row_index . '_document_output_id')); ?>
 
     <?php endif; ?>
 
 <?php endif; ?>
-

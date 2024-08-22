@@ -18,7 +18,7 @@
 ?>
 <tbody data-formName="<?= $this->form_name ?>">
 <tr>
-  <td>Outcome:</td>
+    <td><?=$this->label;?>:</td>
   <td>
         <?php $outcomes = $this->getOutcomeOptions();
         echo CHtml::dropDownList(
@@ -63,7 +63,7 @@
             $this->form_name . '[clinic_location]',
             @$this->form_data[$this->form_name]['clinic_location'],
             \CHtml::listData(
-                OEModule\PatientTicketing\models\ClinicLocation::model()->findAll(array('order' => 'display_order asc')),
+                $this->getClinicLocations(),
                 'name',
                 'name'
             ),
@@ -72,3 +72,17 @@
   </td>
 </tr>
 </tbody>
+<script>
+    $(document).ready(function() {
+        $(this).on('change', '.outcome-select', function() {
+            var fup = $(this).find('option:selected').data('followup');
+            var formName = $(this).parents('tbody').data('formname');
+            if (fup) {
+                $('#'+formName+'-followup').show();
+            }
+            else {
+                $('#'+formName+'-followup').hide();
+            }
+        });
+    });
+</script>

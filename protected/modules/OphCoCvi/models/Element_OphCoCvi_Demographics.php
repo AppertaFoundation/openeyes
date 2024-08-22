@@ -1,5 +1,17 @@
 <?php
-
+/**
+ * (C) Copyright Apperta Foundation 2021
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2021, Apperta Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
 
 namespace OEModule\OphCoCvi\models;
 
@@ -27,16 +39,34 @@ use PatientIdentifierHelper;
  * @property string $la_name
  * @property string $la_address
  * @property string $la_telephone
+ * @property string $la_email
  *
  * @property \EthnicGroup $ethnic_group
  * @property \Gender $gender
  * @property \Event $event
  * @property \User $usermodified
  * @property \User $user
- * @property \EventType $eventType
  */
 class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
 {
+    const PDF_ETHNIC_GROUP_MAPPING = [
+        1 => 0,
+        2 => 1,
+        3 => 2,
+        4 => 3,
+        5 => 4,
+        6 => 5,
+        7 => 6,
+        8 => 7,
+        9 => 8,
+        10 => 9,
+        11 => 10,
+        12 => 12,
+        13 => 11,
+        14 => 13,
+        15 => 15,
+    ];
+
     /**
      * @param null|string $className
      *
@@ -62,8 +92,8 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     {
         return array(
             array(
-                'event_id, title_surname, other_names, date_of_birth, address, postcode, email, telephone, gender_id, '
-                . 'ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone, la_name, la_address, la_telephone',
+                'event_id, title_surname, other_names, date_of_birth, address, postcode, postcode_2nd, email, telephone, gender_id, '
+                . 'ethnic_group_id, nhs_number, gp_name, gp_address, gp_telephone, la_name, la_address, la_telephone, la_email, describe_ethnics',
                 'safe'
             ),
             array(
@@ -73,25 +103,27 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
                 'other_names', 'length', 'max' => 100
             ),
             array(
-                'postcode', 'length', 'max' => 4
+                'postcode, postcode_2nd, gp_postcode, gp_postcode_2nd, la_postcode, la_postcode_2nd', 'filter', 'filter'=>'trim'
             ),
             array(
-                'email, gp_name, la_name', 'length', 'max' => 255
+                'postcode, postcode_2nd, gp_postcode, gp_postcode_2nd, la_postcode, la_postcode_2nd', 'length', 'max' => 4 ,
+            ),
+
+            array(
+                'email, gp_name, la_name, la_email', 'length', 'max' => 255
             ),
             array(
                 'telephone, gp_telephone, la_telephone', 'length', 'max' => 20
             ),
             array(
-                'telephone, gp_telephone, la_telephone', 'OEPhoneNumberValidator'
-            ),
-            array(
-                'title_surname, other_names, date_of_birth, address, postcode, telephone, gender_id, ethnic_group_id, '
-                . 'nhs_number, gp_name, gp_address, gp_telephone, la_name, la_address, la_telephone',
+                'title_surname, other_names, date_of_birth, address, postcode, postcode_2nd, telephone, gender_id, '
+                . 'nhs_number, gp_name, gp_address, gp_telephone, gp_postcode, gp_postcode_2nd, la_name, la_address, la_telephone, la_postcode, la_postcode_2nd',
                 'required',
                 'on' => 'finalise'
             ),
+          //  array('describe_ethnics', 'ethnicsDescribeValidation', 'required', 'on' => 'finalise'),
             array('date_of_birth', 'OEDateValidatorNotFuture'),
-            array('email','email'),
+            array('la_email', 'email', 'on' => 'finalise', 'allowEmpty' => true),
         );
     }
 
@@ -107,7 +139,6 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
                 'id',
                 'on' => "element_type.class_name='" . get_class($this) . "'"
             ),
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
@@ -125,20 +156,42 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         return array(
             'title_surname' => 'Title and Surname',
             'date_of_birth' => 'Date of Birth',
-            'nhs_number' => \SettingMetadata::model()->getSetting('nhs_num_label').' Number',
+            'nhs_number' => 'NHS Number',
             'address' => 'Address (incl. Post Code)',
-            'postcode' => 'Post Code (1st half)',
+            'postcode' => 'Post Code',
+            'postcode_2nd' => '',
             'email' => 'Email',
             'telephone' => 'Telephone',
             'gender_id' => 'Sex',
             'ethnic_group_id' => 'Ethnic Group',
-            'gp_name' => \SettingMetadata::model()->getSetting('gp_label').'\'s Name',
-            'gp_address' => \SettingMetadata::model()->getSetting('gp_label').'\'s Address',
-            'gp_telephone' => \SettingMetadata::model()->getSetting('gp_label').'\'s Telephone',
+            'gp_name' => 'GP\'s Name',
+            'gp_address' => 'GP\'s Address',
+            'gp_postcode' => 'GP\'s Post Code',
+            'gp_postcode_2nd' => '',
+            'gp_telephone' => 'GP\'s Telephone',
             'la_name' => 'Local Authority Name',
             'la_address' => 'Local Authority Address',
+            'la_postcode' => 'Local Authority Post Code',
+            'la_postcode_2nd' => '',
             'la_telephone' => 'Local Authority Telephone',
+            'la_email' => 'Local Authority Email',
+            'describe_ethnics' => 'Describe other ethnic group'
         );
+    }
+
+    /**
+     * Validate other ethnics textarea if the ethnic group describe_needs == 1
+     * @param type $attribute
+     * @param type $params
+     */
+    public function ethnicsDescribeValidation($attribute, $params)
+    {
+        $ethnic = \EthnicGroup::model()->findByAttributes(array('id' => $this->ethnic_group_id));
+        if ($ethnic) {
+            if (($ethnic->describe_needs === "1") && !(bool) preg_match('/\S/', $this->describe_ethnics)) {
+                $this->addError($attribute, 'Describe other ethnics cannot be blank');
+            }
+        }
     }
 
     /**
@@ -148,7 +201,6 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     {
         $this->title_surname = $patient->title . ' ' . $patient->last_name;
         $this->other_names = $patient->first_name;
-
     }
 
     /**
@@ -157,9 +209,19 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
     protected function mapGenderFromPatient(\Patient $patient)
     {
         $gender_string = $patient->getGenderString();
+
         $gender = \Gender::model()->findByAttributes(array('name' => $gender_string));
-        if ($gender) {
-            $this->gender_id = $gender->id;
+
+        $this->gender_id = $gender ? $gender->id : null;
+    }
+
+    private function getEthnicIdForCVI(\Patient $patient)
+    {
+        if ($patient->ethnic_group_id) {
+            $ethnic = \EthnicGroup::model()->findByAttributes(array('id_assignment' => $patient->ethnic_group_id));
+            if ($ethnic) {
+                $this->ethnic_group_id = $ethnic->id;
+            }
         }
     }
 
@@ -172,24 +234,33 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
      */
     public function initFromPatient(\Patient $patient)
     {
-        $primary_global_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-            'GLOBAL', $patient->id, \Institution::model()->getCurrent()->id, \Yii::app()->session['selected_site_id']);
         $this->date_of_birth = $patient->dob;
-        $this->nhs_number =\PatientIdentifierHelper::getIdentifierValue($primary_global_identifier);
+        $this->nhs_number = PatientIdentifierHelper::getIdentifierValue($patient->globalIdentifier);
         $this->address = $patient->getSummaryAddress(",\n");
+
         if ($patient->contact && $patient->contact->address) {
-            $this->postcode = substr($patient->contact->address->postcode, 0, 4);
+            $postcode = explode(" ", \Helper::setPostCodeFormat($patient->contact->address->postcode));
+
+            $this->postcode = array_key_exists(0, $postcode) ? $postcode[0] : null;
+            $this->postcode_2nd = array_key_exists(1, $postcode) ? $postcode[1] : null;
         }
         $this->email = $patient->getEmail();
         $this->telephone = $patient->getPrimary_phone();
 
         $this->mapNamesFromPatient($patient);
+
         $this->mapGenderFromPatient($patient);
-        $this->ethnic_group_id = $patient->ethnic_group_id;
+
+        $this->getEthnicIdForCVI( $patient );
 
         if ($patient->gp) {
             $this->gp_name = $patient->gp->getFullName();
             $this->gp_address = $patient->gp->getLetterAddress(array('delimiter' => ",\n", 'patient' => $patient));
+
+            $gpPostcode = explode(" ", \Helper::setPostCodeFormat( $patient->gp->getGPPostcode(array('patient' => $patient))));
+
+            $this->gp_postcode = array_key_exists(0, $gpPostcode) ? $gpPostcode[0] : null;
+            $this->gp_postcode_2nd = array_key_exists(1, $gpPostcode) ? $gpPostcode[1] : null;
             if ($practice = $patient->practice) {
                 $this->gp_telephone = $practice->phone;
             }
@@ -325,8 +396,141 @@ class Element_OphCoCvi_Demographics extends \BaseEventTypeElement
         return $data;
     }
 
-    public function getContainer_form_view()
+    /*
+     * Get elements for CVI PDF
+     *
+     * @return array
+     */
+    public function getElementsForCVIpdf()
     {
-        return '//patient/element_container_form_no_bin';
+
+        $nhsNum = preg_replace('/[^0-9]/', '', $this->nhs_number);
+
+        switch ($this->gender_id) {
+            case 5:
+                $sex = 1;
+                break;
+            case 6:
+                $sex = 0;
+                break;
+            default:
+                $sex = 2;
+                break;
+        }
+
+        $patientAddress = $this->getAddressFormatForPDF( $this->address );
+
+
+        $otherEthnicity = $this->getOtherEthnicityForPDF();
+
+        $elements = [
+            'Title_Surname' => $this->title_surname,
+            'All_other_names' => $this->other_names,
+            'Address1' => $patientAddress['address1'],
+            'Address2' => $patientAddress['address2'],
+            'Postcode1' => $this->postcode,
+            'Postcode2' => $this->postcode_2nd,
+            'Telephone' => $this->telephone,
+            'Email' => $this->email,
+            'DoB' => \Helper::convertMySQL2NHS($this->date_of_birth),
+            'dob_original' => $this->date_of_birth,
+            'Sex' => $sex,
+            'Sex_String' => $this->gender->name,
+            'NHS_1' => substr($nhsNum, 0, 3),
+            'NHS_2' => substr($nhsNum, 3, 3),
+            'NHS_3' => substr($nhsNum, 6, 4),
+            'Ethnicity' => $this->getEthnicityIdForPDF(),          //Values: 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16, "Off", "Yes"
+            'Other White background description' => $otherEthnicity[0],
+            'Ather Mixed/Multiple ethnic background description' => $otherEthnicity[1],
+            'Other Asian background, description' => $otherEthnicity[2],
+            'Other Black/African/Caribbean background description' => $otherEthnicity[3],
+            'Other Chinese background description' => $otherEthnicity[4],
+            'Other ethnicity description' => $otherEthnicity[5],
+            'EthnicityForVisualyImpaired' => $this->getEthnicityForVisualyImpaired(),
+        ];
+
+        return $elements;
+    }
+
+    private function getEthnicityIdForPDF()
+    {
+        if ($ethnic = \EthnicGroup::model()->findByAttributes(array('id' => $this->ethnic_group_id))) {
+            return array_key_exists($ethnic->id_assignment, self::PDF_ETHNIC_GROUP_MAPPING) ?
+                self::PDF_ETHNIC_GROUP_MAPPING[$ethnic->id_assignment] : "Off";
+        }
+        return 'Off';
+    }
+
+    private function getEthnicityForVisualyImpaired()
+    {
+        $result = array();
+        $ethnics = \EthnicGroup::model()->findAll();
+
+        foreach ($ethnics as $ethnic) {
+            $result[] = [
+                'id' => $ethnic['id'],
+                'name' => $ethnic['name'],
+                'describe_needs' => $ethnic['describe_needs'],
+            ];
+        }
+
+        return $result;
+    }
+
+    private function getOtherEthnicityForPDF()
+    {
+        $result = [
+            0 => '',
+            1 => '',
+            2 => '',
+            3 => '',
+            4 => '',
+            5 => '',
+        ];
+        $ethnicityID = $this->getEthnicityIdForPDF();
+        if (($ethnicityID >=0) && ($ethnicityID <= 2)) {
+            $result[0] = $this->describe_ethnics;
+        } elseif (($ethnicityID >=3) && ($ethnicityID <= 6)) {
+            $result[1] = $this->describe_ethnics;
+        } elseif (($ethnicityID >=7) && ($ethnicityID <= 10)) {
+            $result[2] = $this->describe_ethnics;
+        } elseif (($ethnicityID >=11) && ($ethnicityID <= 13)) {
+            $result[3] = $this->describe_ethnics;
+        } elseif (($ethnicityID >=14) && ($ethnicityID <= 15)) {
+            $result[4] = $this->describe_ethnics;
+        } else {
+            $result[5] = $this->describe_ethnics;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get address format for PDF, sliced 2 lines
+     * @return array
+     */
+    public function getAddressFormatForPDF($address)
+    {
+        $patientAddress = explode(PHP_EOL, $address);
+        $patientAddressLen = count($patientAddress);
+
+        $Address1 = '';
+        $Address2 = '';
+
+        if ($patientAddressLen > 1) {
+            foreach (array_slice($patientAddress, 0, $patientAddressLen / 2) as $value) {
+                $Address1 .= $value;
+            }
+            foreach (array_slice($patientAddress, $patientAddressLen / 2) as $value) {
+                $Address2 .= $value;
+            }
+        } else {
+            $Address1 = $patientAddress[0];
+        }
+
+        return [
+            'address1' => str_replace(array("\n","\r"), ' ', $Address1),
+            'address2' => str_replace(array("\n","\r"), ' ', $Address2)
+        ];
     }
 }

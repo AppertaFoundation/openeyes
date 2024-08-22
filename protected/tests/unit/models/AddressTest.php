@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,7 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class AddressTest extends ActiveRecordTestCase
+class AddressTest extends \ModelTestCase
 {
     public $model;
 
@@ -24,10 +25,7 @@ class AddressTest extends ActiveRecordTestCase
         'addresses' => 'Address',
     );
 
-    public function getModel()
-    {
-        return Address::model();
-    }
+    protected $element_cls = Address::class;
 
     public function dataProvider_Search()
     {
@@ -41,7 +39,7 @@ class AddressTest extends ActiveRecordTestCase
         );
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->model = new Address();
@@ -121,7 +119,7 @@ class AddressTest extends ActiveRecordTestCase
     }
 
     /**
-     * @covers Address
+     * @covers       Address
      * @dataProvider dataProvider_Search
      */
     public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
@@ -140,5 +138,22 @@ class AddressTest extends ActiveRecordTestCase
 
         $this->assertEquals($numResults, $results->getItemCount());
         $this->assertEquals($expectedResults, $data);
+    }
+
+    public function testEnsure_that_no_validation_error_occurs_saving_new_address_without_country()
+    {
+        $this->assertAttributeValid($this->getElementInstance(), 'country_id');
+    }
+
+    public function testEnsure_that_validation_error_occurs_when_saving_existing_address_with_empty_or_null_country()
+    {
+        $address = $this->addresses('address3');
+
+        $values_to_check = ['', null];
+
+        foreach ($values_to_check as $value_to_check) {
+            $address->country_id = $value_to_check;
+            $this->assertAttributeInvalid($address, 'country_id', 'cannot be blank');
+        }
     }
 }

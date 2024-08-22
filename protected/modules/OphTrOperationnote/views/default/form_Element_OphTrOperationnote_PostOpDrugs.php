@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,59 +16,57 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="element-fields full-width flex-layout">
-        <?php echo $form->multiSelectList(
-            $element,
-            'Drug',
-            'drugs',
-            'id',
-            $this->getPostOpDrugList($element),
-            null,
-            array('empty' => '- Drugs -', 'label' => 'Drugs'),
-            false,
-            false,
-            null,
-            false,
-            false,
-            array('field' => 10)
-        ) ?>
-
-  <div class="add-data-actions flex-item-bottom " id="add-surgeon-popup">
-    <button class="button hint green js-add-select-search" id="add-postop-drugs-btn" type="button">
-      <i class="oe-i plus pro-theme"></i>
-    </button><!-- popup to add data to element -->
-  </div>
+    <ul class="oe-multi-select inline cols-8" id="postop-drugs">
+        <input type="hidden" name="<?= CHtml::modelName($element) ?>[MultiSelectList_Drug[drugs]]"
+               class="multi-select-list-name">
+        <?php foreach ($element->drugs as $drug) : ?>
+            <li>
+                <?= $drug->name ?>
+                <i class="oe-i remove-circle small-icon pad-left"></i>
+                <input type="hidden" name="Drug[]" value=<?= $drug->id ?>>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+    <div class="add-data-actions flex-item-bottom " id="add-postop-drugs-popup">
+        <button class="button hint green js-add-select-search" id="add-postop-drugs-btn" type="button">
+            <i class="oe-i plus pro-theme"></i>
+        </button><!-- popup to add data to element -->
+    </div>
 </div>
-<style>
-  #div_Element_OphTrOperationnote_PostOpDrugs_Drugs .multi-select-selections li{
-    margin-right: 5px;
-    margin-bottom: 5px;
-  }
-</style>
 <?php $drugs = $this->getPostOpDrugList($element); ?>
 <script type="text/javascript">
-  $(document).ready(function () {
-    new OpenEyes.UI.AdderDialog({
-      openButton: $('#add-postop-drugs-btn'),
-      itemSets:[
-        new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-            array_map(function ($key, $item) {
-              return ['label' => $item, 'id' => $key];
-            },
-            array_keys($drugs),
-            $drugs)
-        )?>,
-          {'multiSelect': true})],
-      onReturn: function (adderDialog, selectedItems) {
-        for (i in selectedItems) {
-          var id = selectedItems[i]['id'];
-          var $selector = $('#div_Element_OphTrOperationnote_PostOpDrugs_Drugs #Drug');
-          $selector.val(id);
-          $selector.trigger('change');
-        }
-        return true;
-      }
+    $(document).ready(function () {
+        $('#postop-drugs').on('click', '.oe-i.remove-circle.small-icon.pad-left', function (e) {
+            e.preventDefault();
+            $(e.target).closest('li').remove();
+        });
+
+        new OpenEyes.UI.AdderDialog({
+            openButton: $('#add-postop-drugs-btn'),
+            itemSets: [
+                new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+                    array_map(function ($key, $item) {
+                            return ['label' => $item, 'id' => $key];
+                    }, array_keys($drugs), $drugs)
+                )?>,
+                    {'multiSelect': true})],
+            onReturn: function (adderDialog, selectedItems) {
+                selectedItems.forEach(function (item) {
+                    // Check if the drug exists in list
+                    if ($('#postop-drugs').find(':input[value="' + item.id + '"]').length === 0) {
+                        // Add drug to the list
+                        $('#postop-drugs').append('<li>' +
+                            item.label +
+                            '<i class="oe-i remove-circle small-icon pad-left"></i>' +
+                            '<input type="hidden" name="Drug[]" value="' + item.id + '">') +
+                        '</li>';
+                    }
+                });
+                return true;
+            }
+        });
     });
-  });
 </script>

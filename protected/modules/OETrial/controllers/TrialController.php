@@ -31,7 +31,7 @@ class TrialController extends BaseModuleController
         return array(
             array(
                 'allow',
-                'actions' => array('getTrialList', 'permissions', 'renderPopups'),
+                'actions' => array('getTrialList', 'permissions', 'renderPopups', 'trialAutocomplete'),
                 'users' => array('@'),
             ),
             array(
@@ -99,6 +99,7 @@ class TrialController extends BaseModuleController
 
         $sortDir = Yii::app()->request->getParam('sort_dir', '0') === '0' ? 'asc' : 'desc';
         $sortBy = Yii::app()->request->getParam('sort_by', 'Name');
+        $page = (int)Yii::app()->request->getParam('TrialPatient_page', 0);
 
         $this->render('view', array(
             'permission' => self::getCurrentUserPermission(),
@@ -107,6 +108,7 @@ class TrialController extends BaseModuleController
             'dataProviders' => $this->model->getPatientDataProviders($sortBy, $sortDir),
             'sort_by' => $sortBy,
             'sort_dir' => (int)Yii::app()->request->getParam('sort_dir', 0),
+            'page' => $page
         ));
     }
 
@@ -282,10 +284,26 @@ class TrialController extends BaseModuleController
         $trial = $this->loadModel($_GET['id']);
         /* @var Patient $patient */
         $patient = Patient::model()->findByPk($_GET['patient_id']);
-        $trial->addPatient(
+        $trial_patient = $trial->addPatient(
             $patient,
             TrialPatientStatus::model()->find('code = ?', array(TrialPatientStatus::SHORTLISTED_CODE))
         );
+
+        $coordinators = array_map(
+            static function($coordinator) { return $coordinator->user->getFullName(); },
+            $trial->getTrialStudyCoordinators()
+        );
+
+        $this->renderJSON([
+            'name' => ['name' => CHtml::encode($trial->name), 'link' => Yii::app()->controller->createUrl('/OETrial/trial/view', array('id' => $trial->id))],
+            'started-date' => $trial->getStartedDateForDisplay(),
+            'closed-date' => $trial->getClosedDateForDisplay(),
+            'coordinators' => implode(', ', $coordinators),
+            'trial-type' => $trial->trialType->name,
+            'treatment-type' => $trial_patient->treatmentType->name,
+            'status-name' => $trial_patient->status->name,
+            'status-update-date' => isset($trial_patient->status_update_date) ? Helper::formatFuzzyDate($trial_patient->status_update_date) : null,
+        ]);
     }
 
     /**
@@ -391,6 +409,46 @@ class TrialController extends BaseModuleController
     }
 
     /**
+     * Get a JSON list of all trials that match the search term that the patient refered to by
+     * patient_id is not a member of. Only return those that 1) are not already associated with the patient,
+     * 2) not already been chosen by the user 3) have a 'can_edit' permission for the user
+     * @param $type string The trial type.
+     */
+    public function actionTrialAutocomplete($patient_id, $already_selected_ids, $term)
+    {
+        $already_selected_ids = json_decode($already_selected_ids);
+
+        $criteria = new CDbCriteria();
+        $criteria->distinct = true;
+        $criteria->select = 't.id, t.name, t.description';
+        $criteria->join = 'JOIN user_trial_assignment uta ON uta.trial_id = t.id JOIN trial_permission tp ON tp.id = uta.trial_permission_id';
+
+        $criteria->addCondition('uta.user_id = :user_id');
+        $criteria->addCondition('tp.can_edit = 1');
+        $criteria->addCondition('t.is_open = 1 AND t.closed_date IS NULL');
+        $criteria->addCondition('t.id NOT IN (SELECT trial_id FROM trial_patient WHERE patient_id = :patient_id)');
+        $criteria->params = [':user_id' => Yii::app()->user->id, ':patient_id' => $patient_id];
+
+        $criteria->addNotInCondition('t.id', $already_selected_ids);
+        $criteria->order = 'LOWER(t.name)';
+
+        $criteria2 = new CDbCriteria();
+        $criteria2->addSearchCondition('LOWER(t.name)', strtolower($term));
+        $criteria2->addSearchCondition('LOWER(t.description)', strtolower($term), true, 'OR');
+        $criteria2->order = 'LOWER(t.name)';
+        $criteria->mergeWith($criteria2);
+
+        $trials = array_map(
+            static function ($trial) {
+                return ['id' => $trial->id, 'label' => $trial->name];
+            },
+            Trial::model()->findAll($criteria)
+        );
+
+        $this->renderJSON($trials);
+    }
+
+    /**
      * Gets a JSON encoded list of users that can be assigned to the Trial and that match the search term.
      * Users will not be returned if they are already assigned to the trial, or if they don't have the "View Trial" permission.
      *
@@ -478,14 +536,14 @@ class TrialController extends BaseModuleController
 
     public function actionRenderPopups()
     {
-        if (isset($_POST["trialId"])) {
-            $trial = $this->loadModel($_POST["trialId"]);
+        if (isset($_GET["trialId"])) {
+            $trial = $this->loadModel($_GET["trialId"]);
             $sortDir = Yii::app()->request->getParam('sort_dir', '0') === '0' ? 'asc' : 'desc';
             $sortBy = Yii::app()->request->getParam('sort_by', 'Name');
             $dataProviders = $trial->getPatientDataProviders($sortBy, $sortDir);
             foreach ($dataProviders as $i => $dataProvider) {
-                foreach ($dataProvider->getData() as $dataProvider) {
-                    $this->renderPartial('application.widgets.views.PatientIcons', array('data' => ($dataProvider->patient), 'page' => 'trial'));
+                foreach ($dataProvider->getData() as $data) {
+                    $this->renderPartial('application.widgets.views.PatientIcons', array('data' => ($data->patient), 'page' => 'TrialPatient'));
                 }
             }
         }

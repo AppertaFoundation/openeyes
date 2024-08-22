@@ -38,8 +38,8 @@
                 <tr>
                     <td colspan="7">
                         <div class="flex-layout flex-right">
-                            <button id="js-add-user" class="button hint green" type="button"><i
-                                        class="oe-i plus pro-theme"></i>
+                            <button id="js-add-user" class="button hint green" type="button" data-test="add-user">
+                                <i class="oe-i plus pro-theme"></i>
                             </button>
                         </div>
                     </td>

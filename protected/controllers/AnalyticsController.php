@@ -6,13 +6,12 @@ class AnalyticsController extends BaseController
 {
     protected const DAYTIME_ONE = 86400;
     protected const DAYTIME_THREE = 259200;
-    protected const WEEKTIME = 604800;
     //protected const MONTHTIME_THIRTY = 2592000; // Not currently in use
     protected const PERIOD_DAY = 1;
     protected const PERIOD_WEEK = 7;
     protected const PERIOD_MONTH = 30;
     protected const PERIOD_YEAR = 365;
-    protected const FOLLOWUP_WEEK_LIMITED = 78;
+
     private $current_user;
 
     public $layout = '//layouts/events_and_episodes'; // Not adding strict typing here as this is overriding a Yii property which isn't strictly typed.
@@ -60,7 +59,7 @@ class AnalyticsController extends BaseController
         $ret = null;
         $params = Yii::app()->request->getParam('params');
 
-        if ($params['report_type'] === 'vf') {
+        if (array_key_exists('report_type',$params) && $params['report_type'] === 'vf') {
             $ret = $this->getVfPatientList($params);
         } else {
             $ret = $this->getPatientList($params);
@@ -200,13 +199,15 @@ class AnalyticsController extends BaseController
             foreach ($elements as $element) {
                 $time_interval = isset($element['va_time_interval']) ? $element['va_time_interval'] : $element['other_time_interval'];
                 if ($time_interval !== 'pre') {
-                    if (!in_array(
-                        $element['patient_id'],
-                        $statistical_report["($time_interval_unit) PRE-OP"]['va']['patients']
-                    ) && !in_array(
-                        $element['patient_id'],
-                        $statistical_report["($time_interval_unit) PRE-OP"]['other']['patients']
-                    )) {
+                    if (
+                        !in_array(
+                            $element['patient_id'],
+                            $statistical_report["($time_interval_unit) PRE-OP"]['va']['patients']
+                        ) && !in_array(
+                            $element['patient_id'],
+                            $statistical_report["($time_interval_unit) PRE-OP"]['other']['patients']
+                        )
+                    ) {
                         continue;
                     }
 
@@ -216,10 +217,12 @@ class AnalyticsController extends BaseController
 
 
                     if (array_key_exists($selected_interval, $statistical_report)) {
-                        if (in_array(
-                            $element['patient_id'],
-                            $statistical_report["($time_interval_unit) PRE-OP"]['va']['patients']
-                        )) {
+                        if (
+                            in_array(
+                                $element['patient_id'],
+                                $statistical_report["($time_interval_unit) PRE-OP"]['va']['patients']
+                            )
+                        ) {
                             if (isset($va_reading)) {
                                 $statistical_report[$selected_interval]['va'] = $this->processCustomData(
                                     $statistical_report[$selected_interval]['va'],
@@ -228,10 +231,12 @@ class AnalyticsController extends BaseController
                                 );
                             }
                         }
-                        if (in_array(
-                            $element['patient_id'],
-                            $statistical_report["($time_interval_unit) PRE-OP"]['other']['patients']
-                        )) {
+                        if (
+                            in_array(
+                                $element['patient_id'],
+                                $statistical_report["($time_interval_unit) PRE-OP"]['other']['patients']
+                            )
+                        ) {
                             if (isset($other_reading)) {
                                 $statistical_report[$selected_interval]['other'] = $this->processCustomData(
                                     $statistical_report[$selected_interval]['other'],
@@ -241,10 +246,12 @@ class AnalyticsController extends BaseController
                             }
                         }
                     } else {
-                        if (in_array(
-                            $element['patient_id'],
-                            $statistical_report["($time_interval_unit) PRE-OP"]['va']['patients']
-                        )) {
+                        if (
+                            in_array(
+                                $element['patient_id'],
+                                $statistical_report["($time_interval_unit) PRE-OP"]['va']['patients']
+                            )
+                        ) {
                             $statistical_report[$selected_interval]['va'] = $this->processCustomData(
                                 null,
                                 $element['patient_id'],
@@ -260,10 +267,12 @@ class AnalyticsController extends BaseController
                             );
                         }
 
-                        if (in_array(
-                            $element['patient_id'],
-                            $statistical_report["($time_interval_unit) PRE-OP"]['other']['patients']
-                        )) {
+                        if (
+                            in_array(
+                                $element['patient_id'],
+                                $statistical_report["($time_interval_unit) PRE-OP"]['other']['patients']
+                            )
+                        ) {
                             $statistical_report[$selected_interval]['other'] = $this->processCustomData(
                                 null,
                                 $element['patient_id'],
@@ -517,10 +526,10 @@ class AnalyticsController extends BaseController
         $can_view_clinical = Yii::app()->authManager->isAssigned('View clinical', Yii::app()->user->id) ? true : false;
         $is_service_manager = Yii::app()->authManager->isAssigned('Service Manager', Yii::app()->user->id) ? true : false;
         $sidebar_params = array(
-            'specialty'=>$specialty,
-            'current_user'=>$this->current_user,
-            'common_disorders'=>$common_ophthalmic_disorders,
-            'user_list'=>$user_list,
+            'specialty' => $specialty,
+            'current_user' => $this->current_user,
+            'common_disorders' => $common_ophthalmic_disorders,
+            'user_list' => $user_list,
             'can_view_clinical' => $can_view_clinical,
             'is_service_manager' => $is_service_manager,
         );
@@ -538,9 +547,9 @@ class AnalyticsController extends BaseController
             }
             $va_units = $this->getVAUnits()->queryAll();
             $reformed_va_units = array();
-            $default_va_unit = 'logMAR 1dp';
+            $default_va_unit = 'logmar';
             foreach ($va_units as $va_unit) {
-                $reformed_va_units[$va_unit['name']] = $va_unit['id'];
+                $reformed_va_units[strtolower($va_unit['name'])] = $va_unit;
             }
             $sidebar_params['procedures'] = $procedures;
             $sidebar_params['default_procedure'] = $default_procedure;
@@ -676,13 +685,9 @@ class AnalyticsController extends BaseController
      * @return array|CDbDataReader|mixed
      * @throws CException
      */
-    public function getVfCsvData($params = array(), $use_filters = true)
+    public function getVfCsvData($params = array(), $use_filters = true, $command_filtered_patients = null)
     {
         $bindValues = array();
-        $command_filtered_patients = null;
-        if ($use_filters) {
-            $command_filtered_patients = $this->getCustomVf($this->filters['procedure'] ?? null);
-        }
 
         $command = Yii::app()->db->createCommand()
             ->select(
@@ -753,9 +758,9 @@ class AnalyticsController extends BaseController
      * @return array
      * @throws CException
      */
-    public function getVfData(int $side)
+    public function getVfData(int $side, $command_filtered_patients)
     {
-        $mdr_list = $this->queryAllMdr();
+        $mdr_list = $this->queryAllMdr($command_filtered_patients);
         $mdr_side = array_filter(
             $mdr_list,
             static function ($item) use ($side) {
@@ -1142,23 +1147,23 @@ class AnalyticsController extends BaseController
 
         $institution_id = Institution::model()->getCurrent()->id;
         $res = $this->getPatientsIdentifiers($res, $institution_id);
-        $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $this->selectedSiteId);
-        $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_secondary_number_usage_code'], $institution_id, $this->selectedSiteId);
+        $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $this->selectedSiteId);
+        $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $institution_id, $this->selectedSiteId);
         $id_headers = $primary_identifier_prompt . ', ' . $secondary_identifier_prompt;
         return ['id_headers' => $id_headers, 'res' => $res];
     }
 
     private function getPatientsIdentifiers($data, $institution_id, $use_prompt_as_index = false)
     {
-        $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $this->selectedSiteId);
-        $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_secondary_number_usage_code'], $institution_id, $this->selectedSiteId);
+        $primary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $this->selectedSiteId);
+        $secondary_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $institution_id, $this->selectedSiteId);
 
         $primary_identifier_index = $use_prompt_as_index ? $primary_identifier_prompt : 'primary identifier';
         $secondary_identifier_index = $use_prompt_as_index ? $secondary_identifier_prompt : 'secondary identifier';
         $result = [];
         foreach ($data as $patient) {
-            $primary_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $patient['patient_id'], $institution_id, $this->selectedSiteId));
-            $secondary_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $patient['patient_id'], $institution_id, $this->selectedSiteId));
+            $primary_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $patient['patient_id'], $institution_id, $this->selectedSiteId));
+            $secondary_identifier = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $patient['patient_id'], $institution_id, $this->selectedSiteId));
             $result[] = [$primary_identifier_index => $primary_identifier, $secondary_identifier_index => $secondary_identifier, ] + $patient + ['all ids' => PatientIdentifierHelper::getAllPatientIdentifiersForReports($patient['patient_id'])];
         }
 
@@ -1280,100 +1285,75 @@ class AnalyticsController extends BaseController
      */
     public function getCustomVf(?string $proc_list)
     {
-        $total_patients = (int)Patient::model()->count();
-        $proc_command = Yii::app()->db->createCommand()
-            ->select('p.id')
-            ->from('patient p');
+        $event_used = $proc_list || !empty($this->filters['diagnosis']) ||
+                    !empty($this->filters['surgeon']);
+        $used = $event_used || !empty($this->filters['age_min']) || !empty($this->filters['age_max']);
 
-        if ($proc_list) {
-            $proc_command = $proc_command->leftJoin('episode ep', 'ep.patient_id = p.id')
-                ->leftJoin('event e', 'e.episode_id = ep.id')
-                ->leftJoin('et_ophtroperationbooking_operation e_op', 'e_op.event_id = e.id')
-                ->leftJoin('ophtroperationbooking_operation_procedures_procedures op', 'op.element_id = e_op.id')
-                ->leftJoin('proc', 'proc.id = op.proc_id')
-                ->where("proc.id $proc_list")
-                ->group('p.id');
-        }
-
-        $diag_command = Yii::app()->db->createCommand()
-            ->select('p.id')
-            ->from('patient p')
-            ->leftJoin('episode ep', 'ep.patient_id = p.id')
-            ->leftJoin('event e', 'e.episode_id = ep.id')
-            ->leftJoin('et_ophciexamination_diagnoses e_diag', 'e_diag.event_id = e.id')
-            ->leftJoin('ophciexamination_diagnosis diag', 'diag.element_diagnoses_id = e_diag.id')
-            ->leftJoin('disorder d', 'd.id = diag.disorder_id')
-            ->where('(:diag IS NULL OR d.id = :diag)')
-            ->group('p.id');
-
-        $age_command = Yii::app()->db->createCommand()
-            ->select('p.id')
-            ->from('patient p')
-            ->where(
-                '((:age_min IS NULL AND :age_max IS NULL)
-            OR TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE())) BETWEEN :age_min AND :age_max)'
-            );
-
-        $surgeon_command = Yii::app()->db->createCommand()
-            ->select('p.id')
-            ->from('patient p')
-            ->leftJoin('episode ep', 'ep.patient_id = p.id')
-            ->leftJoin('event e', 'e.episode_id = ep.id')
-            ->where('(:surgeon IS NULL OR ep.created_user_id = :surgeon)')
-            ->group('p.id');
-
-        // Start with the biggest dataset (optional match on procedures).
-        $base_id_list = $proc_command->queryColumn();
-
-        $num_patients_returned = count($base_id_list);
-        if ($num_patients_returned > 0 && $num_patients_returned !== $total_patients) {
-            // Set of patient IDs is the same as the total number of patients in OpenEyes, so return null.
-            // This will be used to bypass giant IN conditions.
-            $diag_command = $diag_command->andWhere('p.id IN (' . implode(', ', $base_id_list). ')');
-        }
-
-        $base_id_list = $diag_command->bindValues(
-            array(
-                ':diag' => $this->filters['custom_diagnosis'] ?? null,
-            )
-        )->queryColumn();
-
-        $num_patients_returned = count($base_id_list);
-
-        if ($num_patients_returned > 0 && $num_patients_returned !== $total_patients) {
-            // Set of patient IDs is the same as the total number of patients in OpenEyes, so return null.
-            // This will be used to bypass giant IN conditions.
-            $age_command = $age_command->andWhere('p.id IN (' . implode(', ', $base_id_list). ')');
-        }
-        $base_id_list = $age_command->bindValues(
-            array(
-                ':age_min' => $this->filters['custom_age_min'] ?? null,
-                ':age_max' => $this->filters['custom_age_max'] ?? null,
-            )
-        )->queryColumn();
-
-        $num_patients_returned = count($base_id_list);
-
-        if ($num_patients_returned > 0 && $num_patients_returned !== $total_patients) {
-            // Set of patient IDs is the same as the total number of patients in OpenEyes, so return null.
-            // This will be used to bypass giant IN conditions.
-            $surgeon_command = $surgeon_command->andWhere('p.id IN (' . implode(', ', $base_id_list). ')');
-        }
-        $base_id_list = $surgeon_command->bindValues(
-            array(
-                ':surgeon' => $this->filters['custom_surgeon'] ?? null
-            )
-        )->queryColumn();
-
-        $num_patients_returned = count($base_id_list);
-
-        if ($num_patients_returned > 0 && $num_patients_returned !== $total_patients) {
-            // Set of patient IDs is the same as the total number of patients in OpenEyes, so return null.
-            // This will be used to bypass giant IN conditions.
+        if (!$used) {
             return null;
         }
 
-        return 'IN (' . implode(', ', $base_id_list) . ')';
+        $command = Yii::app()->db
+                 ->createCommand()
+                 ->select('p.id')
+                 ->from('patient p');
+
+        if ($event_used) {
+            $command->join('episode ep', 'ep.patient_id = p.id')
+                    ->join('event e', 'e.episode_id = ep.id');
+        }
+
+        if ($proc_list) {
+            $command->join('et_ophtroperationbooking_operation e_op', 'e_op.event_id = e.id')
+                    ->join('ophtroperationbooking_operation_procedures_procedures op', 'op.element_id = e_op.id')
+                    ->join('proc', 'proc.id = op.proc_id')
+                    ->andWhere("proc.id $proc_list");
+        }
+
+        if (!empty($this->filters['diagnosis'])) {
+            $command->leftJoin('et_ophciexamination_diagnoses e_diag', 'e_diag.event_id = e.id')
+                    ->leftJoin('ophciexamination_diagnosis diag', 'diag.element_diagnoses_id = e_diag.id')
+                    ->leftJoin('disorder d', 'd.id = diag.disorder_id')
+                    ->andWhere('d.id = :diag', [':diag' => $this->filters['diagnosis']]);
+        }
+
+        if (!empty($this->filters['age_min'])) {
+            if (!empty($this->filters['age_max'])) {
+                $command->andWhere(
+                    'TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE())) BETWEEN :age_min AND :age_max',
+                    [':age_min' => $this->filters['age_min'], ':age_max' => $this->filters['age_max']]
+                );
+            } else {
+                $command->andWhere(
+                    'TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE())) >= :age_min',
+                    [':age_min' => $this->filters['age_min']]
+                );
+            }
+        } elseif (!empty($this->filters['age_max'])) {
+            $command->andWhere(
+                'TIMESTAMPDIFF(YEAR, p.dob, IFNULL(p.date_of_death, CURDATE())) <= :age_max',
+                [':age_max' => $this->filters['age_max']]
+            );
+        }
+
+        if (!empty($this->filters['surgeon'])) {
+            $command->andWhere(
+                'ep.created_user_id = :surgeon',
+                [':surgeon' => $this->filters['surgeon']]
+            );
+        }
+
+        $command->group('p.id');
+
+        $base_id_list = $command->queryColumn();
+        $num_patients_returned = count($base_id_list);
+        $total_patients = (int)Patient::model()->count();
+
+        if ($num_patients_returned !== $total_patients) {
+            return 'IN (' . implode(', ', $base_id_list) . ')';
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -1512,8 +1492,10 @@ class AnalyticsController extends BaseController
 
         $query_conditions[] = 'ep.deleted = 0';
 
-        if (isset($this->filters['age_min']) && isset($this->filters['age_max'])
-            && isset($this->filters['age_min']) <= isset($this->filters['age_max'])) {
+        if (
+            isset($this->filters['age_min']) && isset($this->filters['age_max'])
+            && isset($this->filters['age_min']) <= isset($this->filters['age_max'])
+        ) {
             $age_min = $this->filters['age_min'];
             $age_max = $this->filters['age_max'];
             $query_conditions[] = "p.age >= $age_min AND p.age <= $age_max";
@@ -1725,8 +1707,10 @@ class AnalyticsController extends BaseController
         if (isset($eye_side)) {
             $query_params[':side'] = $eye_side;
         }
-        if (isset($this->filters['date_from']) && isset($this->filters['date_to'])
-            && $this->filters['date_from'] < $this->filters['date_to']) {
+        if (
+            isset($this->filters['date_from']) && isset($this->filters['date_to'])
+            && $this->filters['date_from'] < $this->filters['date_to']
+        ) {
             $date_from = $this->filters['date_from'];
             $date_to = $this->filters['date_to'];
             $query_conditions[] = "UNIX_TIMESTAMP(exam.event_date) >= $date_from";
@@ -2320,15 +2304,15 @@ class AnalyticsController extends BaseController
         $ageMin = $age ? $age[0] : null;
         $ageMax = $age ? $age[1] : null;
         $this->filters = array(
-          'specialty'=>$specialty,
+          'specialty' => $specialty,
           'date_from' => $dateFrom,
           'date_to' => $dateTo,
-          'age_min'=>$ageMin,
-          'age_max'=>$ageMax,
-          'diagnosis'=>$diagnosis,
-          'user'=>$user,
-          'procedure'=>$procedure,
-          'plot_va_change'=> $plot_va_change,
+          'age_min' => $ageMin,
+          'age_max' => $ageMax,
+          'diagnosis' => $diagnosis,
+          'user' => $user,
+          'procedure' => $procedure,
+          'plot_va_change' => $plot_va_change,
           'time_interval' => $time_interval,
           'va_unit' => $va_unit,
         );
@@ -2396,7 +2380,7 @@ class AnalyticsController extends BaseController
                         'name' => 'VA',
                         'mode' => 'lines+markers',
                         'type' => 'scatter',
-                        'x' => array_keys(${$side.$va_list_name}),
+                        'x' => array_keys(${$side . $va_list_name}),
                         'y' => array_map(
                             function ($item) {
                                 if (isset($this->filters['plot_va_change_initial_va_value'])) {
@@ -2530,12 +2514,12 @@ class AnalyticsController extends BaseController
 
     private function queryDiagnosesFilteredPatientListCommand($eye_side, $caller = 'custom')
     {
-        $diagnoses = isset($this->filters['diagnosis'])? $this->filters['diagnosis']: null;
+        $diagnoses = isset($this->filters['diagnosis']) ? $this->filters['diagnosis'] : null;
         $command_principal = Yii::app()->db->createCommand()
             ->select('e.patient_id as patient_id', 'DISTINCT')
             ->from('episode e')
-            ->where('e.disorder_id IS NOT NULL')
             ->leftJoin('patient p', 'p.id = e.patient_id')
+            ->where('e.disorder_id IS NOT NULL')
             ->andWhere('e.deleted = 0')
             ->andWhere('p.deleted = 0');
 
@@ -2546,6 +2530,11 @@ class AnalyticsController extends BaseController
             ->where('sd.disorder_id IS NOT NULL')
             ->andWhere('p.deleted = 0');
 
+        if ($caller === 'followup') {
+            $command_principal->andWhere('p.is_deceased = 0');
+            $command_secondary->andWhere('p.is_deceased = 0');
+        }
+
         if ($eye_side == 'left') {
             $command_principal->andWhere('e.eye_id IN (1,3)');
             $command_secondary->andWhere('sd.eye_id IN (1,3)');
@@ -2554,8 +2543,8 @@ class AnalyticsController extends BaseController
             $command_secondary->andWhere('sd.eye_id IN (2,3)');
         }
         if (isset($diagnoses)) {
-            $command_principal->andWhere('e.disorder_id IN ('.$diagnoses.')');
-            $command_secondary->andWhere('sd.disorder_id IN ('.$diagnoses.')');
+            $command_principal->andWhere('e.disorder_id IN (' . $diagnoses . ')');
+            $command_secondary->andWhere('sd.disorder_id IN (' . $diagnoses . ')');
         }
         return $command_secondary->union($command_principal->getText());
     }
@@ -2586,364 +2575,18 @@ class AnalyticsController extends BaseController
             'coming' => array(),
             'waiting' => array(),
         );
-        // extract out the query in the foreach loop
-        // and integrate them into the following query
-        // function call extracted: findByPK, checkPatientWorklist...
-        // use the column value instead the object from findByPk within the loop
-        $followup_elements_command = Yii::app()->db->createCommand()
-            ->select(
-                "
-                e.id as event_id,
-                p.id as patient_id,
-                UNIX_TIMESTAMP(e.event_date) as event_date,
-                UNIX_TIMESTAMP(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc_entry.followup_quantity DAY)) as due_date,
-                CAST(DATEDIFF(DATE_ADD(event_date, INTERVAL IF(period.name = 'weeks', 7 ,IF( period.name = 'months', 30, IF(period.name = 'years', 365, 1)))*eoc_entry.followup_quantity DAY),current_date())/7 AS INT) as weeks,
-                MAX(UNIX_TIMESTAMP(w.start)) as start
-            "
-            )
-            ->from("event e")
-            ->leftjoin("episode e2", "e.episode_id = e2.id")
-            ->leftjoin("patient p", "p.id = e2.patient_id")
-            ->leftjoin("event_type e3", "e3.id = e.event_type_id")
-            ->leftjoin("firm f", "e2.firm_id = f.id")
-            ->leftjoin("service_subspecialty_assignment ssa", "ssa.id = f.service_subspecialty_assignment_id")
-            ->leftjoin("et_ophciexamination_clinicoutcome eoc", "eoc.event_id = e.id")
-            ->leftjoin("ophciexamination_clinicoutcome_entry eoc_entry", "eoc_entry.element_id = eoc.id")
-            ->leftjoin("period", "period.id = eoc_entry.followup_period_id")
-            ->leftjoin("worklist_patient wp", "p.id = wp.patient_id")
-            ->leftjoin("worklist w", "wp.worklist_id = w.id")
-            ->where("p.deleted <> 1 and e.deleted <> 1 and e2.deleted <> 1")
-            ->andWhere("lower(e3.name) like lower('%examination%')")
-            ->andWhere(
-                "
-                e.event_date = (
-                    select MAX(e4.event_date) from event e4
-                    left join episode e5 on e4.episode_id = e5.id
-                    left join patient p2 on e5.patient_id = p2.id
-                    left join event_type e6 ON e6.id = e4.event_type_id
-                    WHERE p2.id = p.id and e4.deleted = 0 and e5.deleted = 0
-                    and lower(e3.name) like lower('%examination%')
-                )
-            "
-            )
-            ->andWhere("eoc.id is not null")
-            ->andWhere("eoc_entry.followup_period_id is not null")
-            ->group("p.id");
-        // extract out the query in the foreach loop
-        // and integrate them into the following query
-        // use the column value instead the object from findByPk within the loop
-        $referral_document_command = Yii::app()->db->createCommand()
-            ->select(
-                "
-                e.id as event_id,
-                p.id as patient_id,
-                UNIX_TIMESTAMP(e.event_date) as event_date,
-                MIN(UNIX_TIMESTAMP(wp.when)) as 'when'
-            "
-            )
-            ->from("event e")
-            ->leftjoin("episode e2", "e.episode_id = e2.id")
-            ->leftjoin("patient p", "p.id = e2.patient_id")
-            ->leftjoin("event_type e3", "e3.id = e.event_type_id")
-            ->leftjoin("firm f", "e2.firm_id = f.id")
-            ->leftjoin("service_subspecialty_assignment ssa", "ssa.id = f.service_subspecialty_assignment_id")
-            ->leftjoin("et_ophcodocument_document eod", "e.id = eod.event_id")
-            ->leftjoin("ophcodocument_sub_types ost", "eod.event_sub_type = ost.id")
-            ->leftjoin("worklist_patient wp", "p.id = wp.patient_id")
-            ->leftjoin("worklist w", "wp.worklist_id = w.id")
-            ->where("ost.name = 'Referral Letter'")
-            ->andWhere("p.deleted <> 1 and e.deleted <> 1 and e2.deleted <> 1")
-            ->andWhere("lower(e3.name) like lower('%document%')")
-            ->andWhere(
-                "
-                e.event_date = (
-                    select MAX(e4.event_date) from event e4
-                    left join episode e5 on e4.episode_id = e5.id
-                    left join patient p2 on e5.patient_id = p2.id
-                    left join event_type e6 ON e6.id = e4.event_type_id
-                WHERE p2.id = p.id and e4.deleted = 0 and e5.deleted = 0
-                and lower(e3.name) like lower('%document%')
-                )
-            "
-            )
-            ->group('p.id');
-        $queryConditions = array('and');
-        $params = array();
+
+        $diagnosis_text = null;
+
         if ($diagnosis) {
             $command_filtered_patients_by_diagnosis = Yii::app()->db->createCommand()
-                ->select('dp.patient_id', 'distinct')
-                ->from('(' . $this->queryDiagnosesFilteredPatientListCommand(null, 'followup')->getText() . ') AS dp');
-            $queryConditions[] = 'p.id IN (' . $command_filtered_patients_by_diagnosis->getText() . ')';
-        }
-        if ($surgeon_id) {
-            $queryConditions[] = 'e.created_user_id = :surgeon_id';
-            $params['surgeon_id'] = $surgeon_id;
-        }
-        if ($subspecialty_id) {
-            $queryConditions[] = 'ssa.subspecialty_id = :subspecialty_id';
-            $params['subspecialty_id'] = $subspecialty_id;
-        }
-        $followup_elements = $followup_elements_command->andWhere($queryConditions, $params)->queryAll();
-        $current_time = time();
-        foreach ($followup_elements as $followup_item) {
-            /* Calculate the coming and overdue followups */
-            $event_time = $followup_item['event_date'];
-            if (($start_date && $event_time < $start_date) ||
-                ($end_date && $event_time > $end_date)) {
-                continue;
-            }
-
-            $latest_worklist_time = isset($followup_item['start']) ? $followup_item['start'] : null;
-
-            $latest_time = isset($latest_worklist_time) ? max($event_time, $latest_worklist_time) : $event_time;
-
-            $due_time = $followup_item['due_date'];
-
-            if ($followup_item['weeks'] <= 0) {
-                if ($latest_time > $event_time) {
-                    continue;
-                }
-                //Follow up is overdue
-                $over_weeks = -$followup_item['weeks'];
-                if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                    $followup_csv_data['overdue'][] =
-                        array(
-                            'patient_id' => $followup_item['patient_id'],
-                            'weeks' => $over_weeks,
-                        );
-                    if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
-                        $followup_patient_list['overdue'][$over_weeks][] = $followup_item['patient_id'];
-                    } else {
-                        $followup_patient_list['overdue'][$over_weeks][] = $followup_item['patient_id'];
-                    }
-                }
-            } else {
-                if ($latest_worklist_time > $current_time && $latest_worklist_time < $due_time) {
-                    continue;
-                }
-                $coming_weeks = $followup_item['weeks'];
-                if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                    $followup_csv_data['coming'][] =
-                        array(
-                            'patient_id' => $followup_item['patient_id'],
-                            'weeks' => $coming_weeks,
-                        );
-                    if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
-                        $followup_patient_list['coming'][$coming_weeks] = array($followup_item['patient_id']);
-                    } else {
-                        $followup_patient_list['coming'][$coming_weeks][] = $followup_item['patient_id'];
-                    }
-                }
-            }
-        }
-        // obsoleted active record and extracted the logic out into a couple of queries
-        /*
-            $ticket_assignments_command combined:
-            * ticket active record
-            * getfollowup function in patientticket_api
-            * checkPatientWorklist() in this controller, which is intended to retrieve latest worklist start date
-            * getLatestExaminationEvent() in this controller
-        */
-        $tickets_command = Yii::app()->db->createCommand()
-            ->select(
-                '
-                ptt.id ticket_id,
-                ptt.patient_id patient_id,
-                ptt.event_id event_id,
-                e.created_user_id event_owner,
-                MAX(e.event_date) event_date,
-                MAX(w.start) worklist_date
-            '
-            )
-            ->from('patientticketing_ticket ptt')
-            ->join('event e', 'e.id = ptt.event_id')
-            ->leftjoin("episode e2", "e.episode_id = e2.id")
-            ->leftjoin("patient p", "p.id = e2.patient_id")
-            ->leftjoin("event_type et", "et.id = e.event_type_id")
-            ->leftjoin("firm f", "e2.firm_id = f.id")
-            ->leftjoin("service_subspecialty_assignment ssa", "ssa.id = f.service_subspecialty_assignment_id")
-            ->leftjoin('worklist_patient wp', 'ptt.patient_id = wp.patient_id')
-            ->leftjoin('worklist w', 'wp.worklist_id = w.id')
-            ->where('LOWER(et.name) = :examination', array('examination' => 'examination'))
-            ->group('ptt.patient_id, ptt.event_id');
-        $tickets = $tickets_command->andWhere($queryConditions, $params)->queryAll();
-        $ticket_ids = array_column($tickets, 'ticket_id');
-        $ticket_assignments_command = Yii::app()->db->createCommand()
-            ->select(
-                '
-                ptt.id ticket_id,
-                pta.id assignment_id,
-                pta.assignment_date assignment_date,
-                pta.details details
-            '
-            )
-            ->from('patientticketing_ticket ptt')
-            ->join('patientticketing_ticketqueue_assignment pta', 'ptt.id = pta.ticket_id')
-            ->where(array('IN', 'ptt.id', $ticket_ids));
-        $ticket_assignments = $ticket_assignments_command->queryAll();
-        // as the details field in database is an json array,
-        // this needs to be convert to php associated array
-        $ticket_assignments = array_map(
-            function ($item) {
-                $item['details'] = json_decode($item['details'], true);
-                return $item;
-            },
-            $ticket_assignments
-        );
-
-        // store value outcome and use ticket id as key
-        $value_outcome = array();
-
-        // retrieve all options out
-        $ticket_assignments_outcome_opts_command = Yii::app()->db->createCommand()
-            ->select('*')
-            ->from('patientticketing_ticketassignoutcomeoption');
-        $ticket_assignments_outcome_opts = $ticket_assignments_outcome_opts_command->queryAll();
-
-        // store options and use options id as key
-        $ticket_assignments_outcome_opts_dup = array();
-        foreach ($ticket_assignments_outcome_opts as $opts) {
-            $ticket_assignments_outcome_opts_dup[$opts['id']] = $opts;
+                                                                    ->select('dp.patient_id', 'distinct')
+                                                                    ->from('(' . $this->queryDiagnosesFilteredPatientListCommand(null, 'followup')->getText() . ') AS dp');
+            $diagnosis_text = $command_filtered_patients_by_diagnosis->getText();
         }
 
-        foreach ($ticket_assignments as $ticket_assignment) {
-            if (!isset($ticket_assignment['details'])) {
-                continue;
-            }
-            foreach ($ticket_assignment['details'] as $item) {
-                if (isset($item['widget_name']) && $item['widget_name'] === 'TicketAssignOutcome') {
-                    if (isset($item['value']['outcome'])) {
-                        $inner_val_outcome = $item['value']['outcome'];
-                        if ($ticket_assignments_outcome_opts_dup[$inner_val_outcome]) {
-                            if ((int)$ticket_assignments_outcome_opts_dup[$inner_val_outcome]['followup'] === 1) {
-                                $item['value']['assignment_date'] = $ticket_assignment['assignment_date'];
-                                $value_outcome[$ticket_assignment['ticket_id']] = $item['value'];
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        \FollowupAnalysisAggregate::retrieveFormattedAnalytics($followup_patient_list, $followup_csv_data, $start_date, $end_date, $diagnosis_text, $surgeon_id, $subspecialty_id);
 
-        foreach ($tickets as $ticket) {
-            $ticket_followup = isset($value_outcome[$ticket['ticket_id']]) ? $value_outcome[$ticket['ticket_id']] : false;
-
-            if ($ticket_followup) {
-                $current_event = $ticket['event_date'];
-                $assignment_time = strtotime($ticket_followup['assignment_date']);
-                if (($start_date && $assignment_time < $start_date) ||
-                    ($end_date && $assignment_time > $end_date)) {
-                    continue;
-                }
-
-                if (isset($this->surgeon, $current_event)) {
-                    if ($this->surgeon !== $ticket['event_owner']) {
-                        continue;
-                    }
-                }
-                $current_patient_id = $ticket['patient_id'];
-                if ($diagnosis) {
-                    $current_patient_diagnoses = $this->queryAllDiagnosisForPatient($current_patient_id);
-                    if (!in_array($diagnosis, $current_patient_diagnoses)) {
-                        continue;
-                    }
-                }
-                $latest_worklist_time = strtotime($ticket['worklist_date']);
-                $latest_examination = strtotime($ticket['event_date']);
-                if (isset($latest_examination)) {
-                    $latest_examination_date = strtotime($latest_examination);
-                } else {
-                    $latest_examination_date = null;
-                }
-
-                $latest_time = null;
-
-                if (isset($latest_worklist_time)) {
-                    if (isset($latest_examination_date)) {
-                        $latest_time = max($latest_examination_date, $latest_worklist_time);
-                    } else {
-                        $latest_time = $latest_worklist_time;
-                    }
-                } elseif (isset($latest_examination_date)) {
-                    $latest_time = $latest_examination_date;
-                }
-
-                $quantity = $ticket_followup['followup_quantity'];
-                if ($quantity > 0) {
-                    $period_date = $quantity * $this->getPeriodDate($ticket_followup['followup_period']);
-                    $due_time = $assignment_time + $period_date * self::DAYTIME_ONE;
-                    if ($due_time < $current_time) {
-                        if (!isset($latest_time) || $latest_time > $assignment_time) {
-                            continue;
-                        }
-                        //Follow up is overdue
-                        $over_weeks = (int)(($current_time - $due_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
-                        if ($over_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                            $followup_csv_data['overdue'][] =
-                                array(
-                                    'patient_id' => $current_patient_id,
-                                    'weeks' => $over_weeks,
-                                );
-                            if (!array_key_exists($over_weeks, $followup_patient_list['overdue'])) {
-                                $followup_patient_list['overdue'][$over_weeks][] = $current_patient_id;
-                            } else {
-                                $followup_patient_list['overdue'][$over_weeks][] = $current_patient_id;
-                            }
-                        }
-                    } else {
-                        if ($latest_worklist_time > $current_time && $latest_worklist_time < $due_time) {
-                            continue;
-                        }
-                        $coming_weeks = (int)(($due_time - $current_time) / self::DAYTIME_ONE / self::PERIOD_WEEK);
-                        if ($coming_weeks <= self::FOLLOWUP_WEEK_LIMITED) {
-                            $followup_csv_data['coming'][] =
-                                array(
-                                    'patient_id' => $current_patient_id,
-                                    'weeks' => $coming_weeks,
-                                );
-                            if (!array_key_exists($coming_weeks, $followup_patient_list['coming'])) {
-                                $followup_patient_list['coming'][$coming_weeks] = array($current_patient_id);
-                            } else {
-                                $followup_patient_list['coming'][$coming_weeks][] = $current_patient_id;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        /* Get the waiting follow up data, uses Document event with referral letter type and worklist time
-        To calculate how long a patient will wait frm the date of referral to the date assigned in a worklist*/
-        $referral_document_elements = $referral_document_command->andWhere($queryConditions, $params)->queryAll();
-        foreach ($referral_document_elements as $referral_element) {
-            $current_referral_date = $referral_element['event_date'];
-            if (($start_date && $current_referral_date < $start_date) ||
-                ($end_date && $current_referral_date > $end_date)) {
-                continue;
-            }
-            $current_patient_on_worklist = $referral_element['when'];
-            if (isset($current_patient_on_worklist) && !empty($current_patient_on_worklist)) {
-                $appointment_time = $referral_element['when'];
-                if ($appointment_time >= $current_referral_date) {
-                    $waiting_time = ceil(($appointment_time - $current_referral_date) / self::WEEKTIME);
-                }
-            } else {
-                $current_time = time();
-                if ($current_time > $current_referral_date) {
-                    $waiting_time = ceil(($current_time - $current_referral_date) / self::WEEKTIME);
-                }
-            }
-            if (isset($waiting_time) && $waiting_time <= self::FOLLOWUP_WEEK_LIMITED) {
-                $followup_csv_data['waiting'][] =
-                    array(
-                        'patient_id' => $referral_element['patient_id'],
-                        'weeks' => $waiting_time,
-                    );
-                if (!isset($followup_patient_list['waiting'][$waiting_time])) {
-                    $followup_patient_list['waiting'][$waiting_time] = array();
-                }
-                $followup_patient_list['waiting'][$waiting_time][] = $referral_element['patient_id'];
-            }
-        }
         ksort($followup_patient_list['waiting']);
         ksort($followup_patient_list['overdue']);
         ksort($followup_patient_list['coming']);
@@ -2981,9 +2624,11 @@ class AnalyticsController extends BaseController
             $report_type = Yii::app()->request->getParam('report');
         }
 
-        $vf_report_right = $this->getVfData(Eye::RIGHT);
-        $vf_report_left = $this->getVfData(Eye::LEFT);
-        $vf_report_csv = $this->getVfCsvData();
+        $command_filtered_patients = $this->getCustomVf($this->filters['procedure'] ?? null);
+
+        $vf_report_right = $this->getVfData(Eye::RIGHT, $command_filtered_patients);
+        $vf_report_left = $this->getVfData(Eye::LEFT, $command_filtered_patients);
+        $vf_report_csv = $this->getVfCsvData(array(), true, $command_filtered_patients);
         $report_type = $report_type === null ? 'overdue' : $report_type;
         return array(
             'plot_data' => $report_type === 'vf' ? array(
@@ -3026,10 +2671,8 @@ class AnalyticsController extends BaseController
      * @return array|CDbDataReader
      * @throws CException
      */
-    protected function queryAllMdr()
+    protected function queryAllMdr($command_filtered_patients)
     {
-        $command_filtered_patients = $this->getCustomVf($this->filters['procedure'] ?? null);
-
         $command = Yii::app()->db->createCommand()
             ->select('ROUND(ps.gradient) AS mdr, ps.eye_id, COUNT(*) AS frequency')
             ->from('patient_statistic ps')
@@ -3040,8 +2683,10 @@ class AnalyticsController extends BaseController
             $command = $command->andWhere("ps.patient_id $command_filtered_patients");
         }
 
-        if ((isset($this->filters['date_from']) && $this->filters['date_from'])
-            || (isset($this->filters['date_to']) && $this->filters['date_to'])) {
+        if (
+            (isset($this->filters['date_from']) && $this->filters['date_from'])
+            || (isset($this->filters['date_to']) && $this->filters['date_to'])
+        ) {
             $bindValues = array();
             $command_event_filtered = Yii::app()->db->createCommand()
                 ->select('psd.id')
@@ -3060,7 +2705,7 @@ class AnalyticsController extends BaseController
                 $bindValues[':date_to'] = $date_to;
                 $command_event_filtered = $command_event_filtered->andWhere("UNIX_TIMESTAMP(e.event_date) <= :date_to");
             }
-            $command = $command->andWhere('EXISTS (' . $command_event_filtered->getText(). ')');
+            $command = $command->andWhere('EXISTS (' . $command_event_filtered->getText() . ')');
             $command = $command->bindValues($bindValues);
         }
 
@@ -3100,8 +2745,10 @@ class AnalyticsController extends BaseController
             $command = $command->andWhere("ps.patient_id $command_filtered_patients");
         }
 
-        if ((isset($this->filters['date_from']) && $this->filters['date_from'])
-            || (isset($this->filters['date_to']) && $this->filters['date_to'])) {
+        if (
+            (isset($this->filters['date_from']) && $this->filters['date_from'])
+            || (isset($this->filters['date_to']) && $this->filters['date_to'])
+        ) {
             $command_event_filtered = Yii::app()->db->createCommand()
                 ->select('psd.id')
                 ->from('patient_statistic_datapoint psd')
@@ -3119,7 +2766,7 @@ class AnalyticsController extends BaseController
                 $command_event_filtered = $command_event_filtered->andWhere("UNIX_TIMESTAMP(e.event_date) <= :date_to");
                 $bindValues[':date_to'] = $date_to;
             }
-            $command = $command->andWhere('EXISTS (' . $command_event_filtered->getText(). ')');
+            $command = $command->andWhere('EXISTS (' . $command_event_filtered->getText() . ')');
         }
 
         $bindValues[':mdr'] = $mdr;

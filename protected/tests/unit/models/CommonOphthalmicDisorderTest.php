@@ -17,6 +17,9 @@
  */
 class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
 {
+    use MocksSession;
+    use \WithFaker;
+
     private CommonOphthalmicDisorder $model;
 
     public $fixtures = array(
@@ -56,10 +59,13 @@ class CommonOphthalmicDisorderTest extends ActiveRecordTestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->model = new CommonOphthalmicDisorder();
+        $this->mockCurrentContext();
+        $user = User::model()->findAll(new CDbCriteria(['order' => 'rand()']))[0];
+        $this->mockCurrentUser($user);
     }
 
     /**

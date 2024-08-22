@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,17 +16,20 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
 extract($this->getEpisodes());
 $current_episode = @$this->current_episode;
+
+$active_pathway = $this->patient->getClinicPathwayInProgress();
 ?>
 
 <?php if ((Yii::app()->controller->action->id != 'update' && Yii::app()->controller->action->id != 'create') || Yii::app()->controller->show_element_sidebar == false) { ?>
 <nav class="sidebar-header" id="add-event-sidebar">
-    <?php if ((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) { ?>
-        <button id="add-event" class="button green add-event" type="button">Add Event</button>
+    <?php if (((!empty($ordered_episodes) || !empty($legacyepisodes) || !empty($supportserviceepisodes)) && $this->checkAccess('OprnCreateEpisode')) && !$this->patient->is_deceased) { ?>
+        <button id="add-event" class="button green add-event" type="button" data-test="add-new-event-button">Add Event</button>
     <?php } else { ?>
         <button class="button add-event disabled">You have View Only rights</button>
     <?php } ?>
@@ -34,6 +38,7 @@ $current_episode = @$this->current_episode;
 <?php } ?>
 
 <nav class="sidebar subgrid">
+    <div class="fixed-actions">
     <?php
     $this->renderPartial('//patient/_single_oescape_sidebar', array(
         'legacyepisodes' => $legacyepisodes,
@@ -42,24 +47,29 @@ $current_episode = @$this->current_episode;
         'current_episode' => $current_episode,
     ));
 
+    if ($active_pathway !== null) {
+        $this->renderPartial('//patient/_patient_clinic_pathway_sidebar', [
+            'pathway' => $active_pathway,
+        ]);
+    }
+    ?>
+    </div>
+    <div class="sidebar-eventlist">
+    <?php
     $this->renderPartial('//patient/_single_episode_sidebar', array(
         'legacyepisodes' => $legacyepisodes,
         'ordered_episodes' => $ordered_episodes,
         'supportserviceepisodes' => $supportserviceepisodes,
         'current_episode' => $current_episode,
     ));
-
     ?>
+    </div>
 </nav>
 
-<div class="oe-event-quickview" id="js-event-quickview" style="display: none;">
-  <div class="event-quickview">
-    <div class="quickview-details">
-      <div class="event-icon"></div>
-      <div class="event-date" id="js-quickview-date"></div>
-    </div>
-    <div class="quickview-screenshots">
-      <span class="quickview-no-data-found" style="display: none;">No preview image could be found at this time</span>
-    </div>
-  </div>
+<div class="oe-event-quickview fade-in" id="js-event-quickview" style="display: none;">
+    <div class="event-icon"></div>
+    <div class="title"></div>
+    <div class="quick-view-content img"></div>
+    <div id="close-quickview" class="i-btn-close" style="display:none"></div>
+    <i class="spinner" title="Loading images" style="display: none;"></i>
 </div>

@@ -1,23 +1,43 @@
 <?php
+
+/**
+ * @var $model_name string
+ * @var $assigned_psds OphDrPGDPSD_Assignment[]
+ * @var $is_prescriber bool
+ * @var $element_id int
+ * @var $available_appointments WorklistPatient[]
+ * @var $element Element_DrugAdministration
+ * @var $user array
+ * @var $presets string
+ * @var $medication_options string
+ */
+
 use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
-$right_eye_id = \MedicationLaterality::RIGHT;
-$left_eye_id = \MedicationLaterality::LEFT;
-$both_eye_id = \MedicationLaterality::BOTH;
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_AssignmentMeds;
+
+$right_eye_id = MedicationLaterality::RIGHT;
+$left_eye_id = MedicationLaterality::LEFT;
+$both_eye_id = MedicationLaterality::BOTH;
 $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_key}}]';
 ?>
-<div class="element-fields full-width" id="<?=$element_id?>">
+<div class="element-fields full-width" id="<?= $element_id ?>">
     <?php
     foreach ($assigned_psds as $key => $assigned_psd) {
+        if ($assigned_psd->anyAssociatedEventDeleted()) {
+            continue;
+        }
+
         $appointment_details = $assigned_psd->getAppointmentDetails();
         $assignment_type_name = $assigned_psd->getAssignmentTypeAndName();
         $hide_button = $assigned_psd->comment ? 'display:none' : '';
-        $hiden_comment = $assigned_psd->comment ? '' : 'display:none';
-        $is_preset = $assigned_psd->pgdpsd ? true : false;
+        $hidden_comment = $assigned_psd->comment ? '' : 'display:none';
+        $is_preset = (bool)$assigned_psd->pgdpsd;
+        $is_pgd = $is_preset ? strtolower($assigned_psd->pgdpsd->type) === 'pgd' : false;
         $is_relevant = $assigned_psd->isrelevant;
         $is_active = $assigned_psd->active;
         $is_existing = !$assigned_psd->isNewRecord;
-        $is_record_admin = !intval($assigned_psd->visit_id) ? true : false;
-        $is_confirmed = $assigned_psd->confirmed ? $assigned_psd->confirmed : 0;
+        $is_record_admin = !(int)$assigned_psd->visit_id;
+        $is_confirmed = $assigned_psd->confirmed ?: 0;
 
         $grey_out_section = !$is_relevant || !$is_active ? 'fade' : null;
         $deleted_tag = $assigned_psd->getDeletedUI();
@@ -40,13 +60,14 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
             }
         }
         ?>
-    <div class="order-block" data-key="<?=$key?>"  data-section-name="<?=$assignment_type_name['name']?>">
+    <div class="order-block" data-key="<?=$key?>"  data-section-name="<?=$assignment_type_name['name']?>" data-test="drug-administration-section">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][assignment_id]"?>" value="<?=$assigned_psd->id?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][pgdpsd_name]"?>" value="<?=$assignment_type_name['name']?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][visit_id]"?>" value="<?=$assigned_psd->visit_id;?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][pgdpsd_id]"?>" value="<?=$assigned_psd->pgdpsd ? $assigned_psd->pgdpsd->id : null;?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][confirmed]"?>" value="<?=$is_confirmed;?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][create_wp]"?>" value="<?=$assigned_psd->create_wp;?>">
+        <input type="hidden" name="<?= $model_name . "[assignment][$key][is_pgd]" ?>" value="<?= $is_pgd ?>">
         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][active]"?>" value="<?=$is_active?>">
         <input type="hidden" name="<?= $model_name . "[assignment][$key][is_relevant]" ?>" value="<?= (int)$is_relevant ?>">
         <div class="flex row">
@@ -98,10 +119,9 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                             <th class="js-administer-all" style="cursor:pointer;"></th>
                             <th></th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
                         <?php
-
                         foreach ($entries as $entry_key => $entry) {
                             list(
                                 "administered_ts" => $administered_ts,
@@ -134,9 +154,10 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                             data-dose_unit_term="<?=$entry->dose_unit_term?>"
                             data-route_id="<?=$entry->route_id?>"
                             data-laterality="<?=$entry->laterality?>"
-                            data-right="<?=intval($entry->laterality) === MedicationLaterality::RIGHT ? 'R' : 'NA';?>"
-                            data-left="<?=intval($entry->laterality) === MedicationLaterality::LEFT ? 'L' : 'NA';?>"
+                            data-right="<?=(int)$entry->laterality === MedicationLaterality::RIGHT ? 'R' : 'NA';?>"
+                            data-left="<?=(int)$entry->laterality === MedicationLaterality::LEFT ? 'L' : 'NA';?>"
                             data-route="<?=$entry->route;?>"
+                            data-test="drug-administration-drug-row"
                             class="<?=$grey_out_section;?>"
                         >
                             <input type="hidden" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][id]"?>" value="<?=$entry->id?>">
@@ -197,8 +218,8 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                                     <!-- rely on med route -->
                                     <span class="oe-eye-lat-icons">
                                         <input type="hidden" name="<?=$model_name . "[assignment][{$key}][entries][{$entry_key}][laterality]"?>" value="<?=$entry->laterality?>">
-                                        <i class="oe-i laterality <?=intval($entry->laterality) === MedicationLaterality::RIGHT ? 'R' : 'NA';?> small pad"></i>
-                                        <i class="oe-i laterality <?=intval($entry->laterality) === MedicationLaterality::LEFT ? 'L' : 'NA';?> small pad"></i>
+                                        <i class="oe-i laterality <?=(int)$entry->laterality === MedicationLaterality::RIGHT ? 'R' : 'NA';?> small pad"></i>
+                                        <i class="oe-i laterality <?=(int)$entry->laterality === MedicationLaterality::LEFT ? 'L' : 'NA';?> small pad"></i>
                                     </span>
                                     <?php } else {?>
                                         <?=$entry->route;?>
@@ -254,63 +275,67 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                             </td>
                         </tr>
                         <?php } ?>
-                    </tbody>
-                </table>
-                <!-- user comments -->
-                <div class="cols-full comment-row" style="<?=$hiden_comment?>">
-                    <!-- textarea & remove icon -->
-                    <div class="flex-layout flex-left">
-                        <textarea name="<?=$model_name . "[assignment][{$key}][comment]"?>" placeholder="Comments" autocomplete="off" rows="1" class="js-input-comments cols-full"><?=$assigned_psd->comment?></textarea>
-                        <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+                        </tbody>
+                    </table>
+                    <!-- user comments -->
+                    <div class="cols-full comment-row" style="<?= $hidden_comment ?>">
+                        <!-- textarea & remove icon -->
+                        <div class="flex-layout flex-left">
+                            <textarea name="<?= $model_name . "[assignment][{$key}][comment]" ?>"
+                                  placeholder="Comments"
+                                  autocomplete="off" rows="1"
+                                  class="js-input-comments cols-full"><?= $assigned_psd->comment ?></textarea>
+                            <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
+                        </div>
                     </div>
                 </div>
+                <!-- add comment button -->
+                <div class="add-data-actions flex-item-bottom" style="<?= $hide_button ?>">
+                    <button class="button js-add-comments">
+                        <i class="oe-i comments small-icon "></i>
+                    </button>
+                </div>
             </div>
-            <!-- add comment button -->
-            <div class="add-data-actions flex-item-bottom" style="<?=$hide_button?>">
-                <button class="button js-add-comments">
-                    <i class="oe-i comments small-icon "></i>
-                </button>
-            </div>
+            <?php
+            if ($is_prescriber) {
+                if ($is_record_admin) {
+                    $btn_text = 'Record order As Administered';
+                } elseif ($assigned_psd->pgdpsd_id) {
+                    $btn_text = 'Assign this Preset Order';
+                } else {
+                    $btn_text = 'Assign Custom Order';
+                }
+                $this->render(
+                    'DrugAdministration_event_edit_appointments',
+                    array(
+                        'assigned_psd' => $assigned_psd,
+                        'model_name' => $model_name,
+                        'available_appointments' => $available_appointments,
+                        'is_prescriber' => $is_prescriber,
+                        'is_active' => false,
+                        'is_record_admin' => $is_record_admin,
+                        'is_new' => $assigned_psd->isNewRecord,
+                        'btn_text' => $btn_text,
+                        'help_info' => $assigned_psd->pgdpsd_id ? 'Adding new Preset<br/><small>Preset orders cannot be modified</small>' : 'Building custom order',
+                        'is_confirmed' => $is_confirmed,
+                        'assigned_appt' => $assigned_psd->visit_id,
+                        'key' => $key
+                    ),
+                );
+            } else { ?>
+                <hr class="divider">
+            <?php } ?>
         </div>
-        <?php
-        if ($is_prescriber) {
-            $this->render(
-                'DrugAdministration_event_edit_appointments',
-                array(
-                    'assigned_psd' => $assigned_psd,
-                    'model_name' => $model_name,
-                    'available_appointments' => $available_appointments,
-                    'is_prescriber' => $is_prescriber,
-                    'is_active' => false,
-                    'is_record_admin' => $is_record_admin,
-                    'is_new' => $assigned_psd->isNewRecord,
-                    'btn_text' => $is_record_admin ? 'Record order As Administered' : ($assigned_psd->pgdpsd_id ? 'Assign this Preset Order' : 'Assign Custom Order'),
-                    'help_info' => $assigned_psd->pgdpsd_id ? 'Adding new Preset<br/><small>Preset orders can not be modified</small>' : 'Building custom order',
-                    'is_confirmed' => $is_confirmed,
-                    'assigned_appt' => $assigned_psd->visit_id,
-                    'key' => $key
-                ),
-            );
-        } else { ?>
-        <hr class="divider">
-        <?php } ?>
-    </div>
     <?php } ?>
     <!-- rely on RBAC -->
     <div class="flex-r">
         <div class="add-data-actions flex-item-bottom js-add-meds-ctn">
-            <?php if ($is_prescriber) {?>
-                <button
-                    id="js-add-preset-order"
-                    class="green hint js-add-select-btn"
-                >Add Preset Order</button>&nbsp;
+            <?php if ($can_add_presets) { ?>
+                <button id="js-add-preset-order" class="green hint js-add-select-btn">Add Preset Order</button>
             <?php } ?>
-            <?php if ($is_med_admin || $is_prescriber) {?>
-            <button
-            id="js-add-medications"
-            class="adder js-add-select-btn"
-            ></button>
-            <?php }?>
+            <?php if ($can_add_meds) { ?>
+                <button id="js-add-medications" class="adder js-add-select-btn"></button>
+            <?php } ?>
         </div>
     </div>
 </div>
@@ -318,39 +343,38 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('DrugAdministration.js') ?>"></script>
 <script type="text/template" class="hidden section-template">
     <?php
-        $this->render(
-            'DrugAdministration_event_edit_template',
-            array(
-                'model_name' => $model_name,
-                'available_appointments' => $available_appointments,
-                'is_prescriber' => $is_prescriber,
-            ),
-        );
-        ?>
+    $this->render(
+        'DrugAdministration_event_edit_template',
+        array(
+            'model_name' => $model_name,
+            'available_appointments' => $available_appointments,
+            'is_prescriber' => $is_prescriber,
+        ),
+    );
+    ?>
 </script>
 <script type="text/template" class="hidden section-entry-template">
     <?php
-        $empty_entry = new \OphDrPGDPSD_AssignmentMeds();
-        $this->render(
-            'DrugAdministrationEntry_event_edit_template',
-            array(
-                'entry' => $empty_entry,
-                'model_name' => $model_name,
-                'field_prefix' => $field_prefix,
-                'element' => $element,
-            ),
-        );
-        ?>
+    $empty_entry = new OphDrPGDPSD_AssignmentMeds();
+    $this->render(
+        'DrugAdministrationEntry_event_edit_template',
+        array(
+            'entry' => $empty_entry,
+            'model_name' => $model_name,
+            'field_prefix' => $field_prefix,
+            'element' => $element,
+        ),
+    );
+    ?>
 </script>
 
 <script>
     const laterality_opts = [
-        {id: <?=$right_eye_id;?>, label: 'Right Eye', name: 'right', right: 'R', left: 'NA'},
-        {id: <?=$left_eye_id;?>, label: 'Left Eye', name: 'left', right: 'NA', left: 'L'},
-        {id: <?=$both_eye_id;?>, label: 'Right & Left Eyes', name: 'both', right: 'R', left: 'L'},
+        {id: <?= $right_eye_id ?>, label: 'Right Eye', name: 'right', right: 'R', left: 'NA'},
+        {id: <?= $left_eye_id ?>, label: 'Left Eye', name: 'left', right: 'NA', left: 'L'},
+        {id: <?= $both_eye_id ?>, label: 'Right & Left Eyes', name: 'both', right: 'R', left: 'L'},
     ];
-    const preset_adderpopup_id =  'presets';
-    const eye_route_ids = <?=json_encode(MedicationRoute::model()->listEyeRouteIds());?>;
+    const eye_route_ids = <?= json_encode(MedicationRoute::model()->listEyeRouteIds()) ?>;
     const category = [
         {
             id: 1,
@@ -373,31 +397,50 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
             type: 'oral',
         }
     ];
-    const presetsReturn = function(adderDialog, selectedItems) {
-        if(selectedItems.length < 2){
-            return;
+    const presetsReturn = function (adderDialog, selectedItems) {
+        if (!selectedItems[0] || !selectedItems[0].is_preset) {
+            new OpenEyes.UI.Dialog.Alert({content: 'A PSDs or PGDs must be selected'}).open();
+            return false;
         }
+
         let selected_preset = selectedItems[0];
         let preset_meds = selected_preset.meds;
-        const laterality = selectedItems[1];
-        selected_preset['preset_type'] = 'Preset';
-        selected_preset['preset_name'] = selected_preset['label'];
-        selected_preset['laterality'] = laterality['id'];
-        this.buildTemplate(selected_preset, laterality, preset_meds);
+
+        const medsNeedingLaterality  = preset_meds.filter((med) => {
+            return !med.route || eye_route_ids.includes(med.route_id.toString());
+        });
+
+        if (medsNeedingLaterality.length > 0) {
+            if (!selectedItems[1]) {
+                new OpenEyes.UI.Dialog.Alert({content: 'laterality needs to be selected for ' + medsNeedingLaterality.map((med) => med.preferred_term)}).open();
+                return false;
+            }
+            selected_preset['laterality'] = selectedItems[1].id;
+        }
+
+        this.buildTemplate(selected_preset, selectedItems[1], preset_meds);
     }
-    const medsReturn = function(adderDialog, selectedItems) {
+    const presetsSelect = function (e) {
+        const parent = $(e.currentTarget).parent('ul');
+        if(parent.data('id') === 'laterality') {
+            return;
+        }
+        const lis = parent.closest('tbody').find('ul[data-id!="laterality"] li')
+        lis.removeClass('selected');
+    }
+    const medsReturn = function (adderDialog, selectedItems) {
         let meds = [];
         let laterality = null;
         let data = {};
-        data['preset_name'] = "<?=$user['name'];?> (Custom)";
+        data['preset_name'] = "<?= $user['name'] ?> (Custom)";
         data['preset_type'] = "Custom";
-        selectedItems.forEach(function(item){
-            if(!item.itemSet){
+        selectedItems.forEach(function (item) {
+            if (!item.itemSet) {
                 item['medication_id'] = item['id'];
                 meds.push(item);
                 return;
             }
-            switch(item.itemSet.options.id){
+            switch (item.itemSet.options.id) {
                 case 'meds':
                     item['medication_id'] = item['id'];
                     meds.push(item);
@@ -405,21 +448,22 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                 case 'laterality':
                     laterality = item;
                     break;
-                default:break;
+                default:
+                    break;
             }
         });
         // laterality will be mandatory to those meds with eye route or without default route
         let alert = [];
-        for(let med of meds){
-            if(!med.route || eye_route_ids.includes(med.route_id.toString())){
-                if(!laterality){
+        for (let med of meds) {
+            if (!med.route || eye_route_ids.includes(med.route_id.toString())) {
+                if (!laterality) {
                     alert.push(med.label);
                 } else {
                     data['laterality'] = laterality['id'];
                 }
             }
         }
-        if(alert.length){
+        if (alert.length) {
             new OpenEyes.UI.Dialog.Alert({
                 content: 'laterality needs to be selected for ' + alert.join(', ')
             }).open();
@@ -429,19 +473,19 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
         }
     }
     const da = new OpenEyes.OphCiExamination.DrugAdministrationController({
-        element: $("#<?=$element_id?>"),
-        noPermissionIcon: '<i class="oe-i no-permissions small-icon js-has-tooltip" data-tooltip-content="Can not remove a drug already administered"></i>',
+        element: $("#<?= $element_id ?>"),
+        noPermissionIcon: '<i class="oe-i no-permissions small-icon js-has-tooltip" data-tooltip-content="Cannot remove a drug already administered"></i>',
         trashIcon: '<i class="oe-i trash js-remove-med"></i>',
-        is_prescriber: <?=json_encode($is_prescriber);?>,
+        is_prescriber: <?= json_encode($is_prescriber) ?>,
         patientAllergies: <?= CJSON::encode($this->patient->getAllergiesId()) ?>,
         allAllergies: <?= CJSON::encode(CHtml::listData(OphCiExaminationAllergy::model()->findAll(), 'id', 'name')) ?>,
         laterality: {
-            'right': <?=$right_eye_id;?>,
-            'left': <?=$left_eye_id;?>,
-            'both': <?=$both_eye_id;?>,
+            'right': <?= $right_eye_id ?>,
+            'left': <?= $left_eye_id ?>,
+            'both': <?= $both_eye_id ?>,
         },
         eyeRouteIds: eye_route_ids,
-        currentUser: <?=json_encode($user);?>,
+        currentUser: <?= json_encode($user) ?>,
         nonAdministeredText: '<small class="fade">Waiting to administer</small>',
         adderPopupSetups: [
             {
@@ -450,9 +494,18 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                 multiSelect: false,
                 itemSetDataSource: [
                     {
-                        source: <?=$presets;?>,
+                        source: <?= $psds ?>,
                         options: {
-                            id: preset_adderpopup_id,
+                            id: 'PSDs',
+                            header: 'PSDs',
+                            multiSelect: false,
+                        }
+                    },
+                    {
+                        source: <?= $pgds ?>,
+                        options: {
+                            id: 'PGDs',
+                            header: 'PGDs',
                             multiSelect: false,
                         }
                     },
@@ -460,11 +513,13 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                         source: laterality_opts,
                         options: {
                             id: 'laterality',
+                            header: 'Laterality',
                             multiSelect: false,
                         }
                     },
                 ],
                 onReturn: presetsReturn,
+                onSelect: presetsSelect
             },
             {
                 adderPopup: OpenEyes.UI.AdderDialog.MedSearch,
@@ -479,7 +534,7 @@ $field_prefix = $model_name . '[assignment][{{section_key}}][entries][{{entry_ke
                         }
                     },
                     {
-                        source: <?=json_encode($medication_options);?>,
+                        source: <?= json_encode($medication_options) ?>,
                         options: {
                             id: 'meds',
                             multiSelect: true,

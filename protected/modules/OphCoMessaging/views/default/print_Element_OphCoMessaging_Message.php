@@ -36,7 +36,7 @@
                 <div class="data-label"><?= \CHtml::encode($element->getAttributeLabel('for_the_attention_of_user_id')) ?></div>
             </td>
             <td>
-                <div class="data-value "><?php echo $element->for_the_attention_of_user->getFullnameAndTitle(); ?></div>
+                <div class="data-value "><?php echo $element->for_the_attention_of->formattedName(); ?></div>
             </td>
         </tr>
         <tr>

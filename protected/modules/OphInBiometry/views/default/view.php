@@ -26,7 +26,7 @@ if ($this->checkPrintAccess()) {
 $biometry_imported_events=OphInBiometry_Imported_Events::model()->findByAttributes(array('event_id' => $this->event->id));
 $sop=isset($biometry_imported_events->sop_uid) ? $biometry_imported_events->sop_uid : array();
 
-if (!empty($sop) && Yii::app()->params['enable_forum_integration'] === 'on') {
+if (!empty($sop) && \SettingMetadata::model()->getSetting('enable_forum_integration') === 'on') {
     array_unshift(
         $this->event_actions,
         EventAction::link(

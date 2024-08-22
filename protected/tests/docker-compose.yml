@@ -3,16 +3,25 @@ version: "3.4"
 # NOTE is is recommended to run `docker-compose down` before `docker-compose up` This will ensure that the database is refreshed on each run.
 # E.g, docker-compose down && docker-compose up
 #
-# To see individual logs - use docker-compose logs [phpunit | behat ]
+# To see individual logs - use docker-compose logs [db | web ]
 #
-# To run only a single test suite, use `docker-compose up [phpunit | selenium behat ]
-## Note that the selenium service is needed for the behat service
+## Note that an xvfb service service is needed for the cypress tests
 #
-# If you want to view the selenium tests runing, connect a vnv viewer to localhost
+#
+## If you want to run this file locally (e.g, to mimic the CI environment)
+# 1. Make sure to delete the following local directories first:
+#    - ./protected/files
+#    - ./node_modules
+#    - ./protected/modules/eyedraw
+#    - ./protected/runtime/cache
+#    - ./assets
+#    ( a helper script is provided alongside this compose file named clear-assets-before-tests.sh )
+# 2. [Optional, probably not needed unless you have trouble with cy:open] Set a local environment variable for display to match your local XWindows server
+#    - e.g., `export DISPLAY="host.docker.internal:0"
 
 services:
   db:
-    image: toukanlabsdocker/oe-sample-db:mariadb_10.4-v5
+    image: toukanlabsdocker/oe-sample-db:mariadb_10.6-release-6.7.x
     environment:
       MYSQL_ROOT_PASSWORD: openeyes
       TZ: "Europe/London"
@@ -26,15 +35,27 @@ services:
       - "128M"
       # disable binary logging (as not needed for development, but logs MUST be enabled for production)
       - "--disable-log-bin"
+    volumes:
+      - "protected-files:/protected/files"
 
-  phpunit:
-    image: ${OEWEB_IMAGE_NAME:-appertaopeneyes/web:php7}
+  web:
+    image: toukanlabsdocker/oe-web-dev:php8.0
     environment:
       OE_MODE: "TEST"
-      TESTS_TO_RUN: "PHPUNIT"
+      TESTS_TO_RUN: "${TESTS_TO_RUN:-}"
+      CYPRESS_FAIL_FAST_VALUE: "${CYPRESS_FAIL_FAST_VALUE:-}"
+      LOG_TO_BROWSER: "${LOG_TO_BROWSER:-error}"
+      # TEST_UPLOAD_TO_TRANSFER_SH: "TRUE"
+      OE_DEFAULT_BRANCH: "${OE_DEFAULT_BRANCH:-}"
+      OE_QUIET_DEBUG_LOG: "TRUE"
+      OE_APP_LOG_LEVELS: "${OE_APP_LOG_LEVELS:-error}"
+      # OUTPUT_APPLICATION_LOGS: "FALSE"
+      XDEBUG_MODE: "off"
+      OE_FORCE_MIGRATE: "TRUE"
+      SKIP_OE_CLONE: "TRUE"
+      GENERATE_TEMP_SODIUM_CRYPTO_KEY: "TRUE"
       DATABASE_HOST: "db"
       MYSQL_ROOT_PASSWORD: openeyes
-      ENABLE_CRON: "FALSE"
       WAIT_HOSTS_TIMEOUT: "120"
       WAIT_SLEEP_INTERVAL: "2"
       USE_DEMO_DATA: "FALSE"
@@ -42,15 +63,55 @@ services:
       DATABASE_USER: "openeyes"
       DATABASE_PASS: "openeyes"
       OE_INSTITUTION_CODE: "NEW"
-    secrets:
-      - source: SSH_PRIVATE_KEY
+      DISPLAY: "${DISPLAY:-}"
+      BUILD_BRANCH: "${BUILD_BRANCH:-master}"
+      PUID: ${PUID:-1000}
+      CYPRESS_RECORD_KEY: ${CYPRESS_RECORD_KEY:-}
+      CURRENTS_RECORD_KEY: ${CURRENTS_RECORD_KEY:-}
+      CURRENTS_PROJECT_ID: ${CURRENTS_PROJECT_ID:-}
+      COMMIT_ID: ${COMMIT_ID:-}
+      BUILD_ID: ${BUILD_ID:-}
+      BUILD_NUMBER: ${BUILD_NUMBER:-}
+      SSH_PRIVATE_KEY: ${SSH_PRIVATE_KEY:-}
+      ## TRAVIS-SPECIFIC VARIABLES FROM BUILD HOST - Used by some tests (e.g cypress cloud)
+      ## See https://docs.travis-ci.com/user/environment-variables/#default-environment-variables for definitions
+      ## These will be ignored by other CI platforms
+      TRAVIS_APP_HOST: ${TRAVIS_APP_HOST:-}
+      TRAVIS_BRANCH: ${TRAVIS_BRANCH:-}
+      TRAVIS_BUILD_DIR: ${TRAVIS_BUILD_DIR:-}
+      TRAVIS_BUILD_ID: ${TRAVIS_BUILD_ID:-}
+      TRAVIS_BUILD_NUMBER: ${TRAVIS_BUILD_NUMBER:-}
+      TRAVIS_BUILD_WEB_URL: ${TRAVIS_BUILD_WEB_URL:-}
+      TRAVIS_COMMIT: ${TRAVIS_COMMIT:-}
+      TRAVIS_COMMIT_MESSAGE: ${TRAVIS_COMMIT_MESSAGE:-}
+      TRAVIS_COMMIT_RANGE: ${TRAVIS_COMMIT_RANGE:-}
+      TRAVIS_DEBUG_MODE: ${TRAVIS_DEBUG_MODE:-}
+      TRAVIS_DIST: ${TRAVIS_DIST:-}
+      TRAVIS_EVENT_TYPE: ${TRAVIS_EVENT_TYPE:-}
+      TRAVIS_JOB_ID: ${TRAVIS_JOB_ID:-}
+      TRAVIS_JOB_NAME: ${TRAVIS_JOB_NAME:-}
+      TRAVIS_JOB_NUMBER: ${TRAVIS_JOB_NUMBER:-}
+      TRAVIS_JOB_WEB_URL: ${TRAVIS_JOB_WEB_URL:-}
+      TRAVIS_OS_NAME: ${TRAVIS_OS_NAME:-}
+      TRAVIS_CPU_ARCH: ${TRAVIS_CPU_ARCH:-}
+      TRAVIS_PULL_REQUEST: ${TRAVIS_PULL_REQUEST:-}
+      TRAVIS_PULL_REQUEST_BRANCH: ${TRAVIS_PULL_REQUEST_BRANCH:-}
+      TRAVIS_PULL_REQUEST_SHA: ${TRAVIS_PULL_REQUEST_SHA:-}
+      TRAVIS_PULL_REQUEST_SLUG: ${TRAVIS_PULL_REQUEST_SLUG:-}
+      TRAVIS_REPO_SLUG: ${TRAVIS_REPO_SLUG:-}
+      TRAVIS_TEST_RESULT: ${TRAVIS_TEST_RESULT:-}
+      TRAVIS_TAG: ${TRAVIS_TAG:-}
+      TRAVIS_BUILD_STAGE_NAME: ${TRAVIS_BUILD_STAGE_NAME:-}
     stdin_open: true
     tty: true
     depends_on:
      - "db"
     volumes:
       - "../..:/var/www/openeyes:delegated"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
+      - "protected-files:/protected/files"
+    ports:
+      - "8080:80"
 
-secrets:
-  SSH_PRIVATE_KEY:
-    file: ~/.ssh/id_rsa
+volumes:
+  protected-files:

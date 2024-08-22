@@ -225,7 +225,7 @@ class Mailer extends CComponent
      */
     protected function recipientForbidden($message)
     {
-        if (!empty(Yii::app()->params['restrict_email_domains'])) {
+        if (!empty(SettingMetadata::model()->getSetting('restrict_email_domains'))) {
             $to = $message->getTo();
             $cc = $message->getCc();
             $bcc = $message->getBcc();
@@ -235,7 +235,7 @@ class Mailer extends CComponent
             $addresses = array_merge($to, $cc, $bcc);
             foreach ($addresses as $email => $name) {
                 $domain = preg_replace('/^.*?@/', '', $email);
-                if (!in_array($domain, Yii::app()->params['restrict_email_domains'])) {
+                if (!in_array($domain, SettingMetadata::model()->getSetting('restrict_email_domains'))) {
                     return true;
                 }
             }

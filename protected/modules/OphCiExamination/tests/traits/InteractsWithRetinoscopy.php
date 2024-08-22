@@ -16,8 +16,8 @@
 
 namespace OEModule\OphCiExamination\tests\traits;
 
+
 use OEModule\OphCiExamination\models\Retinoscopy;
-use OEModule\OphCiExamination\models\Retinoscopy_WorkingDistance;
 
 trait InteractsWithRetinoscopy
 {
@@ -26,24 +26,7 @@ trait InteractsWithRetinoscopy
 
     protected function generateRetinoscopyData($attrs = [])
     {
-        return array_merge([
-            'right_working_distance_id' => $this->getRandomLookup(Retinoscopy_WorkingDistance::class)->id,
-            'right_angle' => $this->faker->numberBetween(0, 180),
-            'right_power1' => $this->faker->randomFloat(2, -30, 30),
-            'right_power2' => $this->faker->randomFloat(2, -30, 30),
-            'right_dilated' => $this->faker->randomElement(['1', '0']),
-            'right_refraction' => $this->fakeRefraction(),
-            'right_eyedraw' => $this->faker->word(),
-            'right_comments' => $this->faker->words(12, true),
-            'left_working_distance_id' => $this->getRandomLookup(Retinoscopy_WorkingDistance::class)->id,
-            'left_angle' => $this->faker->numberBetween(0, 180),
-            'left_power1' => $this->faker->randomFloat(2, -30, 30),
-            'left_power2' => $this->faker->randomFloat(2, -30, 30),
-            'left_dilated' => $this->faker->randomElement(['1', '0']),
-            'left_refraction' => $this->fakeRefraction(),
-            'left_eyedraw' => $this->faker->word(),
-            'left_comments' => $this->faker->words(12, true)
-        ], $attrs);
+        return Retinoscopy::factory()->bothSided()->make(array_merge($attrs, ['event_id' => null]))->getAttributes();
     }
 
     /**
@@ -55,14 +38,9 @@ trait InteractsWithRetinoscopy
      */
     protected function generateSavedRetinoscopyElementWithReadings($data = [])
     {
-        $element = new Retinoscopy();
-        if (!isset($attrs['eye_id'])) {
-            $element->setHasLeft();
-            $element->setHasRight();
-        }
-
-        $element->setAttributes($this->generateRetinoscopyData($data));
-
-        return $this->saveElement($element);
+        return Retinoscopy::factory()->bothSided()->create([
+            'right_comments' => $this->faker->words(12, true),
+            'left_comments' => $this->faker->words(12, true)
+        ]);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
     <?php if (!$users) :?>
@@ -33,7 +35,7 @@
             ]
         ) ?>
         <input type="text"
-               autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
+               autocomplete="<?php echo SettingMetadata::model()->getSetting('html_autocomplete') ?>"
                name="search" id="search" placeholder="Search Users..."
                value="<?php echo !empty($search) ? strip_tags($search) : ''; ?>"/>
         <?php $this->endWidget() ?>
@@ -58,13 +60,14 @@
                 <th>Last name</th>
                 <th>Doctor</th>
                 <th>Roles</th>
+                <th>Usernames</th>
             </tr>
             </thead>
             <tbody>
             <?php foreach ($users as $i => $user) : ?>
                 <tr class="clickable js-clickable" data-id="<?php echo $user->id ?>"
                     data-uri="admin/editUser/<?php echo $user->id ?>">
-                    <td><?php echo $user->id ?></td>
+                    <td data-test="user-id"><?php echo $user->id ?></td>
                     <td><?php echo $user->title ?></td>
                     <td><?php echo $user->first_name ?></td>
                     <td><?php echo $user->last_name ?></td>
@@ -75,6 +78,7 @@
                             echo $roles ? CHtml::encode(implode(', ', $roles)) : '-';
                         ?>
                     </td>
+                    <td><?= implode(', ', $user->getUserNamesWithStatuses());?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
@@ -89,7 +93,7 @@
                         ]
                     ); ?>
                 </td>
-                <td colspan="<?=(Yii::app()->params['auth_source'] === 'BASIC')? '5' : '4' ?>">
+                <td colspan="<?=(Yii::app()->params['auth_source'] === 'BASIC') ? '5' : '4' ?>">
                     <?php $this->widget('LinkPager', [ 'pages' => $pagination ]); ?>
                 </td>
             </tr>

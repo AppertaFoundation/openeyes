@@ -4,7 +4,10 @@
 
 class CsvController extends BaseController
 {
-    public static	$file_path = "tempfiles/";
+    const IMPORT_DATE_FORMAT = "d/m/Y";
+    const HUMAN_IMPORT_DATE_FORMAT = 'DD/MM/YYYY';
+
+    public static string $file_path = "/files/tempfiles/";
 
     static $contexts = array(
         'trials' => array(
@@ -24,7 +27,8 @@ class CsvController extends BaseController
         ),
     );
 
-    
+    static $max_document_size = 2097152;
+
     static $csvMimes = array(
         'text/x-comma-separated-values',
         'text/comma-separated-values',
@@ -53,11 +57,38 @@ class CsvController extends BaseController
         return array(
             array(
                 'allow',
-                'actions' => array('upload', 'preview', 'import'),
+                'actions' => array('upload', 'preview', 'import', 'fileCheck'),
                 'expression' => 'CsvController::uploadAccess()',
                 'users' => array('@'),
             )
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function getBasePath()
+    {
+        return Yii::app()->basePath . self::$file_path;
+    }
+
+    public function actionFileCheck()
+    {
+        $file_type = $_POST['file_type'];
+        $file_size = $_POST['file_size'];
+
+        $message = null;
+
+        if ($file_size > self::$max_document_size) {
+            $message = "The file you tried to upload exceeds the maximum allowed file size, which is " . self::$max_document_size / 1048576 . " MB ";
+        }
+
+        if (false === array_search($file_type, self::$csvMimes, true)) {
+            $message = 'Only the following file types can be uploaded: ' . (implode(', ', self::$csvMimes)) . '.';
+            $message .= "\n\nFor reference, the type of the file you tried to upload is: <i>$file_type</i>";
+        }
+
+        $this->renderJSON($message);
     }
 
     public function actionUpload($context)
@@ -67,12 +98,12 @@ class CsvController extends BaseController
 
     public function actionPreview($context)
     {
-        if(file_exists(self::$file_path)) {
-            $file_list = glob(self::$file_path . "*");
+        if(file_exists($this->getBasePath())) {
+            $file_list = glob($this->getBasePath() . "*");
             foreach ($file_list as $file) {
                 unlink($file);
             }
-            rmdir(self::$file_path);
+            rmdir($this->getBasePath());
         }
 
         $csv_id = null;
@@ -85,7 +116,7 @@ class CsvController extends BaseController
             $mime = finfo_file($finfo, $_FILES['Csv']['tmp_name']['csvFile']);
             $is_csv = in_array($mime, self::$csvMimes);
             finfo_close($finfo);
-            
+
             //if the file is a csv, we can open it in read mode otherwise ignore
 
             if($is_csv){
@@ -109,14 +140,14 @@ class CsvController extends BaseController
                     }
                     fclose($handle);
                 }
-            
+
                 //We use an md5 hash of the csv file to obscure any sensitive data
                 $csv_id = md5_file($_FILES['Csv']['tmp_name']['csvFile']);
 
-                if(!file_exists(self::$file_path)) {
-                    mkdir(self::$file_path);
+                if(!file_exists($this->getBasePath())) {
+                    mkdir($this->getBasePath(),0774, true);
                 }
-                copy($_FILES['Csv']['tmp_name']['csvFile'], self::$file_path . $csv_id . ".csv");
+                copy($_FILES['Csv']['tmp_name']['csvFile'], $this->getBasePath() . $csv_id . ".csv");
             }
         }
         $this->render('preview', array('table' => $table, 'csv_id' => $csv_id, 'context' => $context));
@@ -134,7 +165,7 @@ class CsvController extends BaseController
             \OELog::log("Failed to save import log: " . var_export($import_log->getErrors(), true));
         }
 
-    	$csv_file_path = self::$file_path . $csv . ".csv";
+    	$csv_file_path = $this->getBasePath() . $csv . ".csv";
 
         if(file_exists($csv_file_path)) {
             //check to see if the file is a csv file
@@ -256,12 +287,12 @@ class CsvController extends BaseController
         }
 
         //Remove uploaded files
-        if(file_exists(self::$file_path)) {
-            $file_list = glob(self::$file_path . "*");
+        if(file_exists($this->getBasePath())) {
+            $file_list = glob($this->getBasePath() . "*");
             foreach ($file_list as $file) {
                 unlink($file);
             }
-            rmdir(self::$file_path);
+            rmdir($this->getBasePath());
         }
 
         switch ($context) {
@@ -326,12 +357,29 @@ class CsvController extends BaseController
         if (empty($trial_raw_data['trial_type'])) {
             $trial_raw_data['trial_type'] = TrialType::INTERVENTION_CODE;
         }
+
+        if (!empty($trial_raw_data['started_date'])) {
+            // Parse the incoming date string from DD/MM/YYYY
+            $started_date = date_create_from_format(self::IMPORT_DATE_FORMAT, $trial_raw_data['started_date']);
+            if ($started_date === false) {
+                return ['Invalid start date form. Please try ' . self::HUMAN_IMPORT_DATE_FORMAT];
+            }
+        }
+
+        if (!empty($trial_raw_data['closed_date'])) {
+            // Parse the incoming date string from DD/MM/YYYY
+            $closed_date = date_create_from_format(self::IMPORT_DATE_FORMAT, $trial_raw_data['closed_date']);
+            if ($closed_date === false) {
+                return ['Invalid closed date form. Please try ' . self::HUMAN_IMPORT_DATE_FORMAT];
+            }
+        }
+
         $new_trial->trial_type_id = TrialType::model()->find('code = ?', array($trial_raw_data['trial_type']))->id;
         $new_trial->description = !empty($trial_raw_data['description']) ? $trial_raw_data['description'] : null;
         $new_trial->owner_user_id =  Yii::app()->user->id;
         $new_trial->is_open = isset($trial_raw_data['is_open']) && $trial_raw_data['is_open'] !== '' ? $trial_raw_data['is_open'] : false;
-        $new_trial->started_date = !empty($trial_raw_data['started_date']) ? $trial_raw_data['started_date'] : null;
-        $new_trial->closed_date = !empty($trial_raw_data['closed_date']) ? $trial_raw_data['closed_date'] : null;
+        $new_trial->started_date = isset($started_date) ? $started_date->format('Y-m-d 00:00:00') : null;
+        $new_trial->closed_date = isset($closed_date) ? $closed_date->format('Y-m-d 00:00:00') : null;
         $new_trial->external_data_link = !empty($trial_raw_data['external_data_link']) ? $trial_raw_data['external_data_link'] : null;
         $new_trial->ethics_number = !empty($trial_raw_data['ethics_number']) ? $trial_raw_data['ethics_number'] : null;
 
@@ -447,8 +495,14 @@ class CsvController extends BaseController
             return $errors;
         }
 
+        $global_identifier_institution = Institution::model()->find('LOWER(name) = "medicare"') ?? Institution::model()->find('remote_id = "NHS"');
+
+        $local_identifier_type = PatientIdentifierHelper::getPatientIdentifierType(PatientIdentifierType::LOCAL_USAGE_TYPE, Yii::app()->session['selected_institution_id']);
+        $global_identifier_type = PatientIdentifierHelper::getPatientIdentifierType(PatientIdentifierType::GLOBAL_USAGE_TYPE, $global_identifier_institution->id);
+
         if (!empty($patient_raw_data['CERA_ID'])) {
-            $duplicate_patient = Patient::model()->findByAttributes(array('hos_num' => $patient_raw_data['CERA_ID']));
+            $duplicate_patient = PatientIdentifierHelper::getPatientByPatientIdentifier($patient_raw_data['CERA_ID'], $local_identifier_type->unique_row_string);
+
             if ($duplicate_patient !== null) {
                 $errors[] = "Duplicate CERA ID (" . $patient_raw_data['CERA_ID'] . ") found for patient: " . $patient_raw_data['first_name'] . " " . $patient_raw_data['last_name'];
                 return $errors;
@@ -456,7 +510,8 @@ class CsvController extends BaseController
         }
 
         if (!empty($patient_raw_data['medicare_id'])) {
-            $duplicate_patient = Patient::model()->findByAttributes(array('nhs_num' => $patient_raw_data['medicare_id']));
+            $duplicate_patient = PatientIdentifierHelper::getPatientByPatientIdentifier($patient_raw_data['medicare_id'], $global_identifier_type->unique_row_string);
+
             if ($duplicate_patient !== null) {
                 $errors[] = "Duplicate Medicare ID (" . $patient_raw_data['medicare_id'] . ") found for patient: " . $patient_raw_data['first_name'] . " " . $patient_raw_data['last_name'];
                 return $errors;
@@ -554,15 +609,12 @@ class CsvController extends BaseController
         $patient_cols = array(
             array('var_name' => 'dob', 'default' => null,),
             array('var_name' => 'gender', 'default' => 'U',),
-            array('var_name' => 'hos_num', 'default' => null,),
-            array('var_name' => 'nhs_num', 'default' => null,),
             array('var_name' => 'practice_id', 'default' => null,),
             array('var_name' => 'ethnic_group_id', 'default' => null,),
             array('var_name' => 'archive_no_allergies_date', 'default' => null,),
             array('var_name' => 'archive_no_family_history_date', 'default' => null,),
             array('var_name' => 'archive_no_risks_date', 'default' => null,),
             array('var_name' => 'deleted', 'default' => null,),
-            array('var_name' => 'nhs_num_status_id', 'default' => null,),
             array('var_name' => 'is_deceased', 'default' => 0,),
             array('var_name' => 'is_local', 'default' => 1,),
             array('var_name' => 'patient_source', 'default' => 0,),
@@ -574,34 +626,57 @@ class CsvController extends BaseController
         }
 
         //Set values that cannot be directly translated from csv
-        if (array_key_exists('medicare_id', $patient_raw_data) && $patient_raw_data['medicare_id']) {
-            $new_patient->nhs_num = $patient_raw_data['medicare_id'];
-        }
-
         if (array_key_exists('date_of_death', $patient_raw_data) && !empty($patient_raw_data['date_of_death'])) {
             $new_patient->date_of_death = date("Y-m-d", strtotime(str_replace('/', '-', $patient_raw_data['date_of_death'])));
         }
 
-        $new_patient->hos_num = !empty($patient_raw_data['CERA_ID']) ? $patient_raw_data['CERA_ID'] : Patient::autoCompleteHosNum();
         $new_patient->contact_id = $contact->id;
-
         $new_patient->setScenario('other_register');
+
         if(!$new_patient->save()){
             $errors[] = $new_patient->getErrors();
+
             return $errors;
+        }
+
+        // CERA ID & Medicare ID
+        if (array_key_exists('CERA_ID', $patient_raw_data) && $patient_raw_data['CERA_ID']) {
+            $local_patient_identifier = new PatientIdentifier;
+
+            $local_patient_identifier->patient_id = $new_patient->id;
+            $local_patient_identifier->patient_identifier_type_id = $local_identifier_type->id;
+            $local_patient_identifier->value = $patient_raw_data['CERA_ID'];
+
+            if (!$local_patient_identifier->save()) {
+                $errors[] = $local_patient_identifier->getErrors();
+            }
+        }
+
+        if (array_key_exists('medicare_id', $patient_raw_data) && $patient_raw_data['medicare_id']) {
+            $global_patient_identifier = new PatientIdentifier;
+
+            $global_patient_identifier->patient_id = $new_patient->id;
+            $global_patient_identifier->patient_identifier_type_id = $global_identifier_type->id;
+            $global_patient_identifier->value = $patient_raw_data['medicare_id'];
+
+            if (!$global_patient_identifier->save()) {
+                return $global_patient_identifier->getErrors();
+            }
         }
 
         //Add a RVEEH_UR value for patient
         if(array_key_exists('RVEEH_UR', $patient_raw_data) && $patient_raw_data['RVEEH_UR']) {
-            $patient_RVEEH_UR = new ArchivePatientIdentifier();
+            $rveeh_identifier_type = PatientIdentifierType::model()->find('short_title = "RVEEH_UR"');
+            $rveeh_patient_identifier = new PatientIdentifier;
 
-            $patient_RVEEH_UR->patient_id = $new_patient->id;
-            $patient_RVEEH_UR->code = 'RVEEH_UR';
-            $patient_RVEEH_UR->value = $patient_raw_data['RVEEH_UR'];
+            $rveeh_patient_identifier->patient_id = $new_patient->id;
+            $rveeh_patient_identifier->patient_identifier_type_id = $rveeh_identifier_type->id;
+            $rveeh_patient_identifier->value = $patient_raw_data['RVEEH_UR'];
 
-            if(!$patient_RVEEH_UR->save()) {
+            if (!$rveeh_patient_identifier->save()) {
                 $errors[] = "Failed to validate RHEEV_UR:";
-                $errors[] = $patient_RVEEH_UR->getErrors();
+                $errors[] = $rveeh_patient_identifier->getErrors();
+
                 return $errors;
             }
         }
@@ -610,9 +685,10 @@ class CsvController extends BaseController
         //referred to
         if(!empty($patient_raw_data['referred_to'])){
             //Find if exists
-            $referred_to = User::model()->with('authentications')->findByAttributes(array(
-                'authentications.username' => $patient_raw_data['referred_to']
-            ));
+            $referred_to = User::model()->with('authentications')->find(
+                'authentications.username = :username',
+                [':username' => $patient_raw_data['referred_to']]
+            );
             if ($referred_to === null) {
                 $errors[] = 'Cannot find referred to user: ' . $patient_raw_data['referred_to'];
                 return $errors;
@@ -766,7 +842,8 @@ class CsvController extends BaseController
                 return $errors;
             }
         }
-        if(empty($errors)) {
+
+        if (empty($errors)) {
             $import->message = "Import successful for patient: " . $contact->first_name . " " . $contact->last_name;
         }
 
@@ -775,6 +852,8 @@ class CsvController extends BaseController
 
     private function createNewTrialPatient($trial_patient, $import)
     {
+        $local_identifier_type = PatientIdentifierHelper::getPatientIdentifierType(PatientIdentifierType::LOCAL_USAGE_TYPE, Yii::app()->session['selected_institution_id']);
+
         $errors = array();
         //trial
         $trial = null;
@@ -789,7 +868,7 @@ class CsvController extends BaseController
         //patient
         $patient = null;
         if (!empty($trial_patient['CERA_number'])){
-            $patient = Patient::model()->findByAttributes(array('hos_num' => $trial_patient['CERA_number']));
+            $patient = PatientIdentifierHelper::getPatientByPatientIdentifier($trial_patient['CERA_number'], $local_identifier_type->unique_row_string);
         }
         if ($patient === null){
             $errors[] = 'patient not found, please check the CERA number';
@@ -813,8 +892,14 @@ class CsvController extends BaseController
             $errors[] = 'Study Identifier accepts maximum of 100 characters.';
             return $errors;
         }
+        // Parse the incoming date string to DD/MM/YYYY
+        $created_date = date_create_from_format("d/m/Y", $trial_patient['created_date']);
+        if (!$created_date) {
+            $errors[] = 'Invalid created date format. Please try DD/MM/YYYY';
+            return $errors;
+        }
 
-        $new_trial_pat->status_update_date = $trial_patient['created_date'];
+        $new_trial_pat->status_update_date = $created_date->format('Y-m-d 00:00:00');
         $new_trial_pat->external_trial_identifier = $trial_patient['study_identifier'];
 
         $new_trial_pat->patient_id = $patient->id;

@@ -33,8 +33,8 @@ class BaseTree extends BaseActiveRecordVersioned
         $criteria->params[':parent_rule_id'] = $parent->id ?? null;
         $criteria->order = 'rule_order asc';
         if ($institution_id) {
-            $criteria->with = 'site';
-            $criteria->addCondition('site.institution_id = :institution_id');
+            $criteria->with = 'institutions';
+            $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
             $criteria->params[':institution_id'] = $institution_id;
         }
 
@@ -53,7 +53,7 @@ class BaseTree extends BaseActiveRecordVersioned
                 $treeItem = array(
                     'id' => $rule->id,
                     'text' => $rule->$text,
-                    'children' => $this->findAllAsTree($rule, false, $text),
+                    'children' => $this->findAllAsTree($rule, false, $text, $institution_id),
                 );
                 $treeItem['hasChildren'] = !empty($treeItem['children']);
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $form = $this->beginWidget(
@@ -25,28 +27,6 @@ $form = $this->beginWidget(
             'field' => 4,
         ),
     ]
-);
-
-$ua_criteria = new CDbCriteria();
-$ua_criteria->compare('user_id', $user->id);
-$ua_criteria->addNotInCondition(
-    'id',
-    array_map(
-        function ($user_auth) {
-            return $user_auth->id;
-        },
-        $invalid_existing
-    )
-);
-$user_auths = array_merge(
-    $invalid_existing,
-    isset($user->id) ? UserAuthentication::model()->findAll($ua_criteria) : []
-);
-usort(
-    $user_auths,
-    function ($a, $b) {
-        return $a->id < $b->id ? -1 : 1;
-    }
 );
 ?>
 
@@ -67,8 +47,7 @@ usort(
             <tbody>
 
             <?php
-            echo \CHtml::activeHiddenField($user, 'id');
-            $personal_fields = ['title', 'first_name', 'last_name', 'email', 'qualifications', 'role'];
+            $personal_fields = ['title', 'first_name', 'last_name', 'email', 'role'];
             foreach ($personal_fields as $field) : ?>
                 <tr>
                     <td><?php echo $user->getAttributeLabel($field); ?></td>
@@ -77,14 +56,28 @@ usort(
                             $user,
                             $field,
                             [
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
-                                'class' => 'cols-full'
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                                'class' => 'cols-full',
+                                'data-test' => $field . '_field'
                             ]
                         ); ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
 
+            <tr>
+                <td><?php echo $contact->getAttributeLabel("qualifications"); ?></td>
+                <td>
+                    <?= \CHtml::activeTextField(
+                        $contact,
+                        "qualifications",
+                        [
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                            'class' => 'cols-full'
+                        ]
+                    ); ?>
+                </td>
+            </tr>
             <tr>
                 <td>Grade</td>
                 <td>
@@ -108,7 +101,7 @@ usort(
                     'registration_code',
                     [
                             'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete']
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                         ]
                 ); ?>
                 <td>
@@ -125,33 +118,14 @@ usort(
                 </td>
             </tr>
             <tr>
-                <td><?=Firm::contextLabel()?></td>
+                <td><?=Firm::contextLabel()?>(s)</td>
                 <td>
                     <?php
                     $firm_label = [];
                     $available_firms = count($user_auths) > 0 ? $user->getAllAvailableFirms() : (new User())->getAllAvailableFirms();
 
                     foreach ($available_firms as $firm) {
-                        $firm_label[$firm->id] = "{$firm->name} ". ($firm->serviceSubspecialtyAssignment ? "({$firm->serviceSubspecialtyAssignment->subspecialty->name})" : "") . " [{$firm->institution->name}]";
-                    }
-
-                    if (count($user_auths) === 0) {
-                        // Kludge around an issue of firms containing only ids instead of Firm objects,
-                        // which causes multiSelectList to throw an exception.
-                        //
-                        // This only happens when an attempt is made to save a user with a list of context firms
-                        // and invalid user authentication data.
-                        $firm_objects = [];
-
-                        foreach ($user->firms as $firm) {
-                            if (getType($firm) === 'object') {
-                                $firm_objects[] = $firm;
-                            } else {
-                                $firm_objects[] = Firm::model()->findByPk($firm);
-                            }
-                        }
-
-                        $user->firms = $firm_objects;
+                        $firm_label[$firm->id] = "{$firm->name} " . ($firm->serviceSubspecialtyAssignment ? "({$firm->serviceSubspecialtyAssignment->subspecialty->name})" : "") . ($firm->institution ? " ({$firm->institution->name})" : " (All institutions)");
                     }
 
                     echo $form->multiSelectList(
@@ -198,7 +172,7 @@ usort(
                         'roles',
                         'name',
                         CHtml::listData(
-                            Yii::app()->authManager->getRoles(),
+                            Yii::app()->authManager->getAssignableRoles(Yii::app()->session->getSelectedUser()->id),
                             'name',
                             'name'
                         ),
@@ -217,7 +191,11 @@ usort(
 
         <h2>Login Authentications</h2>
         <hr class="divider">
-        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'pincode', 'password', 'password_repeat', 'password_status', 'active'] ?>
+        <?php $user_authentication_fields = ['id', 'institution_authentication', 'username', 'lookup_user', 'password', 'password_repeat', 'password_status', 'active'];
+        if (!Yii::app()->hasModule('mehstaffdb')) {
+            $user_authentication_fields = array_diff($user_authentication_fields, array('lookup_user'));
+        }
+        ?>
         <table class="standard" id="user-authentications">
             <thead>
             <tr>
@@ -233,18 +211,6 @@ usort(
                         'user' => $user,
                         'user_authentication' => $user_auth,
                     ]);
-                } ?>
-                <?php
-                if (isset($invalid_entries['UserAuthentication'])) {
-                    $row_key = isset($key) ? $key + 1 : 0;
-                    foreach ($invalid_entries['UserAuthentication'] as $entry) {
-                        $this->renderPartial('/admin/_user_authentication_row', [
-                            'key' => $row_key,
-                            'user' => $user,
-                            'user_authentication' => UserAuthentication::fromAttributes($entry),
-                        ]);
-                        $row_key++;
-                    }
                 } ?>
             </tbody>
         </table>
@@ -266,7 +232,8 @@ usort(
             [
                 'class' => 'button large',
                 'name' => 'save',
-                'id' => 'et_save'
+                'id' => 'et_save',
+                'data-test' => 'et_save'
             ]
         ); ?>
         <?= \CHtml::submitButton(
@@ -290,6 +257,7 @@ usort(
     ?>
 </script>
 <script>
+    let defaultPasswordStatus = "current";
     $(document).ready(function () {
         $('#add-user-authentication-btn').on('click', function () {
             let $table = $('#user-authentications tbody');
@@ -301,16 +269,23 @@ usort(
 
         $('#user-auth-rows').on('change', '.js-change-inst-auth', function (e) {
             let $row = $(this).closest('tr');
+
+            if ($row.find('.js-id').val() !== '') {
+                new OpenEyes.UI.Dialog.Alert({
+                    content: "Warning Institution Authentication changed - password status and expiry has been reset to system defaults."
+                }).open();
+            }
+
+            $row.find('.js-password-status').val(defaultPasswordStatus);
             $row.find('.js-remove-row').hide();
             $row.find('.js-row-spinner').show();
-            $row.find('.js-pincode-section').attr('data-ins-auth-id', this.value);
             $.ajax({
                 'type': 'GET',
                 'url': baseUrl + '/admin/checkInstAuthType?id=' + $(this).val(),
                 'success': res => {
                     if (res === 'LOCAL') {
                         $row.find('.js-password,.js-password-repeat,.js-password-status').prop('disabled', false);
-                    } else if (res === 'LDAP') {
+                    } else {
                         $row.find('.js-password,.js-password-repeat,.js-password-status').prop('disabled', true);
                     }
                     $row.find('.js-remove-row').show();
@@ -323,4 +298,26 @@ usort(
             $(this).closest('tr').remove();
         });
     });
+
+    function lookupUser(key) {
+        if($('#UserAuthentication_'+key+'_username').val()) {
+            $.ajax({
+                'type': 'GET',
+                'url': baseUrl + '/admin/lookupUser?username=' + $('#UserAuthentication_'+key+'_username').val() + '&institution_authentication_id=' + $('#UserAuthentication_'+key+'_institution_authentication_id').val(),
+                'success': function (resp) {
+                    var m = resp.match(/[0-9]+/);
+                    if (m) {
+                        window.location.href = baseUrl + '/admin/editUser/' + m[0];
+                    } else {
+                        enableButtons();
+                        new OpenEyes.UI.Dialog.Alert({
+                            content: "User not found"
+                        }).open();
+                    }
+                }
+            });
+        }
+    };
+
+
 </script>

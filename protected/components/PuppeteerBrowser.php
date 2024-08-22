@@ -52,9 +52,27 @@ class PuppeteerBrowser extends CApplicationComponent
     public function init()
     {
         parent::init();
+
+        $this->initBrowser();
+    }
+
+    /**
+     * Should be called to close the browser process that has been created
+     * ONLY call
+     */
+    public function close(): void
+    {
+        if ($this->_browser) {
+            $this->_browser->close();
+        }
+    }
+
+    protected function initBrowser()
+    {
         $puppeteer = new Puppeteer(
             ['read_timeout' => $this->readTimeout, 'log_browser_console' => $this->logBrowserConsole]
         );
+
         $this->browser = $puppeteer->launch(
             array('headless' => true, 'args' => array('--no-sandbox', '--window-size=1280,720'))
         );
@@ -76,11 +94,11 @@ class PuppeteerBrowser extends CApplicationComponent
 
         foreach ($this->patients as $patient) {
             $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-                Yii::app()->params['display_primary_number_usage_code'],
+                SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
                 $patient->id, $this->institution_id, $this->site_id
             );
             $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-                Yii::app()->params['display_secondary_number_usage_code'],
+                SettingMetadata::model()->getSetting('display_secondary_number_usage_code'),
                 $patient->id, $this->institution_id, $this->site_id
             );
             $patient_primary_identifiers[] = PatientIdentifierHelper::getIdentifierValue($primary_identifier);
@@ -153,10 +171,10 @@ class PuppeteerBrowser extends CApplicationComponent
                 '<span class="totalPages"></span>',
                 CJavaScript::encode($this->custom_tags),
                 PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
-                    Yii::app()->params['display_secondary_number_usage_code'], $this->institution_id, $this->site_id
+                    SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $this->institution_id, $this->site_id
                 ),
                 PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(
-                    Yii::app()->params['display_primary_number_usage_code'], $this->institution_id, $this->site_id
+                    SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $this->institution_id, $this->site_id
                 ),
                 $this->_top_margin,
                 $this->_left_margin,
@@ -181,6 +199,9 @@ class PuppeteerBrowser extends CApplicationComponent
      */
     protected function getBrowser()
     {
+        if (!$this->_browser) {
+            $this->initBrowser();
+        }
         return $this->_browser;
     }
 
@@ -539,7 +560,7 @@ class PuppeteerBrowser extends CApplicationComponent
     public function findOrCreateDirectory($path)
     {
         if (!file_exists($path)) {
-            if (!@mkdir($path, 0775, true) || !is_dir($path)) {
+            if (!@mkdir($path, 0774, true) || !is_dir($path)) {
                 throw new Exception("Unable to create directory: $path: check permissions.");
             }
         }

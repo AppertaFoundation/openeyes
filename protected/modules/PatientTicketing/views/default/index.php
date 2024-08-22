@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -27,52 +28,48 @@
 $qs_svc = Yii::app()->service->getService($this::$QUEUESET_SERVICE);
 ?>
 
-<div class="oe-full-header flex-layout">
+<div class="oe-full-header use-full-screen">
     <div class="title wordcaps">
         <b><?= $queueset ? $queueset->name : $category->name ?></b>
     </div>
-    <div>
-        <button class="button blue hint" id="js-virtual-clinic-btn">Change Virtual Clinic</button>
-    </div>
+    <nav class="options-right">
+        <button class="button blue hint" id="js-virtual-clinic-btn"<?= $queueset ? '' : ' style="display:none;"'?> data-test="change-vc-btn">Change Virtual Clinic</button>
+    </nav>
 </div>
 
-<div class="oe-full-content oe-virtual-clinic">
-    <?php
-    if ($queueset) {
-        $flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $queueset->getId());
-        if ($flash_message) {
-            ?>
-            <br />
-            <div class="large-12 column">
-                <div class="panel">
-                    <div class="alert-box with-icon success">
-                        <?php echo $flash_message; ?>
-                    </div>
-                </div>
+<?php if ($queueset) { ?>
+<div class="oe-full-content subgrid virtual-clinic use-full-screen">
+    <?php $flash_message = Yii::app()->user->getFlash('patient-ticketing-' . $queueset->getId());
+    if ($flash_message) { ?>
+        <br />
+        <div class="large-12 column">
+            <div class="panel">
+                <div class="alert-box with-icon success"><?= $flash_message; ?></div>
             </div>
-            <?php
-        }
-    }
-    ?>
-    <?php $this->renderPartial('form_queueset_select', [
+        </div>
+    <?php }
+        $this->renderPartial('form_queueset_select', [
         'qs_svc' => $qs_svc,
         'queueset' => $queueset,
         'cat_id' => $cat_id,
         'category' => $category
-    ]); ?>
-    <?php $this->renderPartial('_ticketlist_search', [
+        ]);
+        $this->renderPartial('_ticketlist_search', [
         'qs_svc' => $qs_svc,
         'queueset' => $queueset,
         'cat_id' => $cat_id,
         'patients' => $patients,
-    ]); ?>
-
-    <?php $this->renderPartial('ticketlist', [
+        ]);
+        $this->renderPartial('ticketlist', [
         'tickets' => $tickets,
         'queueset' => $queueset,
         'category' => $category,
         'qs_svc' => $qs_svc,
         'pagination' => $pagination
-    ]); ?>
+        ]); ?>
 </div>
-
+<?php } else { ?>
+    <div class="oe-full-content use-full-screen">
+        <div class="alert-box info">No queue sets are assigned to this category.</div>
+    </div>
+<?php } ?>

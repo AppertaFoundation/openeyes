@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,7 +15,10 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var Element_OphTrOperationnote_Surgeon $element
  */
+
 ?>
 <div class="element-fields full-width flex-layout">
   <table class="cols-10 last-left">
@@ -37,7 +41,12 @@
                 $element,
                 'surgeon_id',
                 CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-                array('empty' => '- Please select -', 'class' => 'cols-full', 'nowrapper' => true),
+                array(
+                    'empty' => '- Please select -',
+                    'class' => 'cols-full',
+                    'nowrapper' => true,
+                    'data-prefilled-value' => $template_data['surgeon_id'] ?? '',
+                ),
                 false,
                 array('field' => 8)
             ); ?>
@@ -47,7 +56,12 @@
                 $element,
                 'assistant_id',
                 CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-                array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true),
+                array(
+                    'empty' => '- None -',
+                    'class' => 'cols-full',
+                    'nowrapper' => true,
+                    'data-prefilled-value' => $template_data['assistant_id'] ?? '',
+                ),
                 false,
                 array('field' => 8)
             ); ?>
@@ -57,7 +71,12 @@
                 $element,
                 'supervising_surgeon_id',
                 CHtml::listData($element->surgeons, 'id', 'ReversedFullName'),
-                array('empty' => '- None -', 'class' => 'cols-full', 'nowrapper' => true),
+                array(
+                    'empty' => '- None -',
+                    'class' => 'cols-full',
+                    'nowrapper' => true,
+                    'data-prefilled-value' => $template_data['supervising_surgeon_id'] ?? '',
+                ),
                 false,
                 array('field' => 8)
             ); ?>
@@ -82,24 +101,24 @@
       itemSets: [
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
-                return ['label' => $item->first_name.' '.$item->last_name,
+                return ['label' => $item->first_name . ' ' . $item->last_name,
                     'id' => $item->id];
             },
-            $surgeons) 
+            $surgeons)
         ) ?>, {'header':'Surgeon', 'id':'surgeon_id'}),
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
-                return ['label' => $item->first_name.' '.$item->last_name,
+                return ['label' => $item->first_name . ' ' . $item->last_name,
                     'id' => $item->id];
             },
-            $surgeons) 
+            $surgeons)
         ) ?>, {'header':'Assistant', 'id':'assistant_id'}),
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
-                return ['label' => $item->first_name.' '.$item->last_name,
+                return ['label' => $item->first_name . ' ' . $item->last_name,
                     'id' => $item->id];
             },
-            $surgeons) 
+            $surgeons)
         ) ?>, {'header':'Supervising Surgeon', 'id':'supervising_surgeon_id'})
       ],
       onReturn: function (adderDialog, selectedItems) {

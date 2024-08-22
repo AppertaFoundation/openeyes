@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -148,7 +149,7 @@ class DefaultController extends BaseEventTypeController
         if ($this->booking_operation || $this->unbooked) {
             parent::actionCreate();
         } else {
-            // set up form for selecting a booking for the Op Operation Checklists
+            // set up form for selecting a booking for the Op Operation checklists
             $bookings = array();
 
             $element_enabled = Yii::app()->params['disable_theatre_diary'];
@@ -225,7 +226,7 @@ class DefaultController extends BaseEventTypeController
     public function actionView($id)
     {
         $model = OphTrOperationchecklists_Event::model()
-            ->findBySql('SELECT * FROM ophtroperationchecklists_event WHERE event_id = :id', [':id'=>$id]);
+            ->findBySql('SELECT * FROM ophtroperationchecklists_event WHERE event_id = :id', [':id' => $id]);
 
         if (isset($model) && $model->draft) {
             $this->isDraft = true;
@@ -253,7 +254,7 @@ class DefaultController extends BaseEventTypeController
         $procedures = $this->getBookingProcedures();
         $anaesthetic_types = $this->getBookingAnaestheticTypes();
         $disorder = $this->getBookingDiagnosis();
-        if ($action === 'create' && $procedures && $disorder && $anaesthetic_types) {
+        if ($action === 'create' && !empty($procedures) && $disorder && !empty($anaesthetic_types)) {
             $element->procedures = $procedures;
             $element->anaesthetic_type = $anaesthetic_types;
             $element->disorder_id = $disorder->id;
@@ -288,7 +289,7 @@ class DefaultController extends BaseEventTypeController
             }
 
             foreach ($data['AnaestheticType'] as $anaesthetic_type_id) {
-                if ( !array_key_exists($anaesthetic_type_id, $type_assessments_by_id) ) {
+                if (!array_key_exists($anaesthetic_type_id, $type_assessments_by_id)) {
                     $anaesthetic_type_assesment = new \OphTrOperationchecklists_AnaestheticAnaestheticType();
                 } else {
                     $anaesthetic_type_assesment = $type_assessments_by_id[$anaesthetic_type_id];
@@ -737,7 +738,7 @@ class DefaultController extends BaseEventTypeController
     public function setComplexAttributes_Element_OphTrOperationchecklists_Discharge($element, $data, $index)
     {
         // get the id for the first question for this element
-        $firstQuestionIdDischargeElement = OphTrOperationchecklists_Questions::model()->find('element_type_id=:element_type_id', array(':element_type_id'=>$element->getElementType()->id))->id;
+        $firstQuestionIdDischargeElement = OphTrOperationchecklists_Questions::model()->find('element_type_id=:element_type_id', array(':element_type_id' => $element->getElementType()->id))->id;
         $model_name = \CHtml::modelName($element);
         $checklist_result_records = array();
         if (isset($data[$model_name]['dischargeChecklistResults'])) {
@@ -759,7 +760,7 @@ class DefaultController extends BaseEventTypeController
                 if ($idx == $firstQuestionIdDischargeElement) {
                     // if the response of the first question for the discharge checklist is 'Yes',
                     // then do not create anymore instances of the model.
-                    if ($checklist_results['answer_id'] == OphTrOperationchecklists_Answers::model()->find('answer=:answer', array(':answer'=>'Yes'))->id) {
+                    if ($checklist_results['answer_id'] == OphTrOperationchecklists_Answers::model()->find('answer=:answer', array(':answer' => 'Yes'))->id) {
                         break;
                     }
                 }
@@ -784,16 +785,15 @@ class DefaultController extends BaseEventTypeController
      *
      * @return Procedure[]
      */
-    protected function getBookingProcedures()
+    protected function getBookingProcedures(): array
     {
-        if ($this->booking_operation) {
-            if (!$this->booking_procedures) {
-                $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-                $this->booking_procedures = $api->getProceduresForOperation($this->booking_operation->event_id);
-            }
-
-            return $this->booking_procedures;
+        $result = [];
+        if (isset($this->booking_operation) && !isset($this->booking_procedures)) {
+            $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+            $this->booking_procedures = $api->getProceduresForOperation($this->booking_operation->event_id);
+            $result = $this->booking_procedures;
         }
+        return $result;
     }
 
     /**
@@ -801,16 +801,15 @@ class DefaultController extends BaseEventTypeController
      *
      * @return AnaestheticType[]
      */
-    protected function getBookingAnaestheticTypes()
+    protected function getBookingAnaestheticTypes(): array
     {
-        if ($this->booking_operation) {
-            if (!$this->booking_anaesthetic_types) {
-                $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
-                $this->booking_anaesthetic_types = $api->getAnaestheticTypesForOperation($this->booking_operation->event_id);
-            }
-
-            return $this->booking_anaesthetic_types;
+        $result = [];
+        if (isset($this->booking_operation) && !isset($this->booking_anaesthetic_types)) {
+            $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+            $this->booking_anaesthetic_types = $api->getAnaestheticTypesForOperation($this->booking_operation->event_id);
+            $result = $this->booking_anaesthetic_types;
         }
+        return $result;
     }
 
     /**
@@ -1164,10 +1163,10 @@ class DefaultController extends BaseEventTypeController
         }
 
         if (!$note->delete()) {
-            throw new \Exception('Unable to delete note: '.print_r($note->getErrors(), true));
+            throw new \Exception('Unable to delete note: ' . print_r($note->getErrors(), true));
         }
 
-        $msg = 'Note '. $note->primaryKey . " is deleted.";
+        $msg = 'Note ' . $note->primaryKey . " is deleted.";
         Audit::add('note', 'delete', $msg, null, array(
             'module' => (is_object($this->module)) ? $this->module->id : 'core',
             'model' => 'OphTrOperationchecklists_Notes',
@@ -1187,14 +1186,23 @@ class DefaultController extends BaseEventTypeController
      * @param BaseEventTypeElement $element
      * @param string $action
      * @param BaseEventTypeCActiveForm $form
-     * @param array $data
+     * @param ?array $data
+     * @param array $template_data
      * @param array $view_data
      * @param bool $return
      * @param bool $processOutput
      * @throws Exception
      */
-    protected function renderElement($element, $action, $form, $data, $view_data = array(), $return = false, $processOutput = false)
-    {
+    protected function renderElement(
+        $element,
+        $action,
+        $form,
+        ?array $data = null,
+        ?array $template_data = [],
+        ?array $view_data = [],
+        bool $return = false,
+        bool $processOutput = false
+    ) {
         if (($action === 'step') || ($action === 'update')) {
             $view_data = array_merge(array(
                 'isCollapsable' => true,
@@ -1243,7 +1251,7 @@ class DefaultController extends BaseEventTypeController
             }
         }
 
-        parent::renderElement($element, $action, $form, $data, $view_data, $return, $processOutput);
+        parent::renderElement($element, $action, $form, $data, $template_data, $view_data, $return, $processOutput);
     }
 
     public function renderOpenElements($action, $form = null, $date = null)
@@ -1284,7 +1292,7 @@ class DefaultController extends BaseEventTypeController
      */
     protected function afterUpdateElements($event)
     {
-        parent::afterUpdateElements($event);
+        $errors = parent::afterUpdateElements($event);
         if ($this->step && !$this->isDraft) {
             // Advance the workflow
             if (!$assignment = OphTrOperationchecklists_EventElementSetAssignment::model()->find('event_id = ?', array($event->id))) {
@@ -1301,11 +1309,15 @@ class DefaultController extends BaseEventTypeController
             // update the information attribute on the event
             $this->updateEventInfoByStep($this->getCurrentStep()->id);
         }
+        return $errors;
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function afterCreateElements($event)
     {
-        parent::afterCreateElements($event);
+        $errors = parent::afterCreateElements($event);
         if ($this->step && !$this->isDraft) {
             // Advance the workflow
             if (!$assignment = OphTrOperationchecklists_EventElementSetAssignment::model()->find('event_id = ?', array($event->id))) {
@@ -1322,6 +1334,7 @@ class DefaultController extends BaseEventTypeController
             // update the information attribute on the event
             $this->updateEventInfoByStep($this->getCurrentStep()->id);
         }
+        return $errors;
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,12 +15,17 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="admin box">
-    <h2><?= $definition->isNewRecord ? 'Create' : 'Edit'?> Worklist Definition</h2>
+    <h2><?= $definition->isNewRecord ? 'Create' : 'Edit' ?> Worklist Definition</h2>
 
-    <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors))?>
+    <?php echo $this->renderPartial('//admin/_form_errors', array('errors' => $errors)) ?>
+
+    <div class="alert-box with-icon info" id="edit-definition-warning">
+        Any changes to settings will only apply to new appointments. Existing appointments will keep the existing settings. Contact the support desk if you need to update existing appointments.
+    </div>
     <?php
     $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
         'id' => 'worklist-form',
@@ -29,7 +35,7 @@
             'label' => 2,
             'field' => 5,
         ),
-    ))?>
+    )) ?>
 
     <div class="cols-8">
         <table class="standard cols-full">
@@ -41,86 +47,99 @@
             <tr>
                 <td>Name</td>
                 <td>
-                    <?=\CHtml::activeTextField(
+                    <?= CHtml::activeTextField(
                         $definition,
                         'name',
                         [
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'cols-full',
                             'field' => 2
                         ]
-                    ); ?>
+                    ) ?>
                 </td>
             </tr>
             <tr>
                 <td>Description</td>
                 <td>
-                    <?=\CHtml::activeTextArea(
+                    <?= CHtml::activeTextArea(
                         $definition,
                         'description',
                         [
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'cols-full',
                         ]
-                    ); ?>
+                    ) ?>
                 </td>
             </tr>
             <tr>
                 <td></td>
                 <td>
-                <?php $this->widget('application.widgets.RRuleField', array(
-                    'element' => $definition,
-                    'field' => 'rrule',
-                    'name' => CHtml::modelName($definition).'[rrule]',
-                    'layoutColumns' => [
-                        'label' => 2,
-                        'field' => 12,
-                    ]
-                ));?>
+                    <?php $this->widget('application.widgets.RRuleField', array(
+                        'element' => $definition,
+                        'field' => 'rrule',
+                        'name' => CHtml::modelName($definition) . '[rrule]',
+                        'layoutColumns' => [
+                            'label' => 2,
+                            'field' => 12,
+                        ]
+                    )) ?>
                 </td>
             </tr>
             <tr>
                 <td>Start time</td>
                 <td>
-                    <?=\CHtml::activeTextField(
+                    <?= CHtml::activeTextField(
                         $definition,
                         'start_time',
                         [
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'cols-1',
                             'field' => 1
                         ]
-                    ); ?>
+                    ) ?>
                 </td>
             </tr>
             <tr>
                 <td>End time</td>
                 <td>
-                    <?=\CHtml::activeTextField(
+                    <?= CHtml::activeTextField(
                         $definition,
                         'end_time',
                         [
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'cols-1',
                             'field' => 1,
                             'append-text' => 6,
                         ]
-                    ); ?> &nbsp; Appointments will match on any time <strong>before</strong> the end time specified here.
+                    ) ?> &nbsp; Appointments will match on any time <strong>before</strong> the end time specified
+                    here.
                 </td>
             </tr>
             <tr>
                 <td>Patient Identifier Type</td>
                 <td>
-                    <?=\CHtml::activeDropDownList(
-                            $definition,
+                    <?= CHtml::activeDropDownList(
+                        $definition,
                         'patient_identifier_type_id',
                         CHtml::listData(PatientIdentifierType::model()->findAll(), 'id', 'titleWithInstitution'),
-
                         [
                             'empty' => 'Select',
                             'class' => 'cols-6',
                         ]
-                    ); ?>
+                    ) ?>
+                </td>
+            </tr>
+            <tr>
+                <td>Default Clinical Pathway</td>
+                <td>
+                    <?= CHtml::activeDropDownList(
+                        $definition,
+                        'pathway_type_id',
+                        CHtml::listData(PathwayType::model()->findAll(), 'id', 'name'),
+                        [
+                            'class' => 'cols-6',
+                        ]
+                    ) ?>
                 </td>
             </tr>
             </tbody>
@@ -128,15 +147,15 @@
             <tfoot>
             <tr>
                 <td colspan="5">
-                    <?=\CHtml::submitButton(
+                    <?= CHtml::submitButton(
                         'Save',
                         [
                             'class' => 'button large',
                             'name' => 'save',
                             'id' => 'et_save'
                         ]
-                    ); ?>
-                    <?=\CHtml::submitButton(
+                    ) ?>
+                    <?= CHtml::submitButton(
                         'Cancel',
                         [
                             'data-uri' => '/Admin/worklist/definitions',
@@ -144,11 +163,11 @@
                             'name' => 'cancel',
                             'id' => 'et_cancel'
                         ]
-                    ); ?>
+                    ) ?>
                 </td>
             </tr>
             </tfoot>
         </table>
     </div>
-    <?php $this->endWidget()?>
+    <?php $this->endWidget() ?>
 </div>

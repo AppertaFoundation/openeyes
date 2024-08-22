@@ -6,7 +6,7 @@
  * @covers CaseSearchParameter
  * @method medications($fixtureId)
  */
-class PatientMedicationParameterTest extends CDbTestCase
+class PatientMedicationParameterTest extends OEDbTestCase
 {
     /**
      * @var $object PatientMedicationParameter
@@ -19,27 +19,27 @@ class PatientMedicationParameterTest extends CDbTestCase
         'medication_institutions' => Medication_Institution::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         Yii::app()->session['selected_institution_id'] = 1;
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         parent::setUpBeforeClass();
         unset(Yii::app()->session['selected_institution_id']);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->object = new PatientMedicationParameter();
-        $this->object->id = 0;
+        $this->object->id = rand(0, 10);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->object);
         parent::tearDown();
@@ -73,10 +73,14 @@ SELECT p.id
 FROM patient p
 LEFT JOIN patient_medication_assignment m
 ON m.patient_id = p.id
-LEFT JOIN medication md
-ON md.id = m.medication_drug_id
-WHERE md.id != :p_m_value_0
-OR m.id IS NULL";
+LEFT JOIN medication d
+ON d.id = m.medication_drug_id
+WHERE NOT EXISTS (
+    SELECT md.id
+    FROM patient_medication_assignment pm
+    JOIN medication md ON md.id = pm.medication_drug_id
+    WHERE pm.patient_id = p.id AND md.id = :p_m_value_{$this->object->id}
+) OR m.id IS NULL";
 
         if ($operator === '=') {
             $sqlValue = "
@@ -86,7 +90,7 @@ JOIN patient_medication_assignment m
 ON m.patient_id = p.id
 LEFT JOIN medication d
 ON d.id = m.medication_drug_id
-WHERE d.id = :p_m_value_0";
+WHERE d.id = :p_m_value_{$this->object->id}";
         }
 
         self::assertEquals(
@@ -99,7 +103,7 @@ WHERE d.id = :p_m_value_0";
     {
         $this->object->value = 5;
         $expected = array(
-            'p_m_value_0' => $this->object->value,
+            'p_m_value_'.$this->object->id => $this->object->value,
         );
 
         // Ensure that all bind values are returned.

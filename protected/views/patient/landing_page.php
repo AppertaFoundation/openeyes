@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -41,10 +42,15 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
     </div>
     <?php $this->renderPartial('//patient/add_new_event', array(
         'button_selector' => '#add-event',
-        'episodes' => array(),
+        // even we declared there are no episodes in the controller, still there are cases when
+        // an episode is hanging around without event, like create a new event then click on cancel (not creating the event)
+        // in this case the episode will be saved but the event won't.
+        // Now the question is, if $this->patient->episodes relation's condition is enough here?
+        'episodes' => $this->patient->episodes,
         'context_firm' => $this->firm,
         'patient_id' => $this->patient->id,
         'event_types' => EventType::model()->getEventTypeModules(),
+        'drafts' => EventDraft::model()->with('episode')->findAll('patient_id = ?', [$this->patient->id])
     ));?>
 <?php } elseif ($allow_clinical) { ?>
     <nav class="event-header no-face">
@@ -159,7 +165,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         </div>
 
         <div class="patient-overview">
-            <?php if(!$active_events) {?>
+            <?php if (!$active_events) {?>
                 <div class="nil-recorded">No Active Event</div>
             <?php }?>
             <table class="standard">
@@ -271,7 +277,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
         </div>
 
         <div class="cols-half">
-            <?php $this->renderPartial('landing_page_da_assignments', array('patient' => $this->patient));?>
+
             <section class="element view full view-xxx" id="idg-ele-view-management-summaries">
                 <header class="element-header"><h3 class="element-title">Management Summaries</h3></header>
                 <div class="element-data full-width">
@@ -344,7 +350,7 @@ $allow_clinical = Yii::app()->user->checkAccess('OprnViewClinical');
 
     $('.js-confirm-delete-patient').click(function (e) {
         e.preventDefault();
-        window.location.href = '<?= Yii::app()->createUrl('patient/delete/'.$patient->id) ?>';
+        window.location.href = '<?= Yii::app()->createUrl('patient/delete/' . $patient->id) ?>';
     });
 
     $('.js-cancel-delete-patient').click(function (e) {

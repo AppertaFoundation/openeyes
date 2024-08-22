@@ -7,7 +7,7 @@ use OEModule\OphCiExamination\models\Element_OphCiExamination_AnteriorSegment_CC
  * @covers CCTVariable
  * @covers CaseSearchVariable
  */
-class CCTVariableTest extends CDbTestCase
+class CCTVariableTest extends OEDbTestCase
 {
     protected CCTVariable $variable;
 
@@ -22,18 +22,18 @@ class CCTVariableTest extends CDbTestCase
         'subspecialties' => Subspecialty::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->variable = new CCTVariable([1, 2, 3]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->variable);
@@ -102,10 +102,16 @@ class CCTVariableTest extends CDbTestCase
         self::assertEquals('CCT (microns)', $this->variable->x_label);
         self::assertNotEmpty($this->variable->id_list);
         $variables = array($this->variable);
+        $expected = Yii::app()->db->createCommand('SELECT COUNT(*) FROM (SELECT 10 * FLOOR(value/10) cct, COUNT(*) frequency, GROUP_CONCAT(DISTINCT patient_id) patient_id_list
+        FROM v_patient_cct
+        WHERE patient_id IN (1, 2, 3)
+        GROUP BY FLOOR(value/10)
+        ORDER BY 1) t')
+            ->queryScalar();
 
         $results = Yii::app()->searchProvider->getVariableData($variables);
 
-        self::assertCount(1, $results[$this->variable->field_name]);
+        self::assertCount($expected, $results[$this->variable->field_name]);
     }
 
     public function testGetPrimaryDataPointName(): void

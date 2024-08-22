@@ -15,5 +15,54 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphGeneric\models\HFAEntry;
+
 ?>
-<?php ;//TODO View for the hfa element can be added later
+<div class="HFA element-data element-eyes flex-layout flex-left col-gap" data-test="hfa-edit">
+    <?php
+    echo \CHtml::activeHiddenField($this->element, "id");
+
+    $sidedData = $this->element->getSidedData();
+    $index = 0;
+    foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) {
+        ?>
+        <div class="<?= $eye_side ?>-eye cols-full" data-side="<?= $eye_side ?>">
+            <?php
+            $side = count($sidedData[$eye_side]) > 0 ? $sidedData[$eye_side][0] : null;
+            echo \CHtml::hiddenField('OEModule_OphGeneric_models_HFA[hfaEntry][' . $index . '][eye_id]', Eye::getIdFromName($eye_side));
+            ?>
+            <table>
+                <tr>
+                    <td class="data-label">
+                        <?= HFAEntry::model()->getAttributeLabel('mean_deviation'); ?>
+                    </td>
+                    <td>
+                        <div class="element-data">
+                            <div class="data-value"><?php echo \CHTML::numberField(
+                                'OEModule_OphGeneric_models_HFA[hfaEntry][' . $index . '][mean_deviation]',
+                                $side ? $side->mean_deviation : '',
+                                ['step' => 'any']
+                                                    ); ?></div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="data-label">
+                        <?= HFAEntry::model()->getAttributeLabel('visual_field_index'); ?>
+                    </td>
+                    <td>
+                        <div class="element-data">
+                            <div class="data-value"><?php echo \CHTML::numberField(
+                                'OEModule_OphGeneric_models_HFA[hfaEntry][' . $index . '][visual_field_index]',
+                                $side ? $side->visual_field_index : '',
+                                ['step' => 'any']
+                                                    ); ?></div>
+                        </div>
+                    </td>
+                </tr>
+            </table> 
+        </div>
+        <?php
+        $index++;
+    }?>
+</div>

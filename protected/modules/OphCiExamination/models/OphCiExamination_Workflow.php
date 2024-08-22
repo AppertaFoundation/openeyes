@@ -18,26 +18,22 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_workflow".
  *
  * @property int $id
  * @property string $name
  * @property int $institution_id
+ * @property \Institution $institution
  * @property OphCiExamination_ElementSet[] $steps
  * @property OphCiExamination_ElementSet $first_step
  */
 class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
 {
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiExamination_Workflow the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    use \OwnedByReferenceData;
+    use HasFactory;
 
     /**
      * @return string the associated database table name
@@ -49,7 +45,7 @@ class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.name');
+        return ['order' => $this->getTableAlias(true, false).'.name'];
     }
 
     /**
@@ -57,10 +53,13 @@ class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
      */
     public function rules()
     {
-        return array(
-                array('name', 'required'),
-                array('id, name, institution_id', 'safe', 'on' => 'search'),
-        );
+        return [
+            ['name', 'required'],
+            ['institution_id', 'anyTenantedOrNullInstitutionValidator'],
+            ['institution_id', 'onlyCurrentInstitutionValidator', 'except' => 'installationAdminSave'],
+            ['institution_id', 'cannotChangeInstitutionIfRulesExistValidator'],
+            ['id, name, institution_id', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**
@@ -68,21 +67,24 @@ class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
      */
     public function relations()
     {
-        return array(
-                'steps' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ElementSet', 'workflow_id',
+        return [
+                'steps' => [
+                    self::HAS_MANY, OphCiExamination_ElementSet::class, 'workflow_id',
                     'order' => 'position'
-                ),
-                'first_step' => array(self::HAS_ONE, 'OEModule\OphCiExamination\models\OphCiExamination_ElementSet', 'workflow_id',
+                ],
+                'first_step' => [
+                    self::HAS_ONE, OphCiExamination_ElementSet::class, 'workflow_id',
                     'order' => 'first_step.position, first_step.id',
                     'condition' => 'is_active = 1'
-                ),
-                'active_steps' => array(self::HAS_MANY, 'OEModule\OphCiExamination\models\OphCiExamination_ElementSet', 'workflow_id',
+                ],
+                'active_steps' => [
+                    self::HAS_MANY, OphCiExamination_ElementSet::class, 'workflow_id',
                     'order' => 'position',
                     'condition' => 'is_active = 1'
-                ),
-                'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id',
-                ),
-        );
+                ],
+                'institution' => [self::BELONGS_TO, \Institution::class, 'institution_id'],
+                'workflow_rules' => [self::HAS_MANY, OphCiExamination_Workflow_Rule::class, 'workflow_id'],
+        ];
     }
 
     /**
@@ -90,11 +92,36 @@ class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
      */
     public function attributeLabels()
     {
-        return array(
-                'id' => 'ID',
-                'name' => 'Name',
-                'institution_id' => 'Institution',
-        );
+        return [
+            'id' => 'ID',
+            'name' => 'Name',
+            'institution_id' => 'Institution',
+        ];
+    }
+
+    public function anyTenantedOrNullInstitutionValidator($attribute, $params)
+    {
+        if ($this->institution && $this->institution->getPrimaryKey() != $this->institution_id) {
+            // ensure we're validating the correct property
+            $this->institution = \Institution::model()->findByPk($this->institution_id);
+        }
+        if ($this->institution !== null && !$this->institution->isTenanted()) {
+            $this->addError('institution_id', 'The selected institution is not tenanted');
+        }
+    }
+
+    public function onlyCurrentInstitutionValidator($attribute, $params)
+    {
+        if ($this->institution_id !== \Institution::model()->getCurrent()->id) {
+            $this->addError('institution_id', 'The selected institution cannot be chosen for the workflow by the user');
+        }
+    }
+
+    public function cannotChangeInstitutionIfRulesExistValidator($attribute, $params)
+    {
+        if ($this->isAttributeDirty('institution_id') && !$this->canChangeInstitution()) {
+            $this->addError('institution_id', 'Cannot change the workflow\'s institution while rules are associated with it');
+        }
     }
 
     /**
@@ -126,5 +153,26 @@ class OphCiExamination_Workflow extends \BaseActiveRecordVersioned
         return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
+    }
+
+    /**
+     * canChangeInstitution
+     *
+     * If a workflow has any rules, then some of those rules might have a firm associated with them.
+     * Since those firms could be associated with a specific institution, which will be the same institution
+     * as the worklow, allowing that workflow to change its institution once it has rules will be problematic
+     * as the the firms for those rules will suddenly have a different institution and will not work correctly.
+     *
+     * @return bool
+    */
+    public function canChangeInstitution(): bool
+    {
+        return count($this->workflow_rules) === 0;
+    }
+
+    protected function getSupportedLevelMask(): int
+    {
+        return \ReferenceData::LEVEL_INSTALLATION |
+            \ReferenceData::LEVEL_INSTITUTION;
     }
 }

@@ -1,9 +1,10 @@
 <?php $current_uri = '/' . $this->module->id . '/' . $this->id . '/' . $this->action->id; ?>
 
 <?php if ($this->checkAccess('Genetics Admin')) : ?>
-<div class="box genetics panel">
-    <h2>Admin</h2>
-    <ul class="navigation">
+<nav class="oe-full-side-panel">
+
+    <h3>Admin</h3>
+    <ul>
     <?php
         $sidebarLinks = array(
             'Amino Acid C. Type' => Yii::app()->createUrl('/Genetics/aminoAcidChangeAdmin/list'),
@@ -27,13 +28,12 @@
             </li>
         <?php } ?>
     </ul>
-</div>
+
 
 <?php endif; ?>
 
-<div class="box genetics panel">
-    <h2>Menu</h2>
-    <ul class="navigation">
+    <h3>Menu</h3>
+    <ul>
         <?php $sidebarLinks = array(
             'Patients' => Yii::app()->createUrl('/Genetics/subject/list'),
             'Families' => Yii::app()->createUrl('/Genetics/pedigree/list'),
@@ -56,4 +56,5 @@ foreach ($sidebarLinks as $title => $uri) { ?>
             </li>
 <?php } ?>
     </ul>
-</div>
+
+</nav>

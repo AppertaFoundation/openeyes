@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,9 +16,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->params['future_scheduling_limit'] && $date > date('Y-m-d', strtotime('+' . Yii::app()->params['future_scheduling_limit']))) { ?>
+
+if (!Yii::app()->user->checkAccess('Super schedule operation') && SettingMetadata::model()->getSetting('future_scheduling_limit') && $date > date('Y-m-d', strtotime('+' . SettingMetadata::model()->getSetting('future_scheduling_limit')))) { ?>
     <div class="alert-box alert with-icon" style="margin-top: 10px;">
-        This date is outside the allowed booking window of <?php echo Yii::app()->params['future_scheduling_limit'] ?>
+        This date is outside the allowed booking window of <?php echo SettingMetadata::model()->getSetting('future_scheduling_limit') ?>
         and so cannot be booked into.
     </div>
 <?php } ?>
@@ -58,11 +60,11 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                                   <?= $session->end_time ?>
                                 </div>
                               <?php if ($session->isProcedureCountLimited()) { ?>
-                                  <div class="available-procedures" title="Available procedures"><?= $session->getAvailableProcedureCount() ?> Procedure(s) available</div>
-                                <?php }
+                                  <div class="available-procedures" title="Available procedures" data-test="available-procedures"><?= $session->getAvailableProcedureCount() ?> Procedure(s) available</div>
+                              <?php }
                               if ($session->isComplexBookingCountLimited()) { ?>
-                                  <div class="available-complex-bookings" title="Available complex bookings"><?= $session->getAvailableComplexBookingCount() ?> Complex Booking(s) available</div>
-                                <?php } ?>
+                                  <div class="available-complex-bookings" title="Available complex bookings" data-test="available-complex-bookings"><?= $session->getAvailableComplexBookingCount() ?> Complex Booking(s) available</div>
+                              <?php } ?>
                             </div>
                             <div class="specialists">
                                 <?php if ($session->consultant) { ?>
@@ -79,10 +81,10 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                                     <div class="paediatric" title="Paediatric Session">Paediatric</div>
                                 <?php }
                                 if ($session->isProcedureCountLimited()) { ?>
-                                    <div class="max-procedures" title="Max procedures">Max <?= $session->getMaxProcedureCount() ?> Procedures</div>
+                                    <div class="max-procedures" title="Max procedures" data-test="max-procedures">Max <?= $session->getMaxProcedureCount() ?> Procedures</div>
                                 <?php }
                                 if ($session->isComplexBookingCountLimited()) { ?>
-                                    <div class="max-complex-bookings" title="Max complex bookings">Max <?= $session->getMaxComplexBookingCount() ?> Complex Bookings</div>
+                                    <div class="max-complex-bookings" title="Max complex bookings" data-test="max-complex-bookings">Max <?= $session->getMaxComplexBookingCount() ?> Complex Bookings</div>
                                 <?php } ?>
                             </div>
                         </td>
@@ -97,7 +99,7 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                                          'day=' . CHtml::encode($_GET['day']),
                                          'session_id=' . $session->id,
                                          'referral_id=' . $operation->referral_id,)); ?>">
-                                    <button class="large blue hint">Select time</button>
+                                    <button class="large blue hint" data-test="select-time">Select time</button>
                                 </a>
                             </td>
                         <?php } ?>
@@ -108,7 +110,7 @@ if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->pa
                         if (!$operationBookable || !$thereIsPlaceForComplexBooking) { ?>
                             <tr>
                                 <td style="float:left">
-                                    <span class="session-unavailable alert-box warning">
+                                    <span class="session-unavailable alert-box warning" data-test="session-unavailable-warning">
                                         <?=$operationBookable ?
                                             "The allowed number of complex bookings has been reached for this session" :
                                             \CHtml::encode($selectedSession->unbookableReason($operation)) ?>

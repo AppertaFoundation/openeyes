@@ -18,6 +18,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_visual_acuity_unit".
  *
@@ -28,6 +30,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_VisualAcuityUnit extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -151,5 +155,37 @@ class OphCiExamination_VisualAcuityUnit extends \BaseActiveRecordVersioned
             array_push($tick_data['tick_labels'], $tick[1]);
         }
         return $tick_data;
+    }
+
+    public function excludeComplexOnly(): self
+    {
+        $this->getDbCriteria()->mergeWith([
+            'condition' => 'complex_only = 0'
+        ]);
+
+        return $this;
+    }
+
+    public static function generateUnitsList($exclude_complex_only = false): array
+    {
+        $model = OphCiExamination_VisualAcuityUnit::model()->active();
+
+        if ($exclude_complex_only) {
+            $model->excludeComplexOnly();
+        }
+
+        return array_reduce(
+            $model->findAll(),
+            static function ($list, $unit) {
+                $list[$unit->id]['name'] = $unit->name;
+                $list[$unit->id]['isNear'] = (bool)$unit->is_near;
+                $list[$unit->id]['isVA'] = (bool)$unit->is_va;
+                $list[$unit->id]['complexOnly'] = (bool)$unit->complex_only;
+                $list[$unit->id]['values'] = \CHtml::listData($unit->selectableValues, 'base_value', 'value');
+
+                return $list;
+            },
+            []
+        );
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -30,16 +32,20 @@ $name_stub .= $inttype_name . ']';
 
 $show_stop_other = false;
 $show_treatment_other = false;
-if (@$_POST[$element_name] && @$_POST[$element_name][$side . $inttype_name] &&
-    @$_POST[$element_name][$side . $inttype_name][$key]) {
+if (
+    @$_POST[$element_name] && @$_POST[$element_name][$side . $inttype_name] &&
+    @$_POST[$element_name][$side . $inttype_name][$key]
+) {
     if ($stop_id = $_POST[$element_name][$side . $inttype_name][$key]['stopreason_id']) {
         $stopreason = OphCoTherapyapplication_ExceptionalCircumstances_PastIntervention_StopReason::model()->findByPk((int)$stop_id);
         if ($stopreason->other) {
             $show_stop_other = true;
         }
     }
-    if ($pastintervention->is_relevant &&
-        $treatment_id = $_POST[$element_name][$side . $inttype_name][$key]['relevanttreatment_id']) {
+    if (
+        $pastintervention->is_relevant &&
+        $treatment_id = $_POST[$element_name][$side . $inttype_name][$key]['relevanttreatment_id']
+    ) {
         $treatment = OphCoTherapyapplication_RelevantTreatment::model()->findByPk((int)$treatment_id);
         if ($treatment->other) {
             $show_treatment_other = true;
@@ -49,9 +55,11 @@ if (@$_POST[$element_name] && @$_POST[$element_name][$side . $inttype_name] &&
     if ($pastintervention->stopreason && $pastintervention->stopreason->other) {
         $show_stop_other = true;
     }
-    if ($pastintervention->is_relevant &&
+    if (
+        $pastintervention->is_relevant &&
         $pastintervention->relevanttreatment &&
-        $pastintervention->relevanttreatment->other) {
+        $pastintervention->relevanttreatment->other
+    ) {
         $show_treatment_other = true;
     }
 }
@@ -189,7 +197,7 @@ $dateFieldWidget = @$dateFieldWidget ?: 'DatePicker';
     </td>
     <td>
         <?=\CHtml::activeTextField($pastintervention, 'relevanttreatment_other', array(
-            'autocomplete' => Yii::app()->params['html_autocomplete'],
+            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
             'name' => $name_stub . "[$key][relevanttreatment_other]",
         )); ?>
     </td>

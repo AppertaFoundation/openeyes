@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="element-fields full-width">
     <?php echo $form->dropDownList(
@@ -25,7 +27,7 @@
             'id',
             'name'
         ),
-        array('empty' => 'No tamponade'),
+        array('empty' => 'No tamponade', 'data-prefilled-value' => $template_data['gas_type_id'] ?? ''),
         false,
         array('field' => 2)
     ) ?>
@@ -37,7 +39,7 @@
             'id',
             'value'
         ),
-        array('empty' => 'N/A'),
+        array('empty' => 'N/A', 'data-prefilled-value' => $template_data['gas_percentage_id'] ?? ''),
         false,
         array('field' => 2)
     ) ?>
@@ -49,7 +51,7 @@
             'id',
             'value'
         ),
-        array('empty' => 'N/A'),
+        array('empty' => 'N/A', 'data-prefilled-value' => $template_data['gas_volume_id'] ?? ''),
         false,
         array('field' => 2)
     ) ?>

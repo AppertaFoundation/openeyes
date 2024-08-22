@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="cols-9">
@@ -38,13 +40,14 @@
             <col class="cols-4">
         </colgroup>
         <tbody>
-        <?php foreach (['title', 'first_name', 'last_name',
-               'nick_name', 'primary_phone', 'fax', 'qualifications' , 'national_code'] as $field) : ?>
+        <?php foreach (
+        ['title', 'first_name', 'last_name',
+               'nick_name', 'primary_phone', 'mobile_phone', 'fax', 'email', 'qualifications' , 'national_code'] as $field
+) : ?>
             <tr>
                 <td><?= $contact->getAttributeLabel($field); ?></td>
                 <td>
                     <?= CHtml::activeTextField($contact, $field, [
-                        'autocomplete' => Yii::app()->params['html_autocomplete'],
                         'class' => 'cols-full'
                     ]); ?>
                 </td>

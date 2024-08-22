@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * Created by PhpStorm.
  * User: veta
@@ -9,6 +11,7 @@
 class OphDrPrescription_DispenseLocation extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
+    use HasFactory;
 
     protected function getSupportedLevels(): int
     {
@@ -82,5 +85,30 @@ class OphDrPrescription_DispenseLocation extends BaseActiveRecordVersioned
     public function defaultScope()
     {
         return ['order' => 'display_order'];
+    }
+
+    private static function getDispenseLocationsForInstitution(int $institution_id)
+    {
+        return OphDrPrescription_DispenseLocation_Institution::model()->findAll("institution_id=:institution_id", [":institution_id" => $institution_id]);
+    }
+
+    /**
+     * Returns the Dispense Conditions that have the location assigned
+     *
+     * @param Institution $institution
+     * @return array
+     */
+    public static function getDispenseConditionAssignmentsForInstitution(int $institution_id): array
+    {
+        $dispense_location_institution = self::getDispenseLocationsForInstitution($institution_id);
+
+        $dispense_conditions = [];
+        foreach ($dispense_location_institution as $dispense_location_institution) {
+            foreach ($dispense_location_institution->dispense_condition_institutions as $dispense_condition_institution) {
+                $dispense_conditions[$dispense_location_institution->dispense_location->id][] = $dispense_condition_institution->dispense_condition;
+            }
+        }
+
+        return $dispense_conditions;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -36,7 +37,7 @@ class OphTrOperationbooking_Operation_SessionTest extends ActiveRecordTestCase
         'default_admission_time'
     ];
 
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::import('application.modules.OphTrOperationbooking.helpers.*');
     }
@@ -59,12 +60,9 @@ class OphTrOperationbooking_Operation_SessionTest extends ActiveRecordTestCase
         $this->assertNull($booking->session_id);
     }
 
-    /**
-     * @expectedException CDbException
-     * @expectedExceptionMessage constraint violation
-     */
     public function testDontDissociateFromNonCancelledBookingOnDelete()
     {
+        $this->expectException(\CDbException::class);
         $this->session('session5')->delete();
     }
 
@@ -121,7 +119,7 @@ class OphTrOperationbooking_Operation_SessionTest extends ActiveRecordTestCase
         $test->unavailablereason = $reason;
         $op = new Element_OphTrOperationbooking_Operation();
 
-        $this->assertEquals($test->unbookableReason($op), OphTrOperationbooking_Operation_Session::$DEFAULT_UNAVAILABLE_REASON.': '.$reason->name);
+        $this->assertEquals($test->unbookableReason($op), OphTrOperationbooking_Operation_Session::$DEFAULT_UNAVAILABLE_REASON . ': ' . $reason->name);
     }
 
     public function testUnbookableReason_FutureScheduleLimit()

@@ -1,33 +1,46 @@
+/**
+ * (C) Copyright Apperta Foundation 2022
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2022, Apperta Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
+
 $(document).ready(function() {
 	$('#type').change(function() {
 		setTypeFilter($(this).val());
 		updateMacroList(0);
 	});
 
-	$('#site_id').change(function() {
+	$('#site_id, #institution_id, #subspecialty_id, #firm_id').change(function() {
 		updateMacroList(0);
 	});
 
-	$('#subspecialty_id').change(function() {
-		updateMacroList(0);
-	});
-
-	$('#firm_id').change(function() {
-		updateMacroList(0);
-	});
-
-	$('#name').change(function() {
+	$('#name, #episode_status_id').change(function() {
 		updateMacroList(1);
 	});
 
-	$('#episode_status_id').change(function() {
-		updateMacroList(1);
-	});
-
-	$('.addLetterMacro').click(function(e) {
+	$('.js-addLetterMacro').click(function(e) {
 		e.preventDefault();
 
-		window.location.href = baseUrl + '/OphCoCorrespondence/admin/addMacro';
+		// Should be using window.location.origin -> get from env?
+		let targetURL = window.location.origin + '/OphCoCorrespondence/admin/addMacro';
+
+		if(
+			e.target.dataset.institutionInputId
+			&& document.getElementById(e.target.dataset.institutionInputId)
+			&& document.getElementById(e.target.dataset.institutionInputId).value
+		) {
+			targetURL = addParamToURLString(targetURL, 'institution_id', document.getElementById(e.target.dataset.institutionInputId).value);
+		}
+		
+		window.location.href = targetURL;
 	});
 
 	$('.addEmailAddress').click(function(e) {
@@ -268,9 +281,64 @@ $(document).ready(function() {
 		});
     });
 
+	var pathname = window.location.pathname;
+    if(pathname.indexOf('/snippet/') > -1){
+
+		$('#search_institution_relations\\.institution_id option')
+		.filter(function() {
+			return !this.value || $.trim(this.value).length == 0 || $.trim(this.text).length == 0;
+		})
+		.remove();
+
+		$("#et_add").prop('value', 'Add to ' + $('#search_institution_relations\\.institution_id option:selected').text());
+		
+		$('#search_institution_relations\\.institution_id').on('change', function () {
+			getInstitutionSites($(this).val(), $('#search_sites\\.id'));
+		});
+
+		if($('#LetterString_institutions').val() === "") {
+			$("#LetterString_sites").prop("disabled", true);
+		} else {
+			$("#LetterString_sites").prop("disabled", false);
+		}
+
+		$('#LetterString_institutions').on('change', function () {
+			getInstitutionSites($(this).val(), $('#LetterString_sites'));
+
+			$(".multi-select-remove").each(function(i) {
+				var btn = $(this);
+				setTimeout(btn.trigger.bind(btn, "click"), i * 1);
+			});
+
+			if($('#LetterString_institutions').val() === "") {
+				$("#LetterString_sites").prop("disabled", true);
+			} else {
+				$("#LetterString_sites").prop("disabled", false);
+			}
+		});
+
+		$("#et_save").click(function(event){
+			$('#LetterString_institutions').prop("disabled", false); // Element(s) are now enabled.
+		});
+
+	}
+
+
+
     /** End of EditMacro Page **/
 
 });
+
+/**
+ * Utility to dynamically add paramters to existing URL string.
+ */
+function addParamToURLString(urlString, key, value) {
+	let originalURL = new URL(urlString);
+	let targetURL = new URLSearchParams(originalURL.search);
+	targetURL.set(key, value);
+	originalURL.search = targetURL;
+	return originalURL;
+}
 
 var macro_cursor_position = 0;
 
@@ -295,7 +363,16 @@ function updateMacroList(preserve)
 
 	$.ajax({
 		'type': 'GET',
-		'url': baseUrl + '/OphCoCorrespondence/admin/filterMacros?type=' + $('#type').val() + '&site_id=' + $('#site_id').val() + '&subspecialty_id=' + $('#subspecialty_id').val() + '&firm_id=' + $('#firm_id').val() + '&name=' + name + '&episode_status_id=' + episode_status_id,
+		'url': baseUrl + '/OphCoCorrespondence/admin/filterMacros',
+		data: {
+			type: $('#type').val(),
+			institution_id: document.getElementById('institution_id').value,
+			site_id: $('#site_id').val(),
+			subspecialty_id: $('#subspecialty_id').val(),
+			firm_id: $('#firm_id').val(),
+			name: name,
+			episode_status_id: episode_status_id
+		},
 		'success': function(html) {
 			$('#admin_letter_macros tbody').html(html);
 		}
@@ -303,7 +380,14 @@ function updateMacroList(preserve)
 
 	$.ajax({
 		'type': 'GET',
-		'url': baseUrl + '/OphCoCorrespondence/admin/filterMacroNames?type=' + $('#type').val() + '&site_id=' + $('#site_id').val() + '&subspecialty_id=' + $('#subspecialty_id').val() + '&firm_id=' + $('#firm_id').val(),
+		'url': baseUrl + '/OphCoCorrespondence/admin/filterMacroNames',
+		data: {
+			type: $('#type').val(),
+			institution_id: document.getElementById('institution_id').value,
+			site_id: $('#site_id').val(),
+			subspecialty_id: $('#subspecialty_id').val(),
+			firm_id: $('#firm_id').val()
+		},
 		'success': function(html) {
 			$('#name').html(html);
 
@@ -315,7 +399,14 @@ function updateMacroList(preserve)
 
 	$.ajax({
 		'type': 'GET',
-		'url': baseUrl + '/OphCoCorrespondence/admin/filterEpisodeStatuses?type=' + $('#type').val() + '&site_id=' + $('#site_id').val() + '&subspecialty_id=' + $('#subspecialty_id').val() + '&firm_id=' + $('#firm_id').val(),
+		'url': baseUrl + '/OphCoCorrespondence/admin/filterEpisodeStatuses',
+		data: {
+			type: $('#type').val(),
+			institution_id: document.getElementById('institution_id').value,
+			site_id: $('#site_id').val(),
+			subspecialty_id: $('#subspecialty_id').val(),
+			firm_id: $('#firm_id').val()
+		},
 		'success': function(html) {
 			$('#episode_status_id').html(html);
 

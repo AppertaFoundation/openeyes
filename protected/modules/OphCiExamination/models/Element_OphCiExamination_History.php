@@ -18,6 +18,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
 use Yii;
 
 /**
@@ -33,6 +34,7 @@ use Yii;
  */
 class Element_OphCiExamination_History extends \BaseEventTypeElement
 {
+    use HasFactory;
     use traits\CustomOrdering;
     public $service;
 
@@ -66,7 +68,7 @@ class Element_OphCiExamination_History extends \BaseEventTypeElement
                 array('description', 'required'),
                 // The following rule is used by search().
                 // Please remove those attributes that should not be searched.
-                array('id, event_id, description,anticoagulant ', 'safe', 'on' => 'search'),
+                array('id, event_id, description', 'safe', 'on' => 'search'),
         );
     }
 
@@ -102,7 +104,6 @@ class Element_OphCiExamination_History extends \BaseEventTypeElement
      */
     public function setDefaultOptions(\Patient $patient = null)
     {
-        
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,14 +16,19 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php $this->beginContent('//patient/event_container', array('no_face' => true));
 $institution = Institution::model()->getCurrent();
 $selected_site_id = Yii::app()->session['selected_site_id'];
-$primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
-$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
-    $patient->id, $institution->id, $selected_site_id);
+$primary_identifier_usage_type = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
+$primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+    SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+    $patient->id,
+    $institution->id,
+    $selected_site_id
+);
 ?>
 
     <div id="schedule">
@@ -44,7 +50,8 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app(
                         [
                             'patient' => $this->patient,
                             'show_all' => true
-                        ]); ?>
+                        ]
+                    ); ?>
                 </div>
             </div>
         </div>
@@ -97,7 +104,7 @@ $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app(
                     <?= \CHtml::textArea(
                         'cancellation_comment',
                         @$_POST['cancellation_comment'],
-                        array('rows' => 6, 'cols' => 40)
+                        array('rows' => 6, 'cols' => 40, 'class' => 'cols-full autosize')
                     ) ?>
                 </div>
             </div>

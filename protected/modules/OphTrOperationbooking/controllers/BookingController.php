@@ -193,11 +193,10 @@ class BookingController extends OphTrOperationbookingEventController
 
         $criteria = new \CDbCriteria();
         $criteria->addCondition('active = 1');
-        $criteria->compare('institution_id', Yii::app()->session['selected_institution_id']);
         $criteria->distinct = true;
         $criteria->join = "JOIN ophtroperationbooking_operation_session session ON t.id = session.firm_id";
 
-        $booked_firm_list = \Firm::model()->findAll($criteria);
+        $booked_firm_list = \Firm::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, $criteria);
 
         $this->render('schedule', array(
             'event' => $this->event,
@@ -260,7 +259,7 @@ class BookingController extends OphTrOperationbookingEventController
             } else {
                 $comment = isset($_POST['cancellation_comment']) ? $_POST['cancellation_comment'] : null;
 
-                $is_cancelled = $operation->cancel($_POST['cancellation_reason'], $comment)['result'];
+                $is_cancelled = $operation->cancel($_POST['cancellation_reason'], $comment, false, true)['result'];
 
                 if ($is_cancelled) {
                     $operation->setStatus('Requires rescheduling');

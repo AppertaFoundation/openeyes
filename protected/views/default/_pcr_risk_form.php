@@ -315,7 +315,7 @@ if ($side === 'left') {
       </div>
     </div>
     <div class="add-data-actions flex-item-bottom " id="add-pcr-risk-popup-<?= $side ?>">
-      <button class="button hint green js-add-select-search" id="add-pcr-risk-btn-<?= $side ?>" type="button">
+      <button class="button hint green js-add-select-search" id="add-pcr-risk-btn-<?= $side ?>" type="button" data-test="add-pcr-risk-btn">
         <i class="oe-i plus pro-theme"></i>
       </button><!-- popup to add data to element -->
     </div>

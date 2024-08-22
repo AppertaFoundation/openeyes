@@ -128,7 +128,7 @@ class HistoryMedications extends BaseMedicationWidget
     }
 
     /**
-     * @return bool whether any entries were set
+     * Sets the entries array with items from any previous events
      */
 
     private function setEntriesWithPreviousManagement()
@@ -272,7 +272,7 @@ class HistoryMedications extends BaseMedicationWidget
      */
     public function getViewData()
     {
-        if (in_array($this->mode, array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_LANDING_PAGE_MODE))) {
+        if (in_array($this->mode, array(static::$PATIENT_SUMMARY_MODE, static::$PATIENT_LANDING_PAGE_MODE, static::$PATIENT_SUMMARY_MODE_OUTPUT))) {
             return array_merge(parent::getViewData(), $this->getMergedManagementEntries());
         }
         return parent::getViewData();
@@ -303,7 +303,7 @@ class HistoryMedications extends BaseMedicationWidget
             $this->setElementFromDefaults();
         }
 
-        if ($this->data) {
+        if ($this->data !== null) {
             // we set the element to the provided data
             $this->updateElementFromData($this->element, $this->data);
         }
@@ -330,5 +330,9 @@ class HistoryMedications extends BaseMedicationWidget
     protected function getNewElement()
     {
         return new HistoryMedicationsElement();
+    }
+
+    public function sortEntriesByDate($entries, bool $current = true) : array {
+        return parent::sortEntriesByDate($entries, $current);
     }
 }

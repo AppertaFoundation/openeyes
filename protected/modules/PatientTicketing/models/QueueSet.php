@@ -24,11 +24,13 @@ use CActiveDataProvider;
 use CDbCriteria;
 use Institution;
 use MappedReferenceData;
+use OE\factories\models\traits\HasFactory;
 use ReferenceData;
 
 class QueueSet extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
+    use HasFactory;
 
     protected function getSupportedLevels(): int
     {
@@ -89,6 +91,7 @@ class QueueSet extends BaseActiveRecordVersioned
             'default_queue' => array(self::BELONGS_TO, Queue::class, 'default_queue_id'),
             'institutions' => array(self::MANY_MANY, Institution::class, 'patientticketing_queueset_institution(queueset_id, institution_id)'),
             'queueset_institutions' => array(self::HAS_MANY, QueueSet_Institution::class, 'queueset_id'),
+            'outcome_options' => array(self::HAS_MANY, TicketAssignOutcomeOption::class, 'queueset_id'),
         );
     }
 

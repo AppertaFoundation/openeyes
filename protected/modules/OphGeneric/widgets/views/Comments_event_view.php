@@ -13,6 +13,6 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
-<div class="element-data">
+<div class="element-data" data-test="comments-view">
     <div class="data-value"><?= $element->comment ?></div>
 </div>

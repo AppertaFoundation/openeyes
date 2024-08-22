@@ -21,9 +21,15 @@ $config = [
                 'Element Attributes' => ['uri' => '/oeadmin/ExaminationElementAttributes/list', 'restricted' => array('OprnInstitutionAdmin', 'admin')],
                 'Workflows' => '/OphCiExamination/admin/viewWorkflows',
                 'Workflow rules' => '/OphCiExamination/admin/viewWorkflowRules',
+                'History Macros' => '/OphCiExamination/admin/HistoryMacro/list',
+                'Advice Leaflets' => '/OphCiExamination/admin/adviceLeaflets',
+                'Advice Leaflet Categories' => '/OphCiExamination/admin/adviceLeafletCategories',
+                'Advice Leaflet Subspecialties' => '/OphCiExamination/admin/adviceLeafletSubspecialties',
                 'Allergies' => ['uri' => '/OphCiExamination/admin/Allergies/index', 'restricted' => array('admin')],
+                'Allergy Reactions' => ['uri' => '/OphCiExamination/admin/AllergyReactions/index', 'restricted' => array('admin')],
                 'Required Allergy Assignment' => '/OphCiExamination/admin/AllergyAssignment/index',
                 'Pupillary Abnormalities' => '/OphCiExamination/admin/PupillaryAbnormalities/index',
+                'Red Flags' => '/OphCiExamination/admin/redFlags',
                 'Required Pupillary Abnormalities' => '/OphCiExamination/admin/PupillaryAbnormalityAssignment/index',
                 'Risks' => '/OphCiExamination/risksAdmin/list',
                 'Required Risk Assignment' => '/OphCiExamination/admin/RisksAssignment/index',
@@ -41,10 +47,13 @@ $config = [
                 'Follow-up Statuses' => '/OphCiExamination/admin/manageClinicOutcomesStatus',
                 'Follow-up Roles' =>  '/OphCiExamination/admin/ClinicOutcomeRoles/index',
                 'Follow-up Risk Status' =>  '/OphCiExamination/admin/ClinicOutcomeRiskStatus/edit',
+                'Freehand draw templates' =>  '/OphCiExamination/admin/FreehandDraw/index',
                 'Cataract surgery reasons' => ['uri' => '/OphCiExamination/admin/primaryReasonForSurgery', 'restricted' => array('admin')],
                 'Common Post-Op Complications' => '/OphCiExamination/admin/postOpComplications',
                 'Medication Stop Reasons' => ['uri' => '/OphCiExamination/admin/MedicationStopReason/index', 'restricted' => array('admin')],
                 'Overall Periods' => ['uri' => '/OphCiExamination/admin/manageOverallPeriods', 'restricted' => array('admin')],
+                'Discharge Statuses' => ['uri' => '/OphCiExamination/admin/manageDischargeStatuses', 'restricted' => array('admin')],
+                'Discharge Destinations' => ['uri' => '/OphCiExamination/admin/manageDischargeDestinations', 'restricted' => array('admin')],
                 'Visit Intervals' => '/OphCiExamination/admin/manageVisitIntervals',
                 'Glaucoma Statuses' => ['uri' => '/OphCiExamination/admin/manageGlaucomaStatuses', 'restricted' => array('admin')],
                 'Target IOP Values' => ['uri' => '/OphCiExamination/admin/manageTargetIOPs', 'restricted' => array('admin')],
@@ -83,9 +92,16 @@ $config = [
         'menu_bar_items' => [
             'ofm' => [
                 'title' => 'Optom Invoice Manager',
-                'position' => 9,
                 'uri' => '/OphCiExamination/OptomFeedback/list',
                 'restricted' => [ ['Optom co-ordinator', 'user_id'] ],
+            ]
+        ],
+
+        'allowed_file_types' => [
+            'DrawingTemplate' => [
+                'jpg'   => 'image/jpeg',
+                'jpeg'  => 'image/jpeg',
+                'png'   => 'image/png',
             ]
         ],
     ],

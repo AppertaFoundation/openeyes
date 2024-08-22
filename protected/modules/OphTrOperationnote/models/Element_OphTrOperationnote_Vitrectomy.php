@@ -117,4 +117,14 @@ class Element_OphTrOperationnote_Vitrectomy extends Element_OnDemandEye
                 'criteria' => $criteria,
             ));
     }
+
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'gauge_id',
+            'pvd_induced',
+            'eyedraw',
+            'comments'
+        ];
+    }
 }

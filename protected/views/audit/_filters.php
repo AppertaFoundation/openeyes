@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <nav class="oe-full-side-panel audit-filters">
@@ -30,8 +32,8 @@
                 </td>
                 <td>
                     <?= Yii::app()->user->checkAccess('Institution Audit') ?
-                        \CHtml::dropDownList('institution_id', @$_POST['institution_id'], Institution::model()->getList(false), array('class'=>'cols-full', 'empty' => 'All institutions')) :
-                        \CHtml::dropDownList('institution_id', Yii::app()->session['selected_institution_id'], Institution::model()->getList(true), array('class'=>'cols-full', 'disabled' => 'disabled')) ?>
+                        \CHtml::dropDownList('institution_id', @$_POST['institution_id'], Institution::model()->getList(false), array('class' => 'cols-full', 'empty' => 'All institutions')) :
+                        \CHtml::dropDownList('institution_id', Yii::app()->session['selected_institution_id'], Institution::model()->getList(true), array('class' => 'cols-full', 'disabled' => 'disabled')) ?>
                 </td>
             </tr>
             <tr>
@@ -41,8 +43,8 @@
                 <td>
                     <?php $site_list = Site::model()->getListForAllInstitutions();
                         echo Yii::app()->user->checkAccess('Institution Audit') ?
-                            \CHtml::dropDownList('site_id', @$_POST['site_id'], $site_list['list'], array('class'=>'cols-full', 'empty' => 'All sites', 'options' => $site_list['options'])) :
-                            \CHtml::dropDownList('site_id', @$_POST['site_id'], Site::model()->getListForCurrentInstitution(), array('empty' => 'All sites','class'=>'cols-full')); ?>
+                            \CHtml::dropDownList('site_id', @$_POST['site_id'], $site_list['list'], array('class' => 'cols-full', 'empty' => 'All sites', 'options' => $site_list['options'])) :
+                            \CHtml::dropDownList('site_id', @$_POST['site_id'], Site::model()->getListForCurrentInstitution(), array('empty' => 'All sites','class' => 'cols-full')); ?>
                 </td>
             </tr>
             <tr>
@@ -50,21 +52,21 @@
                     Context
                 </td>
                 <td>
-                    <?=\CHtml::dropDownList('firm_id', @$_POST['firm_id'], Firm::model()->getList(), array('empty' => 'All firms', 'class'=>'cols-full'))?>
+                    <?=\CHtml::dropDownList('firm_id', @$_POST['firm_id'], Firm::model()->getList(), array('empty' => 'All firms', 'class' => 'cols-full'))?>
                 </td>
             </tr>
         </table>
     </div>
     <h4>Action</h4>
-    <?=\CHtml::dropDownList('action', @$_POST['action'], CHtml::listData(AuditAction::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => 'All actions', 'class' => 'cols-full'))?>
+    <?=\CHtml::dropDownList('action', @$_POST['action'], CHtml::listData(AuditAction::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => 'All actions', 'class' => 'cols-full', 'data-test' => 'audit-action'))?>
     <h4>Target</h4>
     <?=\CHtml::dropDownList('target_type', @$_POST['target_type'], CHtml::listData(AuditType::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => 'All targets', 'class' => 'cols-full'))?>
     <h4>Event Types</h4>
-    <?=\CHtml::dropDownList('event_type_id', @$_POST['event_type_id'], EventType::model()->getEventTypeInUseList(), array('empty' => 'All event types', 'class' => 'cols-full'))?>
+    <?=\CHtml::dropDownList('event_type_id', @$_POST['event_type_id'], EventType::model()->getEventTypeInUseList(), array('empty' => 'All event types', 'class' => 'cols-full', 'data-test' => 'audit-event-type'))?>
     <h4>User</h4>
     <?php $this->widget('application.widgets.AutoCompleteSearch'); ?>
     <h4>Patient Identifier</h4>
-    <?=\CHtml::textField('patient_identifier_value', Yii::app()->request->getPost('patient_identifier_value'), array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'search cols-full', 'placeholder'=>'Enter Patient Identifier'))?>
+    <?=\CHtml::textField('patient_identifier_value', Yii::app()->request->getPost('patient_identifier_value'), array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'search cols-full', 'placeholder' => 'Enter Patient Identifier'))?>
     <h3>Filter by Date</h3>
     <div class="flex-layout">
         <fieldset>
@@ -109,6 +111,6 @@
     </table>
     <div class="row">
         <img class="loader hidden" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" alt="loading..." style="margin-right:10px" />
-        <button type="submit" class="green hint cols-full">Create Audit</button>
+        <button type="submit" class="green hint cols-full" data-test="create-audit-button">Create Audit</button>
     </div>
 </nav>

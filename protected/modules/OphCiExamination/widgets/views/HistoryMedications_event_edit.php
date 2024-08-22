@@ -300,6 +300,46 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
     });
     var medicationsController;
     $(document).ready(function() {
+        function setISODate(e,event_type){
+            let errors = [];
+
+            if (event_type === 'pickmeup') {
+                inp = $(e.target);
+            } else {
+                inp = $(e.currentTarget);
+            }
+
+            let hidden_target = $(inp.data('hidden-input-selector'));
+            let UKdate = inp.val();
+            var dateObject = new Date(UKdate);
+
+            try {
+                $.datepicker.parseDate( 'dd M yy', UKdate )
+            } catch (e) {
+                errors.push('Invalid date: '+UKdate);
+            }
+
+            if(errors.length > 0){
+                new OpenEyes.UI.Dialog.Alert({
+                    content: errors.join(', ')
+                }).open();
+                return false;
+            } else {
+                ISOdate = $.datepicker.formatDate('yy-mm-dd',dateObject);
+            }
+
+            $(hidden_target).val(ISOdate);
+        }
+
+        function addEventListenerToMedicationHistoryPickMeUp() {
+            $('.medical-history-date').on('pickmeup-change', function (e) {
+                setISODate(e,'pickmeup')
+            });
+            $('.medical-history-date').on('change', function (e) {
+                setISODate(e)
+            })
+        }
+        addEventListenerToMedicationHistoryPickMeUp();
 
         if (showStoppedMedications === 1) {
             let $stoppedMedicationCollapsedData = $('.js-stopped-medication-collapsed-data')
@@ -372,7 +412,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             /** @var Firm $firm */
             $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
             $subspecialty_id = $firm->getSubspecialtyID();
-            $common_systemic = Medication::model()->listCommonSystemicMedications(true, $subspecialty_id, $site_id);
+            $common_systemic = Medication::model()->listCommonSystemicMedications($subspecialty_id, true, $site_id);
             foreach ($common_systemic as &$medication) {
                 $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
             }
@@ -404,6 +444,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             ],
             onReturn: function(adderDialog, selectedItems) {
                 medicationsController.addEntry(selectedItems, true);
+                addEventListenerToMedicationHistoryPickMeUp();
                 return true;
             },
             searchOptions: {

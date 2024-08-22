@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\widgets;
 
+
 use OEModule\OphCiExamination\controllers\DefaultController;
 use OEModule\OphCiExamination\models\ConvergenceAccommodation as ConvergenceAccommodationElement;
 use OEModule\OphCiExamination\models\CorrectionType;
@@ -48,7 +49,7 @@ class ConvergenceAccommodationTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains('id="OEModule_OphCiExamination_models_ConvergenceAccommodation_form"', $result);
+        $this->assertStringContainsString('id="OEModule_OphCiExamination_models_ConvergenceAccommodation_form"', $result);
     }
 
     /** @test */
@@ -71,9 +72,8 @@ class ConvergenceAccommodationTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains((string) $element->correctiontype, $result);
-        $this->assertContains($element->display_with_head_posture, $result);
-        $this->assertContains($element->comments, $result);
+        $this->assertStringContainsString((string) $element->correctiontype, $result);
+        $this->assertStringContainsString($element->display_with_head_posture, $result);
+        $this->assertStringContainsString($element->comments, $result);
     }
-
 }

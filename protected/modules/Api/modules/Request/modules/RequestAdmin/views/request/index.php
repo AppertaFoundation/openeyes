@@ -88,7 +88,7 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/Attachment.js');
                     <col class="cols-2">
                     <?php if ($attachmentData->text_data) { ?>
                         <col class="cols-8">
-                    <?php } else if ($attachmentData->blob_data) { ?>
+                    <?php } elseif ($attachmentData->blob_data) { ?>
                         <col class="cols-1">
                         <col class="cols-3">
                     <?php } ?>
@@ -143,12 +143,17 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/Attachment.js');
                                value="Show media">
                     </td>
                             <?php } ?>
-                            <?php if ($attachmentData->attachment_mnemonic === 'REQUEST_DATA' && $this->checkAccess('OprnEditRequestData')) { ?>
-                    <td>
-                        <a class="button small"
-                           href="/Api/Request/admin/attachmentData/edit/<?= $attachmentData->id; ?>">Edit</a>
-                    </td>
-                            <?php } ?>
+                <td>
+                    <?php if ($this->checkAccess('OprnEditRequestData')) { ?>
+                        <?php if ($attachmentData->attachment_mnemonic === 'REQUEST_BLOB') { ?>
+                            <a class="button small"
+                               href="/Api/Request/admin/attachmentData/download/<?= $attachmentData->id; ?>">Download</a>
+                        <?php } elseif ($attachmentData->attachment_mnemonic === 'REQUEST_DATA') { ?>
+                            <a class="button small"
+                               href="/Api/Request/admin/attachmentData/edit/<?= $attachmentData->id; ?>">Edit</a>
+                        <?php } ?>
+                    <?php } ?>
+                </td>
                 </tbody>
             </table>
         </td>
@@ -202,13 +207,13 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/Attachment.js');
             style="display:none">
             <td colspan="10">
                 <table class="standard" style="background-color: white">
-                    <colgroup>
-                        <col class="cols-2">
-                        <col class="cols-2">
-                        <col class="cols-2">
-                        <col class="cols-2">
-                        <col class="cols-2">
-                        <col class="cols-2">
+                <colgroup>
+                        <col class="cols-1">
+                        <col class="cols-5">
+                        <col class="cols-1">
+                        <col class="cols-1">
+                        <col class="cols-1">
+                        <col class="cols-1">
                     </colgroup>
                     <thead>
                     <tr>
@@ -223,7 +228,7 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/Attachment.js');
                     <tbody>
                     <tr>
                         <td><?= $routineExecution->id; ?></td>
-                        <td><?= $routineExecution->log_text; ?></td>
+                        <td><textarea style="width: 750px; height: 100px"><?= $routineExecution->log_text; ?></textarea></td>
                         <td style="word-break: break-all;"><?= $routineExecution->request_routine_id; ?></td>
                         <td><?= $routineExecution->try_number; ?></td>
                         <td><?= $routineExecution->execution_date_time; ?></td>

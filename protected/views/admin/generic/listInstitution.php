@@ -15,21 +15,28 @@
 ?>
 
 <?php
-$institution_id = !empty($_GET['institution_id']) ? $_GET['institution_id'] : \Yii::app()->session['selected_institution_id'];
+if ($admin->has_global_institution_option && $this->checkAccess('admin')) {
+    $institution_id = Yii::app()->request->getQuery('institution_id');
+    $htmloptions = array('empty' => 'All Institutions', 'class' => 'cols-full js-institution-id');
+} else {
+    $institution_id = !empty($_GET['institution_id']) ? $_GET['institution_id'] : \Yii::app()->session['selected_institution_id'];
+    $htmloptions = array('class' => 'cols-full js-institution-id');
+}
+
 if (!isset($displayOrder)) {
     $displayOrder = 0;
 }
 if (!isset($uniqueid)) {
     $uniqueid = $this->uniqueid;
 }
+
 ?>
 <?php $this->renderPartial('//base/_messages'); ?>
 <div class='<?=$admin->div_wrapper_class?>' >
     <?php if (!$admin->isSubList()) : ?>
         <h2><?php echo $admin->getModelDisplayName(); ?></h2>
         <form method="GET">
-        <?= \CHtml::dropDownList('institution_id', $institution_id, Institution::model()->getTenantedList(false, true),
-                                 array('class' => 'cols-full js-institution-id')) ?>
+        <?= \CHtml::dropDownList('institution_id', $institution_id, Institution::model()->getTenantedList(false, true), $htmloptions) ?>
         </form>
     <?php endif; ?>
     <?php $this->widget('GenericSearch', array('search' => $admin->getSearch(), 'subList' => $admin->isSubList())); ?>
@@ -66,7 +73,7 @@ if (!isset($uniqueid)) {
                     <th><input type="checkbox" name="selectall" id="selectall"/></th>
                     <?php
                     foreach ($admin->getListFields() as $listItem) :
-                        if ($listItem !== 'attribute_elements_id.id') :?>
+                        if ($listItem !== 'attribute_elements.id') :?>
                             <th>
                                 <?php if ($admin->isSortableColumn($listItem)) : ?>
                                 <a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery(
@@ -100,9 +107,9 @@ if (!isset($uniqueid)) {
                             <input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
                         </td>
                         <?php foreach ($admin->getListFields() as $listItem) :
-                            if ($listItem !== 'attribute_elements_id.id') :
+                            if ($listItem !== 'attribute_elements.id') :
                                 ?>
-                                <td>
+                                <td data-test="<?= $listItem ?>">
                                     <?php
                                     $attr_val = $admin->attributeValue($row, $listItem);
                                     if (gettype($attr_val) === 'boolean') :
@@ -124,11 +131,11 @@ if (!isset($uniqueid)) {
                                 </td>
                             <?php endif;
 
-                            if ($listItem === 'attribute_elements_id.id') :
+                            if ($listItem === 'attribute_elements.id') :
                                 $mappingId = $admin->attributeValue($row, $listItem);
                             endif;
 
-                            if ($listItem === 'attribute_elements.name') :?>
+                            if ($listItem === 'attribute_element_types.name') :?>
                                 <td>
                                     <?php if (($mappingId > 0)) : ?>
                                         <a onMouseOver="this.style.color='#AFEEEE'" onMouseOut="this.style.color=''"

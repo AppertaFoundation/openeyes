@@ -18,6 +18,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
 
 class MedicationManagementController extends BaseController
 {
@@ -52,7 +53,7 @@ class MedicationManagementController extends BaseController
     public function actionGetPGDSetForm($pgd_id, $allergy_ids, $key)
     {
         $allergy_ids = CJSON::decode($allergy_ids);
-        $pgd_set = \OphDrPGDPSD_PGDPSD::model()->findByPk($pgd_id);
+        $pgd_set = OphDrPGDPSD_PGDPSD::model()->findByPk($pgd_id);
         $user_id = \Yii::app()->user->id;
         $user = User::model()->findByPk($user_id);
         if ($pgd_set) {
@@ -139,13 +140,6 @@ class MedicationManagementController extends BaseController
         $ret_data = [];
         $criteria = new \CDbCriteria();
 
-        //Will only fetch the locally sourced medications that are assigned for use in the current institution
-        $institution_assigned_ids = array_map(function ($item) {
-            return $item->id;
-        }, Medication::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION));
-        $criteria->addCondition("source_type != 'LOCAL'");
-        $criteria->addInCondition("t.id", $institution_assigned_ids, "OR");
-
         if ($term !== '') {
             $criteria->addCondition("preferred_term LIKE :term OR medicationSearchIndexes.alternative_term LIKE :term");
             $criteria->params['term'] = "%$term%";
@@ -157,9 +151,10 @@ class MedicationManagementController extends BaseController
 
         $criteria->limit = $limit > 1000 ? 1000 : $limit;
         $criteria->order = "preferred_term";
-        $criteria->with = array('medicationSearchIndexes');
+        $criteria->with = array('medicationSearchIndexes', 'allergies');
         $criteria->addCondition("t.deleted_date IS NULL");
         $criteria->together = true;
+        $criteria->distinct = true;
 
         $firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
         $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
@@ -173,12 +168,12 @@ class MedicationManagementController extends BaseController
         // we should find a better solution to make a restriction by source (event, element, etc)
         if ($prescribable_sets && ($source === 'prescription' || $source === 'MedicationManagement')) {
             $criteria->addInCondition('medicationSet.id', $prescribable_set_ids);
-            $criteria->with = array_merge($criteria->with, ['medicationSetItems', 'medicationSetItems.medicationSet', 'medicationSetItems.medicationSet.medicationSetRules']);
+            $criteria->with = array_merge($criteria->with, ['medicationSetItems.medicationSet.medicationSetRules']);
         }
 
         // use Medication::model()->prescribable()->findAll() to find only prescribable medications
         // this will need to be used in prescription Adder dialog
-        foreach (Medication::model()->findAll($criteria) as $med) {
+        foreach (Medication::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria) as $med) {
             $info_box = new MedicationInfoBox();
             $info_box->medication_id = $med->id;
             $info_box->init();
@@ -270,7 +265,7 @@ class MedicationManagementController extends BaseController
     }
     public function actionGetPGDIcon($pgdpsd_id)
     {
-        $pgd = \OphDrPGDPSD_PGDPSD::model()->findByPk($pgdpsd_id);
+        $pgd = OphDrPGDPSD_PGDPSD::model()->findByPk($pgdpsd_id);
         if ($pgd) {
             echo "<i class='oe-i info small pad js-has-tooltip' data-tooltip-content='From PGD {$pgd->id}: {$pgd->name}'></i>";
             return;

@@ -22,7 +22,7 @@ $required_abnormality_ids = array_map(function ($required_abnormality) {
 }, $this->getRequiredAbnormalities());
 ?>
 
-<div class="element-fields element-eyes">
+<div class="element-fields element-eyes" id="<?= $model_name ?>_form">
     <?php echo $form->hiddenInput($element, 'eye_id', false, array('class' => 'sideField')); ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) : ?>
         <div class="<?= $eye_side ?>-eye column <?= $page_side ?> side js-element-eye" data-side="<?= $eye_side ?>">

@@ -319,7 +319,7 @@ if ($historyElement) {
                                 <?php foreach ($stopped_systemic_medications as $entry) { ?>
                                     <tr>
                                         <td>
-                                            
+
                                             <?= $entry->getMedicationDisplay(true) ?>
                                         </td>
                                         <td>
@@ -401,7 +401,7 @@ if ($historyElement) {
                 </div>
             <?php } else { ?>
                 <div class="data-value">
-                    <?= nl2br($managementElement->comments) ?>
+                    <?= Yii::app()->format->Ntext($managementElement->comments) ?>
                 </div>
             <?php } ?>
         </div>
@@ -440,7 +440,11 @@ if ($historyElement) {
                                 foreach ($non_ticket_entries as $entry) { ?>
                                     <tr>
                                         <td><?= $row_count === 0 ? '' : 'AND' ?></td>
-                                        <td><?= $entry->getInfos(); ?></td>
+                                        <?php $infos = $entry->getInfos(); ?>
+                                        <td>
+                                            <?= $entry->getStatusLabel() ?> <span class="fade"><?= !empty($infos) ? '&nbsp;[ ' . $entry->getInfos() . ' ] ' : ''; ?></span>
+                                            <?= !empty($entry->getRiskStatusLabel()['icon']) ? $entry->getRiskStatusLabel()['icon'] : '' ?>
+                                        </td>
                                     </tr>
                                     <?php $row_count++; ?>
                                 <?php }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -16,7 +17,6 @@
  */
 class SsoController extends BaseAdminController
 {
-
     public $layout = 'admin';
     public $group = 'Core';
 
@@ -64,12 +64,16 @@ class SsoController extends BaseAdminController
 
             if ($auth->getErrors()) {
                 $error = $auth->getLastErrorReason();
-                throw new Exception("Error in SAML authentication: ".$error);
+                throw new Exception("Error in SAML authentication: " . $error);
+            }
+
+            if (!isset($userInfo['username'][0])) {
+                throw new Exception('Source for Username is not defined: ' . print_r($this->getErrors(), true));
             }
 
             // Save the new user into the OE database
             try {
-                $identity = $user->setSAMLSSOUserInformation($userInfo);
+                $user->setSAMLSSOUserInformation($userInfo);
             } catch (Exception $e) {
                 $this->render('/sso/invalid_role', array(
                         'error' => $e->getMessage()
@@ -88,9 +92,9 @@ class SsoController extends BaseAdminController
             $client_secret = $OIDC_settings['client_secret'];
             $issuer = $OIDC_settings['issuer'];
             $encryptionKey = $OIDC_settings['encryptionKey'];
+
             // SsoOpenIDConnect model that overrides certain functions of Jumbojett/OpenIDConnectClient
             $oidc = new SsoOpenIDConnect($provider_url, $client_id, $client_secret, $issuer, $encryptionKey);
-
             $oidc->setRedirectUrl($OIDC_settings['redirect_url']);
             $oidc->setResponseTypes($OIDC_settings['response_type']);
             $oidc->addScope($OIDC_settings['scopes']);
@@ -102,35 +106,45 @@ class SsoController extends BaseAdminController
                 throw $e;
             }
 
-            // Create an array of user attributes
-            $userAttributes = ['email', 'given_name', 'family_name'];
-
-            foreach ($userAttributes as $attribute) {
-                $userInfo[$attribute] = $oidc->requestUserInfo($attribute);
+            // Create an array of required user attributes (can be overidden from field_mapping)
+            $requiredUserFields = [
+                'username' => 'email',
+                'email' => 'email',
+                'first_name' => 'given_name',
+                'last_name' => 'family_name'
+            ];
+            foreach ($requiredUserFields as $userField => $oidcField) {
+                $userInfo[$userField] = $oidc->requestUserInfo($oidcField);
             }
 
-            // Get custom claims from OIDC ID Token
-            $customClaims = $OIDC_settings['custom_claims'];
             $token = (array)$oidc->getIdTokenPayload();
-            foreach ($customClaims as $claim => $attribute) {
-                if ($attribute === 'roles' && !is_array($token[$claim])) {
-                    // Get the string value for roles and make it an array
-                    $token[$claim] = explode(",", $token[$claim]);
+            $claimsMapping = $OIDC_settings['field_mapping'];
+            foreach ($claimsMapping as $userField => $oidcField) {
+                if (!isset($token[$oidcField])) {
+                    continue; //Don't add to user info if it doesn't come from claims
                 }
-                $userInfo[$attribute] = $token[$claim];
+                if ($userField === 'roles' && !is_array($token[$oidcField])) {
+                    // Get the string value for roles and make it an array
+                    if (strlen($token[$oidcField]) > 0) {
+                        $userInfo[$userField] = explode(",", $token[$oidcField]);
+                    } else {
+                        $userInfo[$userField] = [];
+                    }
+                } else {
+                    $userInfo[$userField] = $token[$oidcField];
+                }
             }
 
             if (!isset($userInfo['username'])) {
-                throw new Exception('Source for Username is not defined: '.print_r($this->getErrors(), true));
+                throw new Exception('Source for Username is not defined: ' . print_r($this->getErrors(), true));
             }
-
             // If user already exists based on username, then update that user, otherwise create new user.
-            $existingUser = User::model()->find('username = :username', array(':username' => $userInfo['username']));
-            if ($existingUser !== null) {
-                $user = $existingUser;
+            $existingUserAuth = UserAuthentication::model()->find('username = :username', array(':username' => $userInfo['username']));
+            if ($existingUserAuth !== null) {
+                $user = $existingUserAuth->user;
             }
             try {
-                $identity = $user->setOIDCSSOUserInformation($userInfo);
+                $user->setOIDCSSOUserInformation($userInfo);
             } catch (Exception $e) {
                 $this->render('/sso/invalid_role', array(
                         'error' => $e->getMessage()
@@ -139,27 +153,60 @@ class SsoController extends BaseAdminController
             }
         }
 
-        // Set the user into the session then login
-        $userIdentity = new UserIdentity($identity['username'], $identity['password']);
-        if ($userIdentity->authenticate(true)) {
-            if (Yii::app()->user->login($userIdentity, 0)) {
-                // The login was sucessful so redirect to home page
-                $this->render('/sso/login');
-                return true;
+        try {
+            // ID is the ID of the newly created/updated user
+            $user_id = $user->id;
+
+            // Get institution and site for authentication
+            $institution_id = $this->getInstitutionForAuthentication($userInfo);
+
+            // Authenticate user in institution and site / create user if it does not exist
+            // Note that site_id is always null in this situation - until such time as a CR is made to add site-level SSO authentication
+            UserAuthentication::model()->findOrCreateSSOAuthentication($user_id, $userInfo['username'], $institution_id, null);
+
+            // Set the user into the session then login
+            $userIdentity = new UserIdentity($userInfo['username'], null, $institution_id, null);
+            if ($userIdentity->authenticate()) {
+                if (Yii::app()->user->login($userIdentity, 0)) {
+                    // The login was successful so redirect to home page
+                    $this->render('/sso/login');
+                    return true;
+                }
+                throw new Exception('The user cannot be logged in');
             }
-            throw new Exception('The user cannot be logged in');
+            throw new Exception('User Authentication failed');
+        } catch (Exception $e) {
+            $this->render('/sso/invalid_role', array(
+                'error' => $e->getMessage()
+            ));
+            Yii::app()->end();
         }
-        throw new Exception('User Authentication failed');
     }
+
+    public function getInstitutionForAuthentication($userInfo)
+    {
+        if (array_key_exists('institution_id', $userInfo)) {
+            return $userInfo['institution_id'];
+        } elseif (array_key_exists('institution_code', $userInfo)) {
+            $institution = Institution::model()->findByAttributes(['remote_id' => $userInfo['institution_code']]);
+            if ($institution) {
+                return $institution->id;
+            }
+        }
+
+        if (!isset(Yii::app()->params['institution_code'])) {
+            throw new Exception('Default institution code must be set');
+        }
+
+        return Institution::model()->findByAttributes(['remote_id' => Yii::app()->params['institution_code']])->id;
+    }
+
+
 
     public function actionredirectToSSOPortal()
     {
-        $portalURL = Yii::app()->params['OIDC_settings']['portal_login_url'];
-        if ($portalURL !== null) {
-            $this->renderJSON($portalURL);
-            return true;
-        }
-        return false;
+        $this->renderJSON(Yii::app()->createUrl('sso/login'));
+        return true;
     }
 
     public function actiondefaultSSOPermissions()
@@ -205,7 +252,6 @@ class SsoController extends BaseAdminController
         } else {
             $ssoRoles = SsoRoles::model()->findByPk($id);
         }
-
         if ($request->getIsPostRequest()) {
             $ssoAttributes = $request->getPost('SsoRoles');
             if (!array_key_exists('sso_roles_assignment', $ssoAttributes)) {
@@ -215,7 +261,7 @@ class SsoController extends BaseAdminController
                 $ssoRoles->saveRolesAuthAssignment($ssoAttributes['name'], $ssoAttributes['sso_roles_assignment'], $id);
                 $this->redirect('/sso/ssorolesauthassignment');
             } catch (Exception $e) {
-                $ssoRoles->addError('name', 'SSO Role "'.$ssoRoles->name.'" already exists');
+                $ssoRoles->addError('name', 'SSO Role "' . $ssoRoles->name . '" already exists');
                 $errors = $ssoRoles->getErrors();
             }
         }
@@ -237,7 +283,7 @@ class SsoController extends BaseAdminController
 
             $transaction->commit();
             Yii::app()->user->setFlash('Success', 'SSO Role successfully deleted');
-            Audit::add('SSO', 'SSO-role-modified', 'SSO Role was was deleted: '. $ssoRole->name);
+            Audit::add('SSO', 'SSO-role-modified', 'SSO Role was was deleted: ' . $ssoRole->name);
             $this->redirect('/sso/ssorolesauthassignment');
         } catch (Exception $e) {
             $transaction->rollback();

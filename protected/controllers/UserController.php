@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -22,12 +23,8 @@ class UserController extends BaseController
                 'roles' => array('OprnViewClinical'),
             ),
             array('allow',
-                'actions' => array('testAuthenticated', 'getSecondsUntilSessionExpire'),
+                'actions' => array('getSessionExpireTimestamp'),
                 'users' => array('@'),
-            ),
-            array('allow',
-                'actions' => array('checkPincodeAvailability'),
-                'roles' => array('admin'),
             ),
         );
     }
@@ -38,23 +35,19 @@ class UserController extends BaseController
         if (\Yii::app()->request->isAjaxRequest && !empty($term)) {
             $term = strtolower($term);
 
-            $criteria = new \CDbCriteria;
+            $criteria = new \CDbCriteria();
             $criteria->join = 'JOIN user_authentication user_auth ON t.id = user_auth.user_id';
             $criteria->compare("LOWER(user_auth.username)", $term, true, 'OR');
             $criteria->compare("LOWER(first_name)", $term, true, 'OR');
             $criteria->compare("LOWER(last_name)", $term, true, 'OR');
             $words = explode(" ", $term);
+
             if (count($words) > 1) {
-                // possibly slightly verbose approach to checking first and last name combinations
-                // for searches
-                $first_criteria = new \CDbCriteria();
-                $first_criteria->compare("LOWER(first_name)", $words[0], true);
-                $first_criteria->compare("LOWER(last_name)", implode(" ", array_slice($words, 1, count($words) - 1)), true);
-                $last_criteria = new \CDbCriteria();
-                $last_criteria->compare("LOWER(first_name)", $words[count($words) - 1], true);
-                $last_criteria->compare("LOWER(last_name)", implode(" ", array_slice($words, 0, count($words) - 2)), true);
-                $first_criteria->mergeWith($last_criteria, 'OR');
-                $criteria->mergeWith($first_criteria, 'OR');
+                $criteria->compare("LOWER(CONCAT(first_name, ' ', last_name))", $term, true, 'OR');
+                $criteria->compare("LOWER(CONCAT(last_name, ' ', first_name))", $term, true, 'OR');
+                $criteria->compare("LOWER(CONCAT(title, ' ', first_name, ' ', last_name))", $term, true, 'OR');
+
+                $criteria->order = 'first_name, last_name';
             }
 
             if ($consultant_only) {
@@ -81,37 +74,20 @@ class UserController extends BaseController
         ));
     }
 
-    public function actionTestAuthenticated()
-    {
-        //If the user is not authenticated, the request will be blocked and this will not be returned
-        $this->renderJSON('Success');
-    }
-
-    public function actionGetSecondsUntilSessionExpire()
+    public function actionGetSessionExpireTimestamp()
     {
         $expire = Yii::app()->db->createCommand()
             ->select('expire')
             ->from('user_session')
             ->where('id=:id', array(':id' => $_COOKIE[session_name()]))
-            ->queryRow();
+            ->queryScalar();
 
-        $seconds_to_expire = $expire['expire'] - time();
+        //Expire will be false if the user was not found in the session table,
+        // so we return the current timestamp to treat it as expired
+        if ($expire === false) {
+            $expire = time();
+        }
 
-        $this->renderJSON($seconds_to_expire);
-    }
-
-    public function actionCheckPincodeAvailability($pincode, $ins_auth_id, $user_id){
-        $user_auth = new UserAuthentication();
-        $user_auth->pincode = $pincode;
-        $user_auth->institution_authentication_id = $ins_auth_id;
-        $user_auth->user_id = $user_id;
-        $obj = $user_auth->checkUniqueness(null, null);
-
-        $ret = array(
-            'success' => $obj ? false : true,
-            'user' => $obj ? $obj->user->getFullName() : '',
-        );
-        $this->renderJSON($ret);
-        unset($user_auth);
+        $this->renderJSON($expire);
     }
 }

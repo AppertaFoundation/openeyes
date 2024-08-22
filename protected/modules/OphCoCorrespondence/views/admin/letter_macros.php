@@ -1,9 +1,6 @@
 <?php
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) Copyright Apperta Foundation 2022
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,18 +9,27 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (C) 2022, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
 
 <div class="cols-4 column end">
-    <?=\CHtml::htmlButton('Add macro', array('class' => 'button small addLetterMacro')) ?>
+    <?=\CHtml::htmlButton('Add macro', [
+            'class' => 'button small js-addLetterMacro',
+            'data-institution-input-id' => 'institution_id'
+        ]) ?>
 </div>
 
 <form id="admin_sessions_filters" class="panel">
     <div class="cols-full">
-        <table class="standard cols-full" id="add_macro_table">
+        <table class="standard" style="margin-bottom:0px">
+            <colgroup>
+                <col class="cols-1">
+                <col class="cols-3">
+                <col class="cols-1">
+                <col class="cols-2">
+            </colgroup>
             <tbody>
             <tr>
                 <td><?=\CHtml::dropDownList(
@@ -34,9 +40,8 @@
                 ) ?></td>
                 <td><?=\CHtml::dropDownList(
                     'institution_id',
-                    @$_GET['institution_id'],
-                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
-                    ['empty' => '- Institution -']
+                    $default_institution_id,
+                    Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin'))
                 ) ?></td>
                 <td><?=\CHtml::dropDownList(
                     'site_id',
@@ -51,26 +56,36 @@
                     ['empty' => '- Subspecialty -']
                 ) ?></td>
                 <td><?=\CHtml::dropDownList(
-                    'firm_id',
-                    @$_GET['firm_id'],
-                    Firm::model()->getListWithSpecialties(Yii::app()->session['selected_institution_id'], true),
-                    ['empty' => '- ' . Firm::contextLabel() . ' -']
-                ) ?>
+                        'firm_id',
+                        @$_GET['firm_id'],
+                        Firm::model()->getListWithSpecialties(Yii::app()->session['selected_institution_id'], true),
+                        ['empty' => '- ' . Firm::contextLabel() . ' -']
+                    ) ?>
                 </td>
-                <td><?=\CHtml::dropDownList(
-                    'name',
-                    @$_GET['name'],
-                    $unique_names,
-                    ['empty' => '- Name -']
-                ) ?></td>
-                <td><?=\CHtml::dropDownList(
-                    'episode_status_id',
-                    @$_GET['episode_status_id'],
-                    $episode_statuses,
-                    ['empty' => '- Episode status -']
-                ) ?></td>
             </tr>
             </tbody>
+        </table>
+            <table class="standard cols-full" style="margin-top:0px">
+                <col class="cols-2">
+                <col class="cols-3">
+                <tbody>
+                <tr>
+                    <td><?=\CHtml::dropDownList(
+                            'name',
+                            @$_GET['name'],
+                            $unique_names,
+                            ['empty' => '- Name -']
+                        ) ?></td>
+                    <td><?=\CHtml::dropDownList(
+                            'episode_status_id',
+                            @$_GET['episode_status_id'],
+                            $episode_statuses,
+                            ['empty' => '- Episode status -']
+                        ) ?></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
 
 
         </table>

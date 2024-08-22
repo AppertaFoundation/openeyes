@@ -79,10 +79,15 @@ class AttachmentDisplayController extends BaseApiController
                 $data = isset($model[$_GET['attachment']]) ? $model[$_GET['attachment']] : null;
                 // not cached or cache outdated, we respond '200 OK' and output the attachment.
                 header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $file_mod_time) . ' GMT', true, 200);
-
                 header('Content-transfer-encoding: binary');
-                header('Content-length: ' . strlen($data));
-                echo $data;
+
+                if ($decoded_data = base64_decode($data, true)) {
+                    header('Content-length: ' . strlen($decoded_data));
+                    echo $decoded_data;
+                } else {
+                    header('Content-length: ' . strlen($data));
+                    echo $data;
+                }
             }
         }
     }

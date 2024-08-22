@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <script src="<?= Yii::app()->assetManager->createUrl('../../node_modules/pdfjs-dist/build/pdf.min.js')?>"></script>
@@ -115,10 +117,10 @@ $model_name = CHtml::modelName($model);
         <tr id="ophco-template-row" <?= isset($showTemplate) ? '' : 'style="display: none;"';?>>
             <td colspan="2">
                 <div id="ophco-template-container">
-                    <img id="ophco-template" src="<?= isset($model->templateImage->id) && ($model->templateImage->mimetype !== 'application/pdf') ? '/file/view/'. $model->templateImage->id . '/image'. strrchr($model->templateImage->name, '.') : '' ?>"
+                    <img id="ophco-template" src="<?= isset($model->templateImage->id) && ($model->templateImage->mimetype !== 'application/pdf') ? '/file/view/' . $model->templateImage->id . '/image' . strrchr($model->templateImage->name, '.') : '' ?>"
                          border="0" style="max-width: 100%">
                     <div id="ophco-template-pdf" style="<?= (isset($model->templateImage) && ($model->templateImage->mimetype !== 'application/pdf') ?  'display:none;' : '') ?>" >
-                        <iframe id="pdf-js-viewer" src="<?= isset($model->templateImage->id) && ($model->templateImage->mimetype === 'application/pdf') ? Yii::app()->assetManager->createUrl('components/pdfjs/web/viewer.html?file=/file/view/'. $model->templateImage->id . '/image'. strrchr($model->templateImage->name, '.') . '#zoom=70') : ''?>"
+                        <iframe id="pdf-js-viewer" src="<?= isset($model->templateImage->id) && ($model->templateImage->mimetype === 'application/pdf') ? Yii::app()->assetManager->createUrl('components/pdfjs/web/viewer.html?file=/file/view/' . $model->templateImage->id . '/image' . strrchr($model->templateImage->name, '.') . '#zoom=70') : ''?>"
                                 title="webviewer" style="width: 70%" height="800px" type="application/pdf"></iframe>
                     </div>
                 </div>

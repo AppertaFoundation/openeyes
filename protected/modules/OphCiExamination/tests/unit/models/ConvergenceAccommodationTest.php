@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\models;
 
+
 use OEModule\OphCiExamination\models\ConvergenceAccommodation;
 use OEModule\OphCiExamination\models\CorrectionType;
 use OEModule\OphCiExamination\tests\unit\models\testingtraits\HasCorrectionTypeAttributeToTest;
@@ -114,6 +115,5 @@ class ConvergenceAccommodationTest extends \ModelTestCase
         $instance->setAttributes($attrs);
 
         $this->assertEquals($expected, $instance->letter_string);
-
     }
 }

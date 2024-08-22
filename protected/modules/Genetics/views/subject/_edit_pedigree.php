@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,58 +16,38 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
-<div class=" furtherfindings-multi-select">
-  <div id="div_GeneticsPatient_Pedigree" class="eventDetail row widget">
-    <div class="cols-2 column">
+<div class=" furtherfindings-multi-select cols-full ">
+  <div id="div_GeneticsPatient_Pedigree" class="eventDetail row widget flex-layout cols-full ">
+    <div class="cols-7">
       <label for="GeneticsPatient[pedigrees]">
         Pedigree:
       </label>
     </div>
-    <div class="cols-5 column">
+    <div class="cols-4">
       <div class="multi-select">
 
             <?php // ok, so this is here because this is saved through the Admin() class and we need to mimic the behavior and the html for the MultiSelectList ?>
         <select class="hidden"></select>
 
-        <input type="hidden" name="GeneticsPatient[MultiSelectList_GeneticsPatient[pedigrees]]"
-               class="multi-select-list-name">
-            <?php
-            $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-              'id' => 'GeneticsPatient_pedigreeAutoComplete',
-              'name' => 'GeneticsPatient[pedigree]',
-              'value' => '',
-              'sourceUrl' => array('pedigree/search'),
-              'options' => array(
-                  'minLength' => '1',
-                  'search' => "js:function( event, ui ) { $('.loader-pedigree').show();}",
-                  'response' => "js:function( event, ui ) { 
-                                                $('.loader-pedigree').hide();
-                                                if (!ui.content.length) {
-                                                var noResult = { value:\"\",label:\"No results found\" };
-                                                ui.content.push(noResult);
-                                            }
-                                        }",
-                  'select' => "js:function(event, ui) {
-                                            if (ui.item.value){
-                                                $('ul.pedigree-list').append(
-                                                    Mustache.render(pedigree_status_template, {
-                                                        pedigreeId: ui.item.value,
-                                                        label: ui.item.label
-                                                    })
-                                                ).show();
-                                                toggleNoPedigreeCheckbox();
-                                            }
-                                            return false;
-                                        }",
-              ),
-              'htmlOptions' => array(
-                  'placeholder' => 'Search for pedigree id',
-              ),
-            )); ?>
+            <input type="hidden" name="GeneticsPatient[MultiSelectList_GeneticsPatient[pedigrees]]" class="multi-select-list-name">
+          <?php
+            $this->widget('application.widgets.AutoCompleteSearch',
+              [
+                  'field_name' => "GeneticsPatient[pedigree]",
+                  'htmlOptions' =>
+                      [
+                          'placeholder' => 'Search for pedigree id',
+                      ],
+                  'layoutColumns' => ['field' => '4'],
+                  'hide_no_result_msg' => true
+              ]);
+            ?>
 
         <ul class="MultiSelectList pedigree-list multi-select-selections">
+
             <?php foreach (GeneticsPatientPedigree::model()->findAllByAttributes(array('patient_id' => $genetics_patient->id)) as $pedigree) : ?>
               <li>
                 <a href="/Genetics/pedigree/edit/<?= $pedigree->pedigree_id; ?>">
@@ -74,7 +55,7 @@
                       <?= $pedigree->pedigree_id; ?>
                       <?php if ($pedigree->pedigree->gene) : ?>
                         (<?= $pedigree->pedigree->gene->name ?>)
-                        <?php endif; ?>
+                      <?php endif; ?>
                   </span>
                 </a>
 
@@ -85,8 +66,7 @@
 
                 <select name="GeneticsPatient[pedigrees_through][<?= $pedigree->pedigree_id; ?>][status_id]">
                     <?php foreach (PedigreeStatus::model()->findAll() as $pedigree_status) : ?>
-                      <option
-                          value="<?= $pedigree_status->id; ?>" <?php echo $pedigree_status->id == $pedigree->status_id ? 'selected=""' : ''; ?>><?= $pedigree_status->name; ?></option>
+                                <option value="<?=$pedigree_status->id;?>" <?php echo $pedigree_status->id == $pedigree->status_id ? 'selected=""' : '';?>><?=$pedigree_status->name;?></option>
                     <?php endforeach; ?>
                 </select>
               </li>
@@ -96,13 +76,13 @@
       </div>
     </div>
     <div class="cols-1 column end">
-      <img class="loader-pedigree hidden"
-           src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif'); ?>" alt="loading..."
-           style="margin-right:10px"/>
+            <img class="loader-pedigree hidden" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif');?>" alt="loading..." style="margin-right:10px" />
     </div>
   </div>
 
+
   <script>
+
     pedigree_status_template = '<li><a href="/Genetics/pedigree/edit/{{pedigreeId}}"><span class="text">{{label}}</span></a>' +
       '<span data-text="{{pedigreeId}}" class="multi-select-remove remove-one"><i class="oe-i remove-circle small"></i></span>' +
       '<input type="hidden" name="GeneticsPatient[pedigrees][]" value="{{pedigreeId}}">' +
@@ -115,4 +95,32 @@
 
       '</select></li>';
   </script>
+
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $(`[id="GeneticsPatient\\[pedigree\\]"]`),
+            url: '/Genetics/pedigree/search',
+            params: {
+            },
+            maxHeight: '200px',
+            minimumCharacterLength: 1,
+            onSelect: function () {
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                if (response.value){
+                   $('ul.pedigree-list').append(
+                       Mustache.render(pedigree_status_template, {
+                           pedigreeId: response.value,
+                           label: response.label
+                       })
+                   ).show();
+                   toggleNoPedigreeCheckbox();
+               }
+            }
+        });
+    });
+</script>

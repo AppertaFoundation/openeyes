@@ -1,4 +1,7 @@
 <?php
+
+use OE\factories\models\traits\HasFactory;
+
 /**
  * OpenEyes.
  *
@@ -35,6 +38,8 @@
  */
 class Institution extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -55,7 +60,7 @@ class Institution extends BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.name');
+        return array('order' => $this->getTableAlias(true, false) . '.name');
     }
 
     public function behaviors()
@@ -138,20 +143,20 @@ class Institution extends BaseActiveRecordVersioned
         ));
     }
 
+    public function isTenanted(): bool
+    {
+        return count($this->authenticationMethods) > 0;
+    }
+
     /**
      * @return Institution
      */
     public function getCurrent()
     {
-        if (!isset(Yii::app()->session['selected_institution_id'])) {
-            throw new Exception('Institution id is not set');
-        }
-
-        $institution = $this->findByPk(Yii::app()->session['selected_institution_id']);
+        $institution = Yii::app()->session->getSelectedInstitution();
         if (!$institution) {
-            throw new Exception("Institution with id '".Yii::app()->session['selected_institution_id']."' not found");
+            throw new RuntimeException('Institution is not set for application session');
         }
-
         return $institution;
     }
 
@@ -198,7 +203,7 @@ class Institution extends BaseActiveRecordVersioned
         return array_merge([$this->findByPk($default_to_id)], $this->getTenanted($condition, $params, $user_must_be_member));
     }
 
-    public function getTenantedList($current_institution_only = true, $user_must_be_member = false)
+    public function getTenantedList($current_institution_only = true, $user_must_be_member = false, $return_as_json_array = false)
     {
         $result = array();
 
@@ -216,11 +221,14 @@ class Institution extends BaseActiveRecordVersioned
                 $cmd->where('ua.user_id = :user_id', [':user_id' => \Yii::app()->user->id]);
             }
 
-            foreach ($cmd->queryAll() as $institution) {
-                $result[$institution['id']] = $institution['name'];
+            if ($return_as_json_array) {
+                $result = $cmd->order('i.name')->queryAll();
+            } else {
+                foreach ($cmd->queryAll() as $institution) {
+                    $result[$institution['id']] = $institution['name'];
+                }
+                natcasesort($result);
             }
-
-            natcasesort($result);
         }
 
         return $result;
@@ -236,7 +244,7 @@ class Institution extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function __toString() : string
+    public function __toString(): string
     {
         return $this->short_name;
     }

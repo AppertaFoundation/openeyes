@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -16,14 +17,26 @@
 namespace OEModule\OphGeneric\widgets;
 
 use OEModule\OphGeneric\models\Attachment;
+use OEModule\OphGeneric\components\EventManager;
 
 class AttachmentElement extends \BaseEventElementWidget
 {
     public static $moduleName = 'OphGeneric';
-    protected $print_view = 'Attachment_event_print';
+    // Future development will be to add a dedicated print view to handle printing the attachments in a similar manner to the OphCoDocument Event
+    // For now this element does not have a dedicated print view
+    // protected $print_view = 'AttachmentElement_event_print';
 
     protected function getNewElement()
     {
         return new Attachment();
+    }
+
+    protected function getView()
+    {
+        if ($this->element->isNewRecord || EventManager::forEvent($this->element->event)->isManualEvent())  {
+            return 'NoManualData_event_view';
+        }
+
+        return parent::getView();
     }
 }

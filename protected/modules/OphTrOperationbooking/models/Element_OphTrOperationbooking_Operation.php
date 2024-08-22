@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,8 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "et_ophtroperationbooking_operation".
@@ -36,10 +39,10 @@
  * @property string $on_hold_comment
  * @property int $referral_id
  * @property int $rtt_id
- * @property int $preassessment_booking_required
  * @property int $overnight_stay_required_id
  * @property int $complexity
  * @property tinyint $is_golden_patient
+ * @property tinyint $is_lac_required
  *
  * The followings are the available model relations:
  * @property ElementType $element_type
@@ -58,6 +61,8 @@
  */
 class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 {
+    use HasFactory;
+
     public $count;
     public $reschedule;
 
@@ -142,17 +147,18 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             array('consultant_required, senior_fellow_to_do, named_consultant_id, any_grade_of_doctor, decision_date, special_equipment_details, comments,comments_rtt','safe'),
             array('site_id, anaesthetic_choice_id, stop_medication, stop_medication_details, total_duration, operation_cancellation_date',       'safe'),
             array('status_id, cancellation_comment, cancellation_user_id, latest_booking_id, referral_id, special_equipment',                   'safe'),
-            array('priority_id, eye_id, organising_admission_user_id, preassessment_booking_required, overnight_booking_required_id, complexity, is_golden_patient',    'safe'),
+            array('priority_id, eye_id, organising_admission_user_id, overnight_booking_required_id, complexity, is_golden_patient, is_lac_required',    'safe'),
             array('on_hold_reason, on_hold_comment', 'safe'),
 
             array('named_consultant_id', 'RequiredIfFieldValidator', 'field' => 'consultant_required', 'value' => true, 'on' => 'insert'),
             array('cancellation_comment', 'length', 'max' => 200),
             array('procedures', 'required', 'message' => 'At least one procedure must be entered'),
             array('total_duration', 'validateDuration'),
-            array('referral_id', 'validateReferral'),
+            array('referral_id', 'validateReferral', 'on' => 'insert'),
             array('decision_date', 'OEDateValidatorNotFuture'),
-            array('eye_id, consultant_required, overnight_stay_required_id, preassessment_booking_required', 'required'),
-            array('anaesthetic_choice_id, stop_medication, complexity', 'required', 'on' => 'insert'),
+            array('eye_id, consultant_required, overnight_stay_required_id', 'required'),
+            array('anaesthetic_choice_id, stop_medication', 'required', 'on' => 'insert'),
+            array('complexity', 'required', 'on' => 'insert'),
             array('stop_medication_details', 'RequiredIfFieldValidator', 'field' => 'stop_medication', 'value' => true),
             array('site_id, priority_id, decision_date', 'required'),
             array('special_equipment', 'required', 'on' => 'insert'),
@@ -172,7 +178,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
+            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'op_user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
@@ -233,10 +239,10 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             'senior_fellow_to_do' => 'Senior fellow to do',
             'named_consultant_id' => 'Consultant',
             'anaesthetic_type' => 'Anaesthetic Type',
-            'preassessment_booking_required' => 'Pre-assessment booking required',
             'overnight_stay_required_id' => 'Overnight stay required',
             'complexity' => 'Complexity',
             'is_golden_patient' => 'Suitable as golden patient',
+            'is_lac_required' => 'Anaesthetist cover required',
             'cancellation_reason_id' => ($this->reschedule ? 'Reschedule Reason' : 'Cancellation Reason'),
             'on_hold_comment' => 'On Hold Comment',
             'on_hold_reason' => 'On Hold Reason',
@@ -302,9 +308,6 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         }
         $this->special_equipment = false;
         $preassesment_booking_default_value = Yii::app()->params['pre_assessment_booking_default_value'];
-        $this->preassessment_booking_required = (isset($preassesment_booking_default_value) && $preassesment_booking_default_value === 2) ?
-            null :
-            $preassesment_booking_default_value;
         $this->overnight_stay_required_id = self::OVERNIGHT_STAY_NOT_REQUIRED_ID;
 
         $this->organising_admission_user_id = Yii::app()->user->id;
@@ -363,6 +366,12 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         if (!$this->special_equipment) {
             $this->special_equipment_details = null;
         }
+        if (!$this->consultant_required) {
+            $this->named_consultant_id = null;
+        }
+        if (!$this->referral_id) {
+            $this->referral_id = null;
+        }
 
         return parent::beforeSave();
     }
@@ -390,7 +399,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                 $item->proc_id = $id;
 
                 if (!$item->save()) {
-                    throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(), true));
+                    throw new Exception('Unable to save MultiSelect item: ' . print_r($item->getErrors(), true));
                 }
             }
         }
@@ -422,7 +431,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                     $type->anaesthetic_type_id = $type_id;
 
                     if (!$type->save()) {
-                        throw new Exception('Unable to save anaesthetic agent assignment: '.print_r($type->getErrors(), true));
+                        throw new Exception('Unable to save anaesthetic agent assignment: ' . print_r($type->getErrors(), true));
                     }
                 } else {
                     unset($curr_by_id[$type_id]);
@@ -431,7 +440,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         }
         foreach ($curr_by_id as $type) {
             if (!$type->delete()) {
-                throw new Exception('Unable to delete anaesthetic agent assignment: '.print_r($type->getErrors(), true));
+                throw new Exception('Unable to delete anaesthetic agent assignment: ' . print_r($type->getErrors(), true));
             }
         }
     }
@@ -444,7 +453,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
 
-        if ( !count($this->anaesthetic_type_assignments)) {
+        if (!count($this->anaesthetic_type_assignments)) {
             $this->addError('anaesthetic_type', 'Type cannot be empty.');
         }
 
@@ -478,7 +487,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             self::LETTER_INVITE => 'Invitation',
             self::LETTER_REMINDER_1 => '1st Reminder',
             self::LETTER_REMINDER_2 => '2nd Reminder',
-            self::LETTER_GP => 'Refer to '.\SettingMetadata::model()->getSetting('gp_label'),
+            self::LETTER_GP => 'Refer to ' . \SettingMetadata::model()->getSetting('gp_label'),
         );
     }
 
@@ -488,7 +497,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         $letterType = ($this->getDueLetter() !== null && isset($letterTypes[$this->getDueLetter()])) ? $letterTypes[$this->getDueLetter()] : false;
 
         if ($letterType == false && $this->getLastLetter() == self::LETTER_GP) {
-            $letterType = 'Refer to '.\SettingMetadata::model()->getSetting('gp_label');
+            $letterType = 'Refer to ' . \SettingMetadata::model()->getSetting('gp_label');
         }
 
         return $letterType;
@@ -580,24 +589,28 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      */
     public function getDueLetter()
     {
+        $waiting_list_status = $this->getWaitingListStatus();
+
         $lastletter = $this->getLastLetter();
-        if (!$this->getWaitingListStatus()) { // if getwaitingliststatus returns null, we're white
+        if (!$waiting_list_status) { // if getwaitingliststatus returns null, we're white
             return $lastletter; // no new letter is due, so we should print the last one
         }
-        if ($this->getWaitingListStatus() == self::STATUS_PURPLE) {
-            return self::LETTER_INVITE;
-        } elseif ($this->getWaitingListStatus() == self::STATUS_GREEN1) {
-            return self::LETTER_REMINDER_1;
-        } elseif ($this->getWaitingListStatus() == self::STATUS_GREEN2) {
-            return self::LETTER_REMINDER_2;
-        } elseif ($this->getWaitingListStatus() == self::STATUS_ORANGE) {
-            return self::LETTER_GP;
-        } elseif ($this->getWaitingListStatus() == self::STATUS_RED) {
-            // this used to return null, but now returning GP so that gp letters can be re-printed if necessary
-            return self::LETTER_GP;
-        } else {
-            return; // possibly this should return $lastletter ?
+
+        switch ($waiting_list_status) {
+            case self::STATUS_PURPLE:
+                return self::LETTER_INVITE;
+            case self::STATUS_GREEN1:
+                return self::LETTER_REMINDER_1;
+            case self::STATUS_GREEN2:
+                return self::LETTER_REMINDER_2;
+            case self::STATUS_ORANGE:
+                return self::LETTER_GP;
+            case self::STATUS_RED:
+                // this used to return null, but now returning GP so that gp letters can be re-printed if necessary
+                return self::LETTER_GP;
         }
+
+        return; // possibly this should return $lastletter ?
     }
 
     /**
@@ -721,8 +734,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         foreach ($days as $day => $dates) {
             for ($i = 1; $i <= date('t', mktime(0, 0, 0, $month, 1, $year)); ++$i) {
                 if (date('D', mktime(0, 0, 0, $month, $i, $year)) == $day) {
-                    $date = "$year-$month-".str_pad($i, 2, '0', STR_PAD_LEFT);
-                    if (in_array($date, $dates) && (Yii::app()->user->checkAccess('Super schedule operation') || !Yii::app()->params['future_scheduling_limit'] || $date <= date('Y-m-d', strtotime('+'.Yii::app()->params['future_scheduling_limit'])))) {
+                    $date = "$year-$month-" . str_pad($i, 2, '0', STR_PAD_LEFT);
+                    if (in_array($date, $dates) && (Yii::app()->user->checkAccess('Super schedule operation') || !SettingMetadata::model()->getSetting('future_scheduling_limit') || $date <= date('Y-m-d', strtotime('+' . SettingMetadata::model()->getSetting('future_scheduling_limit'))))) {
                         $open = $full = 0;
                         $status = '';
                         if (strtotime($date) < strtotime(date('Y-m-d'))) {
@@ -813,7 +826,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                         // fill in missing day
                         // appending ' 13:00:00' to the date to avoid daylight saving problems near midnight
                         // TODO: use DateTime object
-                        if (!isset($datelist2[$day]) || !in_array(date('Y-m-d', strtotime($date .' 13:00:00') - (86400 * 7)), $datelist2[$day])) {
+                        if (!isset($datelist2[$day]) || !in_array(date('Y-m-d', strtotime($date . ' 13:00:00') - (86400 * 7)), $datelist2[$day])) {
                             $datelist2[$day][] = date('Y-m-d', strtotime($date . ' 13:00:00') - (86400 * 7));
                             $session_lookup[date('Y-m-d', strtotime($date . ' 13:00:00') - (86400 * 7))] = array('status' => 'blank');
                             $changed = true;
@@ -893,8 +906,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
             $criteria = new CDbCriteria();
             $criteria->addCondition('`t`.site_id = :siteId');
-            $criteria->addCondition('`t`.restriction & :r1 >0');
-            $criteria->addCondition('`t`.restriction & :r2 >0');
+            $criteria->addCondition('(`t`.restriction & :r1 >0 AND `t`.restriction & :r2 >0) OR `t`.restriction = 0');
             $criteria->params[':siteId'] = $siteId;
             $criteria->params[':r1'] = $genderRestrict;
             $criteria->params[':r2'] = $ageRestrict;
@@ -923,11 +935,37 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     }
 
     /**
+     * @return bool
+     *
+     * Returns true if the Anaesthetic Cover Required question is enabled
+     */
+
+    public function showLAC()
+    {
+        return \SettingMetadata::model()->getSetting('op_booking_show_lac_required') == 'on';
+    }
+
+    /**
      * @return string
      */
     public function getAnaestheticTypeDisplay()
     {
-        return implode(', ', $this->anaesthetic_type);
+        $display = '';
+
+        for ($i = 0; $i < (count($this->anaesthetic_type)); $i++) {
+            if ($i > 0) {
+                $display .= ',';
+            }
+
+            $type = $this->anaesthetic_type[$i];
+            $display .= ' ' . $type->name;
+
+            if (($this->showLAC()) && $type->code === 'LA' && $this->is_lac_required == '1') {
+                $display .= ' with Cover';
+            }
+        }
+
+        return $display;
     }
 
     /**
@@ -1019,13 +1057,15 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
         $criteria->order = '`t`.date, `t`.start_time';
 
-        foreach (OphTrOperationbooking_Operation_Session::model()
+        foreach (
+            OphTrOperationbooking_Operation_Session::model()
                                  ->with(array(
                                 'firm' => array(
                                         'joinType' => 'JOIN',
                                  ),
                                  ))
-                         ->findAll($criteria) as $session) {
+                         ->findAll($criteria) as $session
+        ) {
             $available_time = $session->availableMinutes;
             if ($available_time < $this->total_duration) {
                 continue;
@@ -1069,7 +1109,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         return parent::audit($target, $action, $data, $log, $properties);
     }
 
-    public function cancel($reason_id, $comment = null, $cancellation_user_id = false)
+    public function cancel($reason_id, $comment = null, $cancellation_user_id = false, $reschedule_later = false)
     {
         if (!$reason = OphTrOperationbooking_Operation_Cancellation_Reason::model()->findByPk($reason_id)) {
             return array(
@@ -1100,7 +1140,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         $episode->episode_status_id = 5;
 
         if (!$episode->save()) {
-            throw new Exception('Unable to change episode status for episode '.$episode->id);
+            throw new Exception('Unable to change episode status for episode ' . $episode->id);
         }
 
         if ($this->booking) {
@@ -1131,9 +1171,9 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                             $email,
                             '[OpenEyes] Urgent cancellation made',
                             "A cancellation was made with a TCI date within the next 24 hours.\n\nDisorder: "
-                                .$this->getDisorderText()."\n\nPlease see: http://".@$_SERVER['SERVER_NAME']
-                                .Yii::app()->createUrl('/OphTrOperationbooking/transport')."\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.",
-                            'From: '.Yii::app()->params['urgent_booking_notify_email_from']."\r\n"
+                                . $this->getDisorderText() . "\n\nPlease see: http://" . @$_SERVER['SERVER_NAME']
+                                . Yii::app()->createUrl('/OphTrOperationbooking/transport') . "\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.",
+                            'From: ' . Yii::app()->params['urgent_booking_notify_email_from'] . "\r\n"
                         );
                     }
                 }
@@ -1189,13 +1229,13 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         }
 
         if (!$session->operationBookable($this)) {
-            return array(array('Attempted to book operation into incompatible session: '.$session->unbookableReason($this)));
+            return array(array('Attempted to book operation into incompatible session: ' . $session->unbookableReason($this)));
         }
 
         $reschedule = in_array($this->status_id, array(2, 3, 4)); //@TODO: change hardcoded id to a query
 
         if (preg_match('/(^[0-9]{1,2}).*?([0-9]{2})$/', $booking->admission_time, $m)) {
-            $booking->admission_time = $m[1].':'.$m[2];
+            $booking->admission_time = $m[1] . ':' . $m[2];
         }
 
         // parse the cancellation data
@@ -1211,12 +1251,12 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
         if ($this->booking && !$reschedule) {
             // race condition, two users attempted to book the same operation at the same time
-            throw new RaceConditionException('This operation has already been scheduled by '.($this->booking->user->fullName));
+            throw new RaceConditionException('This operation has already been scheduled by ' . ($this->booking->user->fullName));
         }
 
         if ($reschedule && !$cancellation_submitted && $this->booking) {
             // race condition, two users attempted to book the same operation at the same time
-            throw new RaceConditionException('This operation has already been scheduled by '.($this->booking->user->fullName));
+            throw new RaceConditionException('This operation has already been scheduled by ' . ($this->booking->user->fullName));
         }
 
 
@@ -1230,14 +1270,14 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         }
 
         foreach (array('date', 'start_time', 'end_time', 'theatre_id') as $field) {
-            $booking->{'session_'.$field} = $booking->session->$field;
+            $booking->{'session_' . $field} = $booking->session->$field;
         }
 
         if (!$booking->save()) {
             return $booking->getErrors();
         }
 
-        OELog::log('Booking '.($reschedule ? 'rescheduled' : 'made')." $booking->id");
+        OELog::log('Booking ' . ($reschedule ? 'rescheduled' : 'made') . " $booking->id");
         $booking->audit('booking', $reschedule ? 'reschedule' : 'create');
 
         $this->latest_booking_id = $booking->id;
@@ -1261,27 +1301,27 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         }
 
         if (!$this->save()) {
-            throw new Exception('Unable to update operation data: '.print_r($this->getErrors(), true));
+            throw new Exception('Unable to update operation data: ' . print_r($this->getErrors(), true));
         }
 
         $session->comments = $session_comments;
 
         if (!$session->save()) {
-            throw new Exception('Unable to save session comments: '.print_r($session->getErrors(), true));
+            throw new Exception('Unable to save session comments: ' . print_r($session->getErrors(), true));
         }
 
         // if the session has no firm, this implies it's an emergency booking so there is no need to calculate EROD
         if ($booking->session->firm && $erod = $this->calculateEROD($booking->session->firm)) {
             $erod->booking_id = $booking->id;
             if (!$erod->save()) {
-                throw new Exception('Unable to save erod: '.print_r($erod->getErrors(), true));
+                throw new Exception('Unable to save erod: ' . print_r($erod->getErrors(), true));
             }
         }
 
         $this->event->episode->episode_status_id = 3;
 
         if (!$this->event->episode->save()) {
-            throw new Exception('Unable to change episode status id for episode '.$this->event->episode->id);
+            throw new Exception('Unable to change episode status id for episode ' . $this->event->episode->id);
         }
 
         $this->event->deleteIssues();
@@ -1296,10 +1336,10 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
                 if ($reschedule) {
                     $subject = '[OpenEyes] Urgent reschedule made';
-                    $body = "A patient booking was rescheduled with a TCI date within the next 24 hours.\n\nDisorder: ".$this->getDisorderText()."\n\nPlease see: http://".@$_SERVER['SERVER_NAME']."/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.";
+                    $body = "A patient booking was rescheduled with a TCI date within the next 24 hours.\n\nDisorder: " . $this->getDisorderText() . "\n\nPlease see: http://" . @$_SERVER['SERVER_NAME'] . "/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.";
                 } else {
                     $subject = '[OpenEyes] Urgent booking made';
-                    $body = "A patient booking was made with a TCI date within the next 24 hours.\n\nDisorder: ".$this->getDisorderText()."\n\nPlease see: http://".@$_SERVER['SERVER_NAME']."/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.";
+                    $body = "A patient booking was made with a TCI date within the next 24 hours.\n\nDisorder: " . $this->getDisorderText() . "\n\nPlease see: http://" . @$_SERVER['SERVER_NAME'] . "/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.";
                 }
                 $from = Yii::app()->params['urgent_booking_notify_email_from'];
 
@@ -1310,6 +1350,8 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                 }
             }
         }
+
+        Yii::app()->event->dispatch("operation_booking_created", array('element' => $this));
 
         return true;
     }
@@ -1326,13 +1368,13 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     public function setStatus($name, $save = true)
     {
         if (!$status = OphTrOperationbooking_Operation_Status::model()->find('name=?', array($name))) {
-            throw new Exception('Invalid status: '.$name);
+            throw new Exception('Invalid status: ' . $name);
         }
 
         $this->status_id = $status->id;
 
         if ($save && !$this->save()) {
-            throw new Exception('Unable to change operation status: '.print_r($this->getErrors(), true));
+            throw new Exception('Unable to change operation status: ' . print_r($this->getErrors(), true));
         }
     }
 
@@ -1351,14 +1393,14 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         if (!$contact = $this->letterContact) {
             # FIXME: need to handle problems with letters more gracefully than throwing unhandled exceptions.
             return 'N/A';
-            throw new Exception('Unable to find letter contact for operation '.$this->id);
+            throw new Exception('Unable to find letter contact for operation ' . $this->id);
         }
 
         if ($contact->refuse_title) {
-            return $contact->refuse_title.' on '.$contact->refuse_telephone;
+            return $contact->refuse_title . ' on ' . $contact->refuse_telephone;
         }
 
-        return 'the '.$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name.' Admission Coordinator on '.$contact->refuse_telephone;
+        return 'the ' . $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name . ' Admission Coordinator on ' . $contact->refuse_telephone;
     }
 
     public function getHealthContact()
@@ -1396,13 +1438,16 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
 
         $criteria = new CDbCriteria();
         $criteria->addCondition('parent_rule_id is null');
+        $criteria->with = 'institutions';
+        $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
+        $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
         $criteria->order = 'rule_order asc';
 
         foreach (OphTrOperationbooking_Waiting_List_Contact_Rule::model()->findAll($criteria) as $rule) {
             if ($rule->applies($site_id, $service_id, $firm_id, $is_child)) {
                 $rule = $rule->parse($site_id, $service_id, $firm_id, $is_child);
 
-                return $rule->name.' on '.$rule->telephone;
+                return $rule->name . ' on ' . $rule->telephone;
             }
         }
 
@@ -1417,14 +1462,14 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     public function getTextOperationName()
     {
         if ($rule = OphTrOperationbooking_Operation_Name_Rule::model()->find('theatre_id=?', array($this->booking->session->theatre_id))) {
-            return $this->getPatient()->childPrefix.$rule->name;
+            return $this->getPatient()->childPrefix . $rule->name;
         }
 
         if ($rule = OphTrOperationbooking_Operation_Name_Rule::model()->find('theatre_id is null')) {
-            return $this->getPatient()->childPrefix.$rule->name;
+            return $this->getPatient()->childPrefix . $rule->name;
         }
 
-        return $this->getPatient()->childPrefix.'operation';
+        return $this->getPatient()->childPrefix . 'operation';
     }
 
     public function confirmLetterPrinted($confirmto = null, $confirmdate = null)
@@ -1466,7 +1511,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                 $dls->date_gp_letter_sent = null;
             }
             if (!$dls->save()) {
-                throw new Exception('Unable to save date letter sent: '.print_r($dls->getErrors(), true));
+                throw new Exception('Unable to save date letter sent: ' . print_r($dls->getErrors(), true));
             }
 
             OELog::log("Letter print confirmed, datelettersent=$dls->id confirmdate='$confirmdate'");
@@ -1486,7 +1531,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                     $dls->date_scheduling_letter_sent = date('Y-m-d H:i:s');
                 }
                 if (!$dls->save()) {
-                    throw new SystemException("Unable to update date_letter_sent record {$dls->id}: ".print_r($dls->getErrors(), true));
+                    throw new SystemException("Unable to update date_letter_sent record {$dls->id}: " . print_r($dls->getErrors(), true));
                 }
 
                 OELog::log("Letter print confirmed, datelettersent=$dls->id");
@@ -1495,7 +1540,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
                 $dls->element_id = $this->id;
                 $dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
                 if (!$dls->save()) {
-                    throw new SystemException('Unable to save new date_letter_sent record: '.print_r($dls->getErrors(), true));
+                    throw new SystemException('Unable to save new date_letter_sent record: ' . print_r($dls->getErrors(), true));
                 }
 
                 OELog::log("Letter print confirmed, datelettersent=$dls->id");
@@ -1655,12 +1700,14 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
      */
     public function validateReferral($attribute, $params)
     {
-        if (!$this->canChangeReferral()
-                && $this->$attribute != $this->_original_referral_id) {
+        if (
+            !$this->canChangeReferral()
+                && $this->$attribute != $this->_original_referral_id
+        ) {
             $this->addError($attribute, 'Referral cannot be changed after an operation has been scheduled');
         } elseif ($referral_id = $this->$attribute) {
             if (!$referral = Referral::model()->findByPk($referral_id)) {
-                throw new Exception('Invalid referral id set on '.get_class($this));
+                throw new Exception('Invalid referral id set on ' . get_class($this));
             }
             if ($referral->patient_id != $this->getPatient()->id) {
                 $this->addError($attribute, 'Referral must be for the patient of the event');
@@ -1716,7 +1763,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
         if ($rtt = $this->getRTT()) {
             return $rtt->breach;
         } elseif ($rtt_weeks = Yii::app()->params['ophtroperationboooking_rtt_limit']) {
-            return date('Y-m-d', strtotime('+'.$rtt_weeks.' weeks', strtotime($this->decision_date)));
+            return date('Y-m-d', strtotime('+' . $rtt_weeks . ' weeks', strtotime($this->decision_date)));
         }
     }
 
@@ -1740,7 +1787,7 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
     {
         $anaesthetist_required = false;
         foreach ($this->anaesthetic_type as $anaesthetic_type) {
-            if ( in_array($anaesthetic_type->id, $this->anaesthetist_required_ids) ) {
+            if (in_array($anaesthetic_type->id, $this->anaesthetist_required_ids)) {
                 $anaesthetist_required = true;
             }
         }
@@ -1785,5 +1832,13 @@ class Element_OphTrOperationbooking_Operation extends BaseEventTypeElement
             }
         }
         return $opnotes;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function afterSave()
+    {
+        parent::afterSave();
     }
 }

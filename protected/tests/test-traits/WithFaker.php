@@ -1,9 +1,11 @@
 <?php
 
-use Faker\Factory;
+use OE\concerns\InteractsWithApp;
 
 trait WithFaker
 {
+    use InteractsWithApp;
+
     /**
      * The Faker instance.
      *
@@ -13,7 +15,11 @@ trait WithFaker
 
     public function setUpWithFaker()
     {
-        $this->faker = Factory::create('en_GB');
+        $this->faker = $this->getApp()->dataGenerator->faker();
+
+        $this->tearDownCallbacks(function () { 
+            $this->faker->unique(true);
+        });
     }
 
     protected function getRandomNumberOfUniqueElements($elements, $min = 1)

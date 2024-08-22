@@ -2,18 +2,33 @@
 <?php
 $assetManager = Yii::app()->getAssetManager();
 $newblue_path = $assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true);
-$favicon_path = $newblue_path . '/favicon_package_OE';
 
 //Because the wonderful way the namespace is created means if you don't include your file in the assets template
 //the namespace doesn't exist and gets overwritten.
 ?>
 <script type="text/javascript">var OpenEyes = OpenEyes || {};</script>
 <title><?=\CHtml::encode($this->pageTitle) ?></title>
-<?php if (isset($whiteboard) && $whiteboard) : ?>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-<?php else : ?>
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=0.5">
-<?php endif; ?>
+
+<?php
+
+// Override scaling based ondevice type. currently there is no way to identify the exact device,
+// so we can only approximate using the User Agent, which can only tell us if it is an iPhone, iPad, Android, Windows, etc.
+// The values below target the standard (i.e, cheapest) current iPad and the iPhone 12 (standard version, not max)
+// 0.5 is our current default value, which supports older devices of 600px width (e.g., cheap samsung galaxy tablets)
+// For other devices and widths, see: https://www.mydevice.io/#compare-devices.
+// To calculate scaling, divide the CSS width by 1200 (which is our minimum supported width for OpenEyes)
+$ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
+$initial_scale = '0.5';
+
+if (str_contains($ua, 'iPad')) {
+    $initial_scale = '0.675';
+} elseif (str_contains($ua, 'iPhone')) {
+    $initial_scale = '0.325';
+}
+
+?>
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=<?= $initial_scale ?>">
+
 <meta name="format-detection" content="telephone=no">
 
 <?php if (Yii::app()->params['disable_browser_caching']) {?>
@@ -22,12 +37,15 @@ $favicon_path = $newblue_path . '/favicon_package_OE';
     <meta http-equiv="pragma" content="no-cache" />
 <?php }?>
 
-<?php header("Content-Security-Policy: default-src 'self' localhost:*; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src data: https://*/Analytics http://*/Analytics 'self'; worker-src blob:; font-src 'self' data:", true); ?>
+<?php
+    $iframe_policy = $this->iframe_policy ?? "frame-src 'self' localhost:* blob: complog:;";
+    @header("Content-Security-Policy:default-src 'self' localhost:*;script-src 'self' 'unsafe-inline' 'unsafe-eval';style-src 'self' 'unsafe-inline';{$iframe_policy}img-src data: https://*/Analytics http://*/Analytics 'self';worker-src blob:;font-src 'self' data:", true);
+?>
 
-<link rel="apple-touch-icon" sizes="180x180" href="<?= $favicon_path ?>/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="<?= $favicon_path ?>/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="<?= $favicon_path ?>/favicon-16x16.png">
-<link rel="manifest" href="<?= $favicon_path ?>/site.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest" crossorigin="use-credentials">
 <meta name="msapplication-TileColor" content="#2b5797">
 <meta name="theme-color" content="#ffffff">
 

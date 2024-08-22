@@ -1,5 +1,27 @@
 <?php
 /**
+ * (C) Copyright Apperta Foundation 2022
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2022, Apperta Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
+
+namespace OEModule\OphDrPGDPSD\models;
+
+use OE\factories\models\traits\HasFactory;
+
+use MedicationInfoBox;
+use MedicationLaterality;
+use Team;
+
+/**
  * This is the model class for table "ophdrpgdpsd_pgdpsd".
  *
  * The followings are the available columns in table 'ophdrpgdpsd_pgdpsd':
@@ -21,6 +43,8 @@
  */
 class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public $temp_user_ids = array();
     public $temp_team_ids = array();
     public $temp_meds_info = array();
@@ -49,7 +73,7 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
             array('temp_meds', 'medAssignmentValidator'),
             array('description', 'validateDescription'),
             array('name', 'length', 'max' => 42),
-            array('institution_id', 'default', 'value' => Yii::app()->session->get('selected_institution_id'), 'on' => 'insert'),
+            array('institution_id', 'default', 'value' => \Yii::app()->session->get('selected_institution_id'), 'on' => 'insert'),
             array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
             // The following rule is used by search().
             array('id, name, description, type', 'safe', 'on'=>'search'),
@@ -59,7 +83,7 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        $selected_institution_id = Yii::app()->session->get('selected_institution_id');
+        $selected_institution_id = \Yii::app()->session->get('selected_institution_id');
         if (!$selected_institution_id) {
             return array();
         }
@@ -82,7 +106,7 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
         return array(
             'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
             'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'assigned_meds' => array(self::HAS_MANY, 'OphDrPGDPSD_PGDPSDMeds', 'pgdpsd_id'),
+            'assigned_meds' => array(self::HAS_MANY, OphDrPGDPSD_PGDPSDMeds::class, 'pgdpsd_id'),
             'users' => array(self::MANY_MANY, 'User', 'ophdrpgdpsd_assigneduser(pgdpsd_id, user_id)'),
             'teams' => array(self::MANY_MANY, 'Team', 'ophdrpgdpsd_assignedteam(pgdpsd_id, team_id)'),
             'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
@@ -120,7 +144,7 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria=new \CDbCriteria;
 
         $criteria->compare('id', $this->id);
         $criteria->compare('name', $this->name, true);
@@ -128,7 +152,7 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
         $criteria->compare('description', $this->description);
         $criteria->compare('active', $this->active);
 
-        return new CActiveDataProvider($this, array(
+        return new \CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
     }
@@ -219,6 +243,8 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
     }
     public function medAssignmentValidator($attribute_name)
     {
+        $has_errors = false;
+
         if (!$this->assigned_meds && !$this->$attribute_name) {
             $this->addError('Medications', 'Medication List cannot be blank');
             return false;
@@ -226,19 +252,20 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
         foreach ($this->temp_meds as $temp_med) {
             $temp_med->pgdpsd = $this;
             $temp_med->validate();
-            $med_name = $temp_med->medication ? $temp_med->medication->getLabel(true) : '';
             $errors = $temp_med->getErrors();
             if ($errors) {
+                $med_name = $temp_med->medication ? $temp_med->medication->getLabel(true) : '';
+
                 foreach ($errors as $attr => $msg) {
                     if ($attr === 'pgdpsd_id') {
                         continue;
                     }
                     $this->addError('Medications', "{$med_name} {$msg[0]}");
                 }
-                return false;
+                $has_errors = true;
             }
         }
-        return true;
+        return !$has_errors;
     }
 
     public function getAssignedMedsInJSON($prepend_markup = true)
@@ -279,5 +306,33 @@ class OphDrPGDPSD_PGDPSD extends \BaseActiveRecordVersioned
         return array_map(function ($user) {
             return $user->id;
         }, $authed_users);
+    }
+
+    public function serialiseMedicationAssignments($laterality)
+    {
+        $meds = array();
+        foreach ($this->assigned_meds as $key => $medication) {
+            $entry = array();
+            $entry['pair_key'] = $key;
+            $entry['medication_id'] = $medication->medication_id;
+            $entry['dose'] = $medication->dose;
+            $entry['dose_unit_term'] = $medication->dose_unit_term;
+            $entry['route_id'] = $medication->route_id;
+            $entry['laterality'] = $medication->route->has_laterality ? $laterality : null;
+
+            if (
+                isset($entry['laterality'])
+                && $entry['laterality']
+                && (int)$entry['laterality'] === MedicationLaterality::BOTH
+            ) {
+                $entry['pair_key'] = $key + 1;
+                $dup_entry = $entry;
+                $entry['laterality'] = MedicationLaterality::RIGHT;
+                $dup_entry['laterality'] = MedicationLaterality::LEFT;
+                $meds[] = $dup_entry;
+            }
+            $meds[] = $entry;
+        }
+        return $meds;
     }
 }

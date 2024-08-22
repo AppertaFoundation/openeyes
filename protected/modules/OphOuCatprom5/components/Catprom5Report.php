@@ -56,7 +56,7 @@ class Catprom5Report extends \Report implements \ReportInterface
             'dtickrange'=>['min',null],
         ),
     );
-    
+
     /**
      * @param $app
      */
@@ -106,7 +106,7 @@ class Catprom5Report extends \Report implements \ReportInterface
                     (C1_rasch_measure - C3_rasch_measure) AS rasch_measure');
                 break;
         }
-        
+
         switch ($this->eye) {
             case 1: //Eye1
             // This will require events in the format C->O->C->O-C or C->O->C and any patients with variations to this will not display, or will potentially display incorrectly.
@@ -269,7 +269,7 @@ class Catprom5Report extends \Report implements \ReportInterface
                     ) Eye2sub GROUP BY patient
                     ) Eye2
                 ) wrapper');
-            break;
+                break;
         }
         if ($dateFrom) {
             $this->command->andWhere('C1_date >= :dateFrom', array('dateFrom' => $dateFrom));
@@ -372,7 +372,7 @@ class Catprom5Report extends \Report implements \ReportInterface
         $this->plotlyConfig['title'] = 'Cat-PROM5: Pre-op vs Post-op difference - All Eyes <br><sub> (All Events) </sub>';
         return json_encode($this->plotlyConfig);
     }
- 
+
     /**
      * @return mixed|string
      */

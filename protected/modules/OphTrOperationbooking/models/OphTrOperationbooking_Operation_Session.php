@@ -15,6 +15,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophtroperationbooking_operation_session".
  *
@@ -43,6 +45,8 @@
  */
 class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public static $DEFAULT_UNAVAILABLE_REASON = 'This session is unavailable at this time';
     public static $TOO_MANY_PROCEDURES_REASON = 'This operation has too many procedures for this session';
 
@@ -161,7 +165,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             ),
         );
 
-        if ((int)$ward_id != 'All') {
+        if ($ward_id && $ward_id != 'All') {
             $criteria['condition'] = 'ward.id = :ward_id';
             $criteria['params'][':ward_id'] = (int)$ward_id;
         }
@@ -383,9 +387,11 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      */
     public function isTherePlaceForComplexBooking($operation)
     {
-        if ($this->isComplexBookingCountLimited() &&
-          $this->getComplexBookingCount() >= $this->getMaxComplexBookingCount() &&
-          $operation->isComplex()) {
+        if (
+            $this->isComplexBookingCountLimited() &&
+            $this->getComplexBookingCount() >= $this->getMaxComplexBookingCount() &&
+            $operation->isComplex()
+        ) {
             return false;
         }
         return true;
@@ -420,7 +426,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             return false;
         }
 
-        if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->params['future_scheduling_limit'] && $this->date > date('Y-m-d', strtotime('+' . Yii::app()->params['future_scheduling_limit']))) {
+        if (!Yii::app()->user->checkAccess('Super schedule operation') && SettingMetadata::model()->getSetting('future_scheduling_limit') && $this->date > date('Y-m-d', strtotime('+' . SettingMetadata::model()->getSetting('future_scheduling_limit')))) {
             return false;
         }
 
@@ -468,8 +474,8 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             return 'This session is in the past and so cannot be booked into.';
         }
 
-        if (!Yii::app()->user->checkAccess('Super schedule operation') && Yii::app()->params['future_scheduling_limit'] && $this->date > date('Y-m-d', strtotime('+' . Yii::app()->params['future_scheduling_limit']))) {
-            return 'This session is outside the allowed booking window of ' . Yii::app()->params['future_scheduling_limit'] . ' and so cannot be booked into.';
+        if (!Yii::app()->user->checkAccess('Super schedule operation') && SettingMetadata::model()->getSetting('future_scheduling_limit') && $this->date > date('Y-m-d', strtotime('+' . SettingMetadata::model()->getSetting('future_scheduling_limit')))) {
+            return 'This session is outside the allowed booking window of ' . SettingMetadata::model()->getSetting('future_scheduling_limit') . ' and so cannot be booked into.';
         }
     }
 
@@ -705,7 +711,7 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
      */
     public function getFirmsBeenUsed($subspecialty_id = null)
     {
-        $criteria = new \CDbCriteria;
+        $criteria = new \CDbCriteria();
         $criteria->select = "s.firm_id, t.*";
         $criteria->join = 'JOIN ophtroperationbooking_operation_session s ON t.id = s.firm_id';
         $criteria->distinct = true;
@@ -718,8 +724,6 @@ class OphTrOperationbooking_Operation_Session extends BaseActiveRecordVersioned
             $criteria->params[':sub_id'] = $subspecialty_id;
         }
 
-        $criteria->compare('institution_id', Yii::app()->session['selected_institution_id']);
-
-        return \Firm::model()->findAll($criteria);
+        return \Firm::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, $criteria);
     }
 }

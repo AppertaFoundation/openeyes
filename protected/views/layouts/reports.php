@@ -58,6 +58,6 @@ Yii::app()->getAssetManager()->registerScriptFile('js/AdminSidebar.js', 'applica
 </html>
 <script type="text/javascript">
   $(document).ready(function(){
-    window.reportSidebar = new OpenEyes.Admin.Sidebar();
+    window.reportSidebar = new OpenEyes.AdminSidebar.Sidebar();
   });
 </script>

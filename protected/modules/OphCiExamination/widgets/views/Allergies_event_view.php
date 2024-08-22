@@ -25,7 +25,7 @@
                     );
                     ?>
 
-              <div id="js-listview-allergies-pro" class="cols-full listview-pro">
+              <div id="js-listview-allergies-pro" class="cols-full listview-pro" data-test="listview-allergies-pro">
                     <table class="last-left">
                         <tbody>
                             <tr>
@@ -35,7 +35,8 @@
                                         <ul class="dot-list">
                                             <?php foreach ($entries[(string)AllergyEntry::$PRESENT] as $entry) : ?>
                                                 <li>
-                                                    <?= $entry->getDisplayAllergy(); ?>
+                                                    <?= $entry->getDisplayAllergy() . ($entry->getReactionString() ? ' &emsp;' : '') ?>
+                                                    <span class="fade"><?= ' ' . $entry->getReactionString() ?></span>
                                                     <?php if ($entry['comments'] != "") {?>
                                                         <i class="oe-i comments-added small pad js-has-tooltip" data-tooltip-content="<?= $entry['comments']; ?>" pro"="" list="" mode"=""></i>
                                                     <?php } ?>
@@ -88,12 +89,12 @@
                         </tbody>
                     </table>
                 </div>
-                <div id="js-listview-allergies-full" class="cols-full listview-full" style="display: none;">
-                    
+                <div id="js-listview-allergies-full" class="cols-full listview-full" style="display: none;"  data-test="listview-allergies-full">
+
                     <div class="flex-layout">
-                    
+
                         <div class="cols-2">Present</div>
-                    
+
                         <table class="last-left">
                           <colgroup>
                             <col class="cols-4">
@@ -104,7 +105,18 @@
                                     <?php if (isset($entries[(string)AllergyEntry::$PRESENT][$i])) {?>
                                         <tr>
                                             <td><?= $entries[(string)AllergyEntry::$PRESENT][$i]->getDisplayAllergy(); ?></td>
-                                            <td><?= ($entries[(string)AllergyEntry::$PRESENT][$i]['comments'] !== "" ? $entries[(string)AllergyEntry::$PRESENT][$i]['comments'] : '<span class="none">None</span>'); ?></td>
+                                            <td><?= $entries[(string)AllergyEntry::$PRESENT][$i]->getReactionString(); ?></td>
+                                            <td>
+                                                <?php
+                                                if ($entries[(string)AllergyEntry::$PRESENT][$i]['comments'] !== "") {
+                                                    $user_name = User::model()->findByPk($entries[(string)AllergyEntry::$PRESENT][$i]->created_user_id)->getFullName();
+                                                    echo "<i class=\"oe-i comments-who small pad-right js-has-tooltip\" data-tooltip-content=\"<?='<small>User comment by </small><br/>$user_name\"></i>";
+                                                    echo $entries[(string)AllergyEntry::$PRESENT][$i]['comments'];
+                                                } else {
+                                                    echo '<span class="none">None</span>';
+                                                }
+                                                ?>
+                                            </td>
                                         </tr>
                                     <?php } ?>
                                 <?php endfor; ?>
@@ -117,14 +129,14 @@
                         </tbody>
                       </table>
                     </div><!-- .flex-layout -->
-                    
+
                     <hr class="divider">
-                    
-                    
+
+
                      <div class="flex-layout">
-                    
+
                         <div class="cols-2">Unchecked</div>
-                    
+
                         <table class="last-left">
                           <colgroup>
                             <col class="cols-4">
@@ -148,18 +160,18 @@
                         </tbody>
                       </table>
                     </div><!-- .flex-layout -->
-                    
+
                     <hr class="divider">
-                    
+
                     <div class="flex-layout">
-                    
+
                         <div class="cols-2">Absent</div>
-                    
+
                         <table class="last-left">
                           <colgroup>
                             <col class="cols-4">
                           </colgroup>
-                        <tbody> 
+                        <tbody>
                             <?php if (count($entries[(string)AllergyEntry::$NOT_PRESENT]) >0) { ?>
                                 <?php for ($i = 0; $i < $max_iter; $i++) :?>
                                     <?php if (isset($entries[(string)AllergyEntry::$NOT_PRESENT][$i])) {?>
@@ -178,13 +190,13 @@
                         </tbody>
                       </table>
                     </div><!-- .flex-layout -->
-                              
+
                 </div>
                 <?php endif; ?>
         </div>
                 <?php if (count($element->entries)) : ?>
             <div>
-                <i class="oe-i small js-listview-expand-btn expand" data-list="allergies"></i>
+                <i class="oe-i small js-listview-expand-btn expand" data-list="allergies" data-test="listview-expand-btn"></i>
             </div>
                 <?php endif; ?>
             <?php } ?>

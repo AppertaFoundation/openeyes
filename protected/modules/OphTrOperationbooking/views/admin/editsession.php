@@ -57,7 +57,7 @@ if ($this->checkAccess('admin')) {
                     <?= $form->labelEx($session, 'firm_id') ?>
                 </td>
                 <td>
-                    <?= $form->dropDownList($session, 'firm_id', Firm::model()->getListWithSpecialties(), ['empty' => '- Emergency -', 'nowrapper' => true, 'class' => 'cols-12'])?>
+                    <?= $form->dropDownList($session, 'firm_id', Firm::model()->getListWithSpecialties(), ['empty' => '- Emergency -', 'nowrapper' => true, 'class' => 'cols-12', 'data-test' => 'session-context'])?>
                 </td>
             </tr>
             <tr>
@@ -65,7 +65,7 @@ if ($this->checkAccess('admin')) {
                     <?= $form->labelEx($session, 'theatre_id') ?>
                 </td>
                 <td>
-                    <?= $form->dropDownList($session, 'theatre_id', CHtml::listData($theatres, 'id', 'name'), ['empty' => '- None -', 'nowrapper' => true])?>
+                    <?= $form->dropDownList($session, 'theatre_id', CHtml::listData($theatres, 'id', 'name'), ['empty' => '- None -', 'nowrapper' => true, 'data-test' => 'session-theatre'])?>
                 </td>
             </tr>
             <tr>
@@ -74,18 +74,18 @@ if ($this->checkAccess('admin')) {
                     <td><?= $session->NHSDate('date')?></td>
                 <?php } else {?>
                     <td><?= $form->labelEx($session, 'date') ?></td>
-                    <td><?= $form->datePicker($session, 'date', [], ['nowrapper' => true])?></td>
+                    <td><?= $form->datePickerNative($session, 'date', [], ['nowrapper' => true, 'data-test' => 'session-date'])?></td>
                 <?php }?>
             </tr>
             <tr>
                 <td><?= $form->labelEx($session, 'start_time') ?></td>
                 <td>
-                    <?= $form->textField($session, 'start_time', ['nowrapper' => true])?>
+                    <?= $form->textField($session, 'start_time', ['nowrapper' => true, 'data-test' => 'session-start-time'])?>
                 </td>
             </tr>
             <tr>
                 <td><?= $form->labelEx($session, 'end_time') ?></td>
-                <td><?= $form->textField($session, 'end_time', ['nowrapper' => true])?></td>
+                <td><?= $form->textField($session, 'end_time', ['nowrapper' => true, 'data-test' => 'session-end-time'])?></td>
             </tr>
             <tr>
                 <td><?= $form->labelEx($session, 'default_admission_time') ?></td>
@@ -93,11 +93,11 @@ if ($this->checkAccess('admin')) {
             </tr>
             <tr>
                 <td><?= $form->labelEx($session, 'max_procedures') ?></td>
-                <td><?= $form->textField($session, 'max_procedures', ['nowrapper' => true]) ?></td>
+                <td><?= $form->textField($session, 'max_procedures', ['nowrapper' => true, 'data-test' => 'session-max-procedures']) ?></td>
             </tr>
             <tr>
                 <td><?= $form->labelEx($session, 'max_complex_bookings') ?></td>
-                <td><?= $form->textField($session, 'max_complex_bookings', ['nowrapper' => true]) ?></td>
+                <td><?= $form->textField($session, 'max_complex_bookings', ['nowrapper' => true, 'data-test' => 'session-max-complex-bookings']) ?></td>
             </tr>
             <?php $current = $session->getBookedProcedureCount();
             if ($current) { ?>
@@ -114,7 +114,7 @@ if ($this->checkAccess('admin')) {
             foreach ($boolean_fields as $field) : ?>
                 <tr>
                     <td><?= $form->labelEx($session, $field) ?></td>
-                    <td><?= $form->radioBoolean($session, $field, ['nowrapper' => true])?></td>
+                    <td><?= $form->radioBoolean($session, $field, ['nowrapper' => true, 'test' => 'session-booleans'])?></td>
                 </tr>
             <?php endforeach; ?>
 
@@ -147,7 +147,7 @@ if ($this->checkAccess('admin')) {
         </p>
         <div class="buttons">
             <input type="hidden" id="medication_id" value="" />
-            <button type="submit" class="warning btn_remove_session">Remove session</button>
+            <button type="submit" class="warning btn_remove_session" data-test="remove-session">Remove session</button>
             <button type="submit" class="secondary btn_cancel_remove_session">Cancel</button>
             <img class="loader" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
         </div>

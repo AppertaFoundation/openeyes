@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -58,7 +59,7 @@ class Element_OphTrOperationnote_VteAssessment extends Element_OpNote
 
         $rules = array(
             array('event_id', 'safe'),
-            array('selected_option', 'required', 'message'=>'Please select an option')
+            array('selected_option', 'required', 'message' => 'Please select an option')
         );
 
         return $rules;
@@ -110,6 +111,13 @@ class Element_OphTrOperationnote_VteAssessment extends Element_OpNote
             ));
     }
 
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'selected_option'
+        ];
+    }
+
     /**
      * @return bool
      *
@@ -118,7 +126,7 @@ class Element_OphTrOperationnote_VteAssessment extends Element_OpNote
 
     public function isEnabled()
     {
-        $element_enabled = Yii::app()->params['vte_assessment_element_enabled'];
+        $element_enabled = SettingMetadata::model()->getSetting('vte_assessment_element_enabled');
         return (isset($element_enabled) && $element_enabled === 'on');
     }
 
@@ -149,9 +157,9 @@ class Element_OphTrOperationnote_VteAssessment extends Element_OpNote
         return !$this->isEnabled();
     }
 
-    public function getTileSize($action) {
+    public function getTileSize($action)
+    {
         $action_list = array('view', 'createImage', 'removed');
         return in_array($action, $action_list) ? 1 : null;
     }
-
 }

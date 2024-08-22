@@ -5,7 +5,7 @@ $institutions = \Institution::model()->with('authenticationMethods')->findAll();
 
 $institution_required = $settings->getSetting('institution_required') == 'on';
 $default_inst = !$institution_required ? Institution::model()->findByAttributes(['remote_id' => Yii::app()->params['institution_code']]) : null;
-$sites = \Site::model()->findAll();
+$sites = \Site::model()->findAllByAttributes(['active' => true ]);
 $site_map = [];
 $institution_defaults = [];
 foreach ($institutions as $institution) {
@@ -36,8 +36,11 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
 
 <div class="oe-login">
     <div class="login multisite">
-        <h1><b>OpenEyes&#8482;</b></h1>
-
+        <?php if (isset($login_type) && $login_type === BaseEsignElement::ESIGN_DEVICE_TYPE) :?>
+            <h1>OpenEyes e-Sign</h1>
+        <?php else : ?>
+            <h1><b>OpenEyes&#8482;</b></h1>
+        <?php endif; ?>
         <div class="login-details">
             <ul class="row-list">
                 <li class="login-institution" style="display: <?= $display_institution ? '' : 'none;' ?>"></li>
@@ -73,7 +76,7 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
             <?= $form->hiddenField($model, 'site_id', ['class' => 'js-site-id']) ?>
 
             <?php echo $form->textField($model, 'username', array(
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                 'placeholder' => 'Username',
             )); ?>
 
@@ -88,7 +91,7 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
 
             <i class="spinner" style="display:none"></i>
 
-            <button type="submit" id="login_button" class="green hint">Login</button>
+            <button type="submit" id="login_button" class="green hint"><?= isset($login_type) && $login_type === BaseEsignElement::ESIGN_DEVICE_TYPE ? "Link device" : "Login" ?></button>
 
             <div class="oe-user-banner">
                 <?php $this->renderPartial('//base/_banner_watermark_full'); ?>
@@ -98,15 +101,19 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
             <!-- user -->
         </div>
         <div class="info">
-    <div class="info">
-      <center>
-      <a href="http://apperta.org" target="_blank"><img src="<?php echo Yii::app()->assetManager->createUrl('img/logo/logo.png') ?>" alt="Apperta Foundation CIC Logo" width="30%" style="padding-right:20px"></a>
-       <a href="https://digitalpublicgoods.net/who-we-are/" target="_blank"><img src="<?php echo Yii::app()->assetManager->createUrl('img/logo/dpga_logo_2.svg') ?>" alt="Digital Public Good Alliance Logo" width="30%" style="padding-right:20px">
-       <a href="https://digitalhealthatlas.org/" target="_blank"><img src="<?php echo Yii::app()->assetManager->createUrl('img/logo/logo-dha.svg') ?>" alt="Digital Health Atlas Logo" width="30%"></a></br></br>
-        Copyright&#169; Apperta Foundation CIC <?= date('Y') ?>
-    </center>
-                <a href="#" onclick="$('#js-openeyes-btn').click();">About</a>
-            </div>
+            <?php if (isset($login_type) && $login_type === BaseEsignElement::ESIGN_DEVICE_TYPE) :?>
+                Please login using your OpenEyes username to link with this device
+            <?php else : ?>
+                <div class="flex-layout">
+                  <center>
+                    <a href="http://apperta.org" target="_blank"><img src="<?php echo Yii::app()->assetManager->createUrl('img/logo/logo.png') ?>" alt="Apperta Foundation CIC Logo" width="30%" style="padding-right:20px"></a>
+                    <a href="https://digitalpublicgoods.net/who-we-are/" target="_blank"><img src="<?php echo Yii::app()->assetManager->createUrl('img/logo/dpga_logo_2.svg') ?>" alt="Digital Public Good Alliance Logo" width="30%" style="padding-right:20px">
+                    <a href="https://digitalhealthatlas.org/" target="_blank"><img src="<?php echo Yii::app()->assetManager->createUrl('img/logo/logo-dha.svg') ?>" alt="Digital Health Atlas Logo" width="30%"></a></br></br>
+                     Copyright&#169; Apperta Foundation CIC <?= date('Y') ?>
+                  </center>
+                  <a href="#" onclick="$('#js-openeyes-btn').click();">About</a>
+                </div>
+            <?php endif; ?>
             <!-- info -->
         </div>
         <!-- login -->

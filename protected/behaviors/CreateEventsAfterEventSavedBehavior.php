@@ -144,11 +144,16 @@ class CreateEventsAfterEventSavedBehavior extends CBehavior
 
             if ($element) {
                 $prescription_creator->addMedicationSet($set->id, $element->eye_id);
-
+                $prescription_creator->elements['Element_OphDrPrescription_Details']->draft = !Yii::app()->user->checkAccess('OprnCreatePrescription');
                 $prescription_creator->save();
 
                 $success = !$prescription_creator->hasErrors();
                 $errors = $prescription_creator->getErrors();
+
+                if (!empty($errors)) {
+                    $msg = "Automatic Prescription creation is not possible - please create prescription manually. The selected Medication Set has missing mandatory prescribing values. Please ask your system administrator to update the Medication Set to enable Automatic Prescriptions.";
+                    \Yii::app()->user->setFlash('issue.prescription', $msg);
+                }
             } else {
                 $msg = "Unable to create default Prescription because: Can't determinate side based on Treatement element";
                 $errors[] = [$msg];

@@ -3,7 +3,7 @@
  * OpenEyes.
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) OpenEyes Foundation, 2011-2022
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,9 +12,11 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2022, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "proc".
@@ -33,6 +35,8 @@
  */
 class Procedure extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     protected $auto_update_relations = true;
 
     /**
@@ -61,11 +65,11 @@ class Procedure extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('term, short_format, default_duration', 'required'),
+            array('term, short_format, default_duration, snomed_code, snomed_term', 'required'),
             array('default_duration', 'numerical', 'integerOnly' => true, 'max' => 65535),
-            array('term, short_format, snomed_term', 'length', 'max' => 255),
+            array('term, short_format, snomed_term, ecds_term', 'length', 'max' => 255),
             array('operationNotes', 'validateOpNotes'),
-            array('id, term, short_format, default_duration, active, unbooked, opcsCodes, benefits, risks, complications, snomed_code, snomed_term, aliases, operationNotes', 'safe'),
+            array('id, term, short_format, default_duration, active, is_clinic_proc, unbooked, opcsCodes, benefits, risks, complications, snomed_code, snomed_term, aliases, operationNotes, low_complexity_criteria, ecds_code, ecds_term', 'safe'),
             array('term', 'unique'),
         );
     }
@@ -86,6 +90,7 @@ class Procedure extends BaseActiveRecordVersioned
             'benefits' => array(self::MANY_MANY, 'Benefit', 'procedure_benefit(proc_id, benefit_id)'),
             'risks' => array(self::MANY_MANY, '\OEModule\OphCiExamination\models\OphCiExaminationRisk', 'procedure_risk(proc_id, risk_id)'),
             'complications' => array(self::MANY_MANY, 'Complication', 'procedure_complication(proc_id, complication_id)'),
+            'clinic_procedure' => array(self::HAS_ONE, '\OEModule\OphCiExamination\models\OphCiExamination_ClinicProcedure', 'proc_id'),
         );
     }
 
@@ -100,6 +105,9 @@ class Procedure extends BaseActiveRecordVersioned
             'short_format' => 'Short Format',
             'default_duration' => 'Default Duration',
             'opcsCodes.name' => 'OPCS Code',
+            'low_complexity_criteria' => 'Low Complexity Criteria',
+            'ecds_code' => 'ECDS Code',
+            'ecds_term' => 'ECDS Term'
         );
     }
 
@@ -152,6 +160,8 @@ class Procedure extends BaseActiveRecordVersioned
             $where .= ' and unbooked = 1';
         } elseif ($restrict == 'booked') {
             $where .= ' and unbooked = 0';
+        } elseif ($restrict === 'clinical') {
+            $where .= ' and is_clinic_proc = 1';
         }
 
         $where .= ' and proc.active = 1';
@@ -219,7 +229,7 @@ class Procedure extends BaseActiveRecordVersioned
             ->select('proc.id, proc.term')
             ->from('proc')
             ->join('proc_subspecialty_assignment psa', 'psa.proc_id = proc.id')
-            ->where('psa.subspecialty_id = :id and proc.active = 1'.$where, array(':id' => $subspecialtyId))
+            ->where('psa.subspecialty_id = :id and proc.active = 1' . $where, array(':id' => $subspecialtyId))
             ->order('display_order, proc.term ASC')
             ->queryAll();
 
@@ -283,7 +293,7 @@ class Procedure extends BaseActiveRecordVersioned
      */
     public function __get($prop)
     {
-        $method = 'get_'.$prop;
+        $method = 'get_' . $prop;
         if (method_exists($this, $method)) {
             return $this->$method();
         }
@@ -298,7 +308,7 @@ class Procedure extends BaseActiveRecordVersioned
      */
     public function __isset($prop)
     {
-        $method = 'get_'.$prop;
+        $method = 'get_' . $prop;
         if (method_exists($this, $method)) {
             return true;
         }

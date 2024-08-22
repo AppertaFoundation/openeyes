@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "element_procedurelist".
  *
@@ -32,6 +34,8 @@
  */
 class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -59,7 +63,8 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
         // will receive user inputs.
         return array(
             array('event_id, site_id, theatre_id', 'safe'),
-            array('site_id, theatre_id', 'required'),
+            array('site_id', 'required'),
+            array('theatre_id', 'required', 'on' => array('insert')),
         );
     }
 
@@ -119,6 +124,35 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
         }
     }
 
+    public function getDefaultFormOptions(array $context): array
+    {
+        $fields = array();
+        if (Yii::app()->controller->getBookingOperation()) {
+            $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+            $event = Event::model()->findByPk($context['booking']->event_id);
+
+            if (!$this->site_id) {
+                $site = $api->findSiteForBookingEvent($event);
+                if ($site) {
+                    $fields['site_id'] = $site->id;
+                } elseif (isset($context['booking']->site_id)) {
+                    $fields['site_id'] = $context['booking']->site_id;
+                }
+            }
+            if (!$this->theatre_id) {
+                $theatre = $api->findTheatreForBookingEvent($event);
+                if ($theatre) {
+                    $fields['theatre_id'] = $theatre->id;
+                }
+            }
+        } else {
+            if (!$this->site_id) {
+                $fields['site_id'] = Yii::app()->session['selected_site_id'];
+            }
+        }
+        return $fields;
+    }
+
     public function getTileSize($action)
     {
         $action_list = array('view', 'createImage', 'removed');
@@ -128,5 +162,12 @@ class Element_OphTrOperationnote_SiteTheatre extends Element_OpNote
     public function getFormTItle()
     {
         return 'Location';
+    }
+
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'theatre_id',
+        ];
     }
 }

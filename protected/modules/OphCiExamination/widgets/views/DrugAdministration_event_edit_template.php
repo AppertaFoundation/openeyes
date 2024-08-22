@@ -4,6 +4,7 @@
     <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][assignment_id]"?>">
     <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][visit_id]"?>">
     <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][confirmed]"?>" value="0">
+    <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][is_pgd]"?>" value="{{is_pgd}}">
     <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][create_wp]"?>" value="0">
     <input type="hidden" name="<?=$model_name . "[assignment][{{key}}][active]"?>" value="1">
     <div class="flex row">
@@ -56,7 +57,7 @@
             <div class="cols-full comment-row" style="display: none;">
                 <!-- textarea & remove icon -->
                 <div class="flex-layout flex-left ">
-                    <textarea name="<?=$model_name . "[assignment][{{key}}][comment]"?>" placeholder="Comments" autocomplete="off" rows="1" class="js-input-comments cols-full"></textarea>
+                    <textarea name="<?=$model_name . "[assignment][{{key}}][comment]"?>" placeholder="Comments" autocomplete="off" rows="1" class="js-input-comments cols-full autosize"></textarea>
                     <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                 </div>
             </div>

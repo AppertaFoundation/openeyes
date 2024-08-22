@@ -35,6 +35,18 @@
  */
 class OphTrOperationbooking_Waiting_List_Contact_Rule extends BaseTree
 {
+    use MappedReferenceData;
+
+    protected function getSupportedLevels(): int
+    {
+        return ReferenceData::LEVEL_INSTITUTION;
+    }
+
+    protected function mappingColumn(int $level): string
+    {
+        return 'waiting_list_contact_rule_id';
+    }
+
     public $textFields = array('site', 'service', 'firm', 'is_child', 'name', 'telephone');
     public $textFieldsDropdown = array('site', 'service', 'firm', 'is_child', 'name', 'telephone');
 
@@ -87,7 +99,7 @@ class OphTrOperationbooking_Waiting_List_Contact_Rule extends BaseTree
             'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
             'service' => array(self::BELONGS_TO, 'Service', 'service_id'),
             'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
+            'institutions' => array(self::MANY_MANY, 'Institution', 'ophtropbooking_waiting_list_contact_rule_institution(waiting_list_contact_rule_id, institution_id)'),
         );
     }
 
@@ -99,6 +111,7 @@ class OphTrOperationbooking_Waiting_List_Contact_Rule extends BaseTree
         return array(
             'parent_rule_id' => 'Parent',
             'rule_order' => 'Rule order',
+            'institution_id' => 'Institution',
             'site_id' => 'Site',
             'firm_id' => Firm::contextLabel(),
             'service_id' => 'Service',

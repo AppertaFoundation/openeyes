@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -226,16 +227,6 @@
                         </tr>
                     <?php endif ?>
 
-                    <?php if ($element->preassessment_booking_required !== null) : ?>
-                        <tr>
-                            <td>
-                                <div class="data-label"><?= CHtml::encode($element->getAttributeLabel('preassessment_booking_required')) ?></div>
-                            </td>
-                            <td>
-                                <div class="data-value"><?= $element->preassessment_booking_required ? 'Yes' : 'No' ?></div>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -354,6 +345,14 @@
                         <div class="data-value"><?php echo $session->TheatreName ?></div>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <h3 class="data-title">Ward</h3>
+                    </td>
+                    <td>
+                        <div class="data-value"><?php echo isset($element->booking->ward) ? $element->booking->ward->name : 'N/A' ?></div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -426,8 +425,10 @@
     </section>
 <?php } ?>
 
-<?php if (($element->status->name === 'Cancelled' || $element->status->name === 'Requires rescheduling')
-    && $element->operation_cancellation_date) { ?>
+<?php if (
+    ($element->status->name === 'Cancelled' || $element->status->name === 'Requires rescheduling')
+    && $element->operation_cancellation_date
+) { ?>
     <section class="element flex-layout">
         <h3 class="element-title highlight cols-2">Cancellation details</h3>
         <div class="element-data cols-10">
@@ -529,9 +530,9 @@ if ($element->isEditable()) {
             }
             $this->event_actions[] = EventAction::button(
                 'Print letter',
-                'print-letter',
+                'print_admission_letter',
                 $print_letter_options,
-                array('id' => 'btn_print-admissionletter', 'class' => 'small button')
+                array('id' => 'print-admissionletter', 'class' => 'small button')
             );
             $this->event_actions[] = EventAction::button('Print admission form', 'print_admission_form', null, array('class' => 'small button'));
         }

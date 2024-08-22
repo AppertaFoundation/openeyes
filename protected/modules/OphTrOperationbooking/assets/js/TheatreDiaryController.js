@@ -290,24 +290,41 @@ $(document).ready(function() {
 		}, enableButtons);
 	});
 
-	$('#btn_print_diary_list').click(function() {
-		if ($('#site-id').val() == '' || $('#subspecialty-id').val() == '' || $('#date-start').val() == '' || $('#date-end').val() == '') {
-			new OpenEyes.UI.Dialog.Alert({
-				content: 'To print the booking list you must select a site, a subspecialty and a date range.',
-				onClose: function() {
-					scrollTo(0,0);
-				}
-			}).open();
-			return false;
-		}
-		disableButtons();
+    function openAlertDialog(msg){
+        new OpenEyes.UI.Dialog.Alert({
+            content: msg,
+            onClose: function() {
+                scrollTo(0,0);
+            }
+        }).open();
+    }
+
+	$('#btn_print_diary_list').on('click', () => {
+        let isEmergency = $('#emergency_list').is(':checked');
+
+        if (isEmergency && ($('#date-start').val().trim() === '' || $('#date-end').val().trim() === '')) {
+            openAlertDialog('To print the emergency booking list you must select a date range.');
+            return false;
+        } else if (
+            !isEmergency &&
+            (
+                $('#site-id').val().toLowerCase() === 'all' ||
+                $('#subspecialty-id').val().toLowerCase() === 'all' ||
+                $('#date-start').val().trim() === '' ||
+                $('#date-end').val().trim() === ''
+            )
+        ) {
+            openAlertDialog('To print the booking list you must select a site, a subspecialty and a date range.');
+            return false;
+        }
+
+        disableButtons();
 		printElem('printList',{
 			pageTitle:'openeyes printout',
 			printBodyOptions:{
 				styleToAdd:'width:auto !important; margin: 0.75em !important;',
 				classNameToAdd:'openeyesPrintout'
 			},
-			//overrideElementCSS:['css/module.css',{href:'css/module.css',media:'print'}]
 		}, enableButtons);
 	});
 
@@ -632,18 +649,6 @@ $(document).ready(function() {
 		return false;
 	});
 
-	new OpenEyes.UI.StickyElement('.actions', {
-		offset: -44,
-		enableHandler: function(instance) {
-			instance.element.width(instance.element.width());
-			instance.enable();
-		},
-		disableHandler: function(instance) {
-			instance.element.width('auto');
-			instance.disable();
-		}
-	});
-
 	// 'a-A-b-B-C-d-e-H-I-j-k-l-m-M-p-P-s-S-u-w-y-Y'
 	// Thu-Thursday-Dec-December-21-12-12-00-12-346-0-12-12-00-AM-AM-1576108800-00-5-4-19-2019
 	// Mon-Monday-Dec-  December-21-02-2-00-12-336-0-12-12-00-AM-AM-1575244800-00-2-1-19-2019
@@ -658,13 +663,17 @@ $(document).ready(function() {
 		date: $('#date-end').val()
 	});
 
-	return getDiary();
+	if ($('#theatreList').data('autoload')) {
+		getDiary();
+	}
+
 });
 
 function getDiary() {
 
 	var button = $('#theatre-filter button[type="submit"]');
 	var loadingMessage = $('#theatre-search-loading');
+	var autoloadMessage = $('#theatre-search-autoload-message');
 	var noResultsMessage = $('#theatre-search-no-results');
 	var theatreList = $('#theatreList');
 
@@ -672,6 +681,7 @@ function getDiary() {
 		disableButtons();
 
 		theatreList.empty();
+		autoloadMessage.hide();
 		loadingMessage.show();
 		noResultsMessage.hide();
 
@@ -807,10 +817,11 @@ function theatreDiaryIconHovers() {
 }
 
 function printElem(method,options, callback){
+    searchData = $('#theatre-filter').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN;
 	$.ajax({
 		'url': baseUrl+'/OphTrOperationbooking/theatreDiary/'+method,
 		'type': 'POST',
-		'data': searchData+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+		'data': searchData,
 		'success': function(data) {
 			$('#printable').html(data);
 			$('#printable').printElement(options);
@@ -823,7 +834,7 @@ function printElem(method,options, callback){
 }
 
 function cancel_edit(dont_reset_checkboxes) {
-	
+
 	const $tbody = $(`#tbody_${theatre_edit_session_id}`);
 	const $form = $tbody.closest('form');
 

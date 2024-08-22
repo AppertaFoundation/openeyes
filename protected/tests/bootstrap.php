@@ -4,8 +4,17 @@ if (PHP_MAJOR_VERSION >= 7 && PHP_MINOR_VERSION >= 1) {
     error_reporting(E_ALL & ~E_DEPRECATED);
 }
 
+// ensure the current working directory is the application root
+// yii makes certain assumptions about how paths should be resolved
+// based on the curent working directory
+$webroot = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..';
+chdir($webroot);
+
+ini_set("log_errors_max_len", 0);
+
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__);
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/test-traits');
+set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/test-helpers');
 
 defined('YII_ENABLE_EXCEPTION_HANDLER') or define('YII_ENABLE_EXCEPTION_HANDLER', false);
 defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', false);
@@ -44,13 +53,18 @@ Yii::$autoloaderFilters = ['filterTestSuiteNames' => function ($className) {
  * would be good to abstract autoload dependencies from root index.php to ensure running consistently
  */
 if (!class_exists('HTMLPurifier_Bootstrap', false)) {
-    require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier').DIRECTORY_SEPARATOR.'HTMLPurifier.standalone.php');
+    require_once(Yii::getPathOfAlias('system.vendors.htmlpurifier') . DIRECTORY_SEPARATOR . 'HTMLPurifier.standalone.php');
     HTMLPurifier_Bootstrap::registerAutoload();
 }
 
+require_once(__DIR__ . DIRECTORY_SEPARATOR . 'bootstrap_process_isolation.php');
+
 Yii::createWebApplication($config);
 
-Yii::app()->event->observers = array();
+// default will point to the phpunit path, so this sets it up correctly
+Yii::setPathOfAlias('webroot', __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..');
+// we don't want event listeners being triggered by default during tests
+Yii::app()->event->forgetAll();
 
 // PHPUnit dies silently with FATAL ERRORS which makes it hard to debug the tests.
 register_shutdown_function('PHPUnit_shutdownFunction');

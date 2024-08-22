@@ -219,7 +219,7 @@ class CoverAndPrismCoverTest extends \ModelTestCase
         $my_letter_string = $instance->letter_string;
 
         foreach ($expected as $key => $value) {
-            $this->assertContains((string)$value, $my_letter_string);
+            $this->assertStringContainsString((string)$value, $my_letter_string);
         }
     }
 
@@ -270,6 +270,52 @@ class CoverAndPrismCoverTest extends \ModelTestCase
         $instance = $this->getElementInstance();
         $instance->setAttributes($attrs);
         $this->assertEquals($expected, $instance->validate());
+    }
+
+    public function test_load_from_existing()
+    {
+        $original_element = $this->getElementInstance();
+        $original_element->event_id = $this->getEventToSaveWith()->getPrimaryKey();
+        $original_element->entries = [
+            $this->generateCoverAndPrismCoverEntryData(),
+            $this->generateCoverAndPrismCoverEntryData()
+        ];
+
+        $this->assertTrue($original_element->save(), "element should save successfully.");
+
+        $new_element = $this->getElementInstance();
+        $new_element->event_id = $this->getEventToSaveWith()->getPrimaryKey();
+
+        $new_element->loadFromExisting($original_element);
+        $this->assertTrue($new_element->save(), "element should save successfully.");
+
+        $new_element->refresh();
+        $original_element->refresh();
+
+        $this->assertCount(2, $original_element->entries);
+        $this->assertCount(2, $new_element->entries);
+
+        foreach ($original_element->entries as $key => $original_entry) {
+            $new_entry = $new_element->entries[$key];
+
+            $this->assertNotEquals($original_entry->id, $new_entry->id);
+            $this->assertNotEquals($original_entry->element_id, $new_entry->element_id);
+
+            $attributes = [
+                'correctiontype_id',
+                'distance_id',
+                'horizontal_prism_id',
+                'horizontal_value',
+                'vertical_prism_id',
+                'vertical_value',
+                'with_head_posture',
+                'comments'
+            ];
+
+            foreach($attributes as $attr) {
+                $this->assertEquals($original_entry->$attr, $new_entry->$attr);
+            }
+        }
     }
 
     protected function getElementInstanceWithHeadPostureEntry()

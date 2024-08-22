@@ -41,9 +41,16 @@
                     <tr>
                         <td>
                             <i class="oe-i warning small pad-right"></i>
-                            <?= $entry->getDisplayAllergy() ?>
+                            <?= $entry->getDisplayAllergy() . ($entry->getReactionString() ? ' &emsp;' : '') ?>
+                            <span class="fade"><?= ' ' . $entry->getReactionString(); ?></span>
                         </td>
-                        <td><?=$entry->comments ?></td>
+                        <td>
+                            <?php if (!empty($entry->comments)) {?>
+                                <i class="oe-i comments-who small pad-right js-has-tooltip"
+                                   data-tooltip-content="<?='<small>User comment by </small><br/>'.User::model()->findByPk($entry->last_modified_user_id)->getFullName()?>"></i><span class="user-comment">
+                                <?=$entry->comments ?></span>
+                            <?php } ?>
+                        </td>
                         <td></td>
                     </tr>
                 <?php endif; ?>

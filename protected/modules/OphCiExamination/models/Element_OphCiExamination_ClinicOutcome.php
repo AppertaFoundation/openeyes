@@ -18,6 +18,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
 use OEModule\PatientTicketing\models\TicketQueueAssignment;
 use Yii;
 
@@ -35,6 +36,7 @@ use Yii;
 class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
 {
     use traits\CustomOrdering;
+    use HasFactory;
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
 
@@ -69,6 +71,7 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
         return [
                 ['comments, entries, event_id, id', 'safe'],
                 ['entries', 'required'],
+                ['entries', 'default', 'setOnEmpty' => true, 'value' => []],
                 ['id, event_id, comments', 'safe', 'on' => 'search'],
         ];
     }
@@ -183,7 +186,7 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
     public function getPatientTicketQueues($firm, $patient)
     {
         if ($api = Yii::app()->moduleAPI->get('PatientTicketing')) {
-            return $api->getQueueSetList($firm, $patient);
+            return $api->getQueueSetList($firm, $patient, \Institution::model()->getCurrent());
         }
 
         return array();
@@ -240,6 +243,19 @@ class Element_OphCiExamination_ClinicOutcome extends \BaseEventTypeElement
             }
         }
 
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasFollowUpStatus()
+    {
+        foreach ($this->entries as $entry) {
+            if ($entry->isFollowUp()) {
+                return true;
+            }
+        }
         return false;
     }
 }

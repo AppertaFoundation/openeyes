@@ -1,7 +1,8 @@
 <?php
 class OphDrPGDPSD_API extends \BaseAPI
 {
-    public $createOprn = 'OprnCreateDA';
+    public $createOprn = 'OprnCreateEvent';
+    public $createOprnArgs = array('firm', 'episode', 'event_type', 'has_pgdpsd_assignments');
 
     public function setMedEventEntry($med, $element)
     {
@@ -52,21 +53,32 @@ class OphDrPGDPSD_API extends \BaseAPI
         $medication['preferred_term'] = $medication['label'];
         return $medication;
     }
+
+    /**
+     * Get systemic, ophthalmic, drop and oral medications
+     * and process them to be compatible with adder popup in the drug administration element
+     *
+     * The medications will come from the relevant drug sets based on current site and subspecialty
+     *
+     * @return array
+     */
     public function getMedicationOptions()
     {
-        $common_systemic = \Medication::model()->listCommonSystemicMedications(true, true);
         $firm_id = $this->yii->session->get('selected_firm_id');
         $site_id = $this->yii->session->get('selected_site_id');
-        if ($firm_id) {
-            /** @var Firm $firm */
-            $firm = $firm_id ? \Firm::model()->findByPk($firm_id) : null;
-            $subspecialty_id = $firm->getSubspecialtyID();
-            $common_ophthalmic = \Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id, true);
-        } else {
-            $common_ophthalmic = array();
+
+        // if no firm id, return empty medication list
+        if (!$firm_id) {
+            return [];
         }
-        $common_drops = \Medication::model()->listCommonDrops(true, true);
-        $common_oral = \Medication::model()->listCommonOralMedications(true, true);
+
+        $firm = \Firm::model()->findByPk($firm_id);
+        $subspecialty_id = $firm->getSubspecialtyID();
+
+        $common_systemic = \Medication::model()->listCommonSystemicMedications($subspecialty_id, true, $site_id);
+        $common_ophthalmic = \Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id);
+        $common_drops = \Medication::model()->listCommonDrops($subspecialty_id, true, $site_id);
+        $common_oral = \Medication::model()->listCommonOralMedications($subspecialty_id, true, $site_id);
 
         $common_systemic = array_map(function ($comm_sys) {
             $comm_sys['category'] = 'systemic';
@@ -106,14 +118,11 @@ class OphDrPGDPSD_API extends \BaseAPI
         return $widget;
     }
 
-    public function getInstitutionUserAuth($pincode = null, $require_active = true, $user_ids = array())
+    public function getInstitutionUserAuth($require_active = true, $user_ids = array())
     {
         $criteria = new \CDbCriteria();
         if ($require_active) {
             $criteria->compare('t.active', 1);
-        }
-        if ($pincode) {
-            $criteria->compare('t.pincode', $pincode);
         }
         if ($user_ids) {
             $criteria->addInCondition('t.user_id', $user_ids);
@@ -122,9 +131,6 @@ class OphDrPGDPSD_API extends \BaseAPI
         if ($selected_institution_id) {
             $criteria->with = ['institutionAuthentication', 'institutionAuthentication.institution'];
             $criteria->compare('institution.id', $selected_institution_id);
-            if ($pincode) {
-                $criteria->group = 't.pincode, institution.id, t.user_id';
-            }
         }
         $user_auth_objs = \UserAuthentication::model()->findAll($criteria);
         return $user_auth_objs;

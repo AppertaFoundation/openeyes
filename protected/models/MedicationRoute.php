@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "medication_route".
  *
@@ -18,7 +20,6 @@
  * @property int $is_active
  *
  * The followings are the available model relations:
- * @property EventMedicationUse[] $eventMedicationUses
  * @property User $createdUser
  * @property User $lastModifiedUser
  * @property MedicationSetItem[] $medicationSets
@@ -26,6 +27,8 @@
  */
 class MedicationRoute extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const ROUTE_EYE = 1;
     const ROUTE_INTRAVITREAL = 6;
 
@@ -63,9 +66,8 @@ class MedicationRoute extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'eventMedicationUses' => array(self::HAS_MANY, EventMedicationUse::class, 'route_id'),
-            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+            'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
             'medicationSets' => array(self::HAS_MANY, MedicationSetItem::class, 'default_route_id'),
             'medications' => array(self::MANY_MANY, Medication::class, array('medication_id' => 'id'), 'through'=>'medication_set'),
         );
@@ -112,17 +114,17 @@ class MedicationRoute extends BaseActiveRecordVersioned
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('term',$this->term,true);
-        $criteria->compare('code',$this->code,true);
-        $criteria->compare('source_type',$this->source_type,true);
-        $criteria->compare('source_subtype',$this->source_subtype,true);
-        $criteria->compare('deleted_date',$this->deleted_date,true);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('created_date',$this->created_date,true);
-        $criteria->compare('has_lateralty',$this->has_laterality,false);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('term', $this->term, true);
+        $criteria->compare('code', $this->code, true);
+        $criteria->compare('source_type', $this->source_type, true);
+        $criteria->compare('source_subtype', $this->source_subtype, true);
+        $criteria->compare('deleted_date', $this->deleted_date, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
+        $criteria->compare('has_lateralty', $this->has_laterality, false);
         $criteria->compare('is_active',$this->is_active,false);
 
         return new CActiveDataProvider($this, array(
@@ -136,7 +138,7 @@ class MedicationRoute extends BaseActiveRecordVersioned
      * @param string $className active record class name.
      * @return MedicationRoute the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

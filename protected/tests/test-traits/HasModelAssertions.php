@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -15,6 +16,32 @@
 
 trait HasModelAssertions
 {
+    /**
+     * Test that the given $instance has $relation_name relationship defined
+     * that belongs to $relation_class
+     */
+    protected function assertBelongsToRelationDefined($instance, $relation_name, $relation_class)
+    {
+        $relations = $instance->relations();
+
+        $this->assertArrayHasKey($relation_name, $relations);
+        $this->assertEquals(\CBelongsToRelation::class, $relations[$relation_name][0]);
+        $this->assertEquals($relation_class, $relations[$relation_name][1]);
+    }
+
+    /**
+     * Test that the given $instance has a many to many relation of $relation_name to
+     * the given $relation_class
+     */
+    protected function assertManyToManyRelationDefined($instance, $relation_name, $relation_class)
+    {
+        $relations = $instance->relations();
+
+        $this->assertArrayHasKey($relation_name, $relations);
+        $this->assertEquals(\CManyManyRelation::class, $relations[$relation_name][0]);
+        $this->assertEquals($relation_class, $relations[$relation_name][1]);
+    }
+
     /**
      * Simple abstraction for testing validation error on a model attribute
      *
@@ -45,7 +72,7 @@ trait HasModelAssertions
             "No errors found for {$attribute} in:\n" . print_r($instance->getErrors(), true)
         );
 
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "/" . preg_quote($message_partial, "/") . "/",
             $instance->getError($attribute)
         );
@@ -58,7 +85,7 @@ trait HasModelAssertions
         $this->assertEmpty(
             $instance->getErrors($attribute),
             "Not expecting errors for {$attribute}: with "
-            . (empty($instance->$attribute) ? "no value" : "value " . $instance->$attribute)
+            . (empty($instance->$attribute) ? "no value" : "value " . print_r($instance->$attribute, true))
             . print_r($instance->getErrors($attribute), true)
         );
     }
@@ -133,11 +160,30 @@ trait HasModelAssertions
         $this->assertEquals($attribute, $defined_relation[2]);
     }
 
+    protected function assertModelDoesNotExist($model)
+    {
+        $this->assertEmpty($model::model()->findByPk($model->getPrimaryKey()));
+    }
+
+    protected function assertModelStillExists($model)
+    {
+        $this->assertNotNull($model::model()->findByPK($model->getPrimaryKey()));
+    }
+
+    public function assertModelIs($expected, $model)
+    {
+        $this->assertNotNull($model, "Model is null for comparison");
+        $this->assertEquals(get_class($expected), get_class($model));
+        $this->assertNotNull($expected->getPrimaryKey(), 'expected model must be saved instance');
+        $this->assertEquals($expected->getPrimaryKey(), $model->getPrimaryKey());
+    }
+
     public function assertModelArraysMatch($expected, $received)
     {
         $this->assertTrue(is_array($expected));
         $this->assertTrue(is_array($received));
         $this->assertEquals(count($expected), count($received));
+
         if (!count($expected)) {
             return;
         }
@@ -147,6 +193,24 @@ trait HasModelAssertions
         $this->assertEquals(
             $this->getSortedModelListPrimaryKeys($expected),
             $this->getSortedModelListPrimaryKeys($received)
+        );
+    }
+
+    public function assertModelArraysMatchOrdered($expected, $received)
+    {
+        $this->assertTrue(is_array($expected));
+        $this->assertTrue(is_array($received));
+        $this->assertEquals(count($expected), count($received));
+
+        if (!count($expected)) {
+            return;
+        }
+
+        $this->assertModelClassesMatch($expected, $received);
+
+        $this->assertEquals(
+            $this->getModelListPrimaryKeys($expected),
+            $this->getModelListPrimaryKeys($received)
         );
     }
 
@@ -175,14 +239,19 @@ trait HasModelAssertions
         return $class[0];
     }
 
-    protected function getSortedModelListPrimaryKeys($models)
+    protected function getModelListPrimaryKeys($models)
     {
-        $pks = array_map(
+        return array_map(
             function ($model) {
                 return $model->getPrimaryKey();
             },
             $models
         );
+    }
+
+    protected function getSortedModelListPrimaryKeys($models)
+    {
+        $pks = $this->getModelListPrimaryKeys($models);
 
         sort($pks);
 

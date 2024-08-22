@@ -85,6 +85,30 @@ class Element_OphTrOperationnote_Trabeculectomy extends Element_OnDemand
         return parent::afterValidate();
     }
 
+    public function getPrefillableAttributeSet()
+    {
+        $attributes = [
+            'eyedraw',
+            'conjunctival_flap_type_id',
+            'stay_suture',
+            'site_id',
+            'size_id',
+            'sclerostomy_type_id',
+            'viscoelastic_type_id',
+            'viscoelastic_removed',
+            'viscoelastic_flow_id',
+            'report',
+            'difficulties' => 'id',
+            'comments'
+        ];
+
+        if (SettingMetadata::model()->checkSetting('allow_complications_in_pre_fill_templates', 'on')) {
+            $attributes['complications'] = 'id';
+        }
+
+        return $attributes;
+    }
+
 
     /**
      * Returns comma separated list of complications on this procedure note.
@@ -104,5 +128,48 @@ class Element_OphTrOperationnote_Trabeculectomy extends Element_OnDemand
         } else {
             return $default;
         }
+    }
+
+    protected function applyComplexData($data, $index): void
+    {
+        $difficulties = array();
+
+        if (!empty($data['MultiSelect_Difficulties'])) {
+            foreach ($data['MultiSelect_Difficulties'] as $difficulty_id) {
+                $assignment = new OphTrOperationnote_Trabeculectomy_Difficulties();
+                $assignment->difficulty_id = $difficulty_id;
+
+                $difficulties[] = $assignment;
+            }
+        } elseif (!empty($data[$this->elementType->class_name]['difficulties'])) {
+            foreach ($data[$this->elementType->class_name]['difficulties'] as $difficulty_id) {
+                $assignment = new OphTrOperationnote_Trabeculectomy_Difficulties();
+                $assignment->difficulty_id = $difficulty_id;
+
+                $difficulties[] = $assignment;
+            }
+        }
+
+        $this->difficulties = $difficulties;
+
+        $complications = array();
+
+        if (!empty($data['MultiSelect_Complications'])) {
+            foreach ($data['MultiSelect_Complications'] as $complication_id) {
+                $assignment = new OphTrOperationnote_Trabeculectomy_Complications();
+                $assignment->complication_id = $complication_id;
+
+                $complications[] = $assignment;
+            }
+        } elseif (!empty($data[$this->elementType->class_name]['complications'])) {
+            foreach ($data[$this->elementType->class_name]['complications'] as $complication_id) {
+                $assignment = new OphTrOperationnote_Trabeculectomy_Complications();
+                $assignment->complication_id = $complication_id;
+
+                $complications[] = $assignment;
+            }
+        }
+
+        $this->complications = $complications;
     }
 }

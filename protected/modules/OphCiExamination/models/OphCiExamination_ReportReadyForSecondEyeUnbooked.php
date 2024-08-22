@@ -64,7 +64,7 @@ class OphCiExamination_ReportReadyForSecondEyeUnbooked extends BaseReport
     {
         $items = [];
         foreach ($this->items as $item) {
-            $item['identifier'] = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $item['id'], $this->user_institution_id, $this->user_selected_site_id));
+            $item['identifier'] = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $item['id'], $this->user_institution_id, $this->user_selected_site_id));
             $item['all_ids'] = PatientIdentifierHelper::getAllPatientIdentifiersForReports($item['id']);
             $items[] = $item;
         }

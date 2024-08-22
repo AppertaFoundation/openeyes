@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -29,22 +30,31 @@ class PatientIdentifierHelper
      */
     public static function getPatientIdentifierTypeDisplayOrders($usage_type, $institution_id, $site_id = null)
     {
-        $condition = 'patientIdentifierType.usage_type=:usage_type AND t.institution_id=:institution_id';
-        $site_condition = ' AND t.site_id IS NULL';
+        $cache_key = implode(':', [self::class, $usage_type, $institution_id, $site_id ?? '0']);
+        $display_orders = Yii::app()->cache->get($cache_key);
 
-        $criteria = new CDbCriteria();
-        $criteria->order = 'display_order';
-        $criteria->with = 'patientIdentifierType';
-        $criteria->params = [':usage_type' => $usage_type, ':institution_id' => $institution_id];
+        if ($display_orders === false) {
+            $condition = 'patientIdentifierType.usage_type=:usage_type AND t.institution_id=:institution_id';
+            $site_condition = ' AND t.site_id IS NULL';
 
-        if ($site_id) {
-            $site_condition = ' AND t.site_id=:site_id';
-            $criteria->params[':site_id'] = $site_id;
+            $criteria = new CDbCriteria();
+            $criteria->order = 'display_order';
+            $criteria->with = 'patientIdentifierType';
+            $criteria->params = [':usage_type' => $usage_type, ':institution_id' => $institution_id];
+
+            if ($site_id) {
+                $site_condition = ' AND t.site_id=:site_id';
+                $criteria->params[':site_id'] = $site_id;
+            }
+
+            $criteria->condition = $condition . $site_condition;
+
+            $display_orders = PatientIdentifierTypeDisplayOrder::model()->findAll($criteria);
+
+            Yii::app()->cache->set($cache_key, $display_orders, 5);
         }
 
-        $criteria->condition = $condition . $site_condition;
-
-        return PatientIdentifierTypeDisplayOrder::model()->findAll($criteria);
+        return $display_orders;
     }
 
     /**
@@ -55,7 +65,7 @@ class PatientIdentifierHelper
      * @param null $site_id
      * @return PatientIdentifierType|null
      */
-    public static function getPatientIdentifierType($usage_type, $institution_id, $site_id = null) : ?PatientIdentifierType
+    public static function getPatientIdentifierType($usage_type, $institution_id, $site_id = null): ?PatientIdentifierType
     {
         $condition = 'usage_type=:usage_type AND institution_id=:institution_id';
         $site_condition = ' AND site_id IS NULL';
@@ -78,9 +88,9 @@ class PatientIdentifierHelper
      *
      * @return int|null
      */
-    public static function getGlobalInstitutionIdFromSetting() : ?int
+    public static function getGlobalInstitutionIdFromSetting(): ?int
     {
-        $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => Yii::app()->params['global_institution_remote_id']]);
+        $institutions = Institution::model()->findAll('remote_id=:remote_id', [':remote_id' => SettingMetadata::model()->getSetting('global_institution_remote_id')]);
         $count = count($institutions);
         if (!$count || $count > 1) {
             return null;
@@ -88,6 +98,31 @@ class PatientIdentifierHelper
 
         return $institutions[0]->id;
     }
+
+
+    /**
+     * Returns the patient identified by the given value and patient identifier type.
+     *
+     * @param $identifier_value
+     * @param $identifier_type_key
+     * @return Patient|null
+     */
+    public static function getPatientByPatientIdentifier($identifier_value, $identifier_type_key)
+    {
+        $patient_identifier_type = PatientIdentifierType::model()->findByAttributes([
+            'unique_row_string' => $identifier_type_key
+        ]);
+        if (isset($patient_identifier_type)) {
+            $patient_identifier = PatientIdentifier::model()->findByAttributes([
+                'value' => $identifier_value,
+                'patient_identifier_type_id' => $patient_identifier_type->id
+            ]);
+            return $patient_identifier ? $patient_identifier->patient : null;
+        } else {
+            throw new exception("Patient Identifier Type for '$identifier_type_key' not found.");
+        }
+    }
+
 
     /**
      * Returns the identifier of the specified patient.
@@ -98,10 +133,19 @@ class PatientIdentifierHelper
      * @param null $site_id
      * @return PatientIdentifier|null
      */
-    public static function getIdentifierForPatient($usage_type, $patient_id, $institution_id, $site_id = null, $disable_default_scope = false) : ?PatientIdentifier
+    public static function getIdentifierForPatient($usage_type, $patient_id, $institution_id, $site_id = null, $disable_default_scope = false): ?PatientIdentifier
     {
         $cases = $site_id ? ['site', 'institution'] : ['institution'];
         $current_site_id = $site_id;
+
+        $identifiers_by_type_id = array_reduce(
+            PatientIdentifier::model()->with('patientIdentifierType', 'patientIdentifierStatus')->cache(3)->findAll("patient_id=:patient_id and deleted = 0", [':patient_id' => $patient_id]),
+            function ($by_id, $patient_identifier) {
+                $by_id[$patient_identifier->patient_identifier_type_id] = $patient_identifier;
+                return $by_id;
+            },
+            []
+        );
 
         foreach ($cases as $case) {
             if ($case === 'institution') {
@@ -109,9 +153,8 @@ class PatientIdentifierHelper
             }
             $order_rules = self::getPatientIdentifierTypeDisplayOrders($usage_type, $institution_id, $current_site_id);
             foreach ($order_rules as $rule) {
-                $identifier = PatientIdentifier::model()->find("patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id AND deleted = 0", [':patient_id' => $patient_id, ':patient_identifier_type_id' => $rule->patient_identifier_type_id]);
-                if ($identifier) {
-                    return $identifier;
+                if (array_key_exists($rule->patient_identifier_type_id, $identifiers_by_type_id)) {
+                    return $identifiers_by_type_id[$rule->patient_identifier_type_id];
                 }
             }
         }
@@ -129,20 +172,44 @@ class PatientIdentifierHelper
             }
             $identifier_type = self::getPatientIdentifierType($usage_type, $institution_id, $current_site_id);
             if ($identifier_type) {
-                $criteria = new CDbCriteria();
-                $criteria->condition = "patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id";
-                $criteria->params = [':patient_id' => $patient_id, ':patient_identifier_type_id' => $identifier_type->id];
-
                 if ($disable_default_scope) {
+                    $criteria = new CDbCriteria();
+                    $criteria->condition = "patient_id=:patient_id AND patient_identifier_type_id=:patient_identifier_type_id";
+                    $criteria->params = [':patient_id' => $patient_id, ':patient_identifier_type_id' => $identifier_type->id];
+
                     $identifier = PatientIdentifier::model()->disableDefaultScope()->find($criteria);
                 } else {
-                    $identifier = PatientIdentifier::model()->find($criteria);
+                    $identifier = $identifiers_by_type_id[$identifier_type->id] ?? null;
                 }
 
                 if ($identifier) {
                     return $identifier;
                 }
             }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the identifier of the specified patient.
+     *
+     * @param $usage_type
+     * @param $institution_id
+     * @param null $site_id
+     * @return PatientIdentifier|null
+     */
+    public static function getMaxIdentifier($type_id): ?PatientIdentifier
+    {
+        $criteria = new CDbCriteria();
+        $criteria->select = "*, REGEXP_REPLACE(value, '[^0-9]+', '') as numeric_value";
+        $criteria->condition = "patient_identifier_type_id=:patient_identifier_type_id";
+        $criteria->params = [':patient_identifier_type_id' => $type_id];
+        $criteria->order = 'ABS(numeric_value) desc';
+        $criteria->limit = 1; // We only want the first result.
+        $identifier = PatientIdentifier::model()->find($criteria);
+        if ($identifier) {
+            return $identifier;
         }
 
         return null;
@@ -161,7 +228,7 @@ class PatientIdentifierHelper
 
         if ($patient) {
             foreach ($patient->identifiers as $identifier) {
-                $identifiers .= $identifier->patientIdentifierType->long_title . ' (' . $identifier->patientIdentifierType->institution->name . '): ' . $identifier->getDisplayValue() . ', ';
+                $identifiers .= $identifier->patientIdentifierType->short_title . ' (' . $identifier->patientIdentifierType->institution->short_name . '): ' . $identifier->getDisplayValue() . ', ';
             }
         }
 
@@ -177,7 +244,7 @@ class PatientIdentifierHelper
      * @param null $site_id
      * @return PatientIdentifier|null
      */
-    public static function getIdentifierDefaultPromptForInstitution($usage_type, $institution_id, $site_id = null) : string
+    public static function getIdentifierDefaultPromptForInstitution($usage_type, $institution_id, $site_id = null): string
     {
         $cases = $site_id ? ['site', 'institution'] : ['institution'];
         $current_site_id = $site_id;
@@ -218,7 +285,7 @@ class PatientIdentifierHelper
      * @param PatientIdentifier|null $patient_identifier
      * @return string
      */
-    public static function getIdentifierPrompt($patient_identifier = null) : string
+    public static function getIdentifierPrompt($patient_identifier = null): string
     {
         if ($patient_identifier) {
             return $patient_identifier->patientIdentifierType->short_title;
@@ -233,7 +300,7 @@ class PatientIdentifierHelper
      * @param PatientIdentifier|null $patient_identifier
      * @return string
      */
-    public static function getIdentifierValue(PatientIdentifier $patient_identifier = null) : string
+    public static function getIdentifierValue(PatientIdentifier $patient_identifier = null): string
     {
         if ($patient_identifier) {
             return $patient_identifier->getDisplayValue();
@@ -251,7 +318,7 @@ class PatientIdentifierHelper
      * @return bool
      * @throws Exception
      */
-    public static function addNumberToPatient(\Patient $patient, \PatientIdentifierType $type, string $identifier) : bool
+    public static function addNumberToPatient(\Patient $patient, \PatientIdentifierType $type, string $identifier): bool
     {
         $duplicate_identifier = \PatientIdentifier::model()->findByAttributes([
             'patient_identifier_type_id' => $type->id,
@@ -266,7 +333,7 @@ class PatientIdentifierHelper
             if ($duplicate_identifier) {
                 if ($type->usage_type == PatientIdentifierType::GLOBAL_USAGE_TYPE) {
                     $duplicate_identifier->deleted = 1;
-                    $duplicate_identifier->source_info =  \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING . $patient->id . '['.time().']';
+                    $duplicate_identifier->source_info =  \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING . $patient->id . '[' . time() . ']';
                     $duplicate_identifier->save();
                 } else {
                     return false;
@@ -297,9 +364,71 @@ class PatientIdentifierHelper
      *
      * @return PatientIdentifierHelper|null
      */
-    public static function getCurrentGlobalType() : ?PatientIdentifierType
+    public static function getCurrentGlobalType(): ?PatientIdentifierType
     {
         $global_institution_id = \PatientIdentifierHelper::getGlobalInstitutionIdFromSetting();
         return \PatientIdentifierHelper::getPatientIdentifierType("GLOBAL", $global_institution_id);
+    }
+
+    /**
+     * Retrieve an identifier for a Patient by identifier type
+     *
+     * @param int $patient_id
+     * @param PatientIdentifierType $id_type
+     * @return PatientIdentifier|null
+     */
+    public static function getPatientIdentifierByType(int $patient_id, PatientIdentifierType $patient_identifier_type): ?PatientIdentifier
+    {
+        return PatientIdentifier::model()->findByAttributes([
+            "patient_id" => $patient_id,
+            "patient_identifier_type_id" => $patient_identifier_type->id
+        ]);
+    }
+
+    public static function getSearchExamplePatternBasedOnIdentifierType(string $displayPrompt): array
+    {
+        $pattern = [];
+
+        switch (strtoupper($displayPrompt)) {
+            case "NHS":
+            case "NHS ID":
+                $pattern[$displayPrompt] = '123-123-1234';
+                break;
+            case "CERA":
+            case "CERA ID":
+                $pattern[$displayPrompt] = 'LL01-0028, 101002, 30-001, LON-01';
+                break;
+            case "MEDICARE":
+            case "MEDICARE ID":
+                $pattern[$displayPrompt] = '123-123';
+                break;
+        }
+
+        return $pattern;
+    }
+
+    /**
+     * Retrieve a padded search term that matches patient identifier regex
+     *
+     * @param string $term
+     * @param string $validate_regex
+     * @return string $pad
+     */
+    public static function getPaddedTermRegexResult(string $term, string $validate_regex, string $pad = null)
+    {
+        if ($validate_regex) {
+            preg_match(preg_quote($validate_regex), $term, $matches);
+
+            if (isset($matches[0])) {
+                return $matches[0];
+            } else {
+                $padded = sprintf($pad ?: '%s', $term);
+                preg_match($validate_regex, $padded, $matches);
+
+                return $matches[0] ?? null;
+            }
+        }
+
+        return null;
     }
 }

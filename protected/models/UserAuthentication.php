@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "user_authentication".
  *
@@ -46,6 +48,8 @@
  */
 class UserAuthentication extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public $password;
     public $password_repeat;
     private $old_attributes;
@@ -70,13 +74,11 @@ class UserAuthentication extends BaseActiveRecordVersioned
         return [
             ['institution_authentication_id, user_id, username', 'required'],
             ['username', 'length', 'max' => 40],
-            ['pincode', 'length', 'max' => 6, 'min' => 6],
-            ['pincode', 'checkUniqueness'],
             ['username', 'checkWhetherUserNameIsTaken'],
             ['last_modified_user_id, created_user_id', 'length', 'max' => 10],
-            ['active, password_status, institution_authentication_id, password_softlocked_until, last_modified_date, created_date, pincode', 'safe'],
+            ['active, password_status, institution_authentication_id, password_softlocked_until, last_modified_date, created_date', 'safe'],
             // The following rule is used by search().
-            ['id, user_id, username, last_modified_user_id, last_modified_date, created_user_id, created_date, active, pincode', 'safe', 'on'=>'search'],
+            ['id, user_id, username, last_modified_user_id, last_modified_date, created_user_id, created_date, active', 'safe', 'on' => 'search'],
 
             // conditional rules only for local authentications:
             [
@@ -151,24 +153,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
             }
         }
     }
-    public function checkUniqueness($attribute, $params)
-    {
-        if (!$this->pincode || !$this->institution_authentication_id) {
-            return null;
-        }
-        $criteria = new CDbCriteria();
-        $criteria->compare('institution.id', $this->institutionAuthentication->institution->id);
-        $criteria->compare('t.pincode', $this->pincode);
-        if ($this->user_id) {
-            $criteria->addCondition('t.user_id != :user_id');
-            $criteria->params[':user_id'] = $this->user_id;
-        }
-        $existing_pincode = self::model()->with('institutionAuthentication', 'institutionAuthentication.institution')->find($criteria);
-        if ($existing_pincode) {
-            $this->addError($attribute, "Duplicated Pincode found in authentication: '{$this->institutionAuthentication->description}'");
-        }
-        return $existing_pincode;
-    }
+
     /**
      * @return array relational rules.
      */
@@ -192,7 +177,6 @@ class UserAuthentication extends BaseActiveRecordVersioned
             'institution_authentication_id' => 'Institution Authentication',
             'user_id' => 'User',
             'username' => 'Login ID',
-            'pincode' => 'Pincode',
             'password_status' => 'Status',
             'password' => 'Password',
             'password_repeat' => 'Confirm Password',
@@ -273,7 +257,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
             $this->password_salt = null;
             $this->password_hash = PasswordUtils::hashPassword($password, null);
             if (!$this->saveAttributes(array('password_hash','password_salt'))) {
-                $this->audit('login', 'auto-encrypt-password-failed', "user_authentication_id = {$this->id}, with error :". var_export($this->getErrors(), true));
+                $this->audit('login', 'auto-encrypt-password-failed', "user_authentication_id = {$this->id}, with error :" . var_export($this->getErrors(), true));
                 return false;
             }
             $this->audit('login', 'auto-encrypt-password', "user_authentication_id = {$this->id}");
@@ -303,7 +287,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
      */
     public function search()
     {
-        $criteria=new CDbCriteria;
+        $criteria = new CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('user_id', $this->user_id);
@@ -314,7 +298,7 @@ class UserAuthentication extends BaseActiveRecordVersioned
         $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, [
-            'criteria'=>$criteria,
+            'criteria' => $criteria,
         ]);
     }
 
@@ -323,10 +307,27 @@ class UserAuthentication extends BaseActiveRecordVersioned
         return $this->institution_authentication_id ? ($this->getRelated('institutionAuthentication')->user_authentication_method == 'LOCAL') : true;
     }
 
+    public function isLDAPAuth()
+    {
+        return $this->institution_authentication_id ? ($this->getRelated('institutionAuthentication')->user_authentication_method == 'LDAP') : true;
+    }
+
+    public function isSsoAuth()
+    {
+        return $this->institution_authentication_id ? ($this->getRelated('institutionAuthentication')->user_authentication_method == 'SSO') : true;
+    }
+
     public static function fromAttributes($attributes)
     {
         $user_auth = !empty($attributes['id']) ? self::model()->findByPk($attributes['id']) : new self();
         $user_auth->setAttributes($attributes);
+        if (isset($user_auth->originalAttributes['institution_authentication_id']) && $user_auth->institution_authentication_id != $user_auth->originalAttributes['institution_authentication_id']) {
+            $user_auth->password_last_changed_date = date('Y-m-d H:i:s');
+            $user_auth->password_failed_tries = 0;
+            if (isset($user_auth->institutionAuthentication) && $user_auth->institutionAuthentication->user_authentication_method == "LDAP") {
+                $user_auth->password_status = 'current';
+            }
+        }
         return $user_auth;
     }
 
@@ -342,13 +343,14 @@ class UserAuthentication extends BaseActiveRecordVersioned
             );
             $error = (
                 !empty($inactive_user_auths) &&
-                array_reduce($inactive_user_auths,
+                array_reduce(
+                    $inactive_user_auths,
                     function ($total, $match) {
                         return $total | $match;
                     }
                 )) ?
                 "User has been deactivated, please contact an admin." :
-                "Username not found for this location, please ensure you have entered the correct username.";
+                "Invalid login.";
 
             return [[], $error];
         }
@@ -360,17 +362,13 @@ class UserAuthentication extends BaseActiveRecordVersioned
                 return [[ InstitutionAuthentication::PERMISSIVE_MATCH => [ $user_authentication ] ], "success"];
             }
             $match_type = $user_authentication->institutionAuthentication->match($institution_id, $site_id);
+
             if ($match_type > InstitutionAuthentication::NO_MATCH) {
-                if ($match_type == InstitutionAuthentication::PERMISSIVE_MATCH) {
-                    if (!self::userHasExactMatch($user_authentication->user, $institution_id, $site_id)) {
-                        $matches[$match_type][] = $user_authentication;
-                    }
-                } else {
-                    $matches[$match_type][] = $user_authentication;
-                }
+                $matches[$match_type][] = $user_authentication;
             }
         }
-        $error = empty($matches) ? "Username not found for this location, please ensure you have entered the correct username" : "success";
+
+        $error = empty($matches) ? "Invalid login" : "success";
 
         return [$matches, $error];
     }
@@ -387,14 +385,51 @@ class UserAuthentication extends BaseActiveRecordVersioned
         return false;
     }
 
-    /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return Tag the static model class
-     */
-    public static function model($className = __CLASS__)
+    public function findOrCreateSSOAuthentication($user_id, $username, $institution_id, $site_id)
     {
-        return parent::model($className);
+         // Find institution Authentication that matches user
+         $institution_authentication = InstitutionAuthentication::model()
+            ->findByAttributes([
+                'user_authentication_method' => 'SSO',
+                'institution_id' => $institution_id,
+                'site_id' => $site_id
+            ]);
+
+        if (!$institution_authentication) {
+            $this->audit('login', 'login-failed', "No matching Institution Authentication available for: Method = SSO, Institution ID = $institution_id, Site ID= $site_id", true);
+            throw new RuntimeException('Unable to save User. Matching Institution Authentication not found');
+        }
+
+        $attrs = [
+            'user_id' => $user_id,
+            'username' =>  $username,
+            'institution_authentication_id' => $institution_authentication->id,
+        ];
+
+        $user_auth = $this->findAllByAttributes($attrs);
+
+        if (count($user_auth) > 1) {
+            throw new Exception('More than 1 user authentication matched the search. This is an enexpected situation');
+        }
+
+        if (count($user_auth) === 1) {
+            return $user_auth[0];
+        }
+
+        $new_auth = new self();
+        $new_auth->setAttributes($attrs);
+
+        # If UserAuthentication record doesn't already exist, create one
+        if (!$new_auth->save()) {
+            Audit::add('login', 'login-failed', "Cannot create user_authentication with username: $username in institution: {$institution_authentication->institution->name}", true);
+            throw new Exception('Unable to save User: ' . print_r($new_auth->getErrors(), true));
+        }
+
+        return $new_auth;
+    }
+
+    public function setSSOUserAuthentication($user_id, $username, $institution_id, $site_id)
+    {
+        $this->findOrCreateSSOAuthentication($user_id, $username, $institution_id, $site_id);
     }
 }

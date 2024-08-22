@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "event_type".
  *
@@ -23,6 +25,7 @@
  *
  * @property int $id
  * @property string $name
+ * @property string $class_name
  * @property ElementGroup[] $elementGroups
  *
  * The followings are the available model relations:
@@ -30,6 +33,8 @@
  */
 class EventType extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -184,20 +189,11 @@ class EventType extends BaseActiveRecordVersioned
      */
     public function getEventTypeInUseList()
     {
-        $criteria = new CDbCriteria();
-        $criteria->distinct = true;
+        $event_types = Yii::app()->db
+            ->createCommand('SELECT id, name FROM event_type et INNER JOIN (SELECT DISTINCT event_type_id FROM event) e on e.event_type_id = et.id')
+            ->queryAll();
 
-        $event_type_ids = array();
-        foreach (Event::model()->findAll($criteria) as $event) {
-            $event_type_ids[] = $event->event_type_id;
-        }
-
-        $criteria = new CDbCriteria();
-        $criteria->addInCondition('id', $event_type_ids);
-        $criteria->order = 'name asc';
-        $criteria->addCondition('parent_id is null');
-
-        return CHtml::listData(self::model()->findAll($criteria), 'id', 'name');
+        return CHtml::listData($event_types, 'id', 'name');
     }
 
     /**
@@ -303,7 +299,7 @@ class EventType extends BaseActiveRecordVersioned
         }
     }
 
-    public function getDefaultElements($action = 'edit')
+    public function getDefaultElements()
     {
         $criteria = new CDbCriteria();
         $criteria->compare('event_type_id', $this->id);
@@ -313,14 +309,33 @@ class EventType extends BaseActiveRecordVersioned
         }
         $criteria->order = 'display_order';
 
-        $elements = array();
-        foreach (ElementType::model()->findAll($criteria) as $element_type) {
+        return self::resolveElementClasses(ElementType::model()->findAll($criteria));
+    }
+
+    /**
+     * Returns new up'd versions of each element type passed
+     *
+     * @param array $element_types
+     * @return array
+     */
+    public static function resolveElementClasses($element_types)
+    {
+        $elements = [];
+        foreach ($element_types as $element_type) {
             $element_class = $element_type->class_name;
 
-            if (!class_exists($element_class)) {
-                Yii::log('Class missing for getting default elements: ' . $element_class, 'Error');
-
-                continue;
+            // Wrapping in try block as if class php file doesn't exist need to catch error
+            try {
+                if (!class_exists($element_class)) {
+                    Yii::log('Class not defined for getting default elements: ' . $element_class, 'Error');
+                    continue;
+                }
+            } catch (\Exception $e) {
+                if (strpos($e->getMessage(), 'No such file') > -1) {
+                    Yii::log('Class file not found when getting default elements: ' . $element_class, 'Error');
+                    continue;
+                }
+                throw $e;
             }
 
             $element = new $element_class();
@@ -494,7 +509,8 @@ class EventType extends BaseActiveRecordVersioned
             'OphTrOperationchecklists' => 'i-TrSafetyChecklist',
             'OphInKowastereo' => 'i-InStereoPair',
             'SupCoPhonelog' => 'i-CoTelephoneCall',
-            'OphDrPGDPSD'=>'i-DrDrops',
+            'OphInMehPac' => 'i-NuPreOpCheck',
+            'OphDrPGDPSD' => 'i-DrDrops',
         );
 
         return array_key_exists($this->class_name, $style_mapping) ? $style_mapping[$this->class_name] : null;

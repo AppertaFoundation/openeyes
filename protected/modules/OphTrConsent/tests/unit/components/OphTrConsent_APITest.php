@@ -12,11 +12,11 @@
  * @copyright Copyright (C) 2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-class OphTrConsent_APITest extends CDbTestCase
+class OphTrConsent_APITest extends OEDbTestCase
 {
     public $fixtures = array(
         'el_procedure' => 'Element_OphTrConsent_Procedure',
-        'proclist' => 'EtOphtrconsentProcedureProceduresProcedures',
+        'proclist' => 'OphtrconsentProcedureProceduresProcedures',
         'procs' => 'Procedure',
         'events' => 'Event',
         'episodes' => 'Episode',

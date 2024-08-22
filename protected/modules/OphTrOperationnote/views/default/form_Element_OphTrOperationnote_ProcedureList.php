@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 if ($element->booking_event_id) {
     $whiteboard_display_mode = SettingMetadata::model()->getSetting('opnote_whiteboard_display_mode');
 
@@ -66,17 +68,22 @@ if ($element->booking_event_id) {
       <tbody>
       <tr>
         <td style="vertical-align: top;">
+          
             <?php echo $form->hiddenInput($element, 'booking_event_id') ?>
             <?php echo $form->radioButtons(
                 $element,
                 'eye_id',
                 $element->eyeOptions,
-                ($element->eye() ? (intval($element->eye()->id) === Eye::BOTH ? EYE::RIGHT : $element->eye()->id) : null),
+                ($element->eye() ? $element->eye()->id : null),
                 null,
                 null,
                 null,
                 null,
-                array('nowrapper' => true),
+                array(
+                  'nowrapper' => true,
+                  'test' => 'procedure-side',
+                  'prefilled_value' => $template_data['eye_id'] ?? '',
+                ),
                 array()
             ) ?>
         </td>
@@ -92,6 +99,7 @@ if ($element->booking_event_id) {
                 'hidden' => ($this->action->id == 'create'
                     && $element->eye == null
                     && !@$_POST['Element_OphTrOperationnote_ProcedureList']['eye_id']),
+                'templates' => $data['templates_for_unbooked'] ?? []
             ));
             ?>
           <style>

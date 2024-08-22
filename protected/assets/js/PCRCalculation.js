@@ -275,13 +275,17 @@ function setPcrPupil(ev, pcrEl) {
     if (!pcrEl) {
         pcrEl = ev.data;
     }
-
     var $container = getPcrContainer(ev);
     $container.find(pcrEl).val($(ev.target).val());
-    $container.find(pcrEl).text($(ev.target).val());
+
+    // Only change the text of the element if it is not select element
+    // The pupil size is a select element in Examination event,
+    // but it is an input and label in the  Operation Note event.
+    if (!$container.find(pcrEl).is("select")) {
+        $container.find(pcrEl).text($(ev.target).val());
+    }
 
     $(pcrEl).trigger('change');
-
 }
 
 /**
@@ -382,7 +386,7 @@ function mapExaminationToPcr() {
         ":input[name^='glaucoma_diagnoses']": {
             "pcr": '.pcrrisk_glaucoma',
             "func": setGlaucomaDisorder,
-            "init": true
+            "init": false
         },
         "#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_right_cd_ratio_id,#OEModule_OphCiExamination_models_Element_OphCiExamination_OpticDisc_left_cd_ratio_id": {
             "pcr": '.pcrrisk_no_fundal_view',
@@ -557,16 +561,16 @@ function calculatePcrValue(ORValue) {
         pcrRisk = pcrRisk.toFixed(2);
 
         if (pcrRisk <= 1) {
-            pcrColour = 'green';
+            pcrColour = 'good';
         } else if (pcrRisk > 1 && pcrRisk <= 5) {
-            pcrColour = 'orange';
+            pcrColour = 'issue';
         } else {
-            pcrColour = 'red';
+            pcrColour = 'warning';
         }
     } else {
         pcrRisk = "N/A";
         excessRisk = "N/A";
-        pcrColour = 'blue';
+        pcrColour = 'subtle-invert';
     }
 
     return {
@@ -590,7 +594,7 @@ function pcrCalculate($eyeSide, side) {
     side = capitalizeFirstLetter(side);
     pcrData = calculatePcrValue(ORValue);
 
-    $eyeSide.find('#pcr-risk-div, .pcr-risk-div label').css('background', pcrData.pcrColour);
+    $eyeSide.find('#pcr-risk-div, .pcr-risk-div label').attr('class', 'highlighter large-text ' + pcrData.pcrColour);
     $eyeSide.find('.pcr-span').html(pcrData.pcrRisk);
     $eyeSide.find('.pcr-erisk').html(pcrData.excessRisk);
     if (pcrData.pcrRisk !== 'N/A') {
@@ -598,7 +602,12 @@ function pcrCalculate($eyeSide, side) {
     } else {
         $eyeSide.find('.pcr-input').val('');
     }
-    $eyeSide.find('.pcr-erisk-input').val(pcrData.excessRisk);
+
+    if (pcrData.excessRisk !== 'N/A') {
+        $eyeSide.find('.pcr-erisk-input').val(pcrData.excessRisk);
+    } else {
+        $eyeSide.find('.pcr-erisk-input').val('');
+    }
 
     $('#ophCiExaminationPCRRisk' + side + 'EyeLabel').find('a').css('color', pcrData.pcrColour);
     $('#ophCiExaminationPCRRisk' + side + 'EyeLabel').find('.pcr-span1').html(pcrData.pcrRisk);

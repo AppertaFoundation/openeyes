@@ -1,5 +1,20 @@
 #!/bin/bash -l
 
+abort() {
+    echo >&2 '
+****************************
+*** ABORTED DUE TO ERROR ***
+****************************
+'
+    date
+    echo "An error occurred. Exiting..." >&2
+    exit 1
+}
+
+trap 'abort' 0
+
+set -e
+
 ## If the OE_NO_DB build parameter is set, then this script will not be run
 if [ "$OE_NO_DB" == "true" ]; then
     echo "
@@ -56,15 +71,18 @@ host=${DATABASE_HOST:-"localhost"}
 nobanner=0
 migrate=1
 clearaudit=0
-bannertext="Database reset at $(date)"
+clearfiles=0
+bannertext=""
 branch=0
 demo=0
 droparchive=0
+freehanddrawreset=0
 nofiles=0
 showhelp=0
 checkoutparams="--sample-only --no-fix --depth 1 --single-branch"
 cleanbase=0
 migrateparams="-q"
+noclean=0
 nofix=0
 dwservrunning=0
 restorefile=""
@@ -84,6 +102,11 @@ while [[ $# -gt 0 ]]; do
         nobanner=1
         echo "Banner will not be (re)set"
         ## Do not update the user banner after reset
+        ;;
+    --no-clean)
+        noclean=1
+        echo "Restore file will not be cleaned"
+        ## Do not attempt to make compatability fixes before import
         ;;
     --no-migrate | -nm | --nomigrate)
         migrate=0
@@ -123,11 +146,13 @@ while [[ $# -gt 0 ]]; do
         echo "Protected files will not be reset"
         nofiles=1
         ;;
-    --genetics-enable)
-        bash "$SCRIPTDIR"/add-genetics.sh
+    --clear-files | -cf)
+        clearfiles=1
+        echo "Protected files will be cleaned - you will probably want to re-import default freehand drawing templates by adding the -fd switch"
         ;;
-    --genetics-disable)
-        bash "$SCRIPTDIR"/add-genetics.sh -r
+    --freehand-draw-templates | -fd)
+        echo "Freehand drawing templates will be re-populated"
+        freehanddrawreset=1
         ;;
     -p) # set dbpassword and move on to next param
         dbpassword="$2"
@@ -230,7 +255,7 @@ if [ $showhelp = 1 ]; then
     echo "DESCRIPTION:"
     echo "Resets database to latest 'sample' database"
     echo ""
-    echo "usage: $0 [--branch | b branchname] [--help] [--no-migrate | -nm ] [--banner \"banner text\"] [--develop | -d] [ --no-banner | -nb ] [-p dbpassword] [--genetics-enable] [--genetics-disable]"
+    echo "usage: $0 [--branch | b branchname] [--help] [--no-migrate | -nm ] [--banner \"banner text\"] [--develop | -d] [ --no-banner | -nb ] [-p dbpassword]"
     echo ""
     echo "COMMAND OPTIONS:"
     echo "	--help         : Display this help text"
@@ -253,10 +278,6 @@ if [ $showhelp = 1 ]; then
     echo "	-p			   : specify root dbpassword for mysql (default is \"dbpassword\")"
     echo "	-u             : specify username for connecting to database (default is 'root')"
     echo "	--demo         : Install additional scripts to set up openeyes for demo"
-    echo "	--genetics-enable"
-    echo "                  : enable genetics modules (if currently diabled)"
-    echo "	--genetics-disable"
-    echo "                  : disable genetics modules (if currently enabled)"
     echo "	--clean-base	: Do not import sample data - migrate from clean db instead"
     echo "	--ignore-warnings	: Ignore warnings during migration"
     echo "	--no-fix		: do not run oe-fix routines after reset"
@@ -269,12 +290,13 @@ if [ $showhelp = 1 ]; then
     exit 1
 fi
 
-# add -p to front of dbpassword (deals with blank dbpassword)
-if [ -n "$dbpassword" ]; then
-    dbpassword="-p'$dbpassword'"
-fi
+# # add -p to front of dbpassword (deals with blank dbpassword)
+# if [ -n "$dbpassword" ]; then
+#     dbpassword="-p'$dbpassword'"
+# fi
 
-dbconnectionstring="mysql -u '$username' $dbpassword --port=$port --host=$host"
+# Set the coonection string and export it so that it can be used by other bash scripts in the demo scripts
+export dbconnectionstring="MYSQL_PWD=${dbpassword} mysql -u '${username}' --port=${port} --host=${host}"
 
 if ps ax | grep -v grep | grep run-dicom-service.sh >/dev/null; then
     dwservrunning=1
@@ -305,19 +327,30 @@ fi
     exit 1
 } || :
 
-echo "Clearing current database..."
-
-dbresetsql="DROP DATABASE IF EXISTS openeyes; 
+# First attempt to revoke access for the OE user and kill any open connections (this will stop the payload processor interfeering)
+echo "Dropping user and killing all connections..."
+revokesql="FLUSH TABLES;
+FLUSH PRIVILEGES;
 DROP USER IF EXISTS '$dbuser';
+FLUSH PRIVILEGES;
+FLUSH HOSTS;"
+eval "$dbconnectionstring -e \"$revokesql\""
+killsql="SELECT CONCAT('KILL ', id, ';') FROM information_schema.processlist WHERE user = '$dbuser';"
+killsql=$(eval "$dbconnectionstring" -NBe "\"$killsql\"")
+eval "$dbconnectionstring" -e "\"$killsql\""
+
+echo "Clearing current database..."
+dbresetsql="
+FLUSH PRIVILEGES;
+FLUSH HOSTS;
+FLUSH LOGS;
+FLUSH TABLES;
+DROP DATABASE IF EXISTS openeyes; 
 CREATE USER '$dbuser' IDENTIFIED BY '$pass'; 
 CREATE DATABASE ${DATABASE_NAME:-openeyes}; 
-GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%';
 FLUSH PRIVILEGES;"
 
-echo ""
-## write-out command to console (helps with debugging)
-# echo "$dbconnectionstring -e \"$dbresetsql\""
-## run the same command
+## run the command
 eval "$dbconnectionstring -e \"$dbresetsql\""
 echo ""
 
@@ -325,6 +358,9 @@ if [ $nofiles = "0" ]; then
     echo Deleting protected files
     # remove protected/files
     sudo rm -rf "$WROOT"/protected/files/*
+    [ $clearfiles -eq 0 ] && sudo cp -r "$MODULEROOT"/sample/sql/demo/files/* "$WROOT"/protected/files/ || :
+    sudo chown www-data:www-data "$WROOT"/protected/files
+    sudo chmod 6774 "$WROOT"/protected/files
     # remove any docman process files
     sudo rm -rf /tmp/docman
     # remove hscic import history (otherwise hscic import requires --force to run after reset)
@@ -355,14 +391,15 @@ if [ $cleanbase = "0" ]; then
         exit 1
     fi
 
-    # run cleanup on exports to maximise compatibility with different mysql/mariadb versions
-    echo "cleaning restore file for compatability..."
-    sed 's/NO_AUTO_CREATE_USER,\?//g' 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
-    sed "s|CREATE.\+DEFINER.\+ TRIGGER|CREATE TRIGGER|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
-    sed "s|CREATE.\+DEFINER.\+ FUNCTION|CREATE FUNCTION|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
-    sed "s|CREATE.\+DEFINER.\+ PROCEDURE|CREATE PROCEDURE|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
-    sed "s|\/\*\![0-9]\+ DEFINER.\+SQL SECURITY DEFINER.\?\*\/| |g" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
-
+    if [ $noclean -eq 0 ]; then
+        # run cleanup on exports to maximise compatibility with different mysql/mariadb versions
+        echo "cleaning restore file for compatability..."
+        sed 's/NO_AUTO_CREATE_USER,\?//g' 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+        sed "s|CREATE.\+DEFINER.\+ TRIGGER|CREATE TRIGGER|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+        sed "s|CREATE.\+DEFINER.\+ FUNCTION|CREATE FUNCTION|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+        sed "s|CREATE.\+DEFINER.\+ PROCEDURE|CREATE PROCEDURE|" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+        sed "s|\/\*\![0-9]\+ DEFINER.\+SQL SECURITY DEFINER.\?\*\/| |g" 0-a-restore.sql >tmp_restore.sql && mv tmp_restore.sql 0-a-restore.sql
+    fi
     # import the cleaned file
     restorefilesize=$(numfmt --to=iec-i --suffix=B $(du -b "0-a-restore.sql" | cut -f1))
     echo "importing $restorefile (Size: $restorefilesize. This can take some time)...."
@@ -376,6 +413,12 @@ if [ $cleanbase = "0" ]; then
 
     # remove temp file
     rm 0-a-restore.sql 2>/dev/null
+
+    # grant user rights to openeyes user - this is left untl the end to prevent other systems from connecting in and modifying data before the restore has completed
+    echo "Granting user rights to $dbuser"
+    grantsql="GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER, USAGE on ${DATABASE_NAME:-openeyes}.* to '$dbuser'@'%';
+    FLUSH PRIVILEGES;"
+    eval "$dbconnectionstring -e \"$grantsql\""
 
     ## belt and braces reset to the correct user password, in case the PW was altered by the imported sql
     pwresetsql="ALTER USER '$dbuser'@'%' IDENTIFIED BY '$pass';"
@@ -420,10 +463,10 @@ if [[ $demo == "1" && $nopre == "0" ]]; then
     for f in $(ls "$MODULEROOT"/sample/sql/demo/pre-migrate | sort -V); do
         if [[ $f == *.sql ]]; then
             echo "importing $f"
-            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/$f"
+            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $MODULEROOT/sample/sql/demo/pre-migrate/\"$f\""
         elif [[ $f == *.sh ]]; then
             echo "running $f"
-            bash -l "$MODULEROOT/sample/sql/demo/pre-migrate/$f"
+            bash -l "$MODULEROOT/sample/sql/demo/pre-migrate"/"$f"
         fi
     done
 fi
@@ -433,49 +476,27 @@ if [ $migrate == "1" ]; then
     echo Performing database migrations
     bash "$SCRIPTDIR"/oe-migrate.sh "$migrateparams"
     echo "The following migrations were applied..."
-    grep applied "$WROOT"/protected/runtime/migrate.log
-fi
+    grep applied "$WROOT"/protected/runtime/migrate.log || :
 
-# Run post-migration demo scripts
-# Actual scripts are in sample module, for greater flexibility
-if [[ $demo == "1" && $nopost == "0" ]]; then
+    # Run post-migration demo scripts
+    # Actual scripts are in sample module, for greater flexibility
+    if [[ $demo == "1" && $nopost == "0" ]]; then
 
-    echo "RUNNING POST-MIGRATION DEMO SCRIPTS..."
+        echo "RUNNING POST-MIGRATION DEMO SCRIPTS..."
 
-    basefolder="$MODULEROOT/sample/sql/demo"
+        basefolder="$MODULEROOT/sample/sql/demo"
 
-    find "$basefolder" "$basefolder"/post-migrate/ "$basefolder"/local-post -maxdepth 1 -type f -printf '%f\0%p\n' | sort -t '\0' -V | awk -F '\0' '{print $2}' | while read f; do
-        if [[ $f == *.sql ]]; then
-            echo "importing $f"
-            eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $f"
-        elif [[ $f == *.sh ]]; then
-            echo "running $f"
-            bash -l "$f"
-        fi
-    done
-
-    # Run genetics scripts if genetics is enabled
-    if grep -q "'Genetics'," "$WROOT"/protected/config/local/common.php && ! grep -q "/\*'Genetics'," "$WROOT"/protected/config/local/common.php; then
-
-        echo "RUNNING Genetics files..."
-
-        basefolder="$MODULEROOT/sample/sql/demo/genetics"
-
-        if [ -d "$basefolder" ]; then
-            shopt -s nullglob
-            for f in $(ls "$basefolder" | sort -V); do
-                if [[ $f == *.sql ]]; then
-                    echo "importing $f"
-                    eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $basefolder/$f"
-                elif [[ $f == *.sh ]]; then
-                    echo "running $f"
-                    bash -l "$basefolder/$f"
-                fi
-            done
-        fi
+        find "$basefolder" "$basefolder"/post-migrate/ "$basefolder"/local-post -maxdepth 1 -type f -printf '%f\0%p\n' | sort -t '\0' -V | awk -F '\0' '{print $2}' | while read -r f; do
+            if [[ $f == *.sql ]]; then
+                echo "importing $f"
+                eval "$dbconnectionstring -D ${DATABASE_NAME:-'openeyes'} < $f"
+            elif [[ $f == *.sh ]]; then
+                echo "running $f"
+                bash -l "$f"
+            fi
+        done
 
     fi
-
 fi
 
 # Set banner to confirm reset
@@ -498,7 +519,7 @@ if [ -n "$dmdimport" ]; then
 fi
 
 if [ $nofix -eq 0 ]; then
-    bash "$SCRIPTDIR"/oe-fix.sh --no-migrate --no-warn-migrate --no-composer --no-permissions #--no-compile --no-restart
+    bash "$SCRIPTDIR"/oe-fix.sh --no-migrate --no-warn-migrate --no-composer # --no-permissions --no-compile --no-restart
 fi
 
 if [ $hscic -eq 1 ]; then
@@ -559,6 +580,10 @@ if [[ $eventimages == "1" && $demo == "1" ]]; then
     done
 fi
 
+# Repopulate the freehand drawing templates
+if [ $freehanddrawreset -eq 1 ]; then
+    php $WROOT/protected/yiic populatefreehanddrawingtemplates
+fi
 # restart the service if we stopped it
 if [ $dwservrunning = 1 ]; then
     echo "Restarting dicom-file-watcher..."
@@ -569,3 +594,5 @@ printf "\e[42m\e[97m  RESET COMPLETE  \e[0m \n"
 echo ""
 
 bash "$SCRIPTDIR"/oe-which.sh
+
+trap : 0

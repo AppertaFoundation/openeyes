@@ -187,6 +187,23 @@ class ChangeEventController extends BaseController
         $this->redirect('/patient/view/'.$this->patient->id);
     }
 
+    public function actionFindWorkflowSteps()
+    {
+        $firm_id = Yii::app()->request->getQuery('firm_id');
+        if (!$firm_id) {
+            $this->renderJSON([]);
+        }
+        $event = Event::model()->find('id = :id', [':id' => Yii::app()->request->getQuery('event_id')]);
+        $workflow = \OEModule\OphCiExamination\models\OphCiExamination_Workflow_Rule::model()->findWorkflowCascading(
+            $firm_id, $event->episode->status->id
+        );
+        // Have to do this manually as $this->renderJSON does not support implicit Yii object serialisation.
+        header('Content-type: application/json');
+        echo CJSON::encode(
+            $workflow->active_steps ?? []
+        );
+    }
+
     function actionUpdateEpisode(){
         $outcome = 'false';
         $event_id = \Yii::app()->request->getPost('eventId');
@@ -221,7 +238,7 @@ class ChangeEventController extends BaseController
                         $episode->firm_id = $new_firm->id;
 
                         $action = 'change-firm';
-                        $data = 'Changed from '.$current_firm->name.' to '.\Firm::model()->findByPk($firm_id)->name;
+                        $data = 'Changed from ' . ($current_firm ? $current_firm->name : '') . ' to ' . $new_firm->name;
                     }
                     $episode->last_modified_user_id = Yii::app()->user->id;
                     $episode->last_modified_date = date('Y-m-d H:i:s');
@@ -271,6 +288,10 @@ class ChangeEventController extends BaseController
                     $event->firm_id = \Yii::app()->request->getPost('selectedContextId');
 
                     if ($event->save()) {
+                        $event_api = $event->getAPI();
+                        if ($event_api && method_exists($event_api, 'afterEventContextUpdate')) {
+                            $event_api->afterEventContextUpdate($event, User::model()->findByPk(Yii::app()->user->getId()));
+                        }
                         Audit::add('event', 'update', $data = null, $log_message = null, $properties);
                         $outcome = 'true';
                     }

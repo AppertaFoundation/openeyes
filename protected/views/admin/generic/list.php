@@ -34,9 +34,9 @@ if (!isset($uniqueid)) {
     if ($admin->isSubList()) : ?>
     <div id="generic-admin-sublist">
 
-        <?php if ($admin->isForceFormDisplay()): ?>
+        <?php if ($admin->isForceFormDisplay()) : ?>
         <form id="generic-admin-list">
-            <?php endif; ?>
+        <?php endif; ?>
 
         <?php
         if ($admin->getSubListParent() && is_array($admin->getSubListParent())) :
@@ -62,14 +62,14 @@ if (!isset($uniqueid)) {
                     <th><input type="checkbox" name="selectall" id="selectall"/></th>
                     <?php
                     foreach ($admin->getListFields() as $listItem) :
-                        if ($listItem !== 'attribute_elements_id.id') :?>
+                        if ($listItem !== 'attribute_elements.id') :?>
                             <th>
                                 <?php if ($admin->isSortableColumn($listItem)) : ?>
                                 <a href="/<?php echo $uniqueid ?>/list?<?php echo $admin->sortQuery(
                                     $listItem,
                                     $displayOrder,
                                     Yii::app()->request->getQueryString()
-                                ) ?>">
+                                          ) ?>">
                                 <?php endif;
                                 ?>
                                     <?php echo $admin->getModel()->getAttributeLabel($listItem); ?>
@@ -96,9 +96,9 @@ if (!isset($uniqueid)) {
                             <input type="checkbox" name="<?php echo $admin->getModelName(); ?>[id][]" value="<?php echo $row->id ?>"/>
                         </td>
                         <?php foreach ($admin->getListFields() as $listItem) :
-                            if ($listItem !== 'attribute_elements_id.id') :
+                            if ($listItem !== 'attribute_elements.id') :
                                 ?>
-                                <td>
+                                <td data-test="<?= $listItem ?>">
                                     <?php
                                     $attr_val = $admin->attributeValue($row, $listItem);
                                     if (gettype($attr_val) === 'boolean') :
@@ -107,24 +107,24 @@ if (!isset($uniqueid)) {
                                         else :
                                             ?><i class="oe-i remove small"></i><?php
                                         endif;
-                                        elseif (gettype($attr_val) === 'array') :
+                                    elseif (gettype($attr_val) === 'array') :
                                             echo implode(',', $admin->attributeValue($row, $listItem));
                                     elseif ($listItem === 'display_order') :
                                         ?>
                                         &uarr;&darr;<input type="hidden" name="<?php echo $admin->getModelName(); ?>[display_order][]" value="<?php echo $row->id ?>">
-                                        <?php
+                                            <?php
                                     else :
-                                        echo $attr_val;
+                                            echo $attr_val;
                                     endif
                                     ?>
                                 </td>
                             <?php endif;
 
-                            if ($listItem === 'attribute_elements_id.id') :
+                            if ($listItem === 'attribute_elements.id') :
                                 $mappingId = $admin->attributeValue($row, $listItem);
                             endif;
 
-                            if ($listItem === 'attribute_elements.name') :?>
+                            if ($listItem === 'attribute_element_types.name') :?>
                                 <td>
                                     <?php if (($mappingId > 0)) : ?>
                                         <a onMouseOver="this.style.color='#AFEEEE'" onMouseOut="this.style.color=''"

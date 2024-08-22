@@ -1,6 +1,0 @@
-id,name,last_modified_user_id,last_modified_date,created_user_id,created_date,type_id,form_id,dose_unit,default_dose,default_route_id,default_frequency_id,default_duration_id,preservative_free,aliases,discontinued,tallman
-1,"Intracameral cefuroxime 1mg",1,"2013-10-09 09:48:21",1,"1900-01-01 00:00:00",1,1,,,1,1,1,0,,0,"Intracameral Cefuroxime 1mg"
-2,"S/c cefuroxime",1,"2013-10-09 09:48:21",1,"1900-01-01 00:00:00",1,1,,,1,1,1,0,,0,"S/C Cefuroxime"
-3,"S/c gentamicin 10/20mg",1,"2013-10-09 09:48:21",1,"1900-01-01 00:00:00",1,1,,,1,1,1,0,,0,"S/C Gentamicin 10/20mg"
-4,"S/c dexamethasone",1,"2013-10-09 09:48:21",1,"1900-01-01 00:00:00",1,1,,,1,1,1,0,,0,"S/C Dexamethasone"
-5,"S/c betnosol",1,"2013-10-09 09:48:21",1,"1900-01-01 00:00:00",1,1,,,1,1,1,0,,0,"S/C Betnosol"

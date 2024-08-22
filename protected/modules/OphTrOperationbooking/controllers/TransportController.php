@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -90,8 +91,8 @@ class TransportController extends BaseModuleController
     {
         if (!empty($data)) {
             if (preg_match('/^[0-9]+ [a-zA-Z]{3} [0-9]{4}$/', @$data['date_from']) && preg_match('/^[0-9]+ [a-zA-Z]{3} [0-9]{4}$/', @$data['date_to'])) {
-                $date_from = Helper::convertNHS2MySQL($data['date_from']).' 00:00:00';
-                $date_to = Helper::convertNHS2MySQL($data['date_to']).' 23:59:59';
+                $date_from = Helper::convertNHS2MySQL($data['date_from']) . ' 00:00:00';
+                $date_to = Helper::convertNHS2MySQL($data['date_to']) . ' 23:59:59';
             }
         }
 
@@ -272,7 +273,7 @@ class TransportController extends BaseModuleController
         if (is_array(@$_POST['operations'])) {
             foreach ($_POST['operations'] as $operation_id) {
                 if (!$operation = Element_OphTrOperationbooking_Operation::model()->with('latestBooking')->findByPk($operation_id)) {
-                    throw new Exception('Operation not found: '.$operation_id);
+                    throw new Exception('Operation not found: ' . $operation_id);
                 }
 
                 $booking = $operation->latestBooking;
@@ -282,7 +283,7 @@ class TransportController extends BaseModuleController
                     $booking->transport_arranged_date = date('Y-m-d');
 
                     if (!$booking->save(true, null, true)) {
-                        throw new Exception('Unable to save booking: '.print_r($booking->getErrors(), true));
+                        throw new Exception('Unable to save booking: ' . print_r($booking->getErrors(), true));
                     }
                 }
             }
@@ -304,12 +305,12 @@ class TransportController extends BaseModuleController
         $institution_id = Institution::model()->getCurrent()->id;
         $site_id = Yii::app()->session['selected_site_id'];
 
-        echo PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $site_id) . ",First name,Last name,TCI date,Admission time,Site,Ward,Method,Firm,Specialty,DTA,Priority\n";
+        echo PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $site_id) . ",First name,Last name,TCI date,Admission time,Site,Ward,Method,Firm,Specialty,DTA,Priority\n";
 
         $operations = $this->getTransportList($_POST, true);
 
         foreach ($operations as $operation) {
-            echo '"' . PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $operation->event->episode->patient->id, $institution_id, $site_id)) . '","' .
+            echo '"' . PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $operation->event->episode->patient->id, $institution_id, $site_id)) . '","' .
                 trim($operation->event->episode->patient->first_name) . '","' .
                 trim($operation->event->episode->patient->last_name) . '","' .
                 date('j-M-Y', strtotime($operation->latestBooking->session_date)) . '","' .
@@ -329,7 +330,7 @@ class TransportController extends BaseModuleController
         $return = '';
         foreach (array('date_from', 'date_to', 'include_bookings' => 0, 'include_reschedules' => 0, 'include_cancellations' => 0) as $token) {
             if (isset($_GET[$token])) {
-                $return .= '&'.$token.'='.$_GET[$token];
+                $return .= '&' . $token . '=' . $_GET[$token];
             }
         }
 

@@ -15,13 +15,14 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $patient_id = null;
 $withdrawals = array();
 
 if ($element->event) {
     $patient_id = $element->event->episode->patient_id;
-} elseif (Yii::app()->request->getQuery('patient_id', '0')) {
-    $patient_id = Yii::app()->request->getQuery('patient_id');
+} elseif (\Yii::app()->request->getQuery('patient_id', '0')) {
+    $patient_id = \Yii::app()->request->getQuery('patient_id');
 }
 
 if ($patient_id) {
@@ -31,82 +32,138 @@ if ($patient_id) {
 $pedigree = new Pedigree();
 ?>
 
-<section class="element <?php echo $element->elementType->class_name ?>"
-         data-element-type-id="<?php echo $element->elementType->id ?>"
-         data-element-type-class="<?php echo $element->elementType->class_name ?>"
-         data-element-type-name="<?php echo $element->elementType->name ?>"
-         data-element-display-order="<?php echo $element->elementType->display_order ?>">
-
-  <div class="element-fields">
-        <?php
-         /*
-         $form->widget('application.widgets.ElementSelection', array(
-          'element' => $element,
-          'field' => 'withdrawal_source_id',
-          'relatedElements' => $withdrawals,
-          'htmlOptions' => array('empty' => '- Select -'),
-          'layoutColumns' => array('label' => 3, 'field' => 3),
-      ));
-         */?>
-        <?php $form->dropDownList(
-            $element,
-            'gene_id',
-            CHtml::listData(PedigreeGene::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-            array('empty' => '- Select -'),
-            false,
-            array('label' => 3, 'field' => 3)
-        ) ?>
-        <?php $form->dropDownList(
-            $element,
-            'method_id',
-            CHtml::listData(OphInGeneticresults_Test_Method::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-            array('empty' => '- Select -'),
-            false,
-            array('label' => 3, 'field' => 3)
-        ) ?>
-        <?php $form->dropDownList(
-            $element,
-            'effect_id',
-            CHtml::listData(OphInGeneticresults_Test_Effect::model()->findAll(array('order' => 'name asc')), 'id', 'name'),
-            array('empty' => '- Select -'),
-            false,
-            array('label' => 3, 'field' => 3)
-        ) ?>
-
-        <?php $form->textField($element, 'exon', array(), array(), array('label' => 3, 'field' => 3)) ?>
-        <?php $form->dropDownList(
-            $element,
-            'base_change_id',
-            CHtml::listData(PedigreeBaseChangeType::model()->findAll(array('order' => '`change` asc')), 'id', 'change'),
-            array('empty' => '- Select -'),
-            false,
-            array('label' => 3, 'field' => 3)
-        ) ?>
-        <?php $form->textField($element, 'base_change', array('class' => 'gene-validation'), array(), array('label' => 3, 'field' => 3)) ?>
-        <?php $form->dropDownList(
-            $element,
-            'amino_acid_change_id',
-            CHtml::listData(PedigreeAminoAcidChangeType::model()->findAll(array('order' => '`change` asc')), 'id', 'change'),
-            array('empty' => '- Select -'),
-            false,
-            array('label' => 3, 'field' => 3)
-        ) ?>
-        <?php $form->textField($element, 'amino_acid_change', array('class' => 'gene-validation'), array(), array('label' => 3, 'field' => 3)) ?>
-        <?php $form->textField($element, 'genomic_coordinate', array(), array(), array('label' => 3, 'field' => 3)) ?>
-        <?php $form->dropDownList(
-            $element,
-            'genome_version',
-            array_combine($pedigree->genomeVersions(), $pedigree->genomeVersions()),
-            array('empty' => '- Select -'),
-            false,
-            array('label' => 3, 'field' => 3)
-        ) ?>
-        <?php $form->textField($element, 'gene_transcript', array(), array(), array('label' => 3, 'field' => 3)) ?>
-
-        <?php $form->textField($element, 'assay', array(), array(), array('label' => 3, 'field' => 3)) ?>
-        <?php $form->radioBoolean($element, 'homo', array(), array('label' => 3, 'field' => 9)) ?>
-        <?php $form->textField($element, 'result', array(), array(), array('label' => 3, 'field' => 5)) ?>
-        <?php $form->datePicker($element, 'result_date', array(), array(), array('label' => 3, 'field' => 2)) ?>
-        <?php $form->textArea($element, 'comments', array(), false, array(), array('label' => 3, 'field' => 5)) ?>
+<div class="element-fields full-width flex-layout flex-top col-gap <?= $element->elementType->class_name ?>"
+         data-element-type-id="<?= $element->elementType->id ?>"
+         data-element-type-class="<?= $element->elementType->class_name ?>"
+         data-element-type-name="<?= $element->elementType->name ?>"
+         data-element-display-order="<?= $element->elementType->display_order ?>">
+  <div class="cols-10 data-group">
+    <table class= "cols-full last-left">
+      <colgroup>
+        <col class="cols-4">
+      </colgroup>
+      <tbody>
+        <tr>
+          <td class="required"><?= $element->getAttributeLabel('gene_id') ?></td>
+          <td>
+            <?= \CHtml::activeDropDownList(
+              $element,
+              'gene_id',
+              \CHtml::listData(PedigreeGene::model()->findAll(['order' => 'name asc']), 'id', 'name'),
+              ['empty' => '- Select -']
+            ) ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="required"><?= $element->getAttributeLabel('method_id') ?></td>
+          <td>
+            <?= \CHtml::activeDropDownList(
+              $element,
+              'method_id',
+              \CHtml::listData(OphInGeneticresults_Test_Method::model()->findAll(['order' => 'name asc']), 'id', 'name'),
+              ['empty' => '- Select -']
+            ) ?>
+          </td>
+        </tr>
+        <tr>
+          <td class="required"><?= $element->getAttributeLabel('effect_id') ?></td>
+          <td>
+            <?= \CHtml::activeDropDownList(
+              $element,
+              'effect_id',
+              \CHtml::listData(OphInGeneticresults_Test_Effect::model()->findAll(['order' => 'name asc']), 'id', 'name'),
+              ['empty' => '- Select -']
+            ) ?>
+          </td>
+        </tr>
+        <tr>
+          <td><?= $element->getAttributeLabel('exon') ?></td>
+          <td><?= \CHtml::activeTextField($element, 'exon', ['class' => 'cols-full']) ?></td>
+        </tr>
+        <tr>
+          <td><?= $element->getAttributeLabel('base_change_id') ?></td>
+          <td>
+            <?= \CHtml::activeDropDownList(
+              $element,
+              'base_change_id',
+              \CHtml::listData(PedigreeBaseChangeType::model()->findAll(['order' => '`change` asc']), 'id', 'change'),
+              ['empty' => '- Select -']
+            ) ?>
+          </td>
+        </tr>
+        <tr>
+          <td><?= $element->getAttributeLabel('base_change') ?></td>
+          <td><?= \CHtml::activeTextField($element, 'base_change', ['class' => 'cols-full']) ?></td>
+        </tr>
+        <tr>
+          <td><?= $element->getAttributeLabel('amino_acid_change_id') ?></td>
+          <td>
+            <?= \CHtml::activeDropDownList(
+              $element,
+              'amino_acid_change_id',
+              \CHtml::listData(PedigreeAminoAcidChangeType::model()->findAll(['order' => '`change` asc']), 'id', 'change'),
+              ['empty' => '- Select -']
+            ) ?>
+          </td>
+        </tr>
+        <tr>
+          <td><?= $element->getAttributeLabel('amino_acid_change') ?></td>
+          <td><?= \CHtml::activeTextField($element, 'amino_acid_change', ['class' => 'cols-full']) ?></td>
+        </tr>
+        <tr>
+          <td><?= $element->getAttributeLabel('genomic_coordinate') ?></td>
+          <td><?= \CHtml::activeTextField($element, 'genomic_coordinate', ['class' => 'cols-full']) ?></td>
+        </tr>
+        <tr>
+          <td><?= $element->getAttributeLabel('genome_version') ?></td>
+          <td>
+            <?= \CHtml::activeDropDownList(
+              $element,
+              'genome_version',
+              array_combine($pedigree->genomeVersions(), $pedigree->genomeVersions()),
+              ['empty' => '- Select -']
+            ) ?>
+          </td>
+        </tr>
+        <tr>
+          <td><?= $element->getAttributeLabel('gene_transcript') ?></td>
+          <td><?= \CHtml::activeTextField($element, 'gene_transcript', ['class' => 'cols-full']) ?></td>
+        </tr>
+        <tr>
+          <td><?= $element->getAttributeLabel('assay') ?></td>
+          <td><?= \CHtml::activeTextField($element, 'assay', ['class' => 'cols-full']) ?></td>
+        </tr>
+        <tr>
+          <td class="required"><?= $element->getAttributeLabel('homo') ?></td>
+          <td>
+            <?= \CHtml::activeRadioButtonList(
+              $element,
+              'homo',
+              [1 => 'Yes', 0 => 'No'],
+              [
+                'container' => 'fieldset',
+                'template' => '{beginLabel}{input} {labelTitle}{endLabel}',
+                'labelOptions' => ['class' => 'inline'],
+                'separator' => ''
+              ]
+            ) ?>
+          </td>
+        </tr>
+        <tr>
+          <td><?= $element->getAttributeLabel('result') ?></td>
+          <td><?= \CHtml::activeTextField($element, 'result', ['class' => 'cols-full']) ?></td>
+        </tr>
+        <tr>
+          <td><?= $element->getAttributeLabel('result_date') ?></td>
+          <td>
+            <?= \CHtml::activeDateField($element, 'result_date') ?>
+          </td>
+        </tr>
+        <tr>
+          <td><?= $element->getAttributeLabel('comments') ?></td>
+          <td><?= \CHtml::activeTextArea($element, 'comments', ['class' => 'cols-full']) ?></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-</section>
+</div>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -24,7 +26,10 @@ $html_options = array(
     'nowrapper' => true,
 );
 foreach ($plate_positions as $pp) {
-    $html_options['options'][$pp->id] = array('data-value' => $pp->eyedraw_value);
+    $html_options['options'][$pp->id] = array(
+        'data-value' => $pp->eyedraw_value,
+        'data-prefilled-value' => $template_data['plate_position_id'] ?? ''
+    );
 }
 ?>
 
@@ -57,7 +62,11 @@ foreach ($plate_positions as $pp) {
             <?=\CHtml::activeTextField(
                 $element,
                 'plate_limbus',
-                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'clearWithEyedraw')
+                array(
+                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                    'class' => 'clearWithEyedraw',
+                    'data-prefilled-value' => $template_data['plate_limbus'] ?? ''
+                )
             ); ?>
         <span class="field-info postfix align">
           mm
@@ -77,7 +86,7 @@ foreach ($plate_positions as $pp) {
                     'id',
                     'name'
                 ),
-                array('empty' => 'Select', 'nowrapper' => true),
+                array('empty' => 'Select', 'nowrapper' => true, 'data-prefilled-value' => $template_data['tube_position_id'] ?? ''),
                 false,
                 array('field' => 3)
             ) ?>
@@ -88,7 +97,15 @@ foreach ($plate_positions as $pp) {
             <?= $element->getAttributeLabel('stent'); ?>
       </td>
       <td>
-            <?php echo $form->checkbox($element, 'stent', array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
+            <?php echo $form->checkbox(
+                $element,
+                'stent',
+                array(
+                    'class' => 'clearWithEyedraw',
+                    'nowrapper' => true,
+                    'data-prefilled-value' => array_key_exists('stent', $template_data) && $template_data['stent'] === '1' ? 'true' : '',
+                )
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -96,7 +113,15 @@ foreach ($plate_positions as $pp) {
             <?= $element->getAttributeLabel('slit'); ?>
       </td>
       <td>
-            <?php echo $form->checkbox($element, 'slit', array('class' => 'clearWithEyedraw', 'nowrapper' => true)) ?>
+            <?php echo $form->checkbox(
+                $element,
+                'slit',
+                array(
+                    'class' => 'clearWithEyedraw',
+                    'nowrapper' => true,
+                    'data-prefilled-value' => array_key_exists('slit', $template_data) && $template_data['slit'] === '1' ? 'true' : '',
+                )
+            ) ?>
       </td>
     </tr>
     <tr>
@@ -107,7 +132,11 @@ foreach ($plate_positions as $pp) {
             <?php echo $form->checkbox(
                 $element,
                 'visco_in_ac',
-                array('class' => 'clearWithEyedraw', 'nowrapper' => true)
+                array(
+                    'class' => 'clearWithEyedraw',
+                    'nowrapper' => true,
+                    'data-prefilled-value' => array_key_exists('visco_in_ac', $template_data) && $template_data['visco_in_ac'] === '1' ? 'true' : '',
+                )
             ) ?>
       </td>
     </tr>
@@ -119,7 +148,11 @@ foreach ($plate_positions as $pp) {
             <?php echo $form->checkbox(
                 $element,
                 'flow_tested',
-                array('class' => 'clearWithEyedraw', 'nowrapper' => true)
+                array(
+                    'class' => 'clearWithEyedraw',
+                    'nowrapper' => true,
+                    'data-prefilled-value' => array_key_exists('flow_tested', $template_data) && $template_data['flow_tested'] === '1' ? 'true' : '',
+                )
             ) ?>
       </td>
     </tr>
@@ -130,7 +163,7 @@ foreach ($plate_positions as $pp) {
       'description',
       array('rows' => 4, 'cols' => 40, 'class' => 'autosize clearWithEyedraw', 'nowrapper' => true),
       false,
-      array('placeholder' => 'Description')
+      array('placeholder' => 'Description', 'data-prefilled-value' => $template_data['description'] ?? '')
   ) ?>
   <div class="data-group">
     <div class="cols-3 column">&nbsp;</div>

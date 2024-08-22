@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,14 +16,15 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
-<?php $this->beginContent('//patient/event_container', array('no_face'=>true)); ?>
+<?php $this->beginContent('//patient/event_container', array('no_face' => true)); ?>
 
     <?php
         // Event actions
     if ($this->checkPrintAccess()) {
         // TODO: need to check if the event is draft!
-        $elementLetter = ElementLetter::model()->findByAttributes(array('event_id'=>$this->event->id));
+        $elementLetter = ElementLetter::model()->findByAttributes(array('event_id' => $this->event->id));
 
         if ($elementLetter->draft) {
             $this->event_actions[] = EventAction::button('Print Draft', 'print', null, array('class' => 'small'));
@@ -37,7 +39,15 @@
                     'class' => 'small',
                 )
             );
-            $this->event_actions[] = EventAction::button('Export', 'export', null, array('id' => 'et_export', 'class' => 'small'));
+
+            // check if the current institution is in the list of institutions that can export letters, or if the list is empty add the current institution
+            // (empty = always allow export)
+            $institution = Institution::model()->getCurrent();
+            $institutions = !empty(Yii::app()->params['correspondence_export_institutions']) ? Yii::app()->params['correspondence_export_institutions'] : [$institution->remote_id];
+
+            if (in_array($institution->remote_id, $institutions) && $elementLetter->exportUrl !== null) {
+                $this->event_actions[] = EventAction::button('Export', 'export', null, ['id' => 'et_export', 'class' => 'small']);
+            }
         }
     }
     ?>

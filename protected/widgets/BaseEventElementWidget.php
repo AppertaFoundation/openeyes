@@ -16,6 +16,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 class BaseEventElementWidget extends CWidget
 {
     public static $PATIENT_SUMMARY_MODE = 1;
@@ -23,6 +24,8 @@ class BaseEventElementWidget extends CWidget
     public static $EVENT_VIEW_MODE = 4;
     public static $EVENT_PRINT_MODE = 8;
     public static $EVENT_EDIT_MODE = 16;
+    public static $PATIENT_SUMMARY_MODE_OUTPUT = 32;
+
     public static $EPISODE_SUMMARY_MODE = 32;
     public static $DATA_MODE = 64;
     public static $PATIENT_LANDING_PAGE_MODE = 128;
@@ -49,6 +52,8 @@ class BaseEventElementWidget extends CWidget
     public $data;
     public $form;
     public $popupListSeparator = '<br />';
+    public $template_data = array();
+    public $prefilled = false;
 
     public $notattip_edit_warning = 'application.widgets.views.BaseEventElement_edit_nottip';
     public $notattip_view_warning = 'application.widgets.views.BaseEventElement_view_nottip';
@@ -107,7 +112,7 @@ class BaseEventElementWidget extends CWidget
                 static::$PATIENT_SUMMARY_MODE, static::$PATIENT_POPUP_MODE,
                 static::$EVENT_VIEW_MODE, static::$EVENT_PRINT_MODE,
                 static::$EVENT_EDIT_MODE, static::$DATA_MODE,
-                static::$PATIENT_LANDING_PAGE_MODE
+                static::$PATIENT_LANDING_PAGE_MODE, static::$PATIENT_SUMMARY_MODE_OUTPUT
             ),
             true
         );
@@ -130,7 +135,7 @@ class BaseEventElementWidget extends CWidget
     /**
      * @return bool
      */
-    protected function inDataMode() : bool
+    protected function inDataMode(): bool
     {
         return $this->mode === static::$DATA_MODE;
     }
@@ -263,7 +268,7 @@ class BaseEventElementWidget extends CWidget
 
         $element->attributes = array_filter(
             $data,
-            function($key) use ($safe_attributes) {
+            function ($key) use ($safe_attributes) {
                 return in_array($key, $safe_attributes);
             },
             ARRAY_FILTER_USE_KEY
@@ -277,7 +282,9 @@ class BaseEventElementWidget extends CWidget
      *
      * @param $data
      */
-    protected function ensureRequiredDataKeysSet(&$data) {}
+    protected function ensureRequiredDataKeysSet(&$data)
+    {
+    }
 
     /**
      * @var string base path to assets for element widget
@@ -365,8 +372,10 @@ class BaseEventElementWidget extends CWidget
         // but because it was implemented for Family History already, it made sense to simply disable
         // the behaviour in case it was required later. Turning this on will require further work on those
         // elements that were not developed prior to this decision. Use Family History as a model.
-        if ($this->mode === static::$PATIENT_SUMMARY_MODE &&
-            !$this->getApp()->params['allow_patient_summary_clinic_changes']) {
+        if (
+            $this->mode === static::$PATIENT_SUMMARY_MODE &&
+            !$this->getApp()->params['allow_patient_summary_clinic_changes']
+        ) {
             return false;
         }
         return $this->getApp()->user->checkAccess('OprnCreateEvent', array($this->controller->firm));
@@ -432,6 +441,8 @@ class BaseEventElementWidget extends CWidget
             return $this->popupList();
         } elseif ($this->mode === static::$EVENT_VIEW_MODE) {
             return $this->render($this->getView(), $this->getViewData());
+        } elseif ($this->mode === static::$PATIENT_SUMMARY_MODE_OUTPUT) {
+            return null;
         } else {
             return $this->renderWarnings() . $this->render($this->getView(), $this->getViewData());
         }

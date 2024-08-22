@@ -18,6 +18,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphCiExamination\models\traits\HasRelationOptions;
 use OEModule\OphCiExamination\models\traits\HasWithHeadPosture;
 
@@ -44,6 +45,7 @@ class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
 {
     use HasWithHeadPosture;
     use HasRelationOptions;
+    use HasFactory;
 
     const BEO = 2;
     const LEFT = 1;
@@ -180,8 +182,8 @@ class OphCiExamination_VisualAcuity_Reading extends \BaseActiveRecordVersioned
             $unit_id = $this->unit_id;
         }
         $criteria = new \CDbCriteria();
-        $criteria->select = array('*', 'ABS(base_value - :base_value) AS delta');
-        $criteria->condition = 'unit_id = :unit_id';
+        $criteria->select = array('*', 'ABS(CAST(base_value AS SIGNED) - :base_value) AS delta');
+        $criteria->condition = 'unit_id = :unit_id AND selectable = 1';
         $criteria->params = array(':unit_id' => $unit_id, ':base_value' => $base_value);
         $criteria->order = 'delta';
         $value = OphCiExamination_VisualAcuityUnitValue::model()->find($criteria);

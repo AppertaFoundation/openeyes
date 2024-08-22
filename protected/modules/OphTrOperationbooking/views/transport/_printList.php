@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $institution_id = Institution::model()->getCurrent()->id;
@@ -24,7 +26,7 @@ $site_id = Yii::app()->session['selected_site_id'];
     <table>
         <thead>
             <tr>
-                <th><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $site_id) ?></th>
+                <th><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $site_id) ?></th>
                 <th>Patient</th>
                 <th>TCI date</th>
                 <th>Admission time</th>
@@ -40,9 +42,9 @@ $site_id = Yii::app()->session['selected_site_id'];
         <tbody>
             <?php foreach ($operations as $operation) {?>
                 <tr>
-                    <td style="width: 53px;"><?= PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $operation->event->episode->patient->id, $institution_id, $site_id)) ?></td>
+                    <td style="width: 53px;"><?= PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $operation->event->episode->patient->id, $institution_id, $site_id)) ?></td>
                     <td>
-                        <?= '<strong>'.trim(strtoupper($operation->event->episode->patient->last_name)).'</strong>, '.trim($operation->event->episode->patient->first_name)?>
+                        <?= '<strong>' . trim(strtoupper($operation->event->episode->patient->last_name)) . '</strong>, ' . trim($operation->event->episode->patient->first_name)?>
                     </td>
                     <td style="width: 83px;"><?= date('j-M-Y', strtotime($operation->latestBooking->session_date))?></td>
                     <td style="width: 73px;"><?= $operation->latestBooking->session_start_time?></td>

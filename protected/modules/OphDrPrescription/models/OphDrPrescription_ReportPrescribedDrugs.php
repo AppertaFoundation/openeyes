@@ -155,7 +155,7 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
     {
         $items = [];
         foreach ($this->items as $item) {
-            $item['identifier'] = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $item['id'], $this->user_institution_id, $this->user_selected_site_id));
+            $item['identifier'] = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $item['id'], $this->user_institution_id, $this->user_selected_site_id));
             $item['all_ids'] = PatientIdentifierHelper::getAllPatientIdentifiersForReports($item['id']);
             $items[] = $item;
         }
@@ -170,11 +170,11 @@ class OphDrPrescription_ReportPrescribedDrugs extends BaseReport
             $this->getAttributeLabel('all_ids') .
             "\n";
         foreach ($this->items as $item) {
-            $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $item['id'], $this->user_institution_id, $this->user_selected_site_id));
+            $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $item['id'], $this->user_institution_id, $this->user_selected_site_id));
 
             $output .= $patient_identifier_value . ', ' . $item['last_name'] . ', ' . $item['first_name'] . ', ' . ($item['dob'] ? date('j M Y', strtotime($item['dob'])) : 'Unknown') . ', ' . $item['postcode'] . ', ';
             $output .= (date('j M Y', strtotime($item['created_date'])) . ' ' . (substr($item['created_date'], 11, 5))) . ', ' . $item['preferred_term'] . ', ';
-            $output .= $item['dose'].' '.$item['dose_unit'].', '.$item['frequency'].', '.$item['duration'].', '.$item['route'].', '.$item['dispense_condition'].', '.$item['dispense_location'].', ' . $item['pgd_name'] . ', '.$item['laterality'].', ';
+            $output .= $item['dose'] . ' ' . $item['dose_unit'] . ', ' . $item['frequency'] . ', ' . $item['duration'] . ', ' . $item['route'] . ', ' . $item['dispense_condition'] . ', ' . $item['dispense_location'] . ', ' . $item['pgd_name'] . ', ' . $item['laterality'] . ', ';
             $output .= $item['user_first_name'] . ' ' . $item['user_last_name'] . ', ' . $item['role'] . ', ' . (date('j M Y', strtotime($item['event_date'])) . ' ' . (substr($item['event_date'], 11, 5))) . ', ';
             $output .= $item['preservative_free'] ? 'Yes' : 'No';
             $output .= ',"' . $item['all_ids'] . '"';

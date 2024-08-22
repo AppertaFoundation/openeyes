@@ -60,7 +60,8 @@
                                 'class' => 'cols-full',
                                 'id' => 'js-text-area',
                                 'rows' => 1,
-                                'placeholder' => 'Reason for deletion (required)'
+                                'placeholder' => 'Reason for deletion (required)',
+                                'data-test' => 'reason-for-deletion'
                             )
                         )
                         ?>
@@ -71,7 +72,7 @@
             <p>Are you sure you want to proceed?</p>
 
             <div class="popup-actions flex-right">
-                <button type="submit" id="et_deleteevent" name="et_deleteevent" class="red hint">
+                <button type="submit" id="et_deleteevent" name="et_deleteevent" class="red hint" data-test="delete-event">
                     <?=(!$delete_access ? 'Yes - Request event deletion' : 'Yes - DELETE Event');?>
                 </button>
                 <button type="submit" class="js-demo-cancel-btn" id="et_canceldelete" name="et_canceldelete">
@@ -111,4 +112,3 @@
     });
 </script>
 <?php endif; ?>
-

@@ -60,7 +60,7 @@
                     <?php if (Yii::app()->params['institution_code'] !== 'CERA') : ?>
                         <tr>
                             <td>Mobile</td>
-                            <td>Unknown</td>
+                            <td><?= $this->patient->contact->mobile_phone ?? 'Unknown' ?></td>
                         </tr>
                     <?php endif; ?>
                     <tr>
@@ -73,6 +73,12 @@
                             <td>Unknown</td>
                         </tr>
                     <?php endif; ?>
+                    <?php if ($this->patient->primary_institution) { ?>
+                        <tr>
+                            <td><?= \SettingMetadata::model()->getSetting('primary_institution_label') ?></td>
+                            <td><?= $this->patient->primary_institution->name ?></td>
+                        </tr>
+                    <?php } ?>
                     </tbody>
                 </table>
             </div><!-- .popup-overflow -->
@@ -235,7 +241,7 @@
                         <?php
                             $gp_contact_id = $this->patient->gp ? $this->patient->gp->contact->id : null;
                         foreach ($this->patient->contactAssignments as $contactAssignment) {
-                            $contact = $contactAssignment->contact;
+                            $contact = $contactAssignment->location ? $contactAssignment->location->contact : $contactAssignment->contact;
                             if (isset($contact) && $contact->id != $gp_contact_id) { ?>
                                     <tr>
                                         <td><?= $contact->label ? $contact->label->name : "" ?></td>
@@ -268,6 +274,18 @@
                             <td>Email correspondence</td>
                             <td>
                                 <span class="large-text"><?= ($examination_communication_preferences && $examination_communication_preferences->agrees_to_insecure_email_correspondence) ? 'Yes' : 'No' ?></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Language</td>
+                            <td>
+                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->language_id)) ? ((int) $examination_communication_preferences->language_id === 0 ? 'Other' : $examination_communication_preferences->language->name) : 'Unknown' ?></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Interpreter required</td>
+                            <td>
+                                <span class="large-text"><?= ($examination_communication_preferences && !is_null($examination_communication_preferences->interpreter_required_id)) ? ((int) $examination_communication_preferences->interpreter_required_id === 0 ? 'Other' : $examination_communication_preferences->interpreter_required->name) : 'N/A' ?></span>
                             </td>
                         </tr>
                         </tbody>
@@ -548,6 +566,15 @@
                 <div class="subtitle">Appointments</div>
                 <?php $this->widget('Appointment', ['patient' => $this->patient, 'pro_theme' => 'pro-theme', 'is_popup' => true]) ?>
             </div><!-- .popup-overflow -->
+
+            <div class="popup-overflow" ">
+                        <?php
+                            $this->widget('application.modules.Genetics.widgets.PatientGeneticSummary', array(
+                                'patient' => $this->patient,
+                            ));
+                        ?>
+            </div>
+
         </div><!-- left -->
         <div class="cols-right">
             <div class="popup-overflow">
@@ -557,7 +584,7 @@
     </div><!-- flex -->
 </div>
 
-<div class="oe-patient-popup patient-popup-allergies-risks" style="display: none;">
+<div class="oe-patient-popup patient-popup-allergies-risks" style="display: none;" data-test="summary-allergies-popup">
     <div class="flex-layout flex-top">
         <div class="cols-left">
             <!-- Warnings: Allergies -->

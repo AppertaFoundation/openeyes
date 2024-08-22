@@ -1,6 +1,10 @@
 <div class="oe-popup-wrap" id="extra_gp_adding_form" style="display: none; z-index:100">
     <div class="oe-popup">
-        <div class="form">
+    <div class="remove-i-btn js-cancel-add-contact"></div>
+    <div class="title">
+    <div id="extra_gp_adding_title" data-type="">Add New Contact</div>
+    </div>
+        <div class="oe-popup-content false">
             <?php
             $extra_gp_form = $this->beginWidget('CActiveForm', array(
                 'id' => 'extra-gp-form',
@@ -8,152 +12,153 @@
             ));
             ?>
             <?php echo $extra_gp_form->errorSummary($extra_gp_contact); ?>
-            <div class="title">
-                <div id="extra_gp_adding_title" data-type="">Add New Contact</div>
-                <div class="close-icon-btn">
-                    <i class="oe-i remove-circle pro-theme js-cancel-add-contact"></i>
+            
+                <div class="alert-box info" id="extra-gp-message" style="display:none;">
+                    <p></p>
                 </div>
-            </div>
-            <div class="alert-box info" id="extra-gp-message" style="display:none;">
-                <p></p>
-            </div>
-            <div class="alert-box warning" id="extra_gp_practitioner-alert-box" style="display:none;">
-                <p id="extra_gp_errors"></p>
-            </div>
-            <table class="standard row">
-                <tbody>
-                <tr>
-                    <td>Title:</td>
-                    <td class="flex-layout">
-                        <?php echo $extra_gp_form->textField($extra_gp_contact, 'title', array('size' => 60, 'maxlength' => 20)); ?>
-                        <?php echo $extra_gp_form->error($extra_gp_contact, 'title'); ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <?php echo $extra_gp_form->labelEx($extra_gp_contact, 'first_name'); ?>
-                    </td>
-                    <td>
-                        <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'Contact[first_name]', 'hide_no_result_msg' => true]); ?>
-                        <?php echo $extra_gp_form->error($extra_gp_contact, 'first_name'); ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <?php echo $extra_gp_form->labelEx($extra_gp_contact, 'last_name'); ?>
-                    </td>
-                    <td>
-                        <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'Contact[last_name]', 'hide_no_result_msg' => true]); ?>
-                        <?php echo $extra_gp_form->error($extra_gp_contact, 'last_name'); ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <?php echo $extra_gp_form->labelEx($extra_gp_contact, 'primary_phone'); ?>
-                    </td>
-                    <td>
-                        <?php echo $extra_gp_form->textField($extra_gp_contact, 'primary_phone', array('size' => 60, 'maxlength' => 20, 'autocomplete' => 'off')); ?>
-                        <?php echo $extra_gp_form->error($extra_gp_contact, 'primary_phone'); ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <?php echo $extra_gp_form->labelEx($extra_practice_associate, 'provider_no'); ?>
-                    </td>
-                    <td>
-                        <?php echo $extra_gp_form->textField($extra_practice_associate, 'provider_no', array('size' => 60, 'maxlength' => 20, 'autocomplete' => 'off')); ?>
-                        <?php echo $extra_gp_form->error($extra_practice_associate, 'provider_no'); ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <label><?php echo $extra_gp_contact->getAttributeLabel('Role'); ?> <span class="required">*</span></label>
-                    </td>
-                    <td>
-                        <?php echo $extra_gp_form->error($extra_gp_contact, 'contact_label_id'); ?>
+                <div class="alert-box warning" id="extra_gp_practitioner-alert-box" style="display:none;">
+                    <p id="extra_gp_errors"></p>
+                </div>
+                <table>
+                    <tbody>
+                    <tr>
+                        <th>Title:</th>
+                        <td>
+                            <?php echo $extra_gp_form->textField($extra_gp_contact, 'title', ['size' => 60, 'maxlength' => 20, 'class' => 'cols-full']); ?>
+                            <?php echo $extra_gp_form->error($extra_gp_contact, 'title'); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <?php echo $extra_gp_form->labelEx($extra_gp_contact, 'first_name'); ?>
+                        </th>
+                        <td>
+                            <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'Contact[first_name]', 'hide_no_result_msg' => true]); ?>
+                            <?php echo $extra_gp_form->error($extra_gp_contact, 'first_name'); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <?php echo $extra_gp_form->labelEx($extra_gp_contact, 'last_name'); ?>
+                        </th>
+                        <td>
+                            <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'Contact[last_name]', 'hide_no_result_msg' => true]); ?>
+                            <?php echo $extra_gp_form->error($extra_gp_contact, 'last_name'); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <?php echo $extra_gp_form->labelEx($extra_gp_contact, 'primary_phone'); ?>
+                        </th>
+                        <td>
+                            <?php echo $extra_gp_form->textField($extra_gp_contact, 'primary_phone', ['size' => 60, 'maxlength' => 20, 'class' => 'cols-full']); ?>
+                            <?php echo $extra_gp_form->error($extra_gp_contact, 'primary_phone'); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <?php echo $extra_gp_form->labelEx($extra_practice_associate, 'provider_no'); ?>
+                        </th>
+                        <td>
+                            <?php echo $extra_gp_form->textField($extra_practice_associate, 'provider_no', ['size' => 60, 'maxlength' => 20, 'autocomplete' => 'off', 'class' => 'cols-full']); ?>
+                            <?php echo $extra_gp_form->error($extra_practice_associate, 'provider_no'); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label><?php echo $extra_gp_contact->getAttributeLabel('Role'); ?> <span class="required">*</span></label>
+                        </td>
+                        <td>
+                            <?php echo $extra_gp_form->error($extra_gp_contact, 'contact_label_id'); ?>
 
-                        <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'extra_gp_autocomplete_contact_label_id']); ?>
+                            <?php $this->widget('application.widgets.AutoCompleteSearch', ['field_name' => 'extra_gp_autocomplete_contact_label_id']); ?>
 
-                    </td>
-                </tr>
-                <tr id="extra_gp_selected_contact_label_wrapper" style="display: <?php echo $extra_gp_contact->label ? '' : 'none' ?>">
-                    <td></td>
-                    <td>
-                        <div>
-                            <span class="js-name">
-                                <?php echo isset($extra_gp_contact->label) ? $extra_gp_contact->label->name : ''; ?>
-                            </span>
-                            <?php echo CHtml::hiddenField('Contact[contact_label_id]', $extra_gp_contact->contact_label_id, array('class' => 'hidden_id js-extra-gp-contact-label-id')); ?>
-                        </div>
-                    </td>
-                    <td>
-                        <a href="javascript:void(0)" class="oe-i trash removeReading remove"></a>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
+                    <tr id="extra_gp_selected_contact_label_wrapper" style="display: <?php echo $extra_gp_contact->label ? '' : 'none' ?>">
+                        <td></td>
+                        <td>
+                            <div>
+                                <span class="js-name">
+                                    <?php echo isset($extra_gp_contact->label) ? $extra_gp_contact->label->name : ''; ?>
+                                </span>
+                                <?php echo CHtml::hiddenField('Contact[contact_label_id]', $extra_gp_contact->contact_label_id, array('class' => 'hidden_id js-extra-gp-contact-label-id')); ?>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" class="oe-i trash removeReading remove"></a>
+                        </td>
+                    </tr>
 
-                <tr id="extra_gp_no_contact_label_result" style="display:none">
-                    <td></td>
-                    <td>
-                        <div>
-                            <div class="selected_gp">No result</div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="align-right">
-                        <?php
-                        echo CHtml::ajaxButton('Next',
-                            Yii::app()->controller->createUrl('gp/create', array('context' => 'AJAX')),
-                            array(
-                                'type' => 'POST',
-                                'success' => 'js:function(event){
-                                    let response = JSON.parse(event);
-                                    if ("error" in response){
-                                        $("#extra_gp_errors").html(response.error);
+                    <tr id="extra_gp_no_contact_label_result" style="display:none">
+                        <td></td>
+                        <td>
+                            <div>
+                                <div class="selected_gp">No result</div>
+                            </div>
+                        </td>
+                    </tr>
+                    <?php echo CHtml::hiddenField('Gp[is_active]', 1); ?>
+                    <tr>
+                        <td colspan="2" class="align-right">
+                            <?php
+                            echo CHtml::ajaxButton(
+                                'Next',
+                                Yii::app()->controller->createUrl('gp/create', array('context' => 'AJAX')),
+                                array(
+                                    'type' => 'POST',
+                                    'success' => 'js:function(event){
+                                        if (isJsonString(event)) {
+                                            let response = JSON.parse(event);
+                                            $(".js-contact-title").val(response.title);
+                                            $(".js-contact-first-name").val(response.firstName);
+                                            $(".js-contact-last-name").val(response.lastName);
+                                            $(".js-contact-primary-phone").val(response.primaryPhone);
+                                            $(".js-contact-label-id").val(response.labelId);
+                                            $(".js-contact-practice-provider-no").val(response.providerNo);
+                                            $("#extra-gp-form")[0].reset();
+                                            $("#extra_gp_errors").text("");
+                                            $("#extra_gp_practitioner-alert-box").css("display","none");
+                                            $("#extra_gp_adding_form").css("display","none");
+                                            $("#extra_practice_adding_existing_form").css("display","");
+
+                                            // The gp variable has been defined globally.
+                                            if (response.gpId !== undefined) {
+                                                // Filled in when a practitioner with the same name
+                                                // and role has been found  to avoid creating a
+                                                // duplicate practitioner. (See CERA-514 for the criteria)
+                                                gp.id = response.gpId;
+                                            }
+
+                                            if (gp.id === null) {
+                                                // Setting the gpId to -1 as there is no elegant way in php to handle undefined values.
+                                                gp.id = "-1";
+                                            }
+
+                                            gp.title = response.title;
+                                            gp.firstName = response.firstName;
+                                            gp.lastName = response.lastName;
+                                            gp.phoneno =response.primaryPhone;
+                                            gp.role = response.labelId;
+                                            // Saving the data in the hidden field
+                                            $(".gp_data_retrieved").val(gp.toString());
+                                        } else {
+                                            $("#extra_gp_errors").html(event);
+                                            $("#extra_gp_practitioner-alert-box").css("display","");
+                                        }
+                                    }',
+                                    'error' => 'js:function(event){
+                                        $("#extra_gp_errors").html("<div class=\"errorSummary\"><p>Unable to save Practitioner information, please contact your support.</p></div>");
                                         $("#extra_gp_practitioner-alert-box").css("display","");
-                                    } else{
-                                        $(".js-contact-title").val(response.title);
-                                        $(".js-contact-first-name").val(response.firstName);
-                                        $(".js-contact-last-name").val(response.lastName);
-                                        $(".js-contact-primary-phone").val(response.primaryPhone);
-                                        $(".js-contact-label-id").val(response.labelId);
-                                        $(".js-contact-practice-provider-no").val(response.providerNo);
-                                        $("#extra-gp-form")[0].reset();
-                                        $("#extra_gp_errors").text("");
-                                        $("#extra_gp_practitioner-alert-box").css("display","none");
-                                        $("#extra_gp_adding_form").css("display","none");
-                                        $("#extra_practice_adding_existing_form").css("display","");
-
-                                        // The gp variable has been defined globally.
-                                        if (response.gpId !== undefined) {
-                                            // Filled in when a practitioner with the same name
-                                            // and role has been found  to avoid creating a
-                                            // duplicate practitioner. (See CERA-514 for the criteria)
-                                            gp.id = response.gpId;
-                                        }
-
-                                        if (gp.id === null) {
-                                            // Setting the gpId to -1 as there is no elegant way in php to handle undefined values.
-                                            gp.id = "-1";
-                                        }
-
-                                        gp.title = response.title;
-                                        gp.firstName = response.firstName;
-                                        gp.lastName = response.lastName;
-                                        gp.phoneno =response.primaryPhone;
-                                        gp.role = response.labelId;
-                                        // Saving the data in the hidden field
-                                        $(".gp_data_retrieved").val(gp.toString());
-                                    }
-                                  }',
-                            ),
-                            array('class' => 'button hint green')
-                        );
-                        ?>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                                    }',
+                                ),
+                                array('class' => 'button hint green')
+                            );
+                            ?>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             <?php $this->endWidget(); ?>
         </div>
     </div>
@@ -197,8 +202,11 @@
                         <div id="selected_practice_associate_wrapper">
                             <ul class="oe-multi-select js-selected-practice-associate">
                             </ul>
-                            <?= CHtml::hiddenField('PracticeAssociate[practice_id]', $extra_practice_associate->practice_id,
-                                array('class' => 'hidden_id')); ?>
+                            <?= CHtml::hiddenField(
+                                'PracticeAssociate[practice_id]',
+                                $extra_practice_associate->practice_id,
+                                array('class' => 'hidden_id')
+                            ); ?>
                         </div>
                         <div id="no_practice_associate_result" style="display: none;">
                             <div>No result</div>
@@ -208,9 +216,10 @@
                 </tr>
                 <tr>
                     <td colspan="2" class="align-right">
-                        <?php echo CHtml::ajaxButton('Add',
-                             Yii::app()->controller->createUrl('practiceAssociate/create'),
-                             [
+                        <?php echo CHtml::ajaxButton(
+                            'Add',
+                            Yii::app()->controller->createUrl('practiceAssociate/create'),
+                            [
                                  'type' => 'POST',
                                  'success' => 'js:function(event) {
                                     let response = JSON.parse(event);
@@ -259,7 +268,7 @@
                                     }
                                 }',
                              ],
-                             array('class' => 'button hint green')
+                            array('class' => 'button hint green')
                         ); ?>
                     </td>
                 </tr>
@@ -336,9 +345,10 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                 </tr>
                 <tr>
                     <td colspan="2" class="align-right">
-                        <?php echo CHtml::ajaxButton('Add',
-                             Yii::app()->controller->createUrl('practice/createAssociate'),
-                             [
+                        <?php echo CHtml::ajaxButton(
+                            'Add',
+                            Yii::app()->controller->createUrl('practice/createAssociate'),
+                            [
                                  'type' => 'POST',
                                  'success' => 'js:function(event) {
                                     let response = JSON.parse(event);
@@ -384,7 +394,7 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
                                     }
                                 }',
                              ],
-                             array('class' => 'button hint green')
+                            array('class' => 'button hint green')
                         ); ?>
                     </td>
                 </tr>
@@ -396,6 +406,16 @@ $extra_practice_address_type_ids = CHtml::listData(AddressType::model()->findAll
 </div>
 
 <script>
+    // This function checks if the string is a valid JSON.
+    function isJsonString(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+
     OpenEyes.UI.AutoCompleteSearch.init({
         input: $('#extra_gp_autocomplete_contact_label_id'),
         url: '/gp/contactLabelList',

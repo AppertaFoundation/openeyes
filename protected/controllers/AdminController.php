@@ -46,14 +46,198 @@ class AdminController extends BaseAdminController
     public function actionEditCommonOphthalmicDisorderGroups()
     {
         $this->group = 'Disorders';
-        $this->genericAdmin(
-            'Common Ophthalmic Disorder Groups',
-            'CommonOphthalmicDisorderGroup',
-            ['div_wrapper_class' => 'cols-5',
-                'return_url' => 'editcommonophthalmicdisordergroups'],
+
+        $current_institution = $this->request->getParam('institution_id')
+            ? Institution::model()->find('id = :id', [':id' => $this->request->getParam('institution_id')])
+            : (!$this->checkAccess('admin') ? Institution::model()->getCurrent() : null);
+
+        $subspecialties = Subspecialty::model()->findAll(array('order' => 'name'));
+        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
+
+        if (!Yii::app()->request->isPostRequest) {
+            $this->renderCommonOphthalmicDisorderGroupsView($current_institution, $subspecialty_id, $subspecialties);
+            return;
+        }
+
+        $json = $this->parseCommonOphthalmicDisorderGroupsJson();
+
+        if (!$json) {
+            Yii::app()->user->setFlash('warning.failure-form', 'There has been an error in saving, please contact support.');
+        } else {
+            $this->updateCommonOphthalmicDisorderGroups($current_institution, $subspecialty_id, $json);
+        }
+
+        $this->redirect(Yii::app()->request->url);
+    }
+
+    protected function renderCommonOphthalmicDisorderGroupsView($current_institution, $subspecialty_id, $subspecialties)
+    {
+        // Get groups to list
+        $disorder_groups_for_institution = $this->getCommonOphthalmicDisorderGroupsForInstitution($current_institution, $subspecialty_id);
+
+        // Get which groups are in use to ensure they can't be deleted
+        $active_group_ids = CommonOphthalmicDisorder::getDisordersInGroup();
+
+        $this->render('editcommonophthalmicdisordergroup', [
+            'dataProvider' => $disorder_groups_for_institution,
+            'active_group_ids' => $active_group_ids,
+            'current_institution_id' => $current_institution->id ?? null,
+            'current_institution' => $current_institution ?? null,
+            'subspecialty_id' => $subspecialty_id ?? null,
+            'subspecialty' => $subspecialties ?? null,
+        ]);
+    }
+
+    private function getCommonOphthalmicDisorderGroupsForInstitution($current_institution, $subspecialty_id)
+    {
+        $subspecialty = Subspecialty::model()->findByPk($subspecialty_id);
+        $level_mask = $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION;
+
+        if ($subspecialty) {
+            $level_mask |= ReferenceData::LEVEL_SUBSPECIALTY;
+        }
+
+        return new CActiveDataProvider('CommonOphthalmicDisorderGroup', array(
+            'criteria' => CommonOphthalmicDisorderGroup::model()->getCriteriaForLevels(
+                $level_mask,
+                null,
+                $current_institution,
+                null,
+                null,
+                $subspecialty,
+                null,
+                null,
+                false
+            ),
+            'pagination' => false,
+        ));
+    }
+
+    protected function parseCommonOphthalmicDisorderGroupsJson()
+    {
+        $json_string = Yii::app()->request->getParam('CommonOphthalmicDisorderGroups');
+
+        $json_error = false;
+        if (!$json_string || !array_key_exists('JSON_string', $json_string)) {
+            $json_error = true;
+        }
+
+        $json = json_decode(str_replace("'", '"', $json_string['JSON_string']), true);
+        if (json_last_error() != 0) {
+            $json_error = true;
+        }
+
+        return $json_error ? null : $json;
+    }
+
+    protected function updateCommonOphthalmicDisorderGroups($current_institution, $subspecialty_id, $json): void
+    {
+        $transaction = Yii::app()->db->beginTransaction();
+
+        $errors = [];
+
+        try {
+            $display_orders = array_map(function ($entry) {
+                return $entry['display_order'];
+            }, $json);
+
+            $groups = array_map(function ($entry) {
+                return $entry['CommonOphthalmicDisorderGroup'];
+            }, $json);
+
+            list($saved_group_ids, $errors) = $this->saveCommonOphthalmicDisorderGroups($subspecialty_id, $groups, $display_orders);
+
+            if (!empty($errors)) {
+                throw new \RuntimeException('Could not save common ophthalmic disorder groups');
+            }
+
+            $this->deleteOtherCommonOphthalmicDisorderGroups($current_institution, $subspecialty_id, $saved_group_ids);
+        } catch (Exception $e) {
+            $transaction->rollback();
+
+            if (empty($errors)) {
+                $errors = [['form' => ['There has been an error in saving, please contact support.']]];
+            }
+
+            foreach ($errors as $error) {
+                foreach ($error as $attribute => $error_array) {
+                    $display_errors = '<strong>' . CommonOphthalmicDisorderGroup::model()->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
+                    Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
+                }
+            }
+
+            return;
+        }
+
+        $transaction->commit();
+
+        Yii::app()->user->setFlash('success', 'List updated.');
+    }
+
+    protected function deleteOtherCommonOphthalmicDisorderGroups($current_institution, $subspecialty_id, $saved_group_ids)
+    {
+        //Delete items
+        $criteria = new CDbCriteria();
+
+        if ($saved_group_ids) {
+            $criteria->addNotInCondition('id', $saved_group_ids);
+        }
+        $subspecialty = Subspecialty::model()->findByPk($subspecialty_id);
+
+        $level_mask = $current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION;
+
+        if ($subspecialty) {
+            $level_mask |= ReferenceData::LEVEL_SUBSPECIALTY;
+        }
+
+        $to_delete = CommonOphthalmicDisorderGroup::model()->findAllAtLevels(
+            $level_mask,
+            $criteria,
+            $current_institution,
             null,
-            true,
+            null,
+            $subspecialty,
+            null,
+            null,
+            false
         );
+
+        foreach ($to_delete as $item) {
+            if (!$item->delete()) {
+                $errors[] = $item->getErrors();
+            }
+
+            Audit::add('admin', 'delete', $item->primaryKey, null, array(
+                'module' => (is_object($this->module)) ? $this->module->id : 'core',
+                'model' => CommonOphthalmicDisorderGroup::getShortModelName(),
+            ));
+        }
+    }
+
+    protected function saveCommonOphthalmicDisorderGroups($subspecialty_id, $groups, $display_orders)
+    {
+        $errors = [];
+        $saved_group_ids = [];
+
+        foreach ($groups as $key => $group) {
+            $common_ophthalmic_disorder_group = CommonOphthalmicDisorderGroup::model()->findByPk($group['id']);
+            if (!$common_ophthalmic_disorder_group) {
+                $common_ophthalmic_disorder_group = new CommonOphthalmicDisorderGroup();
+                $group['id'] = null;
+                $common_ophthalmic_disorder_group->subspecialty_id = $subspecialty_id;
+            }
+
+            $common_ophthalmic_disorder_group->attributes = $group;
+            $common_ophthalmic_disorder_group->display_order = $display_orders[$key];
+
+            if (!$common_ophthalmic_disorder_group->save()) {
+                $errors[] = $common_ophthalmic_disorder_group->getErrors();
+            }
+
+            $saved_group_ids[] = $common_ophthalmic_disorder_group->id;
+        }
+
+        return [$saved_group_ids, $errors];
     }
 
     public function actionAddMapping()
@@ -79,7 +263,12 @@ class AdminController extends BaseAdminController
         } else {
             $transaction->commit();
         }
-        $this->redirect($_POST['return_url']);
+
+        $return_url = $_POST['return_url'] ?? '';
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        $return_url = $return_url ?: ($referer ?: '/admin');
+
+        $this->redirect($return_url);
     }
 
     public function actionRemoveMapping()
@@ -104,7 +293,12 @@ class AdminController extends BaseAdminController
         } else {
             $transaction->commit();
         }
-        $this->redirect($_POST['return_url']);
+
+        $return_url = $_POST['return_url'] ?? '';
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        $return_url = $return_url ?: ($referer ?: '/admin');
+
+        $this->redirect($return_url);
     }
 
     /**
@@ -171,25 +365,44 @@ class AdminController extends BaseAdminController
 
     public function actionEditCommonOphthalmicDisorder()
     {
-        $institution_id = Institution::model()->getCurrent()->id;
-
         $this->group = 'Disorders';
-        $models = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
 
-        $data = array_map(function ($model) {
-            return $model->getAttributes(array("id", "name"));
-        }, $models);
-        $this->jsVars['common_ophthalmic_disorder_group_options'] = $data;
+        $current_institution = $this->request->getParam('institution_id')
+            ? Institution::model()->find('id = :id', [':id' => $this->request->getParam('institution_id')])
+            : (!$this->checkAccess('admin') ? Institution::model()->getCurrent() : null);
 
-        $current_institution = Institution::model()->getCurrent();
-        $this->jsVars['current_institution'] = ['id' => $current_institution->id, 'name' => $current_institution->short_name];
-
-        $errors = array();
         $subspecialties = Subspecialty::model()->findAll(array('order' => 'name'));
         $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
         if (!$subspecialty_id) {
             $subspecialty_id = (isset($subspecialties[0]) && isset($subspecialties[0]->id)) ? $subspecialties[0]->id : null;
         }
+
+        if ($current_institution) {
+            $this->jsVars['current_institution'] = ['id' => $current_institution->id, 'name' => $current_institution->short_name];
+        }
+
+        $criteria = new CDbCriteria();
+        $subspecialty = Subspecialty::model()->findByPk($subspecialty_id);
+
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('subspecialty_id IS NULL OR subspecialty_id = :subspecialty');
+        $criteria->params[':subspecialty'] = $subspecialty_id;
+
+        if ($current_institution) {
+            $criteria->addCondition('institution_id = :institution');
+            $criteria->params[':institution'] = $current_institution->id;
+        } else {
+            $criteria->addCondition('institution_id IS NULL');
+        }
+
+        $group_models = CommonOphthalmicDisorderGroup::model()->findAll($criteria);
+
+        $group_options = array_map(function ($model) {
+            return $model->getAttributes(array("id", "name"));
+        }, $group_models);
+        $this->jsVars['common_ophthalmic_disorder_group_options'] = $group_options;
+
+        $errors = array();
 
         if (Yii::app()->request->isPostRequest) {
             $transaction = Yii::app()->db->beginTransaction();
@@ -204,6 +417,8 @@ class AdminController extends BaseAdminController
                 $json_error = true;
             }
 
+            $ids = array();
+
             if (!$json_error) {
                 $display_orders = array_map(function ($entry) {
                     return $entry['display_order'];
@@ -213,11 +428,6 @@ class AdminController extends BaseAdminController
                     return $entry['CommonOphthalmicDisorder'];
                 }, $JSON);
 
-                $institution_mappings = array_map(function ($entry) {
-                    return isset($entry['assigned_institution']) && $entry['assigned_institution'];
-                }, $JSON);
-
-                $ids = array();
                 foreach ($disorders as $key => $disorder) {
                     $common_ophthalmic_disorder = CommonOphthalmicDisorder::model()->findByPk($disorder['id']);
                     if (!$common_ophthalmic_disorder) {
@@ -231,23 +441,20 @@ class AdminController extends BaseAdminController
                     //$_GET['subspecialty_id'] must be present, we do not use the default value 1
                     $common_ophthalmic_disorder->subspecialty_id = isset($_GET['subspecialty_id']) ? $_GET['subspecialty_id'] : null;
 
+                    // Validate that the group is unassigned, belongs to the current institution or is a global group.
+                    // If it isn't any of those, raise an error.
+                    if ($common_ophthalmic_disorder->group_id) {
+                        $group = CommonOphthalmicDisorderGroup::model()->findByPk($disorder['group_id']);
+                        if ($group->institution_id && (int)$group->institution_id !== (int)$common_ophthalmic_disorder->id) {
+                            $common_ophthalmic_disorder->addError('group_id', 'Group is not available for the selected institution');
+                        }
+                    }
+
                     if (!$common_ophthalmic_disorder->save()) {
                         $errors[] = $common_ophthalmic_disorder->getErrors();
                     }
 
                     $ids[$common_ophthalmic_disorder->id] = $common_ophthalmic_disorder->id;
-
-                    $needs_mapping = $institution_mappings[$key];
-
-                    if ($common_ophthalmic_disorder->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
-                        if (!$needs_mapping) {
-                            $common_ophthalmic_disorder->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
-                        }
-                    } else {
-                        if ($needs_mapping) {
-                            $common_ophthalmic_disorder->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
-                        }
-                    }
                 }
             } else {
                 $errors[] = ['Form Error' => ['There has been an error in saving, please contact support.']];
@@ -263,10 +470,20 @@ class AdminController extends BaseAdminController
                     }, $ids));
                 }
 
-                $criteria->compare('subspecialty_id', $subspecialty_id);
+                $to_delete = CommonOphthalmicDisorder::model()->findAllAtLevels(
+                    ($current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION) | ReferenceData::LEVEL_SUBSPECIALTY,
+                    $criteria,
+                    $current_institution,
+                    null,
+                    null,
+                    $subspecialty,
+                    null,
+                    null,
+                    false
+                );
 
-                $to_delete = CommonOphthalmicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
                 foreach ($to_delete as $item) {
+                    // unmap deleted
                     if (!$item->delete()) {
                         throw new Exception("Unable to delete CommonOphthalmicDisorder:{$item->primaryKey}");
                     }
@@ -282,7 +499,7 @@ class AdminController extends BaseAdminController
             } else {
                 foreach ($errors as $error) {
                     foreach ($error as $attribute => $error_array) {
-                        $display_errors = '<strong>' . (new CommonOphthalmicDisorder())->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
+                        $display_errors = '<strong>' . CommonOphthalmicDisorder::model()->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                     }
                 }
@@ -294,39 +511,75 @@ class AdminController extends BaseAdminController
 
         // end of handling the POST
 
-        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js', true);
+        // ensure all assets are published bfore attempting to publish a standalone asset (workaround a Yii bug)
+        Yii::app()->assetManager->getPublishedPathOfAlias('application.assets');
+        Yii::app()->assetManager->getPublishedPathOfAlias('application.assets.js');
+        Yii::app()->assetManager->getPublishedPathOfAlias('application.widgets.js');
+        $generic_admin = Yii::app()->assetManager->getPublishedPathOfAlias('application.widgets.js') . '/GenericAdmin.js';
         Yii::app()->getClientScript()->registerScriptFile($generic_admin);
 
         Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'), ClientScript::POS_END);
 
-        $criteria = new CDbCriteria();
-        $criteria->compare('subspecialty_id', $subspecialty_id);
+        $data = new CActiveDataProvider('CommonOphthalmicDisorder', array(
+            'criteria' => CommonOphthalmicDisorder::model()->getCriteriaForLevels(
+                ($current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION) | ReferenceData::LEVEL_SUBSPECIALTY,
+                null,
+                $current_institution,
+                null,
+                null,
+                $subspecialty,
+                null,
+                null,
+                false
+            ),
+            'pagination' => false,
+        ));
 
         $this->render('editcommonophthalmicdisorder', array(
-            'dataProvider' => new CActiveDataProvider('CommonOphthalmicDisorder', array(
-                'criteria' => $criteria,
-                'pagination' => false,
-            )),
+            'dataProvider' => $data,
             'subspecialty_id' => $subspecialty_id,
             'subspecialty' => $subspecialties,
+            'current_institution_id' => $current_institution->id ?? null,
+            'current_institution' => $current_institution ?? null,
+            'group_models' => $group_models
         ));
     }
 
     public function actionEditSecondaryToCommonOphthalmicDisorder()
     {
-        $institution_id = Institution::model()->getCurrent()->id;
+        $current_institution = $this->request->getParam('institution_id')
+            ? Institution::model()->find('id = ' . $this->request->getParam('institution_id'))
+            : (!$this->checkAccess('admin') ? Institution::model()->getCurrent() : null);
 
         $this->group = 'Disorders';
         $errors = array();
-        $parent_id = Yii::app()->request->getParam('parent_id', 1);
+        $subspecialties = Subspecialty::model()->findAll(array('order' => 'name'));
+        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
+        if (!$subspecialty_id) {
+            $subspecialty_id = (isset($subspecialties[0]) && isset($subspecialties[0]->id)) ? $subspecialties[0]->id : null;
+        }
+
+
+        $parents = array_filter(
+            CommonOphthalmicDisorder::model()->with('disorder')->findAll([ 'condition' => 'disorder_id IS NOT NULL OR finding_id IS NOT NULL', 'group' => 'disorder.term, subspecialty_id', 'distinct' => true,'order' => 'disorder.term ASC']),
+            static function ($item) {
+                return $item->disorder !== null || $item->finding !== null;
+            } // Exclude inactive entries
+        );
+
+        $parent_id = Yii::app()->request->getParam('parent_id');
+
+        if (!$parent_id) {
+            $parent_id = (isset($parents[0]) && isset($parents[0]->id)) ? $parents[0]->id : null;
+        }
+
+        $subspecialty = Subspecialty::model()->findByPk($subspecialty_id);
 
         if (Yii::app()->request->isPostRequest) {
             $transaction = Yii::app()->db->beginTransaction();
 
             $display_orders = Yii::app()->request->getParam('display_order', array());
             $disorders = Yii::app()->request->getParam('SecondaryToCommonOphthalmicDisorder', array());
-
-            $institution_mappings = Yii::app()->request->getParam('assigned_institution', array());
 
             $ids = array();
             foreach ($disorders as $key => $disorder) {
@@ -341,28 +594,17 @@ class AdminController extends BaseAdminController
 
                 //$_GET['parent_id'] must be present, we do not use the default value 1
                 $common_ophtalmic_disorder->parent_id = isset($_GET['parent_id']) ? $_GET['parent_id'] : null;
+                //$_GET['subspecialty_id'] must be present, we do not use the default value 1
+                $common_ophtalmic_disorder->subspecialty_id = isset($_GET['subspecialty_id']) ? $_GET['subspecialty_id'] : null;
+                if ($current_institution) {
+                    $common_ophtalmic_disorder->institution_id = $current_institution->id;
+                }
 
                 if (!$common_ophtalmic_disorder->save()) {
                     $errors[] = $common_ophtalmic_disorder->getErrors();
                 }
 
                 $ids[$common_ophtalmic_disorder->id] = $common_ophtalmic_disorder->id;
-
-                $needs_mapping = false;
-
-                if (isset($institution_mappings[$key]) && $institution_mappings[$key]) {
-                    $needs_mapping = true;
-                }
-
-                if ($common_ophtalmic_disorder->hasMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id)) {
-                    if (!$needs_mapping) {
-                        $common_ophtalmic_disorder->deleteMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
-                    }
-                } else {
-                    if ($needs_mapping) {
-                        $common_ophtalmic_disorder->createMapping(ReferenceData::LEVEL_INSTITUTION, $institution_id);
-                    }
-                }
             }
 
             if (empty($errors)) {
@@ -377,7 +619,17 @@ class AdminController extends BaseAdminController
 
                 $criteria->compare('parent_id', $parent_id);
 
-                $to_delete = SecondaryToCommonOphthalmicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
+                $to_delete = SecondaryToCommonOphthalmicDisorder::model()->findAllAtLevels(
+                    ($current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION) | ReferenceData::LEVEL_SUBSPECIALTY,
+                    $criteria,
+                    $current_institution,
+                    null,
+                    null,
+                    $subspecialty,
+                    null,
+                    null,
+                    false
+                );
 
                 foreach ($to_delete as $item) {
                     if (!$item->delete()) {
@@ -413,12 +665,29 @@ class AdminController extends BaseAdminController
         $criteria = new CDbCriteria();
         $criteria->compare('parent_id', $parent_id);
 
+        $data = new CActiveDataProvider('SecondaryToCommonOphthalmicDisorder', array(
+            'criteria' => SecondaryToCommonOphthalmicDisorder::model()->getCriteriaForLevels(
+                ($current_institution ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION) | ReferenceData::LEVEL_SUBSPECIALTY,
+                $criteria,
+                $current_institution,
+                null,
+                null,
+                $subspecialty,
+                null,
+                null,
+                false
+            ),
+            'pagination' => false,
+        ));
+
         $this->render('editSecondaryToCommonOphthalmicdisorder', array(
-            'dataProvider' => new CActiveDataProvider('SecondaryToCommonOphthalmicDisorder', array(
-                'criteria' => $criteria,
-                'pagination' => false,
-            )),
+            'dataProvider' => $data,
+            'subspecialty_id' => $subspecialty_id,
+            'subspecialty' => $subspecialties,
+            'current_institution_id' => $current_institution->id ?? null,
+            'current_institution' => $current_institution ?? null,
             'parent_id' => $parent_id,
+            'parents' => $parents,
         ));
     }
 
@@ -603,7 +872,10 @@ class AdminController extends BaseAdminController
         if (!empty($_GET['search'])) {
             $criteria->compare('LOWER(first_name)', strtolower($_GET['search']), true, 'OR');
             $criteria->compare('LOWER(last_name)', strtolower($_GET['search']), true, 'OR');
-            $criteria->compare('LOWER(id)', $_GET['search'], false, 'OR');
+            $criteria->compare('LOWER(t.id)', $_GET['search'], false, 'OR');
+            $criteria->with = 'authentications';
+            $criteria->together = true;
+            $criteria->compare('LOWER(authentications.username)', $_GET['search'], true, 'OR');
         }
 
         if (!$this->checkAccess('admin')) {
@@ -624,7 +896,7 @@ class AdminController extends BaseAdminController
                 ->bindValue(':admin_role', 'admin')
                 ->queryColumn();
             $user_ids = array_diff($institution_user_ids, $admin_user_ids);
-            $criteria->addInCondition('id', $user_ids);
+            $criteria->addInCondition('t.id', $user_ids);
         }
 
         $pagination = $this->initPagination(User::model(), $criteria);
@@ -674,160 +946,168 @@ class AdminController extends BaseAdminController
      */
     public function actionEditUser($id = null)
     {
+        $request = Yii::app()->getRequest();
         $user = User::model()->findByPk($id);
-        $invalid_entries = [];
-        $invalid_existing = [];
-        $errors = [];
-        $user_auth_errors = [];
-        $is_new = false;
 
-        if ($id && !$user) {
-            throw new Exception("User not found: $id");
-        } elseif (!$id) {
+        if ($user === null) {
+            if ($id !== null) {
+                throw new Exception("User not found: $id");
+            }
+
             $user = new User();
+
             $user->has_selected_firms = 0;
-            $is_new = true;
         }
 
-        $request = Yii::app()->getRequest();
+        $user_authentication_entries = [];
+        $contact = $user->contact ?? new Contact();
+
+        $errors = [];
+        $user_auth_errors = [];
 
         if ($request->getIsPostRequest()) {
-            $userAtt = $request->getPost('User');
-
-            if (Yii::app()->params['auth_source'] === 'BASIC' && $id && empty($userAtt['password_status'])) {
-                unset($userAtt['password_status']);
-            }
-            $user->attributes = $userAtt;
-
+            $user_attributes = $request->getPost('User');
             $user_auths_attributes = $request->getPost('UserAuthentication', []);
 
+            if (Yii::app()->params['auth_source'] === 'BASIC' && $id && empty($user_attributes['password_status'])) {
+                unset($user_attributes['password_status']);
+            }
+
+            $user->attributes = $user_attributes;
+
             if (!$user->validate()) {
-                $errors = $user->getErrors();
-                foreach ($user_auths_attributes as $user_auth_attributes) {
-                    $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
-                    if (array_key_exists('id', $user_auth_attributes) && !$user_auth_attributes['id']) {
-                        $invalid_entries['UserAuthentication'][] = $user_auth_attributes;
-                    } else {
-                        $invalid_existing[] = $user_auth;
-                    }
-                }
+                $errors = array_merge($errors, $user->getErrors());
+
+                $user_authentication_entries = array_map(
+                    ['UserAuthentication', 'fromAttributes'],
+                    $user_auths_attributes
+                );
             } else {
                 $transaction = Yii::app()->db->beginTransaction();
 
-                if (!$user->save(false)) {
-                    $transaction->rollback();
+                try {
+                    $contact->title = $user_attributes['title'];
+                    $contact->first_name = $user_attributes['first_name'];
+                    $contact->last_name = $user_attributes['last_name'];
+                    $contact->qualifications = $request->getPost('Contact')['qualifications'];
+                    $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
 
-                    throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
-                }
-
-                if ($is_new) {
-                    $user->correspondence_sign_off_user_id = $user->id;
-                    $user->update(['correspondence_sign_off_user_id']);
-                }
-
-                //delete deleted auths first
-                $ids = array_filter(
-                    array_column($user_auths_attributes, 'id'),
-                    function ($id) {
-                        return !empty($id);
+                    if (!$contact->save()) {
+                        throw new CHttpException(500, 'Unable to save user contact: ' . print_r($contact->getErrors(), true));
                     }
-                );
-                $criteria = new CDbCriteria();
-                $criteria->addCondition('user_id=:user_id');
-                $criteria->addNotInCondition('id', array_map(function ($id) {
-                    return $id;
-                }, $ids));
-                $criteria->params[':user_id'] = $user->id;
-                UserAuthentication::model()->deleteAll($criteria);
 
-                foreach ($user_auths_attributes as $user_auth_attributes) {
-                    $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
-                    if (!$user_auth->user_id) {
-                        $user_auth->user_id = $user->id;
+                    if (!$user->contact) {
+                        $user->contact_id = $contact->id;
                     }
-                    $special_usernames = Yii::app()->params['special_usernames'] ?? [];
-                    if (!in_array($user_auth->username, $special_usernames) && !$user_auth->validate()) {
-                        $user_auth_errors = array_merge($user_auth_errors, $user_auth->getErrors());
-                        if (array_key_exists('id', $user_auth_attributes) && !$user_auth_attributes['id']) {
-                            $invalid_entries['UserAuthentication'][] = $user_auth_attributes;
-                        } else {
-                            $invalid_existing[] = $user_auth;
-                        }
-                    } else {
-                        $user_auth->handlePassword();
-                        $user_auth->setPasswordHash();
-                        if (!$user_auth->save(false)) {
-                            $transaction->rollback();
 
-                            throw new CHttpException(500, 'Unable to save user authentication: ' . print_r($user_auth->getErrors(), true));
-                        } else {
-                            Audit::add('admin-User-Authentication', 'save', $user_auth->id);
-                        }
-                    }
-                }
+                    $is_new = $user->getIsNewRecord();
 
-                $contact = $user->contact;
-                if (!$contact) {
-                    $contact = new Contact();
-                }
-
-                $contact->title = $userAtt['title'];
-                $contact->first_name = $userAtt['first_name'];
-                $contact->last_name = $userAtt['last_name'];
-                $contact->qualifications = $userAtt['qualifications'];
-                $contact->created_institution_id = Yii::app()->session['selected_institution_id'];
-
-                if (!$contact->save()) {
-                    $transaction->rollback();
-
-                    throw new CHttpException(500, 'Unable to save user contact: ' . print_r($contact->getErrors(), true));
-                }
-
-                if (!$user->contact) {
-                    $user->contact_id = $contact->id;
-
-                    if (!$user->save()) {
-                        $transaction->rollback();
-
+                    if (!$user->save(false)) {
                         throw new CHttpException(500, 'Unable to save user: ' . print_r($user->getErrors(), true));
                     }
-                }
 
-                Audit::add('admin-User', 'edit', $user->id);
-
-                if (!isset($userAtt['roles']) || (empty($userAtt['roles']))) {
-                    $userAtt['roles'] = array();
-                }
-
-                if (!array_key_exists('firms', $userAtt) || !is_array($userAtt['firms'])) {
-                    $userAtt['firms'] = array();
-                }
-
-                $user->saveRoles($userAtt['roles']);
-
-                try {
-                    $user->saveFirms($userAtt['firms']);
-                } catch (FirmSaveException $e) {
-                    $user->addError('global_firm_rights', 'When no global firm rights is set, a firm must be selected');
-                    $errors = $user->getErrors();
-                }
-
-                $errors = array_merge($errors, $user_auth_errors);
-
-                if (empty($errors)) {
-                    $transaction->commit();
-                } else {
-                    // Kludge to prevent an exception: when creating a new user, if there is an error with the user auth data
-                    // that prevents it from saving, while the user data is okay, the stale user id will persist and cause a problem
-                    // when the user corrects the user auth error and tries to save again.
-                    // TODO: Restructure this controller action and views to avoid passing around stale user ids
                     if ($is_new) {
-                        $user->id = null;
+                        $user->correspondence_sign_off_user_id = $user->id;
+                        $user->update(['correspondence_sign_off_user_id']);
                     }
 
+                    if (!array_key_exists('firms', $user_attributes) || !is_array($user_attributes['firms'])) {
+                        $user_attributes['firms'] = [];
+                    }
+
+                    if (!is_null($user->personalMailbox)) {
+                        $user->personalMailbox->name = $user->getFullNameAndTitle();
+
+                        if (!$user->personalMailbox->save()) {
+                            throw new CHttpException(422, 'Unable to save user mailbox: ' . print_r($user->personalMailbox->getErrors(), true));
+                        }
+                    }
+
+                    $user->saveRoles(
+                        (!isset($user_attributes['roles']) || (empty($user_attributes['roles'])))
+                        ? []
+                        : $user_attributes['roles']
+                    );
+
+                    try {
+                        $user->saveFirms($user_attributes['firms']);
+                    } catch (FirmSaveException $e) {
+                        $user->addError('global_firm_rights', 'When no global firm rights is set, a firm must be selected');
+                        $errors = array_merge($errors, $user->getErrors());
+                    }
+
+                    // Delete auths removed by the admin user first
+                    $ids = array_filter(
+                        array_column($user_auths_attributes, 'id'),
+                        function ($id) {
+                            return !empty($id);
+                        }
+                    );
+
+                    $criteria = new CDbCriteria();
+                    $criteria->addCondition('user_id = :user_id');
+
+                    $criteria->addNotInCondition('id', array_map(function ($id) {
+                        return $id;
+                    }, $ids));
+
+                    $criteria->params[':user_id'] = $user->id;
+
+                    UserAuthentication::model()->deleteAll($criteria);
+
+                    if (count($user_auths_attributes) === 0) {
+                        $user->addError('authentications', 'A user account must have 1 or more valid institution authentications');
+                        $errors = array_merge($errors, $user->getErrors());
+                    } else {
+                        foreach ($user_auths_attributes as $user_auth_attributes) {
+                            $user_auth = UserAuthentication::fromAttributes($user_auth_attributes);
+
+                            $user_authentication_entries[] = $user_auth;
+
+                            if (!$user_auth->user_id) {
+                                $user_auth->user_id = $user->id;
+                            }
+
+                            $special_usernames = Yii::app()->params['special_usernames'] ?? [];
+
+                            if (!in_array($user_auth->username, $special_usernames) && !$user_auth->validate()) {
+                                $user_auth_errors = array_merge($user_auth_errors, $user_auth->getErrors());
+                            } else {
+                                $user_auth->handlePassword();
+                                $user_auth->setPasswordHash();
+
+                                if (!$user_auth->save(false)) {
+                                    throw new CHttpException(500, 'Unable to save user authentication: ' . print_r($user_auth->getErrors(), true));
+                                } else {
+                                    Audit::add('admin-User-Authentication', 'save', $user_auth->id);
+                                }
+                            }
+                        }
+                    }
+
+                    Audit::add('admin-User', 'edit', $user->id);
+
+                    $errors = array_merge($errors, $user_auth_errors);
+
+                    if (empty($errors)) {
+                        $transaction->commit();
+                    } else {
+                        $transaction->rollback();
+
+                        // The admin/useredit view displays firms in a multiselect list which only tolerates model objects,
+                        // not ids alone, thus they need to loaded in here to prevent an exception and to preserve the list
+                        // for the user when there are errors with the rest of the form data.
+                        $criteria = new CDbCriteria();
+                        $criteria->addInCondition('id', $user_attributes['firms']);
+                        $user->firms = Firm::model()->findAll($criteria);
+                    }
+                } catch (Exception $e) {
                     $transaction->rollback();
+
+                    throw $e;
                 }
             }
+
             if (empty($errors)) {
                 $this->redirect('/admin/users/' . ceil($user->id / $this->items_per_page));
             }
@@ -835,13 +1115,22 @@ class AdminController extends BaseAdminController
             if ($id) {
                 Audit::add('admin-User', 'view', $id);
             }
+
+            $user_authentication_entries = UserAuthentication::model()->findAll('user_id = :user_id', [':user_id' => $id]);
         }
+
+        usort(
+            $user_authentication_entries,
+            static function ($a, $b) {
+                return $a->id < $b->id ? -1 : 1;
+            }
+        );
 
         $this->render('/admin/edituser', array(
             'user' => $user,
-            'errors' => @$errors,
-            'invalid_entries' => $invalid_entries,
-            'invalid_existing' => $invalid_existing,
+            'contact' => $contact,
+            'errors' => $errors,
+            'user_auths' => $user_authentication_entries
         ));
     }
 
@@ -851,7 +1140,7 @@ class AdminController extends BaseAdminController
 
     public function actionLookupUser()
     {
-        Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username']));
+        Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username'], 'institution_authentication_id' => $_GET['institution_authentication_id']));
 
         $user_auth = UserAuthentication::model()->find('username=?', array($_GET['username']));
         if ($user_auth) {
@@ -1295,13 +1584,13 @@ class AdminController extends BaseAdminController
                             }
                         }
                         // if no error uploading use uploaded image
-                        if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
+                        if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
                             $logo->primary_logo = $pl_file;
                         }
                     }
                     if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
                         $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-                        $sl_file=file_get_contents($secondary_logo);
+                        $sl_file = file_get_contents($secondary_logo);
                         if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
                             try {
                                 $file_clean = VirusScanController::stringIsClean($sl_file);
@@ -1641,6 +1930,9 @@ class AdminController extends BaseAdminController
             $patient_identifier_display_order->search_protocol_prefix = $patient_identifier_rule['search_protocol_prefix'];
             $patient_identifier_display_order->necessity = $patient_identifier_rule['necessity'];
             $patient_identifier_display_order->status_necessity = $patient_identifier_rule['status_necessity'];
+            $patient_identifier_display_order->auto_increment = $patient_identifier_rule['auto_increment'];
+            $patient_identifier_display_order->auto_increment_start = $patient_identifier_rule['auto_increment_start'];
+            $patient_identifier_display_order->only_editable_by_admin = $patient_identifier_rule['only_editable_by_admin'];
 
             if (!$patient_identifier_display_order->save()) {
                 $errors[] = $patient_identifier_display_order->getErrors();
@@ -1745,13 +2037,13 @@ class AdminController extends BaseAdminController
                         }
                     }
                     // if no error uploading use uploaded image
-                    if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
+                    if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
                         $logo->primary_logo = $pl_file;
                     }
                 }
                 if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
                     $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-                    $sl_file=file_get_contents($secondary_logo);
+                    $sl_file = file_get_contents($secondary_logo);
                     if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
                         try {
                             $file_clean = VirusScanController::stringIsClean($sl_file);
@@ -1852,13 +2144,13 @@ class AdminController extends BaseAdminController
                     }
                 }
                 // if no error uploading use uploaded image
-                if (($_FILES['SiteLogo']['error']['primary_logo'])==0) {
+                if (($_FILES['SiteLogo']['error']['primary_logo']) == 0) {
                     $logo->primary_logo = $pl_file;
                 }
             }
             if (!empty($_FILES['SiteLogo']['tmp_name']['secondary_logo'])) {
                 $secondary_logo = $_FILES['SiteLogo']['tmp_name']['secondary_logo'];
-                $sl_file=file_get_contents($secondary_logo);
+                $sl_file = file_get_contents($secondary_logo);
                 if (strtolower(SettingMetadata::model()->getSetting('enable_virus_scanning')) === 'on') {
                     try {
                         $file_clean = VirusScanController::stringIsClean($sl_file);
@@ -2184,6 +2476,9 @@ class AdminController extends BaseAdminController
             $cb = new CommissioningBody();
             $address = new Address();
             $address->country_id = 1;
+
+            $contact = new Contact();
+            $cb->contact = $contact;
         }
 
         $errors = array();
@@ -2201,7 +2496,7 @@ class AdminController extends BaseAdminController
                 $transaction = Yii::app()->db->beginInternalTransaction();
                 try {
                     $contact = $cb->contact;
-                    if (!$contact) {
+                    if (!$contact || $cb->contact->isNewRecord) {
                         $contact = new Contact();
                         $contact->first_name = '';
                         $contact->last_name = '';
@@ -2457,7 +2752,10 @@ class AdminController extends BaseAdminController
             if (!$cbs->validate()) {
                 $errors = $cbs->getErrors();
             }
+            $contact->scenario = 'admin_contact';
             $contact->attributes = $_POST['Contact'];
+            $contact->last_name = $cbs->name;
+
             if (!$contact->validate()) {
                 $errors = array_merge($errors, $contact->getErrors());
             }
@@ -2483,15 +2781,15 @@ class AdminController extends BaseAdminController
 
                     if (!$cbs->save()) {
                         throw new CHttpException(500, 'Unable to save CommissioningBodyService: ' . print_r(
-                        $cbs->getErrors(),
-                        true
+                            $cbs->getErrors(),
+                            true
                         ));
                     }
 
                     if (!$address->save()) {
                         throw new CHttpException(500, 'Unable to save CommissioningBodyService address: ' . print_r(
-                        $address->getErrors(),
-                        true
+                            $address->getErrors(),
+                            true
                         ));
                     }
 
@@ -2575,8 +2873,8 @@ class AdminController extends BaseAdminController
             if (empty($errors)) {
                 if (!$cbs->save()) {
                     throw new CHttpException(500, 'Unable to save CommissioningBodyServiceType: ' . print_r(
-                    $cbs->getErrors(),
-                    true
+                        $cbs->getErrors(),
+                        true
                     ));
                 }
 
@@ -2700,12 +2998,12 @@ class AdminController extends BaseAdminController
     public function actionEpisodeSummaries($subspecialty_id = null)
     {
         $this->render(
-        '/admin/episodeSummaries',
-        array(
+            '/admin/episodeSummaries',
+            array(
             'subspecialty_id' => $subspecialty_id,
             'enabled_items' => EpisodeSummaryItem::model()->enabled($subspecialty_id)->findAll(),
             'available_items' => EpisodeSummaryItem::model()->available($subspecialty_id)->findAll(),
-        )
+            )
         );
     }
 
@@ -2742,8 +3040,10 @@ class AdminController extends BaseAdminController
 
         $this->group = "System";
         $this->render('/admin/settings', array(
-        'institution_id' => $institution_id,
-        'is_admin' => $is_admin,
+            'institution_id' => $institution_id,
+            'is_admin' => $is_admin,
+            'grouped_settings' => SettingGroup::model()->with('systemSettings')->findAll(['order' => 't.name ASC']),
+            'merged_config' => OEConfig::getMergedConfig('main')
         ));
     }
 
@@ -2778,7 +3078,7 @@ class AdminController extends BaseAdminController
                 }
             }
         }
-        $this->render('/admin/edit_setting', array('metadata' => $metadata, 'context' => $context, 'errors' => $errors, 'institution_id' => $this->selectedInstitutionId));
+        $this->render('/admin/edit_setting', array('metadata' => $metadata, 'errors' => $errors, 'institution_id' => $this->selectedInstitutionId));
     }
 
     /**
@@ -2829,14 +3129,14 @@ class AdminController extends BaseAdminController
         }
 
         $this->render(
-        '/admin/edit_setting',
-        array(
+            '/admin/edit_setting',
+            array(
             'metadata' => $metadata,
             'errors' => $errors,
             'allowed_classes' => [$class],
             'institution_id' => $institution_id,
             'is_admin' => $is_admin,
-        )
+            )
         );
     }
 
@@ -2973,5 +3273,67 @@ class AdminController extends BaseAdminController
                 return "The version check is disabled.";
             }
         }
+    }
+
+    public function actionEditEthnicGroups()
+    {
+        $groups = [];
+        $errors = [];
+
+        if (Yii::app()->request->isPostRequest) {
+            $data = Yii::app()->request->getParam('EthnicGroup');
+
+            $ids_to_preserve = array_map(
+                static function ($datum) {
+                    return $datum['id'];
+                },
+                $data
+            );
+
+            $soft_delete_criteria = new CDbCriteria();
+
+            $soft_delete_criteria->addNotInCondition('id', $ids_to_preserve);
+
+            $transaction = Yii::app()->db->beginTransaction();
+
+            // EthnicGroup derives from BaseActiveRecordVersionedSoftDelete
+            \EthnicGroup::model()->deleteAll($soft_delete_criteria);
+
+            foreach ($data as $datum) {
+                $group = \EthnicGroup::model()->findByPk($datum['id']) ?? new \EthnicGroup();
+
+                $group->name = $datum['name'];
+                $group->code = $datum['code'];
+
+                if (!empty($datum['id_assignment'])) {
+                    $group->id_assignment = $datum['id_assignment'];
+                }
+
+                $group->describe_needs = $datum['describe_needs'];
+
+                $groups[] = $group;
+
+                if (!$group->save()) {
+                    $errors[] = $group->getErrors();
+                }
+            }
+
+            if (empty($errors)) {
+                $transaction->commit();
+            } else {
+                $transaction->rollback();
+            }
+        } else {
+            $groups = \EthnicGroup::model()->notDeleted()->findAll();
+        }
+
+        $this->render(
+            '/admin/edit_ethnic_groups',
+            [
+                'groups' => $groups,
+                'parent_groups' => \EthnicGroup::model()->notDeleted()->findAll('id_assignment IS NULL'),
+                'errors' => $errors,
+            ]
+        );
     }
 }

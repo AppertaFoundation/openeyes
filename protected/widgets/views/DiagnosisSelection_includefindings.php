@@ -62,56 +62,14 @@ if (!$nowrapper) {?>
 <?php }?>
         <div class="autocomplete-row" id="div_<?php echo "{$class}_{$field}_autocomplete_row"?>">
             <?php
-            $this->widget(
-                'zii.widgets.jui.CJuiAutoComplete',
-                array(
-                'name' => "{$class}[$field]",
-                'id' => "{$class_field}_0",
-                'value' => '',
-                'source' => "js:function(request, response) {
-                $.ajax({
-                  'url': '".Yii::app()->createUrl('/disorder/autocomplete')."',
-                  'type':'GET',
-                  'data':{'term': request.term, 'code': '$code'},
-                  'success':function(data) {
-                    var result = [];
-    
-                    for (var i = 0; i < data.length; i++) {
-                      var ok = true;
-                      $('#selected_diagnoses').children('input').map(function() {
-                        if ($(this).val() == data[i]['id']) {
-                          ok = false;
-                        }
-                      });
-                      if (ok) {
-                        result.push(data[i]);
-                      }
-                    }
-    
-                    response(result);
-                  }
-                });
-              }",
-                'options' => array(
-                  'minLength' => '3',
-                  'select' => 'js:function(event, ui) {
-                    currFirst = getSelectedObj(firstSelection);
-                    DiagnosisSelection_addCondition(currFirst);
-                    '.($callback ? $callback."('disorder', ui.item.id, ui.item.value, ui.item.is_diabetes, ui.item.is_glaucoma);" : '')."
-                    $('#{$class_field}_0').val('');
-                    $('#{$class_field}').children('option').map(function() {
-                      if ($(this).val() == ui.item.id) {
-                        $(this).remove();
-                      }
-                    });
-                    return false;
-                  }",
-                ),
-                'htmlOptions' => array(
-                  'placeholder' => $placeholder,
-                ),
-                )
-            );
+            $this->widget('application.widgets.AutoCompleteSearch',
+                [
+                    'field_name' => "{$class}[$field]",
+                    'htmlOptions' =>
+                        [
+                            'placeholder' => $placeholder,
+                        ]
+                ]);
             ?>
         </div>
 <?php if (!$nowrapper) {?>
@@ -351,6 +309,35 @@ if (!$nowrapper) {?>
     // call straight away to set up the dropdowns correctly.
     $(document).ready(function() {
         DiagnosisSelection_updateSelections();
+
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $(`[id="${'<?= "{$class}[$field]" ?>'}"]`),
+            url: '/disorder/autocomplete',
+            params: {
+                'code': function () {return "<?= $code ?>"},
+            },
+            maxHeight: '200px',
+            onSelect: function () {
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                const classField = '<?= $class_field ?>';
+                const callback = '<?= $callback ?>';
+
+                currFirst = getSelectedObj(firstSelection);
+                DiagnosisSelection_addCondition(currFirst);
+
+                if (callback)
+                    <?= $callback?>('disorder', response.id, response.value, response.is_diabetes, response.is_glaucoma);
+
+                $(`[id="${'<?= "{$class}[$field]" ?>'}"]`).val('');
+                $(firstSelection).children('option').map(function() {
+                    if ($(this).val() == response.id) {
+                        $(this).remove();
+                    }
+                });
+            }
+        });
     });
 
     $('#<?php echo $class?>_<?php echo $field?>').on('change', function() {

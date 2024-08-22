@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,149 +15,243 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphCoMessaging\models\Mailbox;
+
 ?>
 
 <?php
-if (!isset($comment)) {
+if (!isset($new_comment)) {
     // ensure we have base comment object
-    $comment = new \OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment();
+    $new_comment = new \OEModule\OphCoMessaging\models\OphCoMessaging_Message_Comment();
 }
+
+$mailbox =
+    Mailbox::model()->findByPk(\Yii::app()->request->getParam('mailbox_id')) ??
+    \User::model()->findByPk(\Yii::app()->user->id)->personalMailbox;
 ?>
 
-<div class="element-data full-width flex-layout flex-top">
-    <div class="cols-5">
-        <table class="label-value">
-            <colgroup>
-                <col class="cols-3">
-            </colgroup>
-            <tbody>
-            <tr>
-                <td>
-                    <div class="data-label">From</div>
-                </td>
-                <td>
-                    <div class="data-value">
-                        <span class="priority-text">
-                            <?= $element->user->getFullnameAndTitle(); ?>
-                        </span>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="data-label">Date sent</div>
-                </td>
-                <td>
-                    <div class="data-value"><?php echo Helper::convertDate2NHS($element->event->event_date);?></div>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <div class="data-label">Recipient</div>
-                </td>
-                <td>
-                    <div class="data-value "><?php echo $element->for_the_attention_of_user->getFullnameAndTitle();?></div>
-                </td>
-            </tr>
-            <?php if ($element->cc_enabled) { ?>
-            <tr>
-                <td>
-                    <div class="data-label">Copied to</div>
-                </td>
-                <td>
-                    <div class="data-value">
-                        <?php
-                        $copied_users = [];
-                        foreach ($element->copyto_users as $copied_user) {
-                            array_push($copied_users, $copied_user->user->getFullnameAndTitle());
-                        }
-                        echo implode(', ', $copied_users);
-                        ?>
-                    </div>
-                </td>
-            </tr>
-            <?php } ?>
-            <tr>
-                <td>
-                    <div class="data-label"><?=\CHtml::encode($element->getAttributeLabel('message_type_id')) ?></div>
-                </td>
-                <td>
-                    <div class="data-value"><?php echo $element->message_type ? $element->message_type->name : 'None' ?></div>
-                </td>
-            </tr>
-            <?php if ($element->urgent) { ?>
-            <tr>
-                <td>
-                    <div class="data-label">Priority</div>
-                </td>
-                <td>
-                    <div class="data-value">
-                        <i class="oe-i status-urgent no-hover small pad-right"></i>
-                        <span class="highlighter orange">Urgent message</span>
-                    </div>
-                </td>
-            </tr>
-            <?php } ?>
-            </tbody>
+<div class="element-data full-width">
+    <div class="flex-t">
+        <div class="cols-5">
+            <table>
+                <colgroup>
+                    <col class="cols-5" />
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th>Sender</th>
+                        <td>
+                            <span class="priority-text"><?= $element->sender->name; ?></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Date sent</th>
+                        <td>
+                            <?= Helper::convertDate2NHS($element->event->event_date) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Recipient</th>
+                        <td data-test="message-primary-recipient-mailbox-name">
+                            <?= $element->for_the_attention_of->mailbox->name ?></div>
+                        </td>
+                    </tr>
+                    <?php if ($element->cc_enabled) { ?>
+                    <tr>
+                        <th>CC'd</th>
+                        <td data-test="message-cc-recipient-mailbox-names">
+                            <?php
+                                $cc_names = [];
 
-        </table>
+                            foreach ($element->cc_recipients as $recipient) {
+                                $cc_prefix = $recipient->mailbox->is_personal ? '' : '<i class="oe-i team medium pad-r no-click"></i>';
 
+                                $cc_names[] = $cc_prefix . $recipient->formattedName();
+                            }
 
-    </div>
-    <div class="cols-6">
-        <div class="row <?php echo $element->comments ? 'divider' : ''?>">
-            <p class="message-start"><?= Yii::app()->format->Ntext(preg_replace("/\n/", "", preg_replace('/(\s{4})\s+/', '$1', $element->message_text))) ?></p>
+                                echo implode(', ', $cc_names);
+                            ?>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                    <tr>
+                <td><?=\CHtml::encode($element->getAttributeLabel('message_type_id')) ?></td>
+                <td data-test="message-type"><?= $element->message_type ? $element->message_type->name : 'None' ?></td>
+            </tr>
+
+                    <?php if ($element->urgent) { ?>
+                    <tr>
+                        <th>Priority</th>
+                        <td>
+                            <i class="oe-i status-urgent no-hover small pad-right"></i>
+                            <span class="highlighter orange" data-test="message-urgent-indicator">Urgent message</span>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
         </div>
 
-        <?php foreach ($element->comments as $comment) { ?>
-            <p class="message-reply">
-                <i class="oe-i child-arrow small pad-right no-click"></i>
-                <em><?= Yii::app()->format->Ntext(preg_replace("/\n/", "", preg_replace('/(\s{4})\s+/', '$1', $comment->comment_text))) ?></em>
-            </p>
-            <table class="label-value">
-                <tbody>
-                <tr>
-                    <td>
-                        <div class="data-label">Reply date</div>
-                    </td>
-                    <td>
-                        <div class="data-value"><?php echo Helper::convertMySQL2NHS($comment->created_date) ?></div>
-                    </td>
-                </tr><tr>
-                    <td>
-                        <div class="data-label">From</div>
-                    </td>
-                    <td>
-                        <div class="data-value"><?php echo $comment->user->getFullnameAndTitle();?></div>
-                    </td>
-                </tr>           </tbody>
-            </table>
-        <?php } ?>
-
-        <?php if ($this->canComment()) { ?>
-            <?php
-            $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-                'id' => 'comment-form',
-                'action' => Yii::app()->createUrl('/' . $this->getModule()->name . '/Default/AddComment', array('id' => $this->event->id)),
-                'enableAjaxValidation' => false,
-                'layoutColumns' => array(
-                    'label' => 2,
-                    'field' => 10,
-                ),
-            )); ?>
-            <div class="row">
-                <p><i class="oe-i child-arrow small pad-right no-click"></i><em class="fade">Reply … <small>(can not be edited once sent)</small></em></p>
-                <textarea class="cols-full column cols" placeholder="Your message"
-                          id="OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment_comment_text"
-                          name="OEModule_OphCoMessaging_models_OphCoMessaging_Message_Comment[comment_text]"
-                          rows=5
-                ></textarea>
-
-                <div class="flex-layout flex-right">
-                    <button class="green hint" id="send_reply">Send reply</button>
+        <div class="cols-6">
+            <div class="msg-reader">
+                <div class="missive">
+                    <?= Yii::app()->format->Ntext(preg_replace("/\n/", "", preg_replace('/(\s{4})\s+/', '$1', $element->message_text))) ?>
+                    <div class="read-status" data-test="read-status">
+                        <?php
+                        // While we are not tracking read status of each individual comment, only show the read by list on the last message/comment in the thread
+                        if (empty($element->comments)) {
+                            echo count($element->read_by_recipients) === 0 ? 'Unread' : 'Read by: ' . $element->getReadByLine();
+                        }
+                        ?>
+                    </div>
                 </div>
+                <?php if (empty($element->comments) && $this->canMarkMessageRead($element, $mailbox)) { ?>
+                <div class="change-msg-status">
+                    <a class="button" data-test="mark-as-read-btn" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markRead?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>">
+                        <i class="oe-i save small pad-r"></i>
+                        Mark message as read for <?= $mailbox->name ?>
+                    </a>
+                </div>
+                <?php } elseif (empty($element->comments) && $this->canMarkMessageUnread($element, $mailbox)) { ?>
+                <div class="change-msg-status">
+                    <a class="button" data-test="mark-as-unread-btn" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markUnread?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>">
+                        <i class="oe-i save small pad-r"></i>
+                        Mark message as unread for <?= $mailbox->name ?>
+                    </a>
+                </div>
+                <?php } ?>
             </div>
-            <?php $this->endWidget() ?>
-        <?php } ?>
+
+            <?php foreach ($element->comments as $key => $comment) {
+                    $sender_mailbox = $comment->sender_mailbox;
+                    $reply_sender_label = $comment->user->getFullName();
+                if (isset($sender_mailbox) && !$sender_mailbox->is_personal) {
+                    $reply_sender_label .= " (via {$sender_mailbox->name})";
+                }
+
+                $is_latest_comment = (int) $comment->id === (int) $element->last_comment->id;
+                ?>
+            <div class="msg-reply">
+                <?= $reply_sender_label ?>, <?= Helper::convertMySQL2NHS($comment->created_date) ?>
+            </div>
+            <div class="msg-reader">
+                <div class="missive">
+                <?= Yii::app()->format->Ntext(preg_replace("/\n/", "", preg_replace('/(\s{4})\s+/', '$1', $comment->comment_text))) ?>
+                    <div class="read-status" data-test="read-status">
+                        <?php
+                        // While we are not tracking read status of each individual comment, only show the read by list on the last message/comment in the thread
+                        if ($key === count($element->comments) - 1) {
+                            echo count($element->read_by_recipients) === 0 ? 'Unread' : 'Read by: ' . $element->getReadByLine();
+                        }
+                        ?>
+                    </div>
+                </div>
+                <?php if ($is_latest_comment && $this->canMarkMessageRead($element, $mailbox)) { ?>
+                    <div class="change-msg-status">
+                        <a class="button" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markRead?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-read-btn">
+                            <i class="oe-i save small pad-r"></i>Mark message as read for <?= $mailbox->name ?>
+                        </a>
+                    </div>
+                <?php } elseif ($is_latest_comment && $this->canMarkMessageUnread($element, $mailbox)) { ?>
+                    <div class="change-msg-status">
+                        <a class="button" href="<?= Yii::app()->createUrl("{$this->getModule()->name}/Default/markUnread?id={$this->event->id}&mailbox_id={$mailbox->id}") ?>" data-test="mark-as-unread-btn">
+                            <i class="oe-i save small pad-r"></i>Mark message as unread for <?= $mailbox->name ?>
+                        </a>
+                    </div>
+                <?php } ?>
+            </div>
+            <?php } ?>
+
+            <?php if ($this->canComment()) { ?>
+                <?php
+                $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+                    'id' => 'comment-form',
+                    'action' => Yii::app()->createUrl('/' .  $this->getModule()->name . '/Default/AddComment?id=' . $this->event->id),
+                    'enableAjaxValidation' => false,
+                    'layoutColumns' => array(
+                        'label' => 2,
+                        'field' => 10,
+                    ),
+                    'htmlOptions' => [
+                        'data-test' => 'message-comment-form'
+                    ]
+                )); ?>
+                <hr class="divider" />
+                <div class="msg-reply">Your reply … <small>(can not be edited once sent)</small>
+                <div class="reply-mailbox">Replying as
+                    <?=
+                        \CHtml::dropDownList(
+                            'mailbox_id',
+                            isset($mailbox) ? $mailbox->id : null,
+                            \CHtml::listData(
+                                array_merge(
+                                    Mailbox::model()->forUser(\Yii::app()->user->id)->forMessageSender($element->id)->findAll(),
+                                    Mailbox::model()->forUser(\Yii::app()->user->id)->forMessageRecipients($element->id)->findAll()
+                                ),
+                                'id',
+                                'name'
+                            ),
+                            []
+                        );
+                    ?>
+                </div>
+                <div class="highlighter small-row">
+                    <b>Messages are part of the patient record and cannot be edited once sent.</b>
+                </div>
+                <div class="msg-editor">
+                    <?=
+                        \CHtml::activeTextArea(
+                            $new_comment,
+                            'comment_text',
+                            [
+                                'class' => 'cols-full increase-text autosize msg-write js-editor-area',
+                                'placeholder' => 'Your reply...',
+                                'rows' => 1,
+                                'data-test' => 'your-reply'
+                            ]
+                        )
+                    ?>
+                    <div class="msg-preview js-preview-area" style="display: none"></div>
+                    <div class="msg-actions js-preview-action">
+                        <button class="blue hint js-preview-message" type="button" data-test="preview-and-check">Preview & check</button>
+                    </div>
+                    <div class="msg-actions js-edit-or-send-actions" style="display: none">
+                        <button class="blue hint js-edit-message" type="button">Edit message</button>
+                        <button class="green hint" type="submit" data-test="send-reply">Send message</button>
+                        </div>
+                    </div>
+                </div>
+                <?php $this->endWidget() ?>
+            <?php } ?>
+        </div>
     </div>
 </div>
+
+<script>
+    function splitLinesIntoBRsIn(intoContainer, text)
+    {
+        const lines = text.split('\n');
+
+        intoContainer.empty();
+
+        for (line of lines) {
+        intoContainer.append(document.createTextNode(line));
+        intoContainer.append('<br />');
+        }
+    }
+
+    $(document).ready(function() {
+        $('.js-preview-action').click(function() {
+            splitLinesIntoBRsIn($('.js-preview-area'), $('.js-editor-area').val())
+
+            $('.js-preview-action, .js-editor-area').hide();
+            $('.js-edit-or-send-actions, .js-preview-area').show();
+    });
+
+        $('.js-edit-message').click(function() {
+            $('.js-preview-action, .js-editor-area').show();
+            $('.js-edit-or-send-actions, .js-preview-area').hide();
+        });
+     });
+</script>

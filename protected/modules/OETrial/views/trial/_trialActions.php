@@ -10,20 +10,22 @@
             <?=\CHtml::link('Go Back to Trials', Yii::app()->createUrl('OETrial/trial')) ?>
         </li>
         <?php if ($trial->is_open && $permission->can_edit) : ?>
-        <li>
-            <?php echo CHtml::link(
-                'Add Participants',
-                $this->createUrl('/OECaseSearch/caseSearch', array('trial_id' => $trial->id))
-            ); ?>
+            <?php if (\Yii::app()->user->checkAccess('TaskCaseSearch')) : ?>
+          <li>
+                <?php echo CHtml::link(
+                    'Add Participants',
+                    $this->createUrl('/OECaseSearch/caseSearch', array('trial_id' => $trial->id))
+                ); ?>
         </li>
+            <?php endif; ?>
             <?php if (CsvController::uploadAccess()) : ?>
         <li>
           <a href = <?=  Yii::app()->createURL(
               'csv/upload',
-              array('context' => 'trialPatients', 'backuri' => '/OETrial/trial/view/'.$trial->id)
-          ) ?> >Upload trial patients</a>
+              array('context' => 'trialPatients', 'backuri' => '/OETrial/trial/view/' . $trial->id)
+                    ) ?> >Upload trial patients</a>
         </li>
-        <?php endif; ?>
+            <?php endif; ?>
         <?php endif; ?>
     <li>
         <?php echo CHtml::link(

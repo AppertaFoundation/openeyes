@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -14,6 +15,7 @@
  */
 
 namespace OEModule\OphCiExamination\tests\traits;
+
 
 use OEModule\OphCiExamination\models\interfaces\SidedData;
 use OEModule\OphCiExamination\models\Synoptophore;
@@ -46,9 +48,9 @@ trait InteractsWithSynoptophore
         return array_merge(
             [
                 'gaze_type' => $this->getRandomGazeType(),
-                'horizontal_angle' => $this->faker->numberBetween(0, 40),
+                'horizontal_angle' => $this->faker->numberBetween(-40, 40),
                 'vertical_power' => $this->faker->numberBetween(0, 50),
-                'torsion' => $this->faker->numberBetween(-60, 60),
+                'torsion' => $this->faker->numberBetween(0, 60),
                 'direction_id' => $this->getRandomLookup(Synoptophore_Direction::class)->getPrimaryKey(),
                 'deviation_id' => $this->getRandomLookup(Synoptophore_Deviation::class)->getPrimaryKey(),
                 'eye_id' => $this->faker->randomElement([SidedData::RIGHT, SidedData::LEFT])

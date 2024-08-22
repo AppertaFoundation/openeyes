@@ -10,7 +10,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnitValue;
  * @covers PatientVisionParameter
  * @covers CaseSearchParameter
  */
-class PatientVisionParameterTest extends CDbTestCase
+class PatientVisionParameterTest extends OEDbTestCase
 {
     public PatientVisionParameter $parameter;
     protected $fixtures = array(
@@ -20,20 +20,20 @@ class PatientVisionParameterTest extends CDbTestCase
         'va_unit_values' => OphCiExamination_VisualAcuityUnitValue::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->parameter = new PatientVisionParameter();
         $this->parameter->id = 0;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->parameter);

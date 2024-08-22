@@ -1,4 +1,15 @@
 <?php
+
+namespace OEModule\OphDrPGDPSD\models;
+
+use Institution;
+use MedicationLaterality;
+use OE\factories\models\traits\HasFactory;
+use PathwayStep;
+use Patient;
+use User;
+use WorklistPatient;
+
 /**
  * This is the model class for table "ophdrpgdpsd_assignment".
  *
@@ -15,9 +26,12 @@
  * @property User $lastModifiedUser
  * @property OphDrPGDPSD_PGDPSD $pgdpsd
  * @property Patient $patient
+ * @property WorklistPatient $worklist_patient
  */
 class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public const INACTIVE = 0;
     public const STATUS_TODO = 1;
     public const STATUS_PART_DONE = 2;
@@ -47,29 +61,16 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         return array(
             array('status, assigned_meds', 'required'),
             array('_confirmed', 'validateConfirmation'),
-            array('last_modified_user_id, created_user_id', 'length', 'max'=>10),
+            array('last_modified_user_id, created_user_id', 'length', 'max' => 10),
             // The following rule is used by search().
             array('patient_id, pgdpsd_id, status, visit_id, assigned_meds, comment', 'safe'),
-            array('institution_id', 'default', 'value' => Yii::app()->session->get('selected_institution_id'), 'on' => 'insert'),
+            array('institution_id', 'default', 'value' => \Yii::app()->session->get('selected_institution_id'), 'on' => 'insert'),
+            array('active', 'boolean', 'allowEmpty' => false),
             array('active', 'default', 'value' => 1, 'on' => 'insert'),
-            array('id, patient_id, visit_id, pgdpsd_id, status, comment_id', 'safe', 'on'=>'search'),
+            array('id, patient_id, visit_id, pgdpsd_id, status, comment_id', 'safe', 'on' => 'search'),
         );
     }
 
-    public function defaultScope()
-    {
-        $selected_institution_id = Yii::app()->session->get('selected_institution_id');
-        if (!$selected_institution_id) {
-            return array();
-        }
-        $table_alias = $this->getTableAlias(false, false);
-        return array(
-            'condition' =>"$table_alias.institution_id = :institution_id",
-            'params' => array(
-                ':institution_id' => $selected_institution_id,
-            )
-        );
-    }
     /**
      * @return array relational rules.
      */
@@ -78,20 +79,21 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'pgdpsd' => array(self::BELONGS_TO, 'OphDrPGDPSD_PGDPSD', 'pgdpsd_id'),
-            'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
-            'worklist_patient' => array(self::BELONGS_TO, 'WorklistPatient', 'visit_id'),
-            'assigned_meds' => array(self::HAS_MANY, 'OphDrPGDPSD_AssignmentMeds', 'assignment_id'),
+            'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
+            'pgdpsd' => array(self::BELONGS_TO, OphDrPGDPSD_PGDPSD::class, 'pgdpsd_id'),
+            'patient' => array(self::BELONGS_TO, Patient::class, 'patient_id'),
+            'worklist_patient' => array(self::BELONGS_TO, WorklistPatient::class, 'visit_id'),
+            'assigned_meds' => array(self::HAS_MANY, OphDrPGDPSD_AssignmentMeds::class, 'assignment_id'),
+            'assignments' => array(self::HAS_MANY, Element_DrugAdministration_Assignments::class, 'assignment_id'),
             'elements' => array(
                 self::MANY_MANY,
-                'Element_DrugAdministration',
+                Element_DrugAdministration::class,
                 'et_drug_administration_assignments(assignment_id, element_id)',
                 'order' => 'elements.created_date DESC'
             ),
-            'comment' => array(self::BELONGS_TO, 'OphDrPGDPSD_Assignment_Comment', 'comment_id'),
-            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
+            'comment' => array(self::BELONGS_TO, OphDrPGDPSD_Assignment_Comment::class, 'comment_id'),
+            'institution' => array(self::BELONGS_TO, Institution::class, 'institution_id'),
         );
     }
 
@@ -123,7 +125,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('patient_id', $this->patient_id);
@@ -132,8 +134,8 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $criteria->compare('status', $this->status);
         $criteria->compare('comment_id', $this->comment_id);
 
-        return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+        return new \CActiveDataProvider($this, array(
+            'criteria' => $criteria,
         ));
     }
 
@@ -148,11 +150,21 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             ),
             'with' => array(
                 'worklist_patient' => array(
-                    'condition' => "DATE_FORMAT(worklist_patient.`when`, '%Y-%m-%d') >= :event_date",
-                    'params' => array(
-                        ':event_date' => $event_date
-                    ),
-
+                    'with' => array(
+                        'worklist' => array(
+                            'condition' => "DATE_FORMAT(worklist.start, '%Y-%m-%d') >= :event_date",
+                            'params' => array(
+                                ':event_date' => $event_date
+                            ),
+                        )
+                    )
+                ),
+                'elements' => array(
+                    'with' => array(
+                        'event' => array(
+                            'condition' => "delete_pending != 1 or deleted != 1 or (deleted is null and elements.id is null)",
+                        )
+                    )
                 )
             ),
             'order' => 'worklist_patient.`when`'
@@ -190,7 +202,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             if ($id && $orig_meds[$id]) {
                 $entry = $orig_meds[$id];
             } else {
-                $entry = new \OphDrPGDPSD_AssignmentMeds();
+                $entry = new OphDrPGDPSD_AssignmentMeds();
             }
             unset($entry_data['id']);
             $entry->attributes = $entry_data;
@@ -228,50 +240,69 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
 
     public function saveComment($comment)
     {
-        if (!$this->comment) {
-            $comment_obj = new \OphDrPGDPSD_Assignment_Comment();
+        if (is_null($comment) || $comment == '') {
+            $this->comment_id = null;
         } else {
-            $comment_obj = $this->comment;
+            if ($this->comment && ($this->comment instanceof OphDrPGDPSD_Assignment_Comment)) {
+                $comment_obj = $this->comment;
+            } else {
+                $comment_obj = new OphDrPGDPSD_Assignment_Comment();
+            }
+
+            $comment_obj->comment = $comment;
+            $comment_obj->commented_by = \Yii::app()->user->id;
+            if ($comment_obj->isModelDirty()) {
+                $comment_obj->save();
+            }
+            $this->comment_id = $comment_obj->id;
         }
-        $comment_obj->comment = $comment;
-        $comment_obj->commented_by = \Yii::app()->user->id;
-        if ($comment_obj->isModelDirty()) {
-            $comment_obj->save();
-        }
-        $this->comment_id = $comment_obj->id;
     }
 
-    public function getStatusDetails($get_dict = false)
+    /**
+     * @param bool|false $get_dict
+     * @param PathwayStep|null $step
+     * @return false|string|string[]
+     */
+    public function getStatusDetails(bool $get_dict = false, PathwayStep $step = null)
     {
-        $todo_next = null;
-        $arrival_status_name = \SettingMetadata::model()->getSetting('pas_appt_patient_arrival_status_name') ? : 'status';
-        $arrival_status_text = \SettingMetadata::model()->getSetting('pas_appt_patient_arrival_status_text') ? : 'arrived';
-        if ($this->worklist_patient) {
-            $wl_patient_status = $this->worklist_patient->getWorklistPatientAttribute($arrival_status_name);
-            if ($wl_patient_status) {
-                $attr_value = strtolower($wl_patient_status->attribute_value);
-                $arrival_status_text = strtolower($arrival_status_text);
-                if ($attr_value === $arrival_status_text) {
-                    $todo_next = 'todo-next';
-                }
-            }
+        $todo_next = $this->worklist_patient && $this->worklist_patient->pathway && $this->worklist_patient->pathway->start_time ? 'todo-next' : 'todo';
+        $status = null;
+        if ($step) {
+            $status_dict = array(
+                PathwayStep::STEP_REQUESTED => array(
+                    'text' => "Waiting to be done",
+                    'css' => $todo_next
+                ),
+                PathwayStep::STEP_STARTED => array(
+                    'text' => "Currently active",
+                    'css' => 'active'
+                ),
+                PathwayStep::STEP_COMPLETED => array(
+                    'text' => "Completed",
+                    'css' => 'done'
+                ),
+            );
+            $status = $step->status;
+        } else {
+            $status_dict = array(
+                self::STATUS_TODO => array(
+                    'text' => "Waiting to be done",
+                    'css' => $todo_next
+                ),
+                self::STATUS_PART_DONE => array(
+                    'text' => "Currently active",
+                    'css' => 'active'
+                ),
+                self::STATUS_COMPLETE => array(
+                    'text' => "Completed",
+                    'css' => 'done'
+                ),
+            );
+            $status = (bool)$this->active ? $this->status : $this::STATUS_COMPLETE;
         }
-        $status_dict = array(
-            $this::STATUS_TODO => array(
-                'text' => "Waiting to be done",
-                'css' => $todo_next ? : 'todo'
-            ),
-            $this::STATUS_PART_DONE => array(
-                'text' => "Currently active",
-                'css' => 'active'
-            ),
-            $this::STATUS_COMPLETE => array(
-                'text' => "Completed",
-                'css' => 'done'
-            ),
-        );
-        $status = (bool)$this->active ? $this->status : $this::STATUS_COMPLETE;
-        return $get_dict ? json_encode(array_values($status_dict)) : $status_dict[$status];
+        return $get_dict
+            ? json_encode(array_values($status_dict))
+            : $status_dict[$status];
     }
 
     public function getAssignedMeds()
@@ -294,10 +325,15 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             if ($med->route->isEyeRoute()) {
                 $lat_str = intval($med->laterality) === MedicationLaterality::LEFT ? 'Left' : 'Right';
                 $administerd[$loop_key] = $administerd[$loop_key] + intval($med->administered);
+                $assigned_meds['eye'][$loop_key][$lat_str] = $med;
                 $assigned_meds['eye'][$loop_key]['term'] = $term;
                 $assigned_meds['eye'][$loop_key]['dose_unit'] = $dose_unit;
-                $assigned_meds['eye'][$loop_key]['administration_status'] = $administerd[$loop_key] === $expected_administered_num ? 'tick' : 'waiting';
-                $assigned_meds['eye'][$loop_key][$lat_str] = $med;
+                if (array_key_exists('administration_status', $assigned_meds['eye'][$loop_key]) && $assigned_meds['eye'][$loop_key]['administration_status'] === 'waiting') {
+                    // This handles the condition when "waiting" symbol gets over-written by "tick" when only the second eye route has been administered
+                    // So if the first eye route (Left) has been waiting, no need to check for the other one.
+                    continue;
+                }
+                $assigned_meds['eye'][$loop_key]['administration_status'] = $administerd[$loop_key] === $expected_administered_num || $med->administered ? 'tick' : 'waiting';
             } else {
                 $assigned_meds['other'][$loop_key]['term'] = $term;
                 $assigned_meds['other'][$loop_key]['dose_unit'] = $dose_unit;
@@ -315,6 +351,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $administered_count = 0;
         $status = $this->status;
         foreach ($this->assigned_meds as $med) {
+            $med->refresh();
             $event_entry = $med->event_entry;
             if ($event_entry && (!$event_entry->event || ($event_entry->event && $event_entry->event->deleted) || !$event_entry->element)) {
                 // assignment med has corresponding event medication use but event is deleted
@@ -335,7 +372,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         } else {
             $status = $this::STATUS_TODO;
         }
-        $this->status = strval($status);
+        $this->status = (string)$status;
         if ($this->isModelDirty()) {
             $this->save();
         }
@@ -345,7 +382,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     {
         $authed_users = array();
         if ($this->pgdpsd) {
-            foreach ($this->pgdpsd->teams as $team) {
+            foreach ($this->pgdpsd->teams(['scopes' => ['active']]) as $team) {
                 $authed_users = array_merge($team->getAllUsers(), $authed_users);
             }
             $authed_users = array_merge($this->pgdpsd->users, $authed_users);
@@ -378,9 +415,10 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             }
             return $ret;
         }
-        $assignment_date = $this->worklist_patient->when ? : $this->created_date;
-        $date = date("Y-m-d", strtotime($assignment_date));
-        $time = date("H:i", strtotime($assignment_date));
+
+        list($raw_datetime, $appointment_time) = $this->getAppointmentDateAndTime();
+
+        $date = date("Y-m-d", strtotime($raw_datetime));
         $valid_date = \Helper::convertDate2NHS($date, ' ');
         $wl_name = $this->worklist_patient->worklist->name;
         $warning_css = '';
@@ -398,15 +436,15 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             $completed_date = \Helper::convertDate2NHS($completed_date, ' ');
             return array(
                 'date' => $date,
-                'time' => $time,
-                'appt_details_dom' => "<i class='oe-i small start pad'></i><span>$date<span class='fade'><small> at </small>$time </span>$wl_name</span>",
+                'time' => $appointment_time,
+                'appt_details_dom' => "<i class='oe-i small start pad'></i><span>$date<span class='fade'><small> at </small>$appointment_time </span>$wl_name</span>",
                 'valid_date_dom' => "<span><small class='fade'>Completed: </small>$completed_date</span>"
             );
         }
         return array(
             'date' => $date,
-            'time' => $time,
-            'appt_details_dom' => "<i class='oe-i small start pad'></i><span>$date<span class='fade'><small> at </small>$time </span>$wl_name</span>",
+            'time' => $appointment_time,
+            'appt_details_dom' => "<i class='oe-i small start pad'></i><span>$date<span class='fade'><small> at </small>$appointment_time </span>$wl_name</span>",
             'valid_date_dom' => "<span class='highlighter $warning_css'>Assigned for: $valid_date</span>"
         );
     }
@@ -418,7 +456,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
             $type = 'Custom';
         } else {
             $name = $this->pgdpsd->name;
-            $type = 'Preset';
+            $type = "Preset - {$this->pgdpsd->type}";
         }
         return array(
             'name' => $name,
@@ -429,7 +467,7 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     protected function afterFind()
     {
         parent::afterFind();
-        if($this->active){
+        if ($this->active) {
             $this->updateStatus();
         }
     }
@@ -464,29 +502,59 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
         $this->_confirmed = $val;
     }
 
+    /**
+     * @return array - [raw_datetime, appointment_time]
+     */
+    protected function getAppointmentDateAndTime()
+    {
+        return [
+            $this->worklist_patient->when ? : $this->worklist_patient->worklist->start,
+            $this->worklist_patient->when ? date("H:i", strtotime($this->worklist_patient->when)) : 'Anytime'
+        ];
+    }
+
     public function getIsRelevant()
     {
         $current_user = \User::model()->findByPk(\Yii::app()->user->id);
         $is_prescriber = \Yii::app()->user->checkAccess('Prescribe');
         $is_med_admin = \Yii::app()->user->checkAccess('Med Administer');
-        if ($this->worklist_patient) {
-            $appt_date = date('Y-m-d', strtotime($this->worklist_patient->when));
-            $today = date('Y-m-d');
-            if ($appt_date > $today || (!$this->checkAuth($current_user) && !$is_prescriber && !$is_med_admin)) {
-                $this->_is_relevant = false;
-            }
+        // custom order is only for med admin or prescriber
+        if (!$this->pgdpsd) {
+            return $is_prescriber || $is_med_admin;
+        }
+
+        switch (strtolower($this->pgdpsd->type)) {
+            case 'psd':
+                $is_future = false;
+                // if the psd is for an appointment, check the date
+                if ($this->worklist_patient) {
+                    $appt_date = date('Y-m-d', strtotime($this->worklist_patient->when));
+                    $today = date('Y-m-d');
+                    if ($appt_date > $today) {
+                        $is_future = true;
+                    }
+                    $this->_is_relevant = !$is_future && ($this->checkAuth($current_user) || $is_prescriber || $is_med_admin);
+                } else {
+                    $this->_is_relevant = $is_prescriber || $is_med_admin;
+                }
+
+                break;
+            case 'pgd':
+                $this->_is_relevant = $is_prescriber || $this->checkAuth($current_user);
+                break;
         }
         return $this->_is_relevant;
     }
 
     /**
-     * @param bool $assignment
-     * @return array - $deleted_style, $deleted_tag
-     * returns the style for deleted psd order block, and a deleted tag
+     * Get the deleted info box html element for deleted assignment
+     * @return null|string deleted info box html element
      */
-    public function getDeletedUI(){
+    public function getDeletedUI()
+    {
         $deleted_tag = null;
-        if(!(bool)$this->active){
+
+        if (!(bool)$this->active) {
             $assigned_meds_count = count($this->assigned_meds);
             $administerd_meds_count = $this->getAdministeredMedsCount();
             $tag_txt = $administerd_meds_count > 0 ? ($assigned_meds_count === $administerd_meds_count ? "Cancelled" : "Cancelled, partially administered") : "Cancelled";
@@ -498,10 +566,23 @@ class OphDrPGDPSD_Assignment extends \BaseActiveRecordVersioned
     /**
      * @return int - number of administered medications
      */
-    public function getAdministeredMedsCount() {
-        $administered_meds = array_filter($this->assigned_meds, function($med) {
+    public function getAdministeredMedsCount()
+    {
+        $administered_meds = array_filter($this->assigned_meds, function ($med) {
             return $med->administered;
         });
         return count($administered_meds);
+    }
+
+    public function anyAssociatedEventDeleted()
+    {
+        return array_reduce(
+            $this->elements,
+            function ($carry, $element) {
+                return $carry
+                    || $element->event->deleted
+                    || $element->event->delete_pending;
+            }
+        );
     }
 }

@@ -1,9 +1,7 @@
 <?php
+
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) Copyright Apperta Foundation 2022
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,9 +10,11 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2022, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OE\factories\models\traits\HasFactory;
 
 /**
  * The followings are the available columns in table '':.
@@ -34,6 +34,8 @@
 class LetterMacro extends BaseActiveRecordVersioned
 {
     use MappedReferenceData;
+    use HasFactory;
+
     protected function getSupportedLevels(): int
     {
         return ReferenceData::LEVEL_INSTITUTION | ReferenceData::LEVEL_SITE | ReferenceData::LEVEL_SUBSPECIALTY | ReferenceData::LEVEL_FIRM;
@@ -50,6 +52,7 @@ class LetterMacro extends BaseActiveRecordVersioned
     // turning on the options will automatically handle the relationships
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -153,15 +156,19 @@ class LetterMacro extends BaseActiveRecordVersioned
         $this->addError($attr, 'Institution, Site, Subspecialty, Firm - At least one entry is needed');
     }
 
-    // assign values to the relationships
-    public function beforeSave()
+    public function afterSave()
     {
-        $this->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
-        $this->deleteMappings(ReferenceData::LEVEL_SITE);
-        $this->deleteMappings(ReferenceData::LEVEL_SUBSPECIALTY);
-        $this->deleteMappings(ReferenceData::LEVEL_FIRM);
+        // Create the mappings in afterSave to prevent an issue the letter macro
+        // id missing in beforeSave when the letter macro is being first created.
+        if ($this->levels) {
+            $this->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
+            $this->deleteMappings(ReferenceData::LEVEL_SITE);
+            $this->deleteMappings(ReferenceData::LEVEL_SUBSPECIALTY);
+            $this->deleteMappings(ReferenceData::LEVEL_FIRM);
+        }
         foreach ($this->levels as $level => $vals) {
-            $instances = array();
+            $vals = is_array($vals) ? $vals : [];
+
             switch ($level) {
                 case 'institutions':
                     $this->createMappings(ReferenceData::LEVEL_INSTITUTION, $vals);
@@ -177,11 +184,7 @@ class LetterMacro extends BaseActiveRecordVersioned
                     break;
             }
         }
-        return parent::beforeSave();
-    }
 
-    public function afterSave()
-    {
         if (isset(
             $_POST['OEModule_OphCoCorrespondence_models_MacroInitAssociatedContent'],
             $_POST['OEModule_OphCoCorrespondence_models_OphcorrespondenceInitMethod']

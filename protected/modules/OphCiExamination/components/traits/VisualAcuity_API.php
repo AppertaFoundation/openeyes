@@ -22,7 +22,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuityUnit;
 
 trait VisualAcuity_API
 {
-    use APICache;
+    use \APICache;
 
     /**
      * Returns the best visual acuity for the specified side for the patient.

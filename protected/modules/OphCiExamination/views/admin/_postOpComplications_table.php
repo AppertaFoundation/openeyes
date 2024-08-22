@@ -26,7 +26,7 @@
     <?php
     foreach ($items as $item) { ?>
         <tr class="draggablelist-item" data-item-id="<?= $item->id ?>">
-            <td><?= $item->name ?></td>
+            <td data-test="assigned-item-name"><?= $item->name ?></td>
         </tr>
     <?php } ?>
 

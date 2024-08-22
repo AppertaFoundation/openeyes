@@ -416,7 +416,6 @@ class PcrRisk
         if ($existing) {
             $pcrRiskValues = $existing;
         }
-
         $pcrRiskValues->glaucoma = (isset($data['glaucoma']) && $data['glaucoma'] !== 'NK') ? $data['glaucoma'] : null;
         $pcrRiskValues->pxf = (isset($data['pxf_phako']) && $data['pxf_phako'] !== 'NK') ? $data['pxf_phako'] : null;
         $pcrRiskValues->diabetic = (isset($data['diabetic']) && $data['diabetic'] !== 'NK') ? $data['diabetic'] : null;
@@ -428,9 +427,8 @@ class PcrRisk
         $pcrRiskValues->doctor_grade_id = (isset($data['doctor_grade_id']) && $data['doctor_grade_id'] !== '') ? $data['doctor_grade_id'] : null;
         $pcrRiskValues->can_lie_flat = (isset($data['abletolieflat']) && $data['abletolieflat'] !== 'NK') ? $data['abletolieflat'] : null;
 
-        if (!$pcrRiskValues->save()) {
-            throw new CException('PCR Risk failed to save');
-        }
+        $pcrRiskValues->save();
+        return $pcrRiskValues;
     }
 
     /**

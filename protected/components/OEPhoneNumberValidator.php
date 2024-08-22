@@ -22,31 +22,30 @@ class OEPhoneNumberValidator extends CValidator
 
     public function validateAttribute($object, $attribute)
     {
-        if (isset(Yii::app()->params['validate_PASAPI_phone_number']) &&
-            !Yii::app()->params['validate_PASAPI_phone_number'] &&
-            isset($object->source) && $object->source == 'PASAPI') {
+        if (isset($object->source) && $object->source == 'PASAPI' && SettingMetadata::model()->getSetting('validate_PASAPI_phone_number') == 'off') {
             return;
         }
-        $object->$attribute=str_replace( array(' ','-'),'',$object->$attribute);
+
+        $object->$attribute=str_replace(array(' ','-'), '', $object->$attribute);
 
         $value = $object->$attribute;
 
-        if (preg_match('/\(/',$value) && preg_match('/\)/',$value) && (strpos($value,'(') < strpos($value,')'))){
-            $value = preg_replace('/\(/','',$value,1);
-            $value = preg_replace('/\)/','',$value,1);
+        if (preg_match('/\(/', $value) && preg_match('/\)/', $value) && (strpos($value, '(') < strpos($value, ')'))) {
+            $value = preg_replace('/\(/', '', $value, 1);
+            $value = preg_replace('/\)/', '', $value, 1);
         }
 
-        if($this->allowEmpty && $this->isEmpty($value))
+        if ($this->allowEmpty && $this->isEmpty($value)) {
             return;
-
-        if (!$this->isEmpty($value) && $value[0] == '+'){
-            $value = substr($value,0);
         }
 
-        if(!is_numeric($value))
-        {
-            $message=$this->message!==null?$this->message:Yii::t('yii','{attribute} must be a valid telephone number.');
-            $this->addError($object,$attribute,$message);
+        if (!$this->isEmpty($value) && $value[0] == '+') {
+            $value = substr($value, 0);
+        }
+
+        if (!is_numeric($value)) {
+            $message=$this->message!==null ? $this->message : Yii::t('yii', '{attribute} must be a valid telephone number.');
+            $this->addError($object, $attribute, $message);
             return;
         }
     }

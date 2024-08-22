@@ -16,6 +16,14 @@
 * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
 */
 
+use OE\factories\DataGenerator;
+use OE\listeners\ClearSessionFilterDataOnSessionSiteChange;
+use OEModule\CypressHelper\CypressHelperModule;
+use OEModule\OphCiExamination\components\PathstepObserver;
+use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
+use OE\listeners\RemoveDraftEventAfterSoftDelete;
+use OEModule\OESysEvent\events\SessionSiteChangedSystemEvent;
+
 // If the old db.conf file (pre docker) exists, use it. Else read environment variable, else read docker secrets
 // Note, docker secrets are the recommended approach for docker environments
 
@@ -53,8 +61,9 @@ $db_test = array(
     $ssoRedirectURL = getenv('SSO_REDIRECT_URL') ?: 'http://localhost';
     $ssoResponseType = array(getenv('SSO_RESPONSE_TYPE')) ?: array('code');
     $ssoImplicitFLow = strtolower(getenv('SSO_IMPLICIT_FLOW')) === 'true';
-    $ssoUserAttributes = getenv('SSO_USER_ATTRIBUTES') ?: '';
-    $ssoCustomClaims = getenv('SSO_CUSTOM_CLAIMS') ?: '';
+
+    $ssoUserFields = getenv('SSO_USER_FIELDS') ?: '';
+    $ssoOIDCFields = getenv('SSO_OIDC_FIELDS') ?: '';
 
     $ssoMappingsCheck = strtolower(getenv('STRICT_SSO_ROLES_CHECK')) === 'true';
     $ssoLoginURL = getenv('SSO_LOGIN_URL') ?: null;
@@ -76,19 +85,23 @@ $config = array(
         'application.vendors.*',
         'application.modules.*',
         'application.models.*',
+        'application.models.stepactions.*',
         'application.models.traits.*',
         'application.models.elements.*',
         'application.components.*',
         'application.components.reports.*',
         'application.components.actions.*',
+        'application.components.traits.*',
         'application.components.worklist.*',
         'application.components.patientSearch.*',
+        'application.components.traits.*',
         'application.extensions.tcpdf.*',
         'application.modules.*',
         'application.commands.*',
         'application.commands.shell.*',
         'application.behaviors.*',
         'application.widgets.*',
+        'application.widgets.interfaces.*',
         'application.controllers.*',
         'application.helpers.*',
         'application.gii.*',
@@ -123,17 +136,29 @@ $config = array(
             'itemTable' => 'authitem',
             'itemChildTable' => 'authitemchild',
         ),
-        'cache' => array(
-            'class' => 'system.caching.CFileCache',
-            'directoryLevel' => 1,
-        ),
-        'cacheBuster' => array(
-            'class' => 'CacheBuster',
-            'time' => '20220826173800',
-        ),
         'clientScript' => array(
             'class' => 'ClientScript',
             'packages' => array(
+                'mustache' => [
+                    'js' => ['mustache.min.js'],
+                    'basePath' => 'webroot.node_modules.mustache'
+                ],
+                'sortable' => [
+                    'js' => ['Sortable.min.js'],
+                    'basePath' => 'webroot.node_modules.sortablejs'
+                ],
+                'pickmeup' => [
+                    'js' => ['pickmeup.js'],
+                    'basePath' => 'webroot.node_modules.pickmeup.js'
+                ],
+                'tinymce' => [
+                    'js' => ['tinymce.js'],
+                    'basePath' => 'webroot.node_modules.tinymce'
+                ],
+                'lodash' => [
+                    'js' => ['lodash.min.js'],
+                    'basePath' => 'webroot.node_modules.lodash'
+                ],
                 'jquery' => array(
                     'js' => array('jquery/jquery.min.js'),
                     'basePath' => 'application.assets.components',
@@ -144,23 +169,9 @@ $config = array(
                     'basePath' => 'application.assets.components',
                     'depends' => array('jquery'),
                 ),
-                'mustache' => array(
-                    'js' => array('mustache/mustache.js'),
-                    'basePath' => 'application.assets.components',
-                ),
                 'eventemitter2' => array(
                     'js' => array('eventemitter2/lib/eventemitter2.js'),
                     'basePath' => 'application.assets.components',
-                ),
-                'flot' => array(
-                    'js' => array(
-                        'components/flot/jquery.flot.js',
-                        'components/flot/jquery.flot.time.js',
-                        'components/flot/jquery.flot.navigate.js',
-                        'js/jquery.flot.dashes.js',
-                    ),
-                    'basePath' => 'application.assets',
-                    'depends' => array('jquery'),
                 ),
                 'rrule' => array(
                     'js' => array(
@@ -181,6 +192,9 @@ $config = array(
                 ),
             ),
         ),
+        'dataGenerator' => [
+            'class' => DataGenerator::class
+        ],
         'db' => array(
             'class' => 'OEDbConnection',
             'emulatePrepare' => true,
@@ -189,6 +203,12 @@ $config = array(
             'password' => $db['password'],
             'charset' => 'utf8',
             'schemaCachingDuration' => 300,
+        ),
+        'eventBuilder' => array(
+            'class' => 'EventBuilder',
+        ),
+        'eventDefaults' => array(
+            'class' => 'EventDefaults',
         ),
         'testdb' => array(
             'class' => 'OEDbConnection',
@@ -199,19 +219,54 @@ $config = array(
             'charset' => 'utf8',
             'schemaCachingDuration' => 300,
         ),
-        'mailer' => array(
-            // Setting the mailer mode to null will suppress email
-            //'mode' => null
-            // Mail can be diverted by setting the divert array
-            //'divert' => array('foo@example.org', 'bar@example.org')
-        ),
         'errorHandler' => array(
             // use 'site/error' action to display errors
             'errorAction' => YII_DEBUG ? null : 'site/error',
         ),
         'event' => array(
             'class' => 'OEEventManager',
-            'observers' => array(),
+            'observers' => array(
+                'event_created' => [
+                    'complete_step' => [
+                        'class' => 'PathstepObserver',
+                        'method' => 'completeStep'
+                    ],
+                    'remove_draft' => [
+                        'class' => 'EventDraftObserver',
+                        'method' => 'removeDraftForCreated'
+                    ]
+                ],
+                'event_updated' => [
+                    'complete_step' => [
+                        'class' => 'PathstepObserver',
+                        'method' => 'completeStep'
+                    ],
+                    'remove_draft' => [
+                        'class' => 'EventDraftObserver',
+                        'method' => 'removeDraftForUpdated'
+                    ]
+                ],
+                'psd_created' => [
+                    'new_step' => [
+                        'class' => 'PathstepObserver',
+                        'method' => 'createExternalStep'
+                    ]
+                ],
+                'step_started' => [
+                    'new_event' => [
+                        'class' => 'EventStepObserver',
+                        'method' => 'createEvent'
+                    ]
+                ],
+                [
+                    'system_event' => ClinicalEventSoftDeletedSystemEvent::class,
+                    'listener' => RemoveDraftEventAfterSoftDelete::class
+                ],
+                [
+                    'system_event' => SessionSiteChangedSystemEvent::class,
+                    'listener' => ClearSessionFilterDataOnSessionSiteChange::class
+                ]
+            ),
         ),
         'fhirClient' => array('class' => 'FhirClient'),
         'fhirMarshal' => array('class' => 'FhirMarshal'),
@@ -222,7 +277,7 @@ $config = array(
                 // Normal logging
                 'application' => array(
                     'class' => 'CFileLogRoute',
-                    'levels' => 'info, warning, error',
+                    'levels' => !empty(getenv('OE_APP_LOG_LEVELS')) ? trim(getenv('OE_APP_LOG_LEVELS')) : 'info, warning, error',
                     'logFile' => 'application.log',
                     'maxLogFiles' => 30,
                 ),
@@ -247,7 +302,12 @@ $config = array(
         ),
         'mailer' => array(
             'class' => 'Mailer',
-            'mode' => 'smtp',
+            // Setting the mailer mode to null will suppress email
+            'mode' => getenv('MAILER_MODE') ?? 'smtp', // ('sendmail', 'smtp', 'mail')
+            'host' => getenv('MAILER_SMTP_HOST') ?? null,
+            'security' => getenv('MAILER_SMTP_SECURITY') ?? null, // ('TLS')
+            'username' => getenv('MAILER_SMTP_USERNAME') ?? null,
+            'password' => trim(@file_get_contents("/run/secrets/MAILER_SMTP_PASSWORD")) ?: (trim(getenv('MAILER_SMTP_PASSWORD')) ?: ''),
         ),
         'moduleAPI' => array(
             'class' => 'ModuleAPI',
@@ -339,6 +399,15 @@ $config = array(
         'widgetFactory' => array(
             'class' => 'WidgetFactory',
         ),
+        'citoIntegration' => array(
+            "class" => "CitoIntegration"
+        ),
+        'hieIntegration' => array(
+            "class" => "HieIntegration"
+        ),
+        'contentForDeliveryRetriever' => [
+            'class' => DocmanRetriever::class
+        ]
     ),
 
     'params' => array(
@@ -347,6 +416,10 @@ $config = array(
         'ab_testing' => false,
         'auth_source' => $authSource,
         // This is used in contact page
+        /***
+         * Commented out LDAP settings as these should now be handled by Admin->Core->LDAP configurations
+         * Once we're sure we've removed all references then this section can be deleted
+         ***
         'ldap_server' => getenv('OE_LDAP_SERVER') ?: '',
         'ldap_port' =>  getenv('OE_LDAP_PORT') ?: '389',
         'ldap_admin_dn' => getenv('OE_LDAP_ADMIN_DN') ?: 'CN=openeyes,CN=Users,dc=example,dc=com',
@@ -362,7 +435,19 @@ $config = array(
         'ldap_info_retry_delay' => 1,
         'ldap_update_name' => strtolower(getenv("OE_LDAP_UPDATE_NAME")) == "true" ? true : false,
         'ldap_update_email' => strtolower(getenv("OE_LDAP_UPDATE_EMAIL")) == "false" ? false : true,
+        */
+        // This is used in HIEIntegration component
+        'hie_remote_url' => trim(@file_get_contents("/run/secrets/HIE_REMOTE_URL")) ?: (trim(getenv('HIE_REMOTE_URL')) ?: null),
+        'hie_usr_org' => trim(getenv('HIE_USR_ORG')) ?: null,
+        'hie_usr_fac' => trim(getenv('HIE_USR_FAC')) ?: null,
+        'hie_external' => trim(getenv('HIE_EXTERNAL')) ?: null,
+        'hie_org_user' => trim(@file_get_contents("/run/secrets/HIE_ORG_USER")) ?: (trim(getenv('HIE_ORG_USER')) ?: null),
+        'hie_org_pass' => trim(@file_get_contents("/run/secrets/HIE_ORG_PASS")) ?: (trim(getenv('HIE_ORG_PASS')) ?: null),
+        'hie_aes_encryption_password' => trim(@file_get_contents("/run/secrets/HIE_AES_ENCRYPTION_PASSWORD")) ?: (trim(getenv('HIE_AES_ENCRYPTION_PASSWORD')) ?: null),
         'environment' => strtolower(getenv('OE_MODE')) == "live" ? 'live' : 'dev',
+        'csd_api_url' => getenv('OE_CSD_API_URL') ?: null,
+        'csd_api_key' => getenv('OE_CSD_API_KEY') ?: (rtrim(@file_get_contents("/run/secrets/OE_CSD_API_KEY")) ?: null),
+        'csd_api_timeout' => getenv('OE_CSD_API_TIMEOUT') ?: 3,
         //'watermark' => '',
         'google_analytics_account' => '',
         'local_users' => array(),
@@ -371,21 +456,19 @@ $config = array(
         'institution_code' => !empty(trim(getenv('OE_INSTITUTION_CODE'))) ? getenv('OE_INSTITUTION_CODE') : 'NEW',
         'institution_specialty' => 130,
         'erod_lead_time_weeks' => 3,
-        'correspondence_export_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL")) : '',
+        'correspondence_export_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_WSDL_URL")) : null,
         // In most instances the location URL is derived from the WSDL provided above,
         // but for local testing using SoapUI this will need to be manually specified.
         'correspondence_export_location_url' => !empty(trim(getenv("OE_CORRESPONDENCE_EXPORT_URL"))) ? trim(getenv("OE_CORRESPONDENCE_EXPORT_URL")) : null,
+        // which institutions the correspondence export is available for - if empty then all. Note that actual list is set towards the end of this file by OE_CORRESPONDENCE_EXPORT_INSTITUTIONS
+        'correspondence_export_institutions' => null,
         // specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
         'specialty_codes' => array(130),
         // specifies the order in which different specialties are laid out (use specialty codes)
         'specialty_sort' => array(130, 'SUP'),
         'hos_num_regex' => !empty(trim(getenv('OE_HOS_NUM_REGEX'))) ? getenv('OE_HOS_NUM_REGEX') : '/^([0-9]{1,9})$/',
         'pad_hos_num' => !empty(trim(getenv('OE_HOS_NUM_PAD'))) ? getenv('OE_HOS_NUM_PAD') : '%07s',
-        'nhs_num_label' => !empty(trim(getenv('OE_NHS_NUM_LABEL'))) ? getenv('OE_NHS_NUM_LABEL') : null,
-        'hos_num_label' => !empty(trim(getenv('OE_HOS_NUM_LABEL'))) ? getenv('OE_HOS_NUM_LABEL') : null,
         // Parameter for short labels in patient panel, or anywhere real estate is at a premium
-        'nhs_num_label_short' => !empty(trim(getenv('OE_NHS_NUM_LABEL_SHORT'))) ? getenv('OE_NHS_NUM_LABEL_SHORT') : null,
-        'hos_num_label_short' => !empty(trim(getenv('OE_HOS_NUM_LABEL_SHORT'))) ? getenv('OE_HOS_NUM_LABEL_SHORT') : null,
         'profile_user_can_edit' => true,
         'profile_user_readonly_fields' => getenv('PROFILE_USER_READONLY_FIELDS') ?: '',
         'profile_user_show_menu' => true,
@@ -413,118 +496,112 @@ $config = array(
             'admin' => array(
                 'title' => 'Admin',
                 'uri' => 'admin',
-                'position' => 1,
                 'restricted' => array('OprnInstitutionAdmin'),
             ),
             'audit' => array(
                 'title' => 'Audit',
                 'uri' => 'audit',
-                'position' => 2,
                 'restricted' => array('TaskViewAudit'),
             ),
             'reports' => array(
                 'title' => 'Reports',
                 'uri' => 'report',
-                'position' => 3,
                 'restricted' => array('Report'),
             ),
             'analytics' => array(
                 'title' => 'Analytics',
                 'uri' => '/Analytics/analyticsReports',
-                'position' => 4,
             ),
             'nodexport' => array(
                 'title' => 'NOD Export',
                 'uri' => 'NodExport',
-                'position' => 5,
                 'restricted' => array('NOD Export'),
             ),
             'cxldataset' => array(
                 'title' => 'CXL Dataset',
                 'uri' => 'CxlDataset',
-                'position' => 6,
                 'restricted' => array('CXL Dataset'),
             ),
             'patientmergerequest' => array(
                 'title' => 'Patient Merge',
                 'uri' => 'patientMergeRequest/index',
-                'position' => 17,
                 'restricted' => array('OprnPatientMerge', 'OprnPatientMergeRequest'),
             ),
             'patient' => array(
                 'title' => 'Add Patient',
                 'uri' => 'patient/create',
-                'position' => 46,
                 'restricted' => array('TaskAddPatient'),
             ),
             'practices' => array(
                 'title' => 'Practices',
                 'uri' => 'practice/index',
-                'position' => 11,
                 'restricted' => array('TaskViewPractice', 'TaskCreatePractice'),
             ),
             'forum' => array(
                 'title' => 'Track patients in FORUM',
                 'alt_title' => 'Stop tracking in FORUM',
                 'uri' => "forum/toggleForumTracking",
-                'requires_setting' => array('setting_key' => 'enable_forum_integration', 'required_value' => 'on'),
-                'position' => 90,
+                'requires_setting' => ['setting_key' => 'enable_forum_integration', 'required_value' => 'on'],
             ),
+            'imagenet' => [
+                'title' => 'Track patients in IMAGEnet',
+                'alt_title' => 'Stop tracking in IMAGEnet',
+                'uri' => "imagenet/toggleImagenetTracking",
+                'requires_setting' => ['setting_key' => 'enable_imagenet_integration', 'required_value' => 'on'],
+            ],
             'disorder' => array(
                 'title' => 'Manage Disorders',
                 'uri' => "/disorder/index",
                 'requires_setting' => array('setting_key' => 'user_add_disorder', 'required_value' => 'on'),
-                'position' => 91,
             ),
             'gps' => array(
                 'title' => 'Practitioners',
                 'uri' => 'gp/index',
-                'position' => 10,
                 'restricted' => array('TaskViewGp', 'TaskCreateGp'),
-            ),
-            'analytics' => array(
-                'title' => 'Analytics',
-                'uri' => '/Analytics/analyticsReports',
-                'position' => 11,
             ),
             'patient_import' => array(
                 'title' => 'Import Patients',
                 'uri' => 'csv/upload?context=patients',
-                'position' => 47,
                 'requires_setting' => array('setting_key' => 'enable_patient_import', 'required_value' => 'on'),
                 'restricted' => array('admin'),
             ),
             'virus_scan' => array(
                 'title' => 'Scan Uploaded Files',
                 'uri' => '/VirusScan/index',
-                'position' => 90,
                 'requires_setting' => array('setting_key' => 'enable_virus_scanning', 'required_value' => 'on'),
             ),
-            /*
-                 //TODO: not yet implemented
-                 'worklist' => array(
-                  'title' => 'Worklists',
-                  'uri' => '/worklist',
-                  'position' => 3,
-                ),
-                */
-            'imagenet' => array(
-                'title' => 'ImageNET',
+            'safeguarding' => array(
+                'title' => 'Safeguarding',
+                'uri' => '/Safeguarding/index/',
+                'restricted' => array('Safeguarding'),
+            ),
+            'cito_integration' => array(
+                'title' => 'Open in CITO',
                 'uri' => '',
-                'requires_setting' => array('setting_key' => 'imagenet_url', 'required_value' => 'not-empty'),
-                'position' => 92,
-                'options' => ['target' => '_blank'],
+                'requires_setting' => array('setting_key' => 'cito_access_token_url', 'required_value' => 'not-empty'),
+                'options' => ['id' => 'js-get-cito-url', 'class' => 'hidden', 'requires_patient' => true],
+            ),
+            'hie_integration' => array(
+                'title' => 'View HIE Record',
+                'uri' => '',
+                'requires_setting' => array('setting_key' => 'hie_remote_url', 'required_value' => 'not-empty'),
+                'restricted' => array('HIE - Admin', 'HIE - Extended', 'HIE - View', 'HIE - Summary'),
+                'options' => ['requires_patient' => true],
+            ),
+            'esign_device_popup' => array(
+                'title' => 'e-Sign device link',
+                'uri' => 'javascript:eSignDevicePopup();',
             ),
         ),
         'admin_menu' => array(),
         'dashboard_items' => array(),
         'admin_email' => '',
         'enable_transactions' => true,
-        'event_lock_days' => 0,
+        'event_lock_days' => getenv('OE_EVENT_LOCK_DAYS') ? getenv('OE_EVENT_LOCK_DAYS') : null,
         'event_lock_disable' => false,
         'reports' => array(),
-        'opbooking_disable_both_eyes' => true,
-        'html_autocomplete' => getenv('OE_MODE') == "LIVE" ? 'off' : 'on',
+        # html_autocomplete is deprecated and should be removed from code. In the meantime, setting it to off by default
+        'html_autocomplete' => 'off',
         // html|pdf, pdf requires puppeteer
         'event_print_method' => 'pdf',
         'curl_proxy' => null,
@@ -540,7 +617,7 @@ $config = array(
         ),
 
         'signature_app_url' => getenv('OE_SIGNATURE_APP_URL') ? getenv('OE_SIGNATURE_APP_URL') : 'https://dev.oesign.uk',
-        'docman_export_dir' => getenv('OE_DOCMAN_EXPORT_DIRECTORY') ? getenv('OE_DOCMAN_EXPORT_DIRECTORY') : '/tmp/docman',
+        'docman_export_dir' => getenv('OE_DOCMAN_EXPORT_DIRECTORY') ? getenv('OE_DOCMAN_EXPORT_DIRECTORY') : '/docman',
         'docman_login_url' => 'http://localhost/site/login',
         'docman_user' => rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_USER")) ?: (getenv('OE_DOCMAN_USER') ?: 'docman_user'),
         'docman_password' => rtrim(@file_get_contents("/run/secrets/OE_DOCMAN_PASSWORD")) ?: (getenv('OE_DOCMAN_PASSWORD') ?: '1234qweR!'),
@@ -549,15 +626,11 @@ $config = array(
         /* injecting autoprint JS into generated PDF */
         //'docman_inject_autoprint_js' => false,
 
-        //'docman_generate_csv' => true,
+        'docman_generate_csv' => strtolower(getenv('DOCMAN_GENERATE_CSV')) == 'true',
 
         /*Docman ConsoleCommand can generate Internal referral XML/PDF along with it's own(Docman) XML/PDF
           In case a trust integrated engine can use the same XML to decide where to forward the document to */
-        //'docman_with_internal_referral' => false,
-
-        // xml template
-        //'docman_xml_template' => 'template_default',
-        // set this to false if you want to suppress XML output
+        'docman_with_internal_referral' => getenv('DOCMAN_WITH_INTERNAL_REFERRAL') ?:  false,
 
         /**
         * Filename format for the PDF and XML files output by the docman export. The strings that should be replaced
@@ -573,6 +646,12 @@ $config = array(
          */
         'docman_generate_xml' => getenv('DOCMAN_GENERATE_XML') ? filter_var(getenv('DOCMAN_GENERATE_XML'), FILTER_VALIDATE_BOOLEAN) : true,
 
+        // xml template
+        'docman_xml_template' => getenv('DOCMAN_XML_TEMPLATE') ?: 'default',
+        // set this to false if you want to suppress XML output
+
+        // disables checking of peer SSL certificate for docman / correspondence delivery. This should never be required as docmandelivery should always be able to access localhost over http
+        'disable_ssl_certificate_check' => strtolower(getenv('DOCMAN_DISABLE_SSL_CERTIFICATE_CHECK')) == 'true',
 
         /**
          * Text to be displayed for sending correspondence electronically e.g.: 'Electronic (DocMan)'
@@ -605,7 +684,7 @@ $config = array(
 
         'OphCoCorrespondence_Internalreferral' => array(
             'generate_csv' => false,
-            'export_dir' => '/tmp/internalreferral_delievery',
+            'export_dir' => getenv('OE_INT_REFER_EXPORT_DIRECTORY') ? getenv('OE_INT_REFER_EXPORT_DIRECTORY') : '/internalreferrals',
             'filename_format' => 'format1',
         ),
 
@@ -615,11 +694,6 @@ $config = array(
          */
         'OphCoMessaging_copyto_user_limit' => 5,
 
-        /**
-         *  Operation bookings will be automatically scheduled to the next available slot (regardless of the firm)
-         */
-        "auto_schedule_operation" => false,
-        'docman_generate_csv' => false,
         'element_sidebar' => true,
         // flag to enable editing of clinical data at the patient summary level - editing is not fully implemented
         // in v2.0.0, so this should only be turned on if you really know what you are doing.
@@ -635,12 +709,6 @@ $config = array(
         'letter_logo_upload' => true,
         /* ID of the Tag that indicates "preservative free" */
         'preservative_free_tag_id' => 1,
-
-        /**
-         * If 'disable_auto_feature_tours' is true than no tour will be start on page load
-         * (this overrides the setting in admin > system > settings)
-         */
-        //'disable_auto_feature_tours' => true,
 
         'whiteboard' => array(
             // whiteboard will be refresh-able after operation booking is completed
@@ -746,15 +814,29 @@ $config = array(
         'default_patient_import_subspecialty' => 'GL',
         //        Add elements that need to be excluded from the admin sidebar in settings
         'exclude_admin_structure_param_list' => getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST') ? explode(",", getenv('OE_EXCLUDE_ADMIN_STRUCT_LIST')) : array(''),
-        'oe_version' => '5.0.7',
+        'oe_version' => '6.7.19',
         'gp_label' => !empty(trim(getenv('OE_GP_LABEL'))) ? getenv('OE_GP_LABEL') : null,
         'general_practitioner_label' => !empty(trim(getenv('OE_GENERAL_PRAC_LABEL'))) ? getenv('OE_GENERAL_PRAC_LABEL') : null,
-        // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default in v3)
-        'worklist_dashboard_future_days' => 0,
+        // allow duplicate entries on an automatic worklist for a patient (default = false)
+        'worklist_allow_duplicate_patients' => strtolower(getenv('OE_WORKLIST_ALLOW_DUPLICATE_PATIENTS')) == 'true',
+        // override edit checks on definitions so they can always be edited (defrault = true)
+        'worklist_always_allow_definition_edit' => strtolower(getenv('OE_WORKLIST_ALLOW_DEFINITION_EDIT')) != 'false',
+        // number of days in the future to retrieve worklists for the automatic dashboard render (0 by default)
+        'worklist_dashboard_future_days' => !empty(getenv('OE_WORKLIST_DASHBOARD_FUTURE_DAYS')) ? getenv('OE_WORKLIST_DASHBOARD_FUTURE_DAYS') : 0,
         // page size of worklists - recommended to be very large by default, as paging is not generally needed here
-        'worklist_default_pagination_size' => 1000,
-        //// days of the week to be ignored when determining which worklists to render - Mon, Tue etc
+        'worklist_default_pagination_size' => !empty(getenv('OE_WORKLIST_DEFAULT_PAGINATION_SIZE')) ? getenv('OE_WORKLIST_DEFAULT_PAGINATION_SIZE') : 1000,
+        // days of the week to be ignored when determining which worklists to render - Mon, Tue etc
         'worklist_dashboard_skip_days' => array('NONE'),
+        // how far in advance worklists should be generated for matching (x days, weeks, months, years)
+        'worklist_default_generation_limit' => !empty(getenv('OE_WORKLIST_DEFAULT_GENERATION_LIMIT')) ? getenv('OE_WORKLIST_DEFAULT_GENERATION_LIMIT') : '1 month',
+        // default start time used for automatic worklist definitions
+        'worklist_default_start_time' => !empty(getenv('OE_WORKLIST_DEFAULT_START_TIME')) ? getenv('OE_WORKLIST_DEFAULT_START_TIME') : '08:00',
+        // default end time used for automatic worklist definitions
+        'worklist_default_end_time' => !empty(getenv('OE_WORKLIST_DEFAULT_END_TIME')) ? getenv('OE_WORKLIST_DEFAULT_END_TIME') : '17:00',
+        // any appointments sent in before this date will not trigger errors when sent in (use YYYY-mm-dd format)
+        'worklist_ignore_date' => !empty(getenv('OE_WORKLIST_IGNORE_DATE')) ? getenv('OE_WORKLIST_IGNORE_DATE') : null,
+        // whether we should render empty worklists in the dashboard or not (default = true)
+        'worklist_show_empty' => !empty(getenv('OE_WORKLIST_SHOW_EMPTY')) ? (strtolower(getenv('OE_WORKLIST_SHOW_EMPTY')) != 'false' ? 'on' : 'off') : null,
         'tech_support_provider' => !empty(trim(getenv(@'OE_TECH_SUPPORT_PROVIDER'))) ? htmlspecialchars(getenv(@'OE_TECH_SUPPORT_PROVIDER')) :  null,
         'tech_support_url' => !empty(trim(getenv('OE_TECH_SUPPORT_URL'))) ? getenv('OE_TECH_SUPPORT_URL') :  null,
         'pw_restrictions' => array(
@@ -790,37 +872,38 @@ $config = array(
                     'softlocked' = user cannot log in even with valid password, but gets annother set of tries in 10 mins
                     'locked' = user cannot log in even with valid password,
                 Invalid statuses will act as 'locked' */
-            'pw_tries' => false !== getenv('PW_STAT_TRIES') ? getenv('PW_STAT_TRIES') : 10, //number of password tries
-            'pw_tries_failed' => false !== getenv('PW_STAT_TRIES_FAILED') ? getenv('PW_STAT_TRIES_FAILED') : 'softlocked', //password status after number of tries exceeded
-            'pw_softlock_timeout' => false !== getenv('PW_SOFTLOCK_TIMEOUT') ? getenv('PW_SOFTLOCK_TIMEOUT') : '10 mins', //time before user can try again after softlocking account
-            'pw_days_stale' => false !== getenv('PW_STAT_DAYS_STALE') ? getenv('PW_STAT_DAYS_STALE') : '0', //number of days before password stales - e.g. '15 days' - 0 to disable , also supports months, years, hours, mins and seconds
-            'pw_days_expire' => false !== getenv('PW_STAT_DAYS_EXPIRE') ? getenv('PW_STAT_DAYS_EXPIRE') : '0', //number of days before password expires - e.g, '30 days' - 0 to disable
-            'pw_days_lock' => false !== getenv('PW_STAT_DAYS_LOCK') ? getenv('PW_STAT_DAYS_LOCK') : '0', //number of days before password locks - e.g., '45 days' - 0 to disable
-            'pw_admin_pw_change' => false !== getenv('PW_STAT_ADMIN_CHANGE') ? getenv('PW_STAT_ADMIN_CHANGE') : 'stale', //password status after password changed by admin - not recommended to be set to locked
+            'pw_tries' => !empty(getenv('PW_STAT_TRIES')) ? getenv('PW_STAT_TRIES') : 10, //number of password tries
+            'pw_tries_failed' => !empty(getenv('PW_STAT_TRIES_FAILED')) ? getenv('PW_STAT_TRIES_FAILED') : 'softlocked', //password status after number of tries exceeded
+            'pw_softlock_timeout' => !empty(getenv('PW_SOFTLOCK_TIMEOUT')) ? getenv('PW_SOFTLOCK_TIMEOUT') : '10 mins', //time before user can try again after softlocking account
+            'pw_days_stale' => !empty(getenv('PW_STAT_DAYS_STALE')) ? getenv('PW_STAT_DAYS_STALE') : '0', //number of days before password stales - e.g. '15 days' - 0 to disable , also supports months, years, hours, mins and seconds
+            'pw_days_expire' => !empty(getenv('PW_STAT_DAYS_EXPIRE')) ? getenv('PW_STAT_DAYS_EXPIRE') : '0', //number of days before password expires - e.g, '30 days' - 0 to disable
+            'pw_days_lock' => !empty(getenv('PW_STAT_DAYS_LOCK')) ? getenv('PW_STAT_DAYS_LOCK') : '0', //number of days before password locks - e.g., '45 days' - 0 to disable
+            'pw_admin_pw_change' => !empty(getenv('PW_STAT_ADMIN_CHANGE')) ? getenv('PW_STAT_ADMIN_CHANGE') : 'stale', //password status after password changed by admin - not recommended to be set to locked
             'pw_expired_whitelist' => array( //List of URL's accecible when user's status is expired (these are required for OE to allow a user to change thier password)
                 '/profile/password',
                 '/site/logout',
-                '/User/testAuthenticated',
+                '/User/getSessionExpireTimestamp',
                 '/Site/loginFromOverlay',
-                '/User/getSecondsUntilSessionExpire',
-                '/site/changesiteandfirm'
+                '/Site/getOverlayPrepopulationData',
+                '/site/changesiteandfirm',
             ),
         ),
-        'training_mode_enabled' => getenv('OE_TRAINING_MODE') ? strtolower(getenv('OE_TRAINING_MODE')) : null,
+        'training_mode_enabled' => getenv('OE_TRAINING_MODE') ? ( strtolower(getenv('OE_TRAINING_MODE')) == "true" ? "on" : null ) : null,
         'watermark_short' => getenv('OE_USER_BANNER_SHORT') ?: null,
         'watermark' => getenv('OE_USER_BANNER_LONG') ?: null,
         'watermark_admin_short' => getenv('OE_ADMIN_BANNER_SHORT') ?: null,
         'watermark_admin' => getenv('OE_ADMIN_BANNER_LONG') ?: null,
         'sso_certificate_path' => '/run/secrets/SSO_CERTIFICATE',
         'ammonite_url' => getenv('AMMONITE_URL') ?: 'ammonite.toukan.co',
-        'cito_access_token_url' => trim(getenv('CITO_ACCESS_TOKEN_URL')) ?: null,
-        'cito_otp_url' => trim(getenv('CITO_OTP_URL')) ?: null,
-        'cito_sign_url' => trim(getenv('CITO_SIGN_URL')) ?: null,
+        'cito_base_url ' => trim(getenv('CITO_BASE_URL')) ?: null,
+        'cito_access_token_url' => trim(getenv('CITO_ACCESS_TOKEN_URL')) ?: '/citosignon/connect/token',
+        'cito_otp_url' => trim(getenv('CITO_OTP_URL')) ?: '/citoExternalApi/api/IssueOneTimePassCodes',
+        'cito_sign_url' => trim(getenv('CITO_SIGN_URL')) ?: '/cito/api/otpsignin',
         'cito_client_id' => trim(getenv('CITO_CLIENT_ID')) ?: null,
-        'cito_grant_type' => trim(getenv('CITO_GRANT_TYPE')) ?: null,
+        'cito_grant_type' => trim(getenv('CITO_GRANT_TYPE')) ?: 'client_credentials',
         'cito_application_id' => trim(@file_get_contents("/run/secrets/CITO_APPLICATION_ID")) ?: (trim(getenv('CITO_APPLICATION_ID')) ?: ''),
         'cito_client_secret' => trim(@file_get_contents("/run/secrets/CITO_CLIENT_SECRET")) ?: (trim(getenv('CITO_CLIENT_SECRET')) ?: ''),
-
+        'secretary_pin' => trim(getenv('SECRETARY_PIN')) ?: "123456",
         /** START SINGLE SIGN-ON PARAMS */
         'strict_SSO_roles_check' => $ssoMappingsCheck,
         // Settings for OneLogin PHP-SAML toolkit
@@ -874,12 +957,25 @@ $config = array(
             'authParams' => array('response_mode' => 'form_post'),
             // Generates random encryption key for openssl
             'encryptionKey' => $ssoClientSecret,
-            // Configure custom claims with the user attributes that the claims are for
-            'custom_claims' => array_combine(explode(",", $ssoCustomClaims), explode(",", $ssoUserAttributes)),
+            'field_mapping_allow_list_with_defaults' => array(
+                'email' => '',
+                'first_name' => '',
+                'last_name' => '',
+                'title' => '',
+                'role' => '',
+                'doctor_grade_id' => '',
+                'registration_code' => '',
+                'is_consultant' => 0,
+                'is_surgeon' => 0
+            ),
+            // Field mapping for (user_field, oidc_field). user_field must be in field_mapping_allow_list
+            'field_mapping' => array_combine(explode(",", $ssoUserFields), explode(",", $ssoOIDCFields)),
             // URL to redirect users to SSO portal to login again after session timeout
             'portal_login_url' => $ssoLoginURL,
         ),
         /** END SINGLE SIGN-ON PARAMS */
+        'training_hub_text' => !empty(trim(getenv('OE_TRAINING_HUB_TEXT'))) ? getenv('OE_TRAINING_HUB_TEXT') : null,
+        'training_hub_url' => !empty(trim(getenv('OE_TRAINING_HUB_URL'))) ? getenv('OE_TRAINING_HUB_URL') : null,
         'breakglass_enabled' => $breakGlassEnabled,
         'user_breakglass_field' => $userBreakGlassField,
         'enable_default_support_text' => true,
@@ -900,49 +996,97 @@ if (!empty(getenv('LOG_TO_BROWSER'))) {
 }
 
 $modules = array(
-// Gii tool
-// 'gii' => array(
-//     'class' => 'system.gii.GiiModule',
-//     'password' => 'openeyes',
-//     'ipFilters' => array('127.0.0.1'),
-// ),
-'oldadmin',
-'Admin',
-'Api',
-'eyedraw',
-'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
-'OphCoCorrespondence',
-'OphCiPhasing',
-'OphTrIntravitrealinjection',
-'OphCoTherapyapplication',
-'OphDrPrescription',
-'OphTrConsent',
-'OphTrOperationnote',
-'OphTrOperationbooking',
-'OphTrLaser',
-'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
-'OphInVisualfields',
-'OphInBiometry',
-'OphCoMessaging' => array('class' => '\OEModule\OphCoMessaging\OphCoMessagingModule'),
-'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
-'OphInLabResults',
-'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
-/* Uncomment next section if you want to use the genetics module
-￼        'Genetics',
-￼        'OphInDnasample',
-￼        'OphInDnaextraction',
-￼        'OphInGeneticresults',*/
-'OphCoDocument',
-'OphCiDidNotAttend',
-'OphGeneric',
-'OECaseSearch',
-'OETrial',
-'SSO',
-'OphOuCatprom5',
-'OphTrOperationchecklists',
-'OphDrPGDPSD',
-'BreakGlass' => array('class' => '\OEModule\BreakGlass\BreakGlassModule'),
+        // Gii tool
+        // 'gii' => array(
+        //     'class' => 'system.gii.GiiModule',
+        //     'password' => 'openeyes',
+        //     'ipFilters' => array('127.0.0.1'),
+        // ),
+        'oldadmin',
+        'Admin',
+        'Api',
+        'eyedraw',
+        'Mirth',
+        'OESysEvent' => ['class' => \OEModule\OESysEvent\OESysEventModule::class],
+        'OphCiExamination' => array('class' => '\OEModule\OphCiExamination\OphCiExaminationModule'),
+        'OphCoCorrespondence',
+        'OphCiPhasing' => ['class' => \OEModule\OphCiPhasing\OphCiPhasingModule::class],
+        'OphTrIntravitrealinjection',
+        'OphCoTherapyapplication',
+        'OphDrPrescription',
+        'OphTrConsent',
+        'OphTrOperationnote',
+        'OphTrOperationbooking',
+        'OphTrLaser',
+        'PatientTicketing' => array('class' => '\OEModule\PatientTicketing\PatientTicketingModule'),
+        'OphInVisualfields',
+        'OphInBiometry',
+        'OphCoMessaging' => array('class' => '\OEModule\OphCoMessaging\OphCoMessagingModule'),
+        'PASAPI' => array('class' => '\OEModule\PASAPI\PASAPIModule'),
+        'OphInLabResults',
+        'OphCoCvi' => array('class' => '\OEModule\OphCoCvi\OphCoCviModule'),
+        'Genetics',
+        'OphInDnasample',
+        'OphInDnaextraction',
+        'OphInGeneticresults',
+        'OphCoDocument',
+        'OphCiDidNotAttend' => ['class' => OEModule\OphCiDidNotAttend\OphCiDidNotAttendModule::class],
+        'OphGeneric' => ['class' => OEModule\OphGeneric\OphGenericModule::class],
+        'OECaseSearch',
+        'OETrial',
+        'SSO',
+        'OphOuCatprom5',
+        'OphTrOperationchecklists',
+        'OphDrPGDPSD',
+        'BreakGlass' => array('class' => '\OEModule\BreakGlass\BreakGlassModule'),
+        );
+
+if (strtolower(getenv('OE_MODE')) !== 'live') {
+    $modules['CypressHelper'] = [
+        'class' => CypressHelperModule::class
+    ];
+}
+
+/**
+ * Setup caches
+ * Use APC Cache for some caches if APC extensions are enabled, if not, fall back to file cache
+***/
+
+$caches = array(
+        'cacheBuster' => array(
+            'class' => 'CacheBuster',
+            'time' => '20231205085545',
+        ),
 );
+
+if (extension_loaded('apcu') && ini_get('apc.enabled')) {
+    $caches['cache'] = array(
+            'class' => 'system.caching.CApcCache',
+            'useApcu' => true,
+    );
+    $caches['settingCache'] = array(
+            'class' => 'system.caching.CApcCache',
+            'keyPrefix' => 'SettingMetadata',
+            'useApcu' => true,
+    );
+} else {
+    $caches['cache'] = array(
+            'class' => 'system.caching.CFileCache',
+            'directoryLevel' => 1,
+    );
+    $caches['settingCache'] = array(
+            'class' => 'system.caching.CFileCache',
+            'keyPrefix' => 'SettingMetadata',
+            'directoryLevel' => 1,
+            'cachePath' => 'protected/runtime/cache/settingmeta',
+    );
+}
+
+
+$config['components'] = array_merge($config['components'], $caches);
+/**
+ * End caching setup
+ */
 
 // deal with any custom modules added for the local deployment - which are set in /config/modules.conf (added via docker)
 // Gracefully ignores file if it is missing
@@ -965,19 +1109,28 @@ if (!empty($custom_modules)) {
 $config["modules"] = $modules;
 
 /**
-* Setup the local_users parameter. If the environment variable named OE_LOCAL_USERS is set then use it as an override.
-* else, default to the standard array
-* The OE_LOCAL_USERS environment variable should be a comma separated string
-*/
+ * Setup the local_users parameter. If the environment variable named OE_LOCAL_USERS is set then use it as an override.
+ * else, default to the standard array
+ * The OE_LOCAL_USERS environment variable should be a comma separated string
+ */
 $local_users = !empty(trim(getenv('OE_LOCAL_USERS'))) ? getenv('OE_LOCAL_USERS') : 'admin, api, docman_user, payload_processor';
-$config["params"]["local_users"] = explode(',', $local_users);
+$config["params"]["local_users"] = array_map('trim', explode(',', $local_users));
 
 /**
-* Setup the special_users parameter. If the environment variable named OE_SPECIAL_USERS is set then use it as an override.
-* else, default to the standard array
-* The OE_SPECIAL_USERS environment variable should be a comma separated string
-*/
-$special_users = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api';
-$config["params"]["special_users"] = explode(',', $special_users);
+ * Setup the special_usernames parameter. If the environment variable named OE_SPECIAL_USERS is set then use it as an override.
+ * else, default to the standard array
+ * The OE_SPECIAL_USERS environment variable should be a comma separated string
+ */
+$special_usernames = !empty(trim(getenv('OE_SPECIAL_USERS'))) ? getenv('OE_SPECIAL_USERS') : 'api, docman_user';
+$config["params"]["special_usernames"] = array_map('trim', explode(',', $special_usernames));
+
+/**
+ * Setup the correspondence_export_institutions parameter. If the environment variable named OE_CORRESPONDENCE_EXPORT_INSTITUTIONS is set then
+ * use it to populate the array. Else, set to null
+ * The OE_CORRESPONDENCE_EXPORT_INSTITUTIONS environment variable should be a space separated string
+ */
+$correspondence_export_institutions = trim(getenv('OE_CORRESPONDENCE_EXPORT_INSTITUTIONS'));
+$correspondence_export_institutions = !empty($correspondence_export_institutions) ? explode(" ", $correspondence_export_institutions) : null;
+$config["params"]["correspondence_export_institutions"] = $correspondence_export_institutions;
 
 return $config;

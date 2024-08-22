@@ -64,12 +64,12 @@ class CatProm5AnswersTest extends ActiveRecordTestCase {
         );
     }
 
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OphOuCatprom5');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->getFixtureManager()->basePath = Yii::getPathOfAlias('application.modules.OphOuCatprom5.tests.fixtures');
         parent::setUp();

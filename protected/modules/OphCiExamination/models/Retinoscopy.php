@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
 use OEModule\OphCiExamination\models\interfaces\SidedData;
 use OEModule\OphCiExamination\models\traits\HasRelationOptions;
 use OEModule\OphCiExamination\models\traits\HasSidedData;
@@ -23,6 +24,7 @@ use OEModule\OphCiExamination\widgets\Retinoscopy as RetinoscopyWidget;
 class Retinoscopy extends \BaseEventTypeElement implements SidedData
 {
     use traits\CustomOrdering;
+    use HasFactory;
     use HasSidedData;
     use HasRelationOptions;
 
@@ -81,8 +83,8 @@ class Retinoscopy extends \BaseEventTypeElement implements SidedData
             [
                 'right_power1, right_power2, left_power1, left_power2',
                 'numerical',
-                'min' => '-30',
-                'max' => '30'
+                'min' => '-35',
+                'max' => '35'
             ],
         ];
     }

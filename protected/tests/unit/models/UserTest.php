@@ -26,14 +26,34 @@ class UserTest extends ActiveRecordTestCase
         'users' => 'User',
         'UserFirmRights',
         'UserServiceRights',
+        'protected_file' => 'ProtectedFile'
     );
 
     protected array $columns_to_skip = [
         'title',
-        'qualifications',
         'role',
         'has_selected_firms'
     ];
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $pf = $this->protected_file('0');
+        $uid = $pf->uid;
+        $path = Yii::app()->basePath . "/files/" . $uid[0] . "/" . $uid[1] . "/" . $uid[2];
+        if (!file_exists($path)) {
+            mkdir($path, 0774, true);
+        }
+        file_put_contents($path . "/$uid", "dummy");
+    }
+
+    public function tearDown(): void
+    {
+        $pf = $this->protected_file('0');
+        $uid = $pf->uid;
+        unlink(Yii::app()->basePath . "/files/" . $uid[0] . "/" . $uid[1] . "/" . $uid[2] . "/$uid");
+        parent::tearDown();
+    }
 
     public function getModel()
     {
@@ -155,8 +175,20 @@ class UserTest extends ActiveRecordTestCase
         // Enable default rights to be assigned to the user
         SsoDefaultRights::model()->saveDefaultRights($attributes);
         Yii::app()->params['auth_source'] = 'OIDC';
-        $testuser = array('email' => 'user@unittest.com', 'given_name' => 'User', 'family_name' => 'SSO');
+        $testuser = array('username' => 'oidcuser', 'email' => 'user@unittest.com', 'first_name' => 'User', 'last_name' => 'SSO');
         $this->assertArrayHasKey('username', $this->users('ssouser')->setSSOUserInformation($testuser));
         $this->assertArrayHasKey('password', $this->users('ssouser')->setSSOUserInformation($testuser));
+    }
+
+    public function testGetSignatureImage()
+    {
+        $user = $this->users('user1');
+        $user->signature_file_id = null;
+        $this->assertNull($user->getSignatureImage());
+        unset($user);
+        $user = $this->users('user1');
+        $pf = $this->protected_file('0');
+        $user->signature_file_id = $pf->id;
+        $this->assertIsString($user->getSignatureImage());
     }
 }

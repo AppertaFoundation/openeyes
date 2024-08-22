@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -13,7 +14,10 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var DefaultController $this
  */
+
 ?>
 
 <?php $this->renderPartial('//print/patient_overview') ?>
@@ -27,7 +31,7 @@
 <!-- Anaesthetic Details -->
 <?php
     $anaesthetic_element = Element_OphTrOperationnote_Anaesthetic::model()->find('event_id = ?', array($this->event->id));
-    $this->renderElement($anaesthetic_element, 'print', false, false);
+    $this->renderElement($anaesthetic_element, 'print', false);
 ?>
 
 <!-- Per-operative drugs -->

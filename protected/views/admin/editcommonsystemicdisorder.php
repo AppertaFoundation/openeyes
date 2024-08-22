@@ -13,18 +13,48 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var CommonSystemicDisorderController $this
  */
-?>
 
-<?php
 $this->renderPartial('//base/_messages');
 if (isset($errors)) {
     $this->renderPartial('/admin/_form_errors', $errors);
 }
-Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'), CClientScript::POS_HEAD);
-?>
+Yii::app()->clientScript->registerScriptFile(
+    Yii::app()->assetManager->createUrl('js/OpenEyes.GenericFormJSONConverter.js'),
+    CClientScript::POS_HEAD
+);
 
-<form method="POST" action="/oeadmin/CommonSystemicDisorder/save">
+if ($this->checkAccess('admin')) {
+    $options = ['empty' => 'All Institutions'];
+} else {
+    $options = [];
+}
+
+$options['data-test'] = 'common-systemic-disorders-institution-select';
+?>
+<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', true, -1); ?>"></script>
+<form method="get">
+    <table class="cols-7">
+        <colgroup>
+            <col class="cols-3">
+            <col class="cols-4">
+        </colgroup>
+        <tbody>
+        <tr class="col-gap">            
+            <td>&nbsp;<br/><?=\CHtml::dropDownList(
+                'institution_id',
+                $current_institution_id,
+                Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
+                $options
+            ) ?></td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+
+<form method="POST" action="/oeadmin/CommonSystemicDisorder/save?institution_id=<?= $current_institution_id ?>">
     <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
     <?php
     $columns = [
@@ -32,7 +62,6 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             'header' => 'Order',
             'type' => 'raw',
             'value' => function ($data, $row) {
-                $row++;
                 return '<span>&uarr;&darr;</span>' .
                     CHtml::hiddenField("CommonSystemicDisorder[$row][id]", $data->id) .
                     CHtml::hiddenField("CommonSystemicDisorder[$row][display_order]", $data->display_order);
@@ -43,10 +72,9 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             'header' => 'Disorder',
             'name' => 'disorder.term',
             'type' => 'raw',
-            'htmlOptions' => array('width' => '180px'),
+            'htmlOptions' => array('width' => '180px', 'data-test' => 'disorder-term'),
             'value' => function ($data, $row) {
                 $term = null;
-                $row++;
                 if ($data->disorder) {
                     $term = $data->disorder->term;
                 }
@@ -63,19 +91,27 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             'header' => 'Group',
             'name' => 'group.name',
             'type' => 'raw',
-            'value' => function ($data, $row) {
-                $row++;
-                $options = CHtml::listData(CommonSystemicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION), 'id', 'name');
+            'value' => function ($data, $row) use ($group_models) {
+                $options = CHtml::listData($group_models, 'id', 'name');
                 return CHtml::activeDropDownList($data, "[$row]group_id", $options, array('empty' => '-- select --'));
             }
         ],
         [
-            'header' => 'Assigned to current institution',
+            'header' => 'Institution',
             'type' => 'raw',
-            'name' => 'assigned_insitution',
-            'value' => function($data, $row) {
-                $row++;
-                return CHtml::checkBox("assigned_institution[$row]", $data->hasMapping(ReferenceData::LEVEL_INSTITUTION, $data->getIdForLevel(ReferenceData::LEVEL_INSTITUTION)));
+            'name' => 'institution.name',
+            'value' => function ($data, $row) {
+                if ($this->checkAccess('admin')) {
+                    $institutions = CHtml::listData(Institution::model()->getTenanted(), 'id', 'name');
+                    return CHtml::dropDownList("CommonSystemicDisorder[$row][institution_id]", $data->institution_id, $institutions, ['style' => 'width:400px', 'empty' => 'All Institutions']);
+                } else {
+                    if ($data->institution_id) {
+                        $institution = Institution::model()->findByPk($data->institution_id);
+                        return $institution->name;
+                    } else {
+                        return 'All institutions';
+                    }
+                }
             }
         ],
         [
@@ -91,16 +127,16 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
         'itemsCssClass' => 'generic-admin standard sortable',
         'template' => '{items}',
         'emptyTagName' => 'span',
-        'rowHtmlOptionsExpression' => 'array("data-row"=>($row+1))',
+        'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
         'enableSorting' => false,
         'columns' => $columns
     ));
     ?>
 
     <div>
-        <button class="button large" type="button" id="add_new">Add</button>
+        <button class="button large" type="button" id="add_new" data-test="add-common-systemic-disorder-btn">Add</button>
         &nbsp
-        <button class="button large generic-admin-save" type="submit">Save</button>
+        <button class="button large generic-admin-save" type="submit" data-test="save-common-systemic-disorders-btn">Save</button>
     </div>
 </form>
 
@@ -117,6 +153,7 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             'CommonSystemicDisorder[ROW_IDENTIFIER][disorder_id]' : '#CommonSystemicDisorder_ROW_IDENTIFIER_disorder_id_actual',
             'CommonSystemicDisorder[ROW_IDENTIFIER][display_order]' : '#CommonSystemicDisorder_ROW_IDENTIFIER_display_order',
             'CommonSystemicDisorder[ROW_IDENTIFIER][group_id]' : '',
+            'CommonSystemicDisorder[ROW_IDENTIFIER][institution_id]' : '',
         }
     };
     const GenericFormJSONConverter = new OpenEyes.GenericFormJSONConverter(formStructure);
@@ -129,11 +166,37 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             'renderCommonlyUsedDiagnoses': false,
             'code': '',
             'singleTemplate':
+                "<div style='position: relative'>" +
                 "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='oe-i remove-circle small' aria-hidden='true' title='Change disorder'></i></a> " +
-                "<span class='diagnosis-name'></span></span>" +
+                "<span class='diagnosis-name' data-test='disorder-name" + $row.data('row') + "'></span></span>" +
                 "{{{input_field}}}" +
                 "<input type='hidden' id='{{field_prefix}}_" + $row.data('row') + "_disorder_id_actual' " +
-                "name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>"
+                "name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>" +
+                "<ul class='oe-autocomplete' data-test='disorder-autocomplete-list'></ul>" +
+                "</div>"
+        });
+
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $row.find('.diagnoses-search-autocomplete'),
+            url: '/disorder/autocomplete',
+            params: {
+                code: function () {
+                    return '';
+                }
+            },
+            maxHeight: '200px',
+            onSelect: function(){
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                input.val(response.label);
+                input.hide();
+                input.siblings('.savedDiagnosis').val(response.id);
+                input.siblings('.medication-display').show();
+                input.siblings('.medication-display').find('.diagnosis-name').text(response.label);
+                //clear input
+                $(this).val("");
+            }
         });
 
         $row.on('click', 'a.delete', function () {
@@ -148,10 +211,13 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
 
         $('#add_new').on('click', function () {
             let $tr = $('table.generic-admin tbody tr');
+            let institution_id = $('#institution_id').val();
             let output = Mustache.render($('#common_systemic_disorder_template').text(), {
                 'group_options' : common_systemic_disorder_group_options,
                 "row_count" : OpenEyes.Util.getNextDataKey($tr, 'row'),
-                'order_value': parseInt($('table.generic-admin tbody tr:last-child').find('input[name$="display_order]"]').val()) + 1
+                'order_value': parseInt($('table.generic-admin tbody tr:last-child').find('input[name$="display_order]"]').val()) + 1,
+                'institution_id': institution_id,
+                'institution_name': $('#institution_id option[value=' + institution_id + ']').text()
             });
 
             $('table.generic-admin tbody').append(output);
@@ -169,6 +235,10 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
                     $(tr).find("[name$='display_order]']").val(index);
                 });
             }
+        });
+
+        $('#institution_id').on('change', function () {
+            $(this).closest('form').submit();
         });
 
         document.querySelector('.generic-admin-save').addEventListener('click', () => GenericFormJSONConverter.convert());
@@ -192,10 +262,12 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
             </span>
             <input class="diagnoses-search-autocomplete diagnoses-search-inputfield ui-autocomplete-input"
                    data-saved-diagnoses="" type="text" name="CommonSystemicDisorder[{{row_count}}][disorder_id]"
+                   data-test="disorder-term-input"
                    id="CommonSystemicDisorder_{{row_count}}_disorder_id" autocomplete="off">
             <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
             <input type="hidden" name="CommonSystemicDisorder[{{row_count}}][disorder_id]" class="savedDiagnosis"
                    value="">
+            <ul class="oe-autocomplete" data-test="disorder-autocomplete-list"></ul>
         </td>
         <td>
             <select name="CommonSystemicDisorder[{{row_count}}][group_id]"
@@ -205,6 +277,11 @@ Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl
                 <option value="{{id}}">{{name}}</option>
                 {{/group_options}}
             </select>
+        </td>
+        <td>
+            <input type="hidden" name="CommonSystemicDisorder[{{row_count}}][institution_id]"
+                   id="CommonSystemicDisorder_{{row_count}}_institution_id" value="{{institution_id}}">
+            {{institution_name}}
         </td>
         <td>
             <button type='button'><a href='javascript:void(0)' class='delete'>delete</a></button>

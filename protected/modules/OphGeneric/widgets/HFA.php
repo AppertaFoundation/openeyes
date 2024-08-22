@@ -17,7 +17,9 @@
 
 namespace OEModule\OphGeneric\widgets;
 
+use OELog;
 use OEModule\OphGeneric\models\HFA as HFAElement;
+use OEModule\OphGeneric\components\EventManager;
 
 class HFA extends \BaseEventElementWidget
 {
@@ -26,5 +28,38 @@ class HFA extends \BaseEventElementWidget
     protected function getNewElement()
     {
         return new HFAElement();
+    }
+
+    protected function getView()
+    {
+        if ($this->element->isNewRecord) {
+            return 'HFA_event_edit';
+        }
+
+        if (EventManager::forEvent($this->element->event)->isManualEvent()) {
+            return parent::getView();
+        }
+
+        return 'HFA_event_view';
+    }
+
+    protected function ensureRequiredDataKeysSet(&$data)
+    {
+        $data['hfaEntry'] = array_values(
+            array_filter(
+                $data['hfaEntry'] ?? [],
+                function ($entry) {
+                    return !empty($entry['mean_deviation']) || !empty($entry['visual_field_index']);
+                }
+            )
+        );
+
+        $data['eye_id'] = count($data['hfaEntry']) > 1
+            ? \Eye::BOTH
+            : (
+                count($data['hfaEntry']) > 0
+                    ? $data['hfaEntry'][0]['eye_id']
+                    : null
+                );
     }
 }

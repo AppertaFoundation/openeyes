@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?=\CHtml::errorSummary(
@@ -23,14 +25,14 @@
     ["class" => "alert-box alert with-icon"]
 ); ?>
 
-<div class="cols-5">
+<div class="cols-full">
     <div class="row divider">
         <h2><?=$title ?></h2>
     </div>
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-3">
-            <col class="cols-5">
+            <col class="cols-full">
         </colgroup>
         <tbody>
         <tr>
@@ -78,7 +80,7 @@
                         ) . '<br />' .
                         CHtml::textField("OEModule_OphCiExamination_models_SystemicSurgerySetEntry[$row][operation]", $data->operation, [
                             'placeholder' => 'Select from above or type',
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             'class' => 'common-operation',
                         ]) .
                         '</div>';
@@ -176,7 +178,7 @@
                 echo '<br />' .
                 CHtml::textField("OEModule_OphCiExamination_models_SystemicSurgerySetEntry[{{row}}][operation]", '', [
                         'placeholder' => 'Select from above or type',
-                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'class' => 'common-operation',
                     ]);
                 ?>

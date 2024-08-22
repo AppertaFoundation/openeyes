@@ -44,9 +44,9 @@ $form = $this->beginWidget('CActiveForm', array(
       <i class="oe-i remove-circle pro-theme" id="close-btn"></i>
     </div>
     <div class="oe-popup-content previous-elements">
-      <input type="hidden" name="cat_id" value="<?= $cat_id; ?>"/>
+      <input type="hidden" id="cat_id" name="cat_id" value="<?= $cat_id; ?>"/>
         <?=\CHtml::hiddenField('queueset_id', ($queueset ? $queueset->getId() : null)) ?>
-      <ul class="btn-list">
+      <ul class="btn-list" data-test="queueset-list">
             <?php foreach ($queueset_list as $id => $item) { ?>
             <li id="<?= $id ?>" class="<?= $queueset && (integer)$queueset_id === $id ? 'selected' : '' ?>">
                 <?= $item ?>

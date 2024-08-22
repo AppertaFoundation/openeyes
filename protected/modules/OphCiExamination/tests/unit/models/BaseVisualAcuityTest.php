@@ -126,7 +126,7 @@ abstract class BaseVisualAcuityTest extends \ModelTestCase
         $this->assertFalse($instance->validate());
         $errors = $instance->getErrors();
         $this->assertArrayHasKey($invalid_side, $errors);
-        $this->assertRegExp("/has no data/", $errors[$invalid_side][0]);
+        $this->assertMatchesRegularExpression("/has no data/", $errors[$invalid_side][0]);
     }
 
     /**
@@ -203,7 +203,7 @@ abstract class BaseVisualAcuityTest extends \ModelTestCase
     public function unit_relation_works_with_non_db_attribute()
     {
         $unit_criteria = new \CDbCriteria();
-        $unit_criteria->addColumnCondition(['is_near' => false]);
+        $unit_criteria->addColumnCondition(['is_va' => true]);
         $unit = $this->getRandomLookup(OphCiExamination_VisualAcuityUnit::class, 1, $unit_criteria);
 
         $instance = $this->getElementInstance();

@@ -140,10 +140,13 @@
 <script type="application/javascript">
     $(document).ready(function () {
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: "/OETrial/trial/renderPopups",
             data: {
                 "trialId" : (<?= $trial->id?>),
+                "sort_dir" : '<?= $sort_dir ?>',
+                "sort_by" : '<?= $sort_by ?>',
+                "TrialPatient_page" : <?= $page ?>,
                 YII_CSRF_TOKEN: YII_CSRF_TOKEN
             },
             success: function (resp) {
@@ -173,8 +176,17 @@
       },
       error: function (response) {
         //  Changed to meet requirements of CERA-583, there was no popup box shown earlier because content:response throws an error
-        var displayError = response.responseText;
-        displayError = displayError.substring(displayError.search('<p>'),displayError.indexOf('(') ) + '</p>';
+        let displayError = response.responseText;
+        const errorParagraph = displayError.search('<p>');
+
+        if (errorParagraph !== -1) {
+            displayError = displayError.substring(errorParagraph, displayError.indexOf('(')) + '</p>';
+        } else {
+            // If there is no paragraph tag, treat the entire response as the error message
+            // This has happened when OE_MODE is live
+            displayError = `<p>${displayError}</p>`;
+        }
+
         $('#action-loader-' + trial_patient_id).hide();
         new OpenEyes.UI.Dialog.Alert({
           content: displayError

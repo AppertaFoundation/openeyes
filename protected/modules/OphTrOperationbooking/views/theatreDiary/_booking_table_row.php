@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2020
  * This file is part of OpenEyes.
@@ -34,7 +35,7 @@ $patientSummaryPopup = $this->createWidget(
         <div class="op-duration"><?= $total_duration; ?> mins</div>
     </td>
     <td><!-- patient meta data -->
-        <?=    $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopup' . 'WorklistSide' , []);?>
+
         <div class="oe-patient-meta">
             <div class="patient-name">
                 <a href="<?= $coreapi->generatePatientLandingPageLink($patient) ?>">
@@ -52,26 +53,11 @@ $patientSummaryPopup = $this->createWidget(
             </div>
         </div><!-- .oe-patient-meta -->
         <div class="theatre-patient-icons">
-
-    <div id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $patient->id ?>">
-        <i class="js-patient-quick-overview eye-circle medium pad  oe-i js-worklist-btn" id="js-worklist-btn"></i>
-    </div>
-<!--            <i class="oe-i warning small pad js-patient-quick-overview"-->
-<!--               data-patient="{'surname':'Hamilton','first':'Amrit (Ms)','id':'1656153','nhs':false,'gender':'Male','age':'65'}"-->
-<!--               data-mode="side"></i>-->
-<!--            <i class="oe-i info small pad js-patient-quick-overview"-->
-<!--               data-patient="{'surname':'Hamilton','first':'Amrit (Ms)','id':'1656153','nhs':false,'gender':'Male','age':'65'}"-->
-<!--               data-mode="side"></i>-->
-<!--            <i class="oe-i patient small pad js-patient-quick-overview"-->
-<!--               data-patient="{'surname':'Hamilton','first':'Amrit (Ms)','id':'1656153','nhs':false,'gender':'Male','age':'65'}"-->
-<!--               data-mode="side"></i>-->
-<!--            <i class="oe-i eye small pad js-patient-quick-overview"-->
-<!--               data-patient="{'surname':'Hamilton','first':'Amrit (Ms)','id':'1656153','nhs':false,'gender':'Male','age':'65'}"-->
-<!--               data-mode="side"></i>-->
-<!--            <i class="oe-i trials small pad js-patient-quick-overview"-->
-<!--               data-patient="{'surname':'Hamilton','first':'Amrit (Ms)','id':'1656153','nhs':false,'gender':'Male','age':'65'}"-->
-<!--               data-mode="side"></i>-->
-
+<?php if ($show_patient_summary_popup) : ?>
+            <div id="oe-patient-details" class="js-oe-patient" data-patient-id="<?= $patient->id ?>">
+                <i class="js-patient-quick-overview eye-circle medium pad  oe-i js-worklist-btn" id="js-worklist-btn"></i>
+            </div>
+<?php endif; ?>
             <?php
             $warnings = $booking->operation->event->episode->patient->getWarnings();
             if ($warnings) {
@@ -83,6 +69,8 @@ $patientSummaryPopup = $this->createWidget(
                    data-tooltip-content="<?= implode(' / ', $msgs) ?>"></i>
             <?php } ?>
         </div>
+
+        <?= $show_patient_summary_popup ? $patientSummaryPopup->render('application.widgets.views.PatientSummaryPopup' . 'WorklistSide', []) : '' ?>
     </td>
     <td>
         <i class="oe-i circle-<?= $operation->getComplexityColor() ?> small pad js-has-tooltip" data-tt-type="basic"
@@ -94,15 +82,19 @@ $patientSummaryPopup = $this->createWidget(
             ] <?= $operation->getProceduresCommaSeparated() ?></div>
         <div class="operation-details">
             <ul class="dot-list">
-
-                <?php if ($operation->priority->name === 'Urgent') :?>
-                    <span class="highlighter red"><?=$operation->priority->name;?></span>
-                <?php else : ?>
-                    <?=$operation->priority->name?>
-                <?php endif; ?>
-                <li><?=implode("</li><li>", $operation->anaesthetic_type);?></li>
-                <li><?=$session->theatre->ward->name?></li>
-
+                <li>
+                    <?php if ($operation->priority->name === 'Urgent') : ?>
+                        <span class="highlighter red"><?= $operation->priority->name; ?></span>
+                    <?php else : ?>
+                        <?= $operation->priority->name ?>
+                    <?php endif; ?>
+                </li>
+                    <?php foreach ($operation->anaesthetic_type as $type) :
+                        echo '<li>' . $type->name . '</li>';
+                        if (($this->module->showLAC()) && $type->code === 'LA' && $operation->is_lac_required == '1') :
+                            echo '<li>with Cover</li>';
+                        endif;
+                    endforeach; ?>
                 <li>
                     <div class="theatre-procedure-icons">
                         <?php if ($operation->comments_rtt) :?>
@@ -152,8 +144,10 @@ $patientSummaryPopup = $this->createWidget(
                     $acd_left = "ACD {$biometry->acd_left} mm";
                 ?>
 
-                <i class="oe-i-e i-InBiometry js-has-tooltip" data-tt='{"type":"bilateral","tipR":"<b class=\"fade\">Created:<\/b> <?=$biometry_event->event_date;?><br \/><b>Lens <?=$biometry->lens_right;?><\/b><br \/><b>Power <?=$biometry->iol_power_right;?><\/b><br \/><?=$biometry->formula_right;?>\/T<br \/><?=$al_right?><br \/><?=$k1_right?><br \/><?=$k2_right?><br \/><?=$delta_k_right?><br \/><?=$acd_right?>","tipL":"<b class=\"fade\">Created:<\/b> <?=$biometry_event->event_date?><br \/><b>Lens <?=$biometry->lens_left ?><\/b><br \/><b>Power <?=$biometry->iol_power_left ?><\/b><br \/><?=$biometry->formula_right?><br \/><?=$al_left?><br \/><?=$k1_left?><br \/><?=$k2_left?><br \/><?=$delta_k_left?><br \/><?=$acd_left?>","eyeIcons":true,"clickPopup":false}'></i>
-                <a href="/OphInBiometry/default/view/<?=$biometry_event->id?>" class="button"> Biometry</a>
+                <?php if ($biometry_event) : ?>
+                    <i class="oe-i-e i-InBiometry js-has-tooltip" data-tt='{"type":"bilateral","tipR":"<b class=\"fade\">Created:<\/b> <?=$biometry_event->event_date;?><br \/><b>Lens <?=$biometry->lens_right;?><\/b><br \/><b>Power <?=$biometry->iol_power_right;?><\/b><br \/><?=$biometry->formula_right;?>\/T<br \/><?=$al_right?><br \/><?=$k1_right?><br \/><?=$k2_right?><br \/><?=$delta_k_right?><br \/><?=$acd_right?>","tipL":"<b class=\"fade\">Created:<\/b> <?=$biometry_event->event_date?><br \/><b>Lens <?=$biometry->lens_left ?><\/b><br \/><b>Power <?=$biometry->iol_power_left ?><\/b><br \/><?=$biometry->formula_right?><br \/><?=$al_left?><br \/><?=$k1_left?><br \/><?=$k2_left?><br \/><?=$delta_k_left?><br \/><?=$acd_left?>","eyeIcons":true,"clickPopup":false}'></i>
+                    <a href="/OphInBiometry/default/view/<?=$biometry_event->id?>" class="button"> Biometry</a>
+                <?php endif; ?>
             <?php endif; ?>
 
             <?php if ($consent_event) :?>
@@ -169,14 +163,14 @@ $patientSummaryPopup = $this->createWidget(
 </tr>
 
 <?php
-$assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
-Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
-
-?>
+if ($show_patient_summary_popup) {
+    $assetManager = Yii::app()->getAssetManager();
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->getPublishedPathOfAlias('application.widgets.js') . '/PatientPanelPopupMulti.js');
+    ?>
 <script>
     $(function () {
         PatientPanel.patientPopups.init(false,<?= $patient->id?>);
     });
 </script>
 
+<?php } ?>

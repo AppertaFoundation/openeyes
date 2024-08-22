@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes.
  *
@@ -16,6 +15,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * Class Worklist.
  *
@@ -30,6 +31,8 @@
  */
 class Worklist extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * A search attribute to allow searching for worklists that are valid for a particular date.
      *
@@ -92,8 +95,6 @@ class Worklist extends BaseActiveRecordVersioned
         // class name for the relations automatically generated below.
         return array(
             'mapping_attributes' => array(self::HAS_MANY, 'WorklistAttribute', 'worklist_id'),
-            'displayed_mapping_attributes' => array(self::HAS_MANY, 'WorklistAttribute', 'worklist_id',
-                'on' => 'display_order is NOT NULL', 'order' => 'display_order ASC', ),
             'worklist_patients' => array(self::HAS_MANY, 'WorklistPatient', 'worklist_id'),
             'worklist_definition' => array(self::BELONGS_TO, 'WorklistDefinition', 'worklist_definition_id'),
         );
@@ -133,8 +134,8 @@ class Worklist extends BaseActiveRecordVersioned
                 ':cd' => $check_date,
             ));
         } elseif ($this->on) {
-            $sdate = $this->on->format('Y-m-d').' 00:00:00';
-            $edate = $this->on->format('Y-m-d').' 23:59:59';
+            $sdate = $this->on->format('Y-m-d') . ' 00:00:00';
+            $edate = $this->on->format('Y-m-d') . ' 23:59:59';
             $criteria->addCondition(':sd <= start AND :ed >= end');
             $criteria->params = array_merge($criteria->params, array(
                 ':sd' => $sdate,
@@ -199,5 +200,25 @@ class Worklist extends BaseActiveRecordVersioned
         }
 
         return $res;
+    }
+
+    /**
+     * Return worklist attributes with values. This is defined by the mappings that have a display_order
+     * value set for the worklist_definition of this worklist
+     *
+     * @return WorklistAttribute[]
+     */
+    public function getDisplayed_mapping_attributes()
+    {
+        $criteria = new CDbCriteria();
+
+        $criteria->join = 'JOIN worklist w ON t.worklist_id = w.id JOIN worklist_definition_mapping wdm ON wdm.worklist_definition_id = w.worklist_definition_id AND wdm.key = t.name';
+
+        $criteria->addCondition('t.worklist_id = :worklist_id');
+        $criteria->addCondition('wdm.display_order IS NOT NULL');
+        $criteria->params = [':worklist_id' => $this->id];
+        $criteria->order = 'wdm.display_order ASC';
+
+        return WorklistAttribute::model()->cache(30)->findAll($criteria);
     }
 }

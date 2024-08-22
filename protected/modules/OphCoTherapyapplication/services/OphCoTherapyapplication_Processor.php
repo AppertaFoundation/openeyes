@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -17,12 +18,21 @@
  */
 class OphCoTherapyapplication_Processor
 {
-    const SNOMED_INTRAVITREAL_INJECTION = 231755001;
-    const SNOMED_PDT = 257891001;
-
     const STATUS_PENDING = 'pending';
     const STATUS_SENT = 'sent';
     const STATUS_REOPENED = 're-opened';
+
+    /**
+     *  A list of snomed codes that will be used to determine if a consent form has been created for a relevant injection procedure
+     *
+     * @var array
+     */
+    protected $snomed_injection_codes = array(
+        '231755001', //Intravitreal injection
+        '257891001', //PDT
+        '525991000000108', // Lucentis injection
+        '1004045004', // Intravitreal injection of anti-vascular endothelial growth factor (procedure)
+    );
 
     private $event;
 
@@ -74,13 +84,15 @@ class OphCoTherapyapplication_Processor
             $missing_sides = array();
 
             foreach ($sides as $side) {
-                if (!$api->getInjectionManagementComplexInEpisodeForDisorder(
-                    $this->event->episode->patient,
-                    true,
-                    $side,
-                    $el_diag->{$side . '_diagnosis1_id'},
-                    $el_diag->{$side.'_diagnosis2_id'}
-                )) {
+                if (
+                    !$api->getInjectionManagementComplexInEpisodeForDisorder(
+                        $this->event->episode->patient,
+                        $side,
+                        $el_diag->{$side . '_diagnosis1_id'},
+                        $el_diag->{$side . '_diagnosis2_id'},
+                        true
+                    )
+                ) {
                     $missing_sides[] = $side;
                 }
             }
@@ -101,20 +113,16 @@ class OphCoTherapyapplication_Processor
         }
 
         if ($api = Yii::app()->moduleAPI->get('OphTrConsent')) {
+            // note that cannot use params here, as it messes up the quoting on the list in the 'IN' block after the implode
             $procedures = Procedure::model()->findAll(
-                array('condition' => 'snomed_code = :snomed or snomed_code = :snomed2 ',
-                    'params' => array(':snomed' => $this::SNOMED_INTRAVITREAL_INJECTION, ':snomed2' => $this::SNOMED_PDT),
+                array('condition' => 'snomed_code IN (' . implode(", ", $this->snomed_injection_codes) . ') ',
                 )
             );
+                $proc_ids = array_map(function ($proc) {
+                    return $proc->id;
+                }, $procedures);
             foreach ($sides as $side) {
-                $sideHasConsent = false;
-                foreach ($procedures as $procedure) {
-                    if ($api->hasConsentForProcedure($this->event->episode, $procedure, $side)) {
-                        $sideHasConsent = true;
-                        break;
-                    }
-                }
-                if (!$sideHasConsent) {
+                if (!$api->hasConsentForProcedure($this->event->episode, $proc_ids, $side)) {
                     $warnings[] = 'Consent form is required for ' . $side . ' eye.';
                 }
             }
@@ -165,25 +173,6 @@ class OphCoTherapyapplication_Processor
         Yii::app()->puppeteer->leftMargin = '10mm';
         Yii::app()->puppeteer->rightMargin = '10mm';
 
-        $ec = $this->getElement('Element_OphCoTherapyapplication_ExceptionalCircumstances');
-        if (!$ec) {
-            throw new Exception("Exceptional circumstances not found for event ID {$this->event->id}");
-        }
-
-        $template_data = $this->getTemplateData();
-
-        $html = '<link rel="stylesheet" type="text/css" href="' . $controller->assetPath . '/css/print.css" />';
-
-        if ($ec->hasLeft()) {
-            $left_template_data = $template_data + $this->getSideSpecificTemplateData('left');
-            $html .= $this->getPDFContentForSide($controller, $left_template_data, 'left');
-        }
-
-        if ($ec->hasRight()) {
-            $right_template_data = $template_data + $this->getSideSpecificTemplateData('right');
-            $html .= $this->getPDFContentForSide($controller, $right_template_data, 'right');
-        }
-
         $this->event->lock();
 
         if (!$this->event->hasPDF('therapy_application') || @$_GET['html']) {
@@ -194,7 +183,13 @@ class OphCoTherapyapplication_Processor
             $wk->setPatient($this->event->episode->patient);
             $wk->setBarcode($this->event->barcodeSVG);
 
-            $wk->savePageToPDF($this->event->imageDirectory, 'event', 'therapy_application', $html, false);
+            $wk->savePageToPDF(
+                $this->event->imageDirectory,
+                'event',
+                'therapy_application',
+                'http://localhost/OphCoTherapyapplication/default/renderPreviewPdf?event_id=' . $this->event->id,
+                false
+            );
         }
 
         $this->event->unlock();
@@ -297,6 +292,43 @@ class OphCoTherapyapplication_Processor
         return Yii::app()->getModule('OphCoTherapyapplication')->getViewPath() . DIRECTORY_SEPARATOR . 'email';
     }
 
+    public function renderPdfForSide(CController $controller, $side)
+    {
+        $template_data = $this->getTemplateData();
+        $template_data += $this->getSideSpecificTemplateData($side);
+
+        $html = null;
+        if ($html = $this->getPDFContentForSide($controller, $template_data, $side)) {
+            $html = '<link rel="stylesheet" type="text/css" href="' . $controller->assetPath . '/css/print.css" />' . "\n" . $html;
+        }
+
+        return $html;
+    }
+
+    public function renderPreviewPdf(CController $controller)
+    {
+        $ec = $this->getElement('Element_OphCoTherapyapplication_ExceptionalCircumstances');
+        if (!$ec) {
+            throw new Exception("Exceptional circumstances not found for event ID {$this->event->id}");
+        }
+
+        $template_data = $this->getTemplateData();
+
+        $html = '<link rel="stylesheet" type="text/css" href="' . $controller->assetPath . '/css/print.css" />';
+
+        if ($ec->hasLeft()) {
+            $left_template_data = $template_data + $this->getSideSpecificTemplateData('left');
+            $html .= $this->getPDFContentForSide($controller, $left_template_data, 'left');
+        }
+
+        if ($ec->hasRight()) {
+            $right_template_data = $template_data + $this->getSideSpecificTemplateData('right');
+            $html .= $this->getPDFContentForSide($controller, $right_template_data, 'right');
+        }
+
+        return $html;
+    }
+
     /**
      * create the PDF file as a ProtectedFile for the given side.
      *
@@ -310,9 +342,7 @@ class OphCoTherapyapplication_Processor
      */
     protected function createAndSavePdfForSide(CController $controller, array $template_data, $side)
     {
-        if ($html = $this->getPDFContentForSide($controller, $template_data, $side)) {
-            $html = '<link rel="stylesheet" type="text/css" href="' . $controller->assetPath . '/css/print.css" />' . "\n" . $html;
-
+        if (!is_null($this->renderPdfForSide($controller, $side))) {
             $this->event->lock();
 
             if (!$this->event->hasPDF('therapy_application')) {
@@ -323,7 +353,13 @@ class OphCoTherapyapplication_Processor
                 $wk->setPatient($this->event->episode->patient);
                 $wk->setBarcode($this->event->barcodeSVG);
 
-                $wk->savePageToPDF($this->event->imageDirectory, 'event', 'therapy_application', $html, false);
+                $wk->savePageToPDF(
+                    $this->event->imageDirectory,
+                    'event',
+                    'therapy_application',
+                    'http://localhost/OphCoTherapyapplication/default/renderPdfForSide?event_id=' . $this->event->id . '&side='.$side,
+                    false
+                );
             }
 
             $this->event->unlock();
@@ -332,8 +368,12 @@ class OphCoTherapyapplication_Processor
                 return Yii::app()->end();
             }
 
-            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient('LOCAL',
-                $this->event->episode->patient->id, $this->event->institution_id, $this->event->site_id);
+            $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                'LOCAL',
+                $this->event->episode->patient->id,
+                $this->event->institution_id,
+                $this->event->site_id
+            );
 
             $pfile = ProtectedFile::createForWriting('ECForm - ' . $side . ' - ' .
                 PatientIdentifierHelper::getIdentifierValue($primary_identifier) . '.pdf');
@@ -442,7 +482,7 @@ class OphCoTherapyapplication_Processor
 
         $service_info = $this->getServiceInfo();
 
-        $link_to_attachments = ($attach_size > Helper::convertToBytes(Yii::app()->params['OphCoTherapyapplication_email_size_limit']));
+        $link_to_attachments = ($attach_size > Helper::convertToBytes(SettingMetadata::model()->getSetting('OphCoTherapyapplication_email_size_limit')));
 
         $template_data['link_to_attachments'] = $link_to_attachments;
         $email_text = $this->generateEmailForSide($controller, $template_data, $eye_name);
@@ -450,10 +490,10 @@ class OphCoTherapyapplication_Processor
         $message = Yii::app()->mailer->newMessage();
         if ($template_data['compliant']) {
             $recipient_type = 'Compliant';
-            $message->setSubject(Yii::app()->params['OphCoTherapyapplication_compliant_email_subject']);
+            $message->setSubject(SettingMetadata::model()->getSetting('OphCoTherapyapplication_compliant_email_subject'));
         } else {
             $recipient_type = 'Non-compliant';
-            $message->setSubject(Yii::app()->params['OphCoTherapyapplication_noncompliant_email_subject']);
+            $message->setSubject(SettingMetadata::model()->getSetting('OphCoTherapyapplication_noncompliant_email_subject'));
         }
 
         $recipient_type = $template_data['compliant'] ? 'Compliant' : 'Non-compliant';
@@ -474,14 +514,14 @@ class OphCoTherapyapplication_Processor
             $email_recipients[$recipient->recipient_email] = $recipient->recipient_name;
         }
 
-        $message->setFrom(Yii::app()->params['OphCoTherapyapplication_sender_email']);
+        $message->setFrom(SettingMetadata::model()->getSetting('OphCoTherapyapplication_sender_email'));
         $message->setTo($email_recipients);
 
         if ($notify_user && $notify_user->email) {
             $cc = true;
-            if (Yii::app()->params['restrict_email_domains']) {
+            if (SettingMetadata::model()->getSetting('restrict_email_domains')) {
                 $domain = preg_replace('/^.*?@/', '', $notify_user->email);
-                if (!in_array($domain, Yii::app()->params['restrict_email_domains'])) {
+                if (!in_array($domain, SettingMetadata::model()->getSetting('restrict_email_domains'))) {
                     Yii::app()->user->setFlash('warning.warning', 'You will not receive a copy of the submission because your email address ' . $notify_user->email . ' is not on a secure domain');
                     $cc = false;
                 }
@@ -498,6 +538,9 @@ class OphCoTherapyapplication_Processor
                 $message->attach(Swift_Attachment::fromPath($att->getPath())->setFilename($att->name));
             }
         }
+
+        $sender_address = SenderEmailAddresses::getSenderAddress(SettingMetadata::model()->getSetting('OphCoTherapyapplication_sender_email'), $this->event->institution_id, $this->event->site_id);
+        $sender_address->prepareMailer();
 
         if (Yii::app()->mailer->sendMessage($message)) {
             $email = new OphCoTherapyapplication_Email();

@@ -78,4 +78,17 @@ class StrabismusManagement_EntryTest extends \ModelTestCase
         }
         $this->assertEquals($expected, (string) $instance);
     }
+
+    /** @test */
+    public function clone_should_unset_id_and_element_id_attributes()
+    {
+        $instance = $this->getElementInstance();
+        $instance->id = 123;
+        $instance->element_id = 456;
+
+        $clone = clone $instance;
+
+        $this->assertNull($clone->id);
+        $this->assertNull($clone->element_id);
+    }
 }

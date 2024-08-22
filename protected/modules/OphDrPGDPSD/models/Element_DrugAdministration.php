@@ -1,5 +1,13 @@
 <?php
 
+namespace OEModule\OphDrPGDPSD\models;
+
+use Audit;
+use Firm;
+use OE\factories\models\traits\HasFactory;
+use OEModule\OphCiExamination\widgets\DrugAdministration;
+use OEModule\OphCiExamination\models\Element_OphCiExamination_DrugAdministration;
+
 /**
  * This is the model class for table "et_drug_administration".
  *
@@ -10,19 +18,26 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-// namespace OEModule\OphDrPGDPSD\models;
+
 use OEModule\OphCiExamination\models\BaseMedicationElement;
 use OEModule\OphCiExamination\models\traits\CustomOrdering;
+use Pathway;
+use PathwayStep;
+use PathwayStepType;
+use UnbookedWorklist;
+use WorklistManager;
 
 class Element_DrugAdministration extends BaseMedicationElement
 {
+    use HasFactory;
     use CustomOrdering;
+
     public $do_not_save_entries = true;
     protected $auto_update_relations = true;
     public $check_for_duplicate_entries = false;
-    public $patient = null;
+    public $patient;
 
-    public $widgetClass = 'OEModule\OphCiExamination\widgets\DrugAdministration';
+    public $widgetClass = DrugAdministration::class;
 
     public static $entry_class = Element_DrugAdministration_record::class;
     /**
@@ -67,10 +82,10 @@ class Element_DrugAdministration extends BaseMedicationElement
         // will receive user inputs.
         return array(
             array('assignments', 'required', 'message' => 'At least one assignment must be recorded, or the element should be removed.'),
-            array('event_id, last_modified_user_id, created_user_id', 'length', 'max'=>10),
+            array('event_id, last_modified_user_id, created_user_id', 'length', 'max' => 10),
             array('last_modified_date, created_date, type, event_id, assignments', 'safe'),
             // The following rule is used by search().
-            array('id, event_id', 'safe', 'on'=>'search'),
+            array('id, event_id', 'safe', 'on' => 'search'),
             array('type', 'default', 'value' => $this::getType(), 'on' => 'insert'),
         );
     }
@@ -82,49 +97,108 @@ class Element_DrugAdministration extends BaseMedicationElement
 
     protected function instantiate($attributes)
     {
-        switch (strtolower($attributes['type'])) {
-            case 'exam':
-                $class='OEModule\\OphCiExamination\\models\\Element_OphCiExamination_DrugAdministration';
-                break;
-            default:
-                $class = get_class($this);
-                break;
+        if (strtolower($attributes['type']) === 'exam') {
+            $class = Element_OphCiExamination_DrugAdministration::class;
+        } else {
+            $class = get_class($this);
         }
-        $model = new $class(null);
-        return $model;
+        return new $class(null);
     }
 
     public function getAssignmentRelations()
     {
         return array(
-            'assignments' => array(self::MANY_MANY, 'OphDrPGDPSD_Assignment', 'et_drug_administration_assignments(element_id, assignment_id)'),
+            'assignments' => array(self::MANY_MANY, OphDrPGDPSD_Assignment::class, 'et_drug_administration_assignments(element_id, assignment_id)'),
         );
     }
 
+    /**
+     * @throws JsonException
+     * @throws Exception
+     */
     public function save($runValidation = true, $attributes = null, $allow_overriding = false)
     {
         $original = $this->assignments;
         foreach ($this->assignments as $key => $assignment) {
+            if (!$assignment->active) {
+                $assignment->save();
+                if ($assignment->worklist_patient->pathway ?? null) {
+                    $matched_da_steps = $this->getDAPathwaySteps($assignment, $assignment->worklist_patient->pathway);
+                    array_map(function ($step) {
+                        $step->delete();
+                    }, $matched_da_steps);
+                }
+                continue;
+            }
             if ($assignment->create_wp) {
                 $site_id = \Yii::app()->session->get('selected_site_id');
                 $firm_id = \Yii::app()->session->get('selected_firm_id');
-                $firm = \Firm::model()->findByPk($firm_id);
-                $subspecialty = $firm->subspecialty ? $firm->subspecialty : null;
-                $unbooked_worklist_manager = new \UnbookedWorklist();
+                $firm = Firm::model()->findByPk($firm_id);
+                $subspecialty = $firm->subspecialty ?: null;
+                $unbooked_worklist_manager = new UnbookedWorklist();
                 $unbooked_worklist = $unbooked_worklist_manager->createWorklist(new \DateTime(), $site_id, $subspecialty->id);
-                $wl_manager = new \WorklistManager();
+                $wl_manager = new WorklistManager();
                 $worklist_patient = $wl_manager->getWorklistPatient($unbooked_worklist, $this->event->episode->patient);
 
                 if (!$worklist_patient) {
                     $worklist_patient = $wl_manager->addPatientToWorklist($this->event->episode->patient, $unbooked_worklist, new \DateTime());
                 }
-
+                if (!$worklist_patient->pathway) {
+                    $worklist_patient->worklist->worklist_definition->pathway_type->instancePathway($worklist_patient);
+                    $worklist_patient->refresh();
+                }
                 $assignment->visit_id = $worklist_patient->id;
             }
             $assignment->save();
+            $assignment_wp = $assignment->worklist_patient;
+            if ($assignment_wp) {
+                if (!$assignment_wp->pathway) {
+                    $assignment_wp->worklist->worklist_definition->pathway_type->instancePathway($assignment_wp);
+                    $assignment_wp->refresh();
+                }
+                $assignment_pathway = $assignment_wp->pathway;
+
+                $matched_da_steps = $this->getDAPathwaySteps($assignment, $assignment_pathway);
+                // if no matched found, create a new pathway step for current psd
+                if (!$matched_da_steps) {
+                    \Yii::app()->event->dispatch('psd_created', array(
+                        'step_type' => PathwayStepType::model()->find('short_name = \'drug admin\''),
+                        'worklist_patient_id' => $assignment->worklist_patient->id,
+                        'initial_state' => [
+                            'preset_id' => $assignment->pgdpsd ? $assignment->pgdpsd->id : null,
+                            'assignment_id' => $assignment->id,
+                        ],
+                        'raise_event' => false
+                    ));
+                }
+            }
         }
         $this->assignments = $original;
         return parent::save($runValidation, $attributes, $allow_overriding);
+    }
+
+    /**
+     * Get the pathway step that associated with the assignment
+     * @param OphDrPGDPSD_Assignment $assignment
+     * @param Pathway $pathway
+     * @return PathwayStep[]
+     */
+    private function getDAPathwaySteps(OphDrPGDPSD_Assignment $assignment, Pathway $pathway)
+    {
+        if (!$pathway) {
+            return [];
+        }
+        // find out all existing drug admin pathway step associated with corresponding pathway
+        $da_steps = PathwayStep::model()->findAll(
+            'pathway_id = :pathway_id AND short_name = "drug admin"',
+            array(':pathway_id' => $pathway->id)
+        );
+        // try to find the pathway steps related to current psd
+        $matched_da_steps = array_filter($da_steps, static function ($da_step) use ($assignment) {
+            return (int)$da_step->getState('assignment_id') === (int)$assignment->id;
+        });
+
+        return array_values($matched_da_steps);
     }
 
     public function getEntryRelations()
@@ -181,14 +255,14 @@ class Element_DrugAdministration extends BaseMedicationElement
      */
     public function search()
     {
-        $criteria=new CDbCriteria;
+        $criteria = new \CDbCriteria();
 
         $criteria->compare('id', $this->id);
         $criteria->compare('event_id', $this->event_id, true);
         $criteria->compare('type', $this->type, true);
 
-        return new CActiveDataProvider($this, array(
-            'criteria'=>$criteria,
+        return new \CActiveDataProvider($this, array(
+            'criteria' => $criteria,
         ));
     }
 
@@ -207,22 +281,28 @@ class Element_DrugAdministration extends BaseMedicationElement
     protected function afterSave()
     {
         $pgdpsd_api = \Yii::app()->moduleAPI->get('OphDrPGDPSD');
+        $audit_message = [];
         foreach ($this->assignments as $assignment) {
+            $is_assignment_active = $assignment->active ? "Yes" : "No";
+            $_audit_message = "Assignment id: $assignment; Is Active: $is_assignment_active<br />";
             foreach ($assignment->assigned_meds as $med) {
                 if ($med->administered && !$med->event_entry) {
                     $med = $pgdpsd_api->setMedEventEntry($med, $this);
-                    $med->save();
                 } elseif (!$med->administered && $med->event_entry) {
-                    $event_entry = $med->event_entry;
                     $med->administered_id = null;
                     $med->administered = 0;
                     $med->administered_time = null;
                     $med->administered_by = null;
-                    $med->save();
                 }
+                $med->save();
+                $med->refresh();
+                $_audit_message .= "$med<br />";
             }
+            $audit_message[] = $_audit_message;
         }
         parent::afterSave();
+        $messages = implode("<br />", $audit_message);
+        Audit::add('Drug Administration', 'save', "Element Id: {$this->id} Event Id: {$this->event->id}<br />{$messages}");
     }
 
     public function updateAssignmentList($assignment)
@@ -239,19 +319,20 @@ class Element_DrugAdministration extends BaseMedicationElement
 
     public function loadFromExisting($element)
     {
-        return;
     }
 
+    /**
+     * @throws JsonException
+     * @throws Exception
+     */
     public function softDelete()
     {
-        $new_assignments = array();
         foreach ($this->assignments as $assignment) {
             $duplicate = new OphDrPGDPSD_Assignment();
             $assignment_attrs = $assignment->attributes;
-            unset($assignment_attrs['id']);
-            unset($assignment_attrs['comment_id']);
+            unset($assignment_attrs['id'], $assignment_attrs['comment_id']);
             $duplicate->attributes = $assignment_attrs;
-            $duplicate->assigned_meds = array_map(function ($med) {
+            $duplicate->assigned_meds = array_map(static function ($med) {
                 $med_attrs = $med->attributes;
                 unset($med_attrs['id']);
                 return $med_attrs;
@@ -264,10 +345,12 @@ class Element_DrugAdministration extends BaseMedicationElement
                 $duplicate_comment->attributes = $assignment->comment->attributes;
                 $duplicate->saveComment($duplicate_comment);
             }
-            $new_assignments[] = $duplicate;
+            // creating a new drug administration assignment for the newly created pgdpsd_assignment
+            $element_drugAdministration_assignments = new Element_DrugAdministration_Assignments();
+            $element_drugAdministration_assignments->element_id = $assignment->elements[0]->id;
+            $element_drugAdministration_assignments->assignment_id = $duplicate->id;
+            $element_drugAdministration_assignments->save();
         }
-        $this->assignments = $new_assignments;
-        $this->save();
     }
 
     // in the function setAndValidateElementsFromData in BaseEventTypeController

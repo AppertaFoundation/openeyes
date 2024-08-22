@@ -16,6 +16,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\models;
 
+
 use OEModule\OphCiExamination\models\Retinoscopy_WorkingDistance;
 use OEModule\OphCiExamination\tests\unit\models\testingtraits\HasLookupBehavioursToTest;
 
@@ -35,7 +36,7 @@ class Retinoscopy_WorkingDistanceTest extends \ModelTestCase
 
     protected $element_cls = Retinoscopy_WorkingDistance::class;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->required_fields = ['name', 'value', 'display_order'];

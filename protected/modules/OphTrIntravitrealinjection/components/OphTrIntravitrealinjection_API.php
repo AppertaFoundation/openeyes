@@ -18,7 +18,6 @@
  */
 class OphTrIntravitrealinjection_API extends BaseAPI
 {
-
     private $legacy_api;
 
     /**
@@ -28,11 +27,41 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      */
     protected function getLegacyAPI()
     {
-        if (!$this->legacy_api) {
-            $this->legacy_api = Yii::app()->moduleAPI->get('OphLeIntravitrealinjection');
+        if (Yii::app()->hasModule('OphLeIntravitrealinjection')) {
+            if (!$this->legacy_api) {
+                $this->legacy_api = Yii::app()->moduleAPI->get('OphLeIntravitrealinjection');
+            }
+        } else {
+            $this->legacy_api = null;
         }
 
         return $this->legacy_api;
+    }
+
+    public function getLetterIntravitrealInjectionsRight(\Patient $patient)
+    {
+        return $this->getLetterIntravitrealInjectionsSide($patient, "right");
+    }
+
+    public function getLetterIntravitrealInjectionsSide(\Patient $patient, $side)
+    {
+        $episode = $patient->getEpisodeForCurrentSubspecialty();
+        if ($injection = $this->getPreviousTreatmentForSide($patient, $episode, $side)) {
+            $date_time = new \DateTime($injection->event->event_date);
+            $date_time->format(\Helper::NHS_DATE_FORMAT);
+            $num_method = "getLetterTreatmentNumber{$side}";
+            $drug_method = "getLetterTreatmentDrug{$side}";
+            $num = $this->$num_method($patient);
+            $drug = $this->$drug_method($patient);
+            return "$num injections, last $drug " . $date_time->format(\Helper::NHS_DATE_FORMAT);
+        }
+
+        return "No";
+    }
+
+    public function getLetterIntravitrealInjectionsLeft(\Patient $patient)
+    {
+        return $this->getLetterIntravitrealInjectionsSide($patient, "left");
     }
 
     /**
@@ -127,7 +156,7 @@ class OphTrIntravitrealinjection_API extends BaseAPI
 
         $criteria->addCondition(array(
                 'event.deleted = 0',
-                'treatment.eye_id in (:eye_id,'.SplitEventTypeElement::BOTH.')',
+                'treatment.eye_id in (:eye_id,' . SplitEventTypeElement::BOTH . ')',
                 'event_date <= :since',
                 'event.deleted = 0',
                 'patient.id = :patient_id',
@@ -230,7 +259,6 @@ class OphTrIntravitrealinjection_API extends BaseAPI
         }
 
         return $res;
-
     }
 
     /**
@@ -304,11 +332,12 @@ class OphTrIntravitrealinjection_API extends BaseAPI
      */
     public function getLetterPostInjectionDrops($patient, $use_context = false)
     {
-        if ($el = $this->getElementFromLatestEvent(
-            'Element_OphTrIntravitrealinjection_PostInjectionExamination',
-            $patient,
-            $use_context
-        )
+        if (
+            $el = $this->getElementFromLatestEvent(
+                'Element_OphTrIntravitrealinjection_PostInjectionExamination',
+                $patient,
+                $use_context
+            )
         ) {
             $drops = array();
             if ($el->hasRight()) {

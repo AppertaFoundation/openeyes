@@ -16,7 +16,7 @@
 $model_name = CHtml::modelName($element);
 
 ?>
-<div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element">
+<div class="element-fields flex-layout full-width" id="<?= $model_name ?>_element" data-test="comments-edit">
     <div class="cols-11 end flex-layout">
         <?php echo $form->textArea(
             $element,

@@ -15,6 +15,7 @@
  * @copyright Copyright (c) 2017, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php /** @var EventMedicationUse $entry */ ?>
 
@@ -65,8 +66,8 @@
             } ?>
         </div>
         <?php if ($entry->comments) { ?>
-            <i class="oe-i comments-who small pad-right js-has-tooltip" data-tt-type="basic" data-tooltip-content="User comment by <br />Michael Morgan"></i>
-            <span class="user-comment"><?= $entry->comments; ?></span>
+            <i class="oe-i comments-who small pad-right js-has-tooltip" data-tt-type="basic" data-tooltip-content="User comment"></i>
+            <span class="user-comment"><?= \OELinebreakReplacer::replace($entry->comments); ?></span>
         <?php } ?>
     </td>
     <td class="nowrap"><?php if ($entry->prescribe && $entry->prescriptionItem) {

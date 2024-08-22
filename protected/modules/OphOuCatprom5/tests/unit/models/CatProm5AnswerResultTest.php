@@ -38,12 +38,12 @@ class CatProm5AnswerResultTest extends ActiveRecordTestCase {
         );
     }
 
-    public static function setupBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OphOuCatprom5');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->model = new CatProm5AnswerResult();

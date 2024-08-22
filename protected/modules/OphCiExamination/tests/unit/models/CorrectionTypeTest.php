@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\models;
 
+
 use OEModule\OphCiExamination\models\CorrectionType;
 
 /**
@@ -56,5 +57,4 @@ class CorrectionTypeTest extends \ModelTestCase
         $instance = $this->getElementInstance();
         $this->assertContains(\LookupTable::class, $instance->behaviors());
     }
-
 }

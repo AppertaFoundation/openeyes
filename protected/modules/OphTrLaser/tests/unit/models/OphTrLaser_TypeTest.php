@@ -35,7 +35,7 @@ class OphTrLaser_TypeTest extends ActiveRecordTestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->getFixtureManager()->basePath = Yii::getPathOfAlias('application.modules.ophtrlaser.tests.fixtures');
         parent::setUp();
@@ -46,7 +46,7 @@ class OphTrLaser_TypeTest extends ActiveRecordTestCase
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->getFixtureManager()->basePath = Yii::getPathOfAlias('application.modules.ophtrlaser.tests.fixtures');
         parent::tearDown();
@@ -77,8 +77,9 @@ class OphTrLaser_TypeTest extends ActiveRecordTestCase
 
         $this->assertEquals(5, count($types));
         foreach ($types as $type) {
-            $this->assertInternalType('string', $type->name);
-            $this->assertInternalType('int', (int) $type->id);
+            $this->assertIsString($type->name);
+            // this seems a bit redundant as a test with the casting, but keeping it as written
+            $this->assertIsInt((int) $type->id);
             $this->assertGreaterThan(0, strlen($type->name));
         }
     }

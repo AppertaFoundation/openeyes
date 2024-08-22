@@ -1,5 +1,5 @@
-<div class="data-group">
-  <div class="cols-2 column">
+<div class="data-group flex-layout cols-full">
+  <div class="cols-7 column">
     <label for="patient-search">Patient:</label>
   </div>
   <div class="cols-5 column end">
@@ -16,28 +16,28 @@
     $institution_id = Institution::model()->getCurrent()->id;
     $site_id = Yii::app()->session['selected_site_id'];
     ?>
-<div class="data-group">
-    <div class="cols-2 column">
+<div class="data-group flex-layout cols-full">
+    <div class="cols-7 column">
         <label for="patient-search">Maiden Name</label>
     </div>
     <div class="cols-5 column end">
         <input type="text" id="patient-lookup-extra-maidenname" value="<?= ($model->patient->contact->maiden_name) ? $model->patient->contact->maiden_name : '' ?>" readonly>
     </div>
 </div>
-<div class="data-group">
-  <div class="cols-2 column">
+<div class="data-group flex-layout cols-full">
+  <div class="cols-7 column">
     <label for="patient-search">Date of Birth</label>
   </div>
   <div class="cols-5 column end">
     <input type="text" id="patient-lookup-extra-dob" value="<?= ($model->patient) ? $model->patient->dob : '' ?>" readonly>
   </div>
 </div>
-<div class="data-group">
-  <div class="cols-2 column">
-    <label for="patient-search"><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $site_id) ?></label>
+<div class="data-group flex-layout cols-full">
+  <div class="cols-7 column">
+    <label for="patient-search"><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $site_id) ?></label>
   </div>
   <div class="cols-5 column end">
-    <input type="text" id="patient-lookup-extra-hos-num" value="<?= ($model->patient) ? PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $model->patient->id, $institution_id, $site_id)) : '' ?>" readonly>
+    <input type="text" id="patient-lookup-extra-hos-num" value="<?= ($model->patient) ? PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $model->patient->id, $institution_id, $site_id)) : '' ?>" readonly>
   </div>
 </div>
 <?php } ?>

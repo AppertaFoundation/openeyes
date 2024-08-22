@@ -28,18 +28,17 @@ $copy = $data['copy'];
 $header_text = null;
 $footer_text = null;
 
-$settings = new SettingMetadata();
-$print_mode = $settings->getSetting('prescription_form_format');
+$print_mode = \SettingMetadata::model()->getSetting('prescription_form_format');
 
 $allowed_tags = '<b><br><div><em><h1><h2><h3><h4><h5><h6><hr><i><ul><ol><li><p><small><span><strong><sub><sup>
 <u><wbr><table><thead><tbody><tfoot><tr><th><td><colgroup>';
 
-$header_param = Yii::app()->params['prescription_boilerplate_header'];
+$header_param = \SettingMetadata::model()->getSetting('prescription_boilerplate_header');
 if ($header_param !== null) {
     $header_text = strip_tags($header_param, $allowed_tags);
 }
 
-$footer_param = Yii::app()->params['prescription_boilerplate_footer'];
+$footer_param = \SettingMetadata::model()->getSetting('prescription_boilerplate_footer');
 if ($footer_param !== null) {
     $footer_text = strip_tags($footer_param, $allowed_tags);
 }
@@ -63,8 +62,8 @@ if (isset($element->authorisedByUser)) {
 <?php if (!isset($data['print_mode']) || ($data['print_mode'] !== 'WP10' && $data['print_mode'] !== 'FP10')) {
     $institution_id = Institution::model()->getCurrent()->id;
     $site_id = Yii::app()->session['selected_site_id'];
-    $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
-    $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_secondary_number_usage_code'], $this->patient->id, $institution_id, $site_id);
+    $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $this->patient->id, $institution_id, $site_id);
+    $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_secondary_number_usage_code'), $this->patient->id, $institution_id, $site_id);
 
     if ($header_text !== null) { ?>
         <div class="clearfix"><?= $header_text ?></div>
@@ -203,6 +202,37 @@ if (isset($element->authorisedByUser)) {
         </table>
         <div class="spacer"></div>
     <?php } ?>
+    <?php
+    if ($signatures = $element->isSignedByMedication()) {
+        $readonly_signatures = $signatures->getSignatures(true);
+        foreach ($readonly_signatures as $signature) {
+            ?>
+    <table class="borders done_bys">
+        <tr>
+            <th>Prescribed by</th>
+            <td><?=$prescribed_by->fullname ?><?php if ($prescribed_by->registration_code) {
+                echo ' (' . $prescribed_by->registration_code . ')';
+                } ?>
+            </td>
+            <th>Date</th>
+            <td><?= $prescribed_date ?>
+            </td>
+        </tr>
+        <tr class="handWritten">
+            <th>Signature</th>
+            <td>
+                <?= $signature->getPrintout() ?>
+            </td>
+            <th>Contact Number</th>
+            <td>
+                <div class="dotted-write"></div>
+            </td>
+        </tr>
+    </table>
+            <?php
+        }
+    } else {
+        ?>
     <table class="borders done_bys">
         <tr>
             <th>Prescribed by</th>
@@ -224,8 +254,10 @@ if (isset($element->authorisedByUser)) {
                 <div class="dotted-write"></div>
             </td>
         </tr>
-    </table>
-
+    </table>    
+        <?php
+    }
+    ?>
     <table class="borders done_bys"  style="width:48%;float: left">
         <tr class="handWritten">
             <th>Screened by</th>
@@ -285,7 +317,7 @@ if (isset($element->authorisedByUser)) {
             </td>
         </tr>
     </table>
-
+    <div class="clearfix"></div>
     <?php if ($footer_text !== null) { ?>
         <div><?= $footer_text ?></div>
     <?php } ?>

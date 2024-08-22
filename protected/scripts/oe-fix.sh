@@ -3,6 +3,24 @@
 
 ## NOTE: This script assumes it is in protected/scripts. If you move it then relative paths will not work!
 
+abort() {
+    echo >&2 "
+****************************
+*** ABORTED DUE TO ERROR ***
+****************************
+
+The last return code was: $?
+
+"
+    date
+    echo "An error occurred. Exiting..." >&2
+    exit 1
+}
+
+trap 'abort' 0
+
+set -e
+
 # Find fuill folder path where this script is located, then find root folder
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
@@ -14,10 +32,29 @@ done
 SCRIPTDIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 WROOT="$(cd -P "$SCRIPTDIR/../../" && pwd)"
 
-curuser="${LOGNAME:-root}"
+# $USER is not always populated in docker containers, so get the running user if it is empty
+function getuser() {
+    if [ -z $USER ]; then
+        USER=$(id -u -n)
+    fi
+
+    echo $USER
+}
+curuser=$(getuser)
+
+# add current user to www-data group, this resolves a lot of local access issues
+gpasswd -a "$curuser" www-data
 
 # disable log to browser during fix, otherwise it causes extraneous trace output on the CLI
 export LOG_TO_BROWSER=""
+
+# check if git is installed - it won't be for production images, so we can skip some steps
+if ! command -v git &>/dev/null || [ ! -d "$WROOT/.git" ]; then
+    echo "Git is not installed (This must be a production image). Some steps will be skipped..."
+    gitinstalled=0
+else
+    gitinstalled=1
+fi
 
 # process commandline parameters
 clearcahes=1
@@ -141,7 +178,7 @@ fi
 if [ "$composer" == "1" ]; then
 
     [[ "${OE_MODE^^}" == "LIVE" ]] && {
-        composerexta="--no-dev --optimize-autoloader"
+        composerexta="--no-dev"
         npmextra="--only=production"
         echo "************************** LIVE MODE ******************************"
     }
@@ -153,10 +190,10 @@ if [ "$composer" == "1" ]; then
     echo "DEPENDENCIES BEING EVALUATED..."
     # delete the lock file first as we want to be sure it gets regenerated (note the lock file is no longer comitted to version control)
     rm "$WROOT/composer.lock" 2>/dev/null || :
-    echo "Installing/updating composer dependencies"
-    sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts --prefer-dist --no-interaction $composerexta
+    echo -e "\n** Installing/updating composer dependencies **"
+    sudo -E composer install --working-dir=$WROOT --no-plugins --no-scripts --prefer-dist --no-interaction --optimize-autoloader $composerexta
 
-    echo "Installing/updating npm dependencies"
+    echo -e "\n** Installing/updating npm dependencies **"
 
     # have to cd, as not all npm commands support setting a working directory
     cd "$WROOT" || exit 1
@@ -164,7 +201,7 @@ if [ "$composer" == "1" ]; then
     # If we've switched from dev to live, remove dev dependencies, else, just prune
     [ "${OE_MODE^^}" == "LIVE" ] && sudo -E npm prune --production || sudo -E npm prune
 
-    rm package-lock.json >/dev/null 2>&1
+    rm package-lock.json >/dev/null 2>&1 || :
     sudo -E npm update --no-save $npmextra
 
     # List current modules (will show any issues if above commands have been blocked by firewall).
@@ -174,7 +211,10 @@ if [ "$composer" == "1" ]; then
     cd - >/dev/null 2>&1
 
     # Refresh git submodules
-    git -C $WROOT submodule update --init
+    if [ "$gitinstalled" == "1" ]; then
+        echo -e "\n** Refreshing git submodules **"
+        git -C $WROOT submodule update --init
+    fi
 
 fi
 
@@ -206,66 +246,159 @@ if [ $clearcahes = 1 ]; then
     echo "Clearing caches..."
     sudo rm -rf $WROOT/protected/runtime/cache/* 2>/dev/null || :
     sudo mkdir -p $WROOT/protected/runtime/cache/events 2>/dev/null || :
-    sudo chown www-data $WROOT/protected/runtime/cache/events 2>/dev/null
+    sudo chown www-data:www-data $WROOT/protected/runtime/cache/events 2>/dev/null
     sudo rm -rf $WROOT/assets/* 2>/dev/null || :
     echo ""
+    echo "clearing APC cache..."
+    curl http://localhost/apc_clear.php || :
 fi
 
 # Fix permissions
 if [ $noperms = 0 ]; then
     sudo gpasswd -a "$curuser" www-data # add current user to www-data group
 
-    # We can ignore setting file permissions when running in a docker conatiner, as we always run as root
-    if [[ "$DOCKER_CONTAINER" != "TRUE" ]] || [ $forceperms == 1 ]; then
-        echo -e "\nResetting file permissions..."
-        if [ $(stat -c '%U' $WROOT) != $curuser ] || [ $(stat -c '%G' $WROOT) != "www-data" ] || [ $forceperms == 1 ]; then
-            echo "updaing ownership on $WROOT"
-            sudo chown -R $curuser:www-data $WROOT
-        else
-            echo "ownership of $WROOT looks ok, skipping. Use --force-perms to override"
-        fi
+    if [ -f /init_scripts/50-create-folders.sh ]; then
+        bash /init_scripts/50-create-folders.sh
+    else
 
-        folders774=($WROOT/protected/config/local $WROOT/assets/ $WROOT/protected/runtime $WROOT/protected/files)
+        declare -a folders774=(
+            "$WROOT/protected/config/local"
+        )
 
+        declare -a folders6777=(
+            "$WROOT/cache"
+            "$WROOT/assets"
+            "$WROOT/protected/cache"
+            "$WROOT/protected/cache/events"
+            "$WROOT/protected/files"
+            "$WROOT/protected/runtime"
+            "$WROOT/protected/runtime/cache"
+            "$WROOT/protected/migrations/data/freehand_templates"
+        )
+
+        declare -a folders755=(
+            "$WROOT/protected/assets/newblue/"
+        )
+
+        declare -a foldersExclude=(
+            "$WROOT/protected/assets/newblue/src"
+            "$WROOT/protected/assets/newblue/node_scripts"
+            "$WROOT/assets/newblue"
+        )
+
+        # This will set the correct permissions on any given folder (and all it's sub-folders) that does not meet the correct criteria
+        # Folder name should be supplied as prameter 1
+        # additional options are -uid=<user name to chown>; -gid=<group name to chown>; -octal=<octal file permissions to chmod>
+        function set_perms() (
+
+            user="www-data"
+            group="www-data"
+            octal=774
+
+            PARAMS=()
+            while [[ $# -gt 0 ]]; do
+                p="$1"
+
+                case $p in
+                -uid*) # Set suffix - ignore if .
+                    user=${1#*=}
+                    ;;
+                -gid*)
+                    group=${1#*=}
+                    ;;
+                -octal*)
+                    octal=${1#*=}
+                    ;;
+                *) # add everything else to the params array for processing in the next section
+                    PARAMS+=("$1")
+                    ;;
+                esac
+                shift
+            done
+            set -- "${PARAMS[@]}" # restore positional parameters
+
+            # If no sticky / uid / gid bits are specified, make sure we unset any existing settings by adding 00 in front
+            [ ${#octal} -le 3 ] && choctal="00$octal" || choctal=$octal
+
+            echo "Setting up permissions for $1 (as $octal, $user:$group)"
+
+            mkdir -p "$i" 2>/dev/null || :
+            ## Fix permissions for root folder
+            chown -L "$user":www-data "$1"
+            chmod "$choctal" "$1"
+
+            # Exclude any specific folders from the search
+            unset exclude
+            exclude=""
+            for i in "${foldersExclude[@]}"; do
+                exclude+=" -not \( -path '$i' -prune \)"
+            done
+
+            # Loop through each sub-folder individually and recursively change permissions.
+            # We use a loop to improve performance on large folder structures (e.g, protected/files),
+            # where there are many thousands of files, but only a subset of the folders may have the wrong permissions
+            eval "find -L \"$1\" -maxdepth 1 -mindepth 1 -type d ${exclude}" | while read -r folder; do
+
+                if [ "$(stat -c '%U' $folder/)" != $user ] || [ "$(stat -c '%G' $folder)" != "$group" ]; then
+                    sudo chown -RL "$user":"$group" "$folder" || :
+                    echo "Modified ownership on $folder to; OWNER: $user, GROUP: $group"
+                fi
+                if [ "$(stat -c "%a" $folder/)" != "$octal" ]; then
+                    [ ${#octal} -le 3 ] && choctal="00$octal" || choctal=$octal
+
+                    sudo chmod -R $choctal "$folder" || :
+                    echo "Modified permissions on $folder to $choctal"
+                fi
+            done
+        )
+
+        # loop through the list of folders to set permission to 774
         for i in "${folders774[@]}"; do
-            echo "updating $i to 774..."
-            sudo chmod -R 774 $i
-
+            set_perms "$i" -octal=774
         done
 
-        touch $WROOT/protected/runtime/testme
-        touch $WROOT/protected/files/testme
+        # loop through the list of folders to set permission to 777
+        for i in "${folders6777[@]}"; do
+            set_perms "$i" -octal=6777
+        done
 
-        if [ $(stat -c '%U' $WROOT/protected/runtime/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/runtime/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/runtime/testme") != 774 ]; then
-            echo "setting sticky bit for protected/runtime"
-            sudo chmod -R g+s $WROOT/protected/runtime
+        # loop through the list of folders to set permission to 777
+        for i in "${folders755[@]}"; do
+            set_perms "$i" -octal=755
+        done
+
+        # Any further arrays of folders could be added with different permission requirements...
+
+        # A hack to stop the newblue submodule as being changed...
+        # Will fail silently if git is not installed or the folder does not exist
+        if [ "$gitinstalled" == "1" ]; then
+            git -C $WROOT/protected/assets/newblue reset --hard >/dev/null 2>&1 || :
         fi
 
-        if [ $(stat -c '%U' $WROOT/protected/files/testme) != $curuser ] || [ $(stat -c '%G' $WROOT/protected/files/testme) != "www-data" ] || [ $(stat -c %a "$WROOT/protected/files/testme") != 774 ]; then
-            echo "setting sticky bit for protected/files"
-            sudo chmod -R g+s $WROOT/protected/files
-        fi
-
-        # re-own composer and npm config folders in user home directory (sots issues caused if sudo was used to composer/npm update previously)
-        sudo chown -R $curuser ~/.config 2>/dev/null || :
-        sudo chown -R $curuser ~/.composer 2>/dev/null || :
     fi
+
+    # re-own composer and npm config folders in user home directory (sorts issues caused if sudo was used to composer/npm update previously)
+    sudo chown -RL $curuser ~/.config 2>/dev/null || :
+    sudo chown -RL $curuser ~/.composer 2>/dev/null || :
+
     #  update ImageMagick policy to allow PDFs
-    sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &>/dev/null
-    sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &>/dev/null
+    sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick-6/policy.xml &>/dev/null || :
+    sudo sed -i 's%<policy domain="coder" rights="none" pattern="PDF" />%<policy domain="coder" rights="read|write" pattern="PDF" />%' /etc/ImageMagick/policy.xml &>/dev/null || :
 fi
 
 if [ $buildassests = 1 ]; then
     echo "(re)building assets..."
     # use curl to ping the login page - forces php/apache to rebuild the assets directory
-    curl -s http://localhost >/dev/null
+    curl -s http://localhost >/dev/null || :
 fi
 
-# Set some git properties
-
-git -C $WROOT config core.fileMode false 2>/dev/null
-# Set to cache password in memory (should only ask once per day or each reboot)
-git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
+# Set some git properties - fail silently if git is not installed
+if [ "$gitinstalled" == "1" ]; then
+    # Set git to ignore file permissions
+    git -C $WROOT config core.fileMode false 2>/dev/null
+    # Set to cache password in memory (should only ask once per day or each reboot)
+    git config --global credential.helper 'cache --timeout=86400' 2>/dev/null
+fi
 
 # restart apache
 if [ "$restart" == "1" ]; then
@@ -273,6 +406,14 @@ if [ "$restart" == "1" ]; then
     sudo service apache2 restart &>/dev/null
 fi
 
+# remove any leftover nxblu files when switching to a 6.7.x branch
+if [ -d "$WROOT/protected/assets/nxblu" ]; then
+    echo "Removing nxblu files..."
+    sudo rm -rf "$WROOT/protected/assets/nxblu" 2>/dev/null || :
+fi
+
 echo ""
 echo "...Done"
 echo ""
+
+trap : 0

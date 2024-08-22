@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -48,12 +50,12 @@ $(document).ready(function () {
         <?= $side ?>PrimaryReasons:
         <?=CJSON::encode(
             array_map(function ($reason) use ($element, $side) {
-            return [
-              'label' => $reason->name,
-              'id' => $reason->id,
-              'type' => 'primary_reason',
-              'selected' => $reason->id === $element->{$side . '_reason_for_surgery_id'} ? 'selected' : '',
-            ];
+                return [
+                'label' => $reason->name,
+                'id' => $reason->id,
+                'type' => 'primary_reason',
+                'selected' => $reason->id === $element->{$side . '_reason_for_surgery_id'} ? 'selected' : '',
+                ];
             }, $primary_reasons)
         )?>,
 
@@ -118,12 +120,12 @@ $(document).ready(function () {
         <?= $side ?>RefractiveMyopia:
         <?=CJSON::encode(
             array_map(function ($value) {
-            return [
-              'label' => $value,
-              'value' => $value,
-              'type' => 'refractive_myopia',
-            ];
-            }, ['-0.50','-0.75','-1.00','-1.50','-2.00','-2.50'])
+                return [
+                'label' => $value,
+                'value' => $value,
+                'type' => 'refractive_myopia',
+                ];
+            }, ['-0.50','-0.75','-1.00','-1.50','-2.00','-2.50', '-3.00'])
         )?>,
         <?=$side?>RefractiveCategoriesOptions: {
         'id': '<?=$side?>_refractive_categories_0',
@@ -172,4 +174,3 @@ $(document).ready(function () {
   });
 });
 </script>
-

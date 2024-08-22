@@ -23,7 +23,7 @@ $core_api = new CoreAPI();
     echo ' '.strtolower($log->colour);?>" 
     id="audit<?php echo $log->id?>" <?php if (@$hidden) {
         ?> style="display: none;"<?php
-             }?>>
+             }?> data-test="audit-row">
     <td>
         <a href="#" id="auditItem<?php echo $log->id?>" class="auditItem">
             <?php echo $log->NHSDate('created_date').' '.substr($log->created_date, 11, 8)?>
@@ -37,7 +37,7 @@ $core_api = new CoreAPI();
     <td><?php echo $log->target_type ? $log->target_type->name : ''?></td>
     <td>
         <?php if ($log->event) { ?>
-            <a href="/<?php echo $log->event->eventType->class_name?>/default/view/<?php echo $log->event_id?>">
+            <a href="/<?php echo $log->event->eventType->class_name?>/default/view/<?php echo $log->event_id?>" data-test="audit-anchor">
                 <?php echo $log->event->eventType->name?>
             </a>
         <?php } else {?>
@@ -52,7 +52,8 @@ $core_api = new CoreAPI();
         <?php }?>
     </td>
 </tr>
-<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd'; echo ' '.strtolower($log->colour);?> auditextra<?php echo $log->id?>" style="display: none;">
+<tr class="<?php echo ($i % 2 == 0) ? 'even' : 'odd';
+echo ' '.strtolower($log->colour);?> auditextra<?php echo $log->id?>" style="display: none;">
     <td colspan="9">
         <div class="panel logs">
             <table class="blank plain log-details">

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -16,15 +17,18 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+use OEModule\OESysEvent\events\ClinicalEventSoftDeletedSystemEvent;
+
 /**
  * This is the model class for table "event".
  *
  * The followings are the available columns in table 'event':
  *
  * @property string $id
- * @property string $episode_id
- * @property string $user_id
- * @property string $event_type_id
+ * @property string|int $episode_id
+ * @property string|int $user_id
+ * @property string|int $event_type_id
  * @property string $info
  * @property boolean $deleted
  * @property string $delete_reason
@@ -33,18 +37,35 @@
  * @property string $event_date
  * @property string $created_date
  * @property string $last_modified_date
- * @property string $worklist_patient_id
+ * @property string|int $worklist_patient_id
  * @property int $firm_id
+ * @property int $step_id
+ * @property string|int $parent_id
  *
  * The followings are the available model relations:
  * @property Episode $episode
  * @property User $user
+ * @property User $usermodified
  * @property EventType $eventType
+ * @property EventIssue[] $issues
+ * @property EventImage[] $previewImages
+ * @property ?Event $parent
+ * @property ?Event[] $children
+ * @property Firm $firm
+ * @property EventSubTypeItem[] $eventSubtypeItems
+ * @property ?EventSubTypeItem $firstEventSubtypeItem
+ * @property EventAttachmentGroup[] $eventAttachmentGroups
  * @property Institution $institution
+ * @property Site $site
+ * @property WorklistPatient $worklist_patient
+ * @property PathwayStep $step
+ * @property ?EventTemplate $template
+ * @property ?EventDraft $draft
  */
 class Event extends BaseActiveRecordVersioned
 {
-    private $defaultScopeDisabled = false;
+    use HasFactory;
+
     protected $event_view_path = '/default/view';
 
     /**
@@ -113,12 +134,13 @@ class Event extends BaseActiveRecordVersioned
         // will receive user inputs.
         return array(
             array('event_type_id, event_date, institution_id', 'required'),
-            array('parent_id, worklist_patient_id, institution_id, site_id', 'safe'),
+            array('parent_id, worklist_patient_id, institution_id, firm_id, site_id, step_id', 'safe'),
             array('episode_id, event_type_id', 'length', 'max' => 10),
             array('worklist_patient_id', 'length', 'max' => 40),
+            array('worklist_patient_id', 'validateWorklistPatient'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, episode_id, event_type_id, created_date, event_date, parent_id, worklist_patient_id', 'safe', 'on' => 'search'),
+            array('id, episode_id, event_type_id, created_date, event_date, parent_id, worklist_patient_id, template_id', 'safe', 'on' => 'search'),
             array('event_date', 'OEDateValidatorNotFuture', 'except' => 'allowFutureEvent'),
             array('event_date', 'eventDateValidator'),
         );
@@ -146,8 +168,36 @@ class Event extends BaseActiveRecordVersioned
             'eventAttachmentGroups' => [self::HAS_MANY, 'EventAttachmentGroup', 'event_id'],
             'institution' => [self::BELONGS_TO, 'Institution', 'institution_id'],
             'site' => [self::BELONGS_TO, 'Site', 'site_id'],
+            'worklist_patient' => [self::BELONGS_TO, 'WorklistPatient', 'worklist_patient_id'],
+            'step' => [self::BELONGS_TO, 'PathwayStep', 'step_id'],
+            'template' => [self::BELONGS_TO, 'EventTemplate', 'template_id'],
+            'draft' => [self::HAS_ONE, EventDraft::class, 'event_id']
         );
     }
+
+    public function validateWorklistPatient()
+    {
+        if (empty($this->episode_id) || empty($this->worklist_patient_id)) {
+            return;
+        }
+
+        $episode = Episode::model()->findByPk($this->episode_id);
+        if (!$episode) {
+            $this->addError('episode_id', 'Invalid episode for event');
+            return;
+        }
+
+        $worklist_patient = WorklistPatient::model()->findByPk($this->worklist_patient_id);
+        if (!$worklist_patient) {
+            $this->addError('worklist_patient_id', 'Invalid worklist patient for event');
+            return;
+        }
+
+        if ($episode->patient_id !== $worklist_patient->patient_id) {
+            $this->addError('worklist_patient_id', 'Mismatched worklist and episode patients');
+        }
+    }
+
 
     /**
      * Make sure event date is set.
@@ -199,10 +249,10 @@ class Event extends BaseActiveRecordVersioned
 
     public function moduleAllowsEditing()
     {
-        if ($api = $this->getApi()) {
-            if (method_exists($api, 'canUpdate')) {
+        $api = $this->getApi();
+
+        if (is_object($api) && method_exists($api, 'canUpdate')) {
                 return $api->canUpdate($this->id);
-            }
         }
 
         return;
@@ -253,7 +303,7 @@ class Event extends BaseActiveRecordVersioned
     public function hasIssue($type = null)
     {
         if ($type === null) {
-            return (boolean)$this->issues;
+            return (bool)$this->issues;
         }
         foreach ($this->issues as $event_issue) {
             if (strtolower($event_issue->issue->name) === strtolower($type)) {
@@ -314,7 +364,8 @@ class Event extends BaseActiveRecordVersioned
      */
     public function addIssue($text)
     {
-        if (!$issue = Issue::model()->find('name=?', array($text))) {
+        $issue = Issue::model()->find('name=?', array($text));
+        if ($issue === null) {
             $issue = new Issue();
             $issue->name = $text;
             if (!$issue->save()) {
@@ -322,12 +373,13 @@ class Event extends BaseActiveRecordVersioned
             }
         }
 
-        if (!EventIssue::model()->find('event_id=? and issue_id=?', array($this->id, $issue->id))) {
-            $ei = new EventIssue();
-            $ei->event_id = $this->id;
-            $ei->issue_id = $issue->id;
+        $eventIssue = EventIssue::model()->find('event_id=? and issue_id=?', array($this->id, $issue->id));
+        if ($eventIssue === null) {
+            $eventIssue = new EventIssue();
+            $eventIssue->event_id = $this->id;
+            $eventIssue->issue_id = $issue->id;
 
-            if (!$ei->save()) {
+            if (!$eventIssue->save()) {
                 return false;
             }
         }
@@ -344,14 +396,17 @@ class Event extends BaseActiveRecordVersioned
      */
     public function deleteIssue($name)
     {
-        if (!$issue = Issue::model()->find('name=?', array($name))) {
+        $issue = Issue::model()->find('name=?', [$name]);
+        if ($issue === null) {
             return false;
         }
 
-        foreach (EventIssue::model()->findAll(
-            'event_id=? and issue_id = ?',
-            array($this->id, $issue->id)
-        ) as $event_issue) {
+        foreach (
+            EventIssue::model()->findAll(
+                'event_id=? and issue_id = ?',
+                array($this->id, $issue->id)
+            ) as $event_issue
+        ) {
             $event_issue->delete();
         }
 
@@ -363,19 +418,18 @@ class Event extends BaseActiveRecordVersioned
      */
     public function deleteIssues()
     {
-        foreach (EventIssue::model()->findAll('event_id=?', array($this->id)) as $event_issue) {
+        foreach (EventIssue::model()->findAll('event_id=?', [$this->id]) as $event_issue) {
             $event_issue->delete();
         }
     }
 
     public function showDeleteIcon()
     {
-        if ($api = $this->getApi()) {
-            if (method_exists($api, 'showDeleteIcon')) {
-                return $api->showDeleteIcon($this->id);
-            }
-        }
+        $api = $this->getApi();
 
+        if (is_object($api) && method_exists($api, 'showDeleteIcon')) {
+                return $api->showDeleteIcon($this->id);
+        }
         return;
     }
 
@@ -406,11 +460,12 @@ class Event extends BaseActiveRecordVersioned
             if (!$this->save()) {
                 throw new Exception('Unable to mark event deleted: ' . print_r($this->event->getErrors(), true));
             }
+
+            $this->onAfterSoftDelete(new CEvent($this));
+
             if ($transaction) {
                 $transaction->commit();
             }
-
-            $this->onAfterSoftDelete(new CEvent($this));
         } catch (Exception $e) {
             if ($transaction) {
                 $transaction->rollback();
@@ -427,6 +482,7 @@ class Event extends BaseActiveRecordVersioned
     public function onAfterSoftDelete($yii_event)
     {
         $this->raiseEvent('onAfterSoftDelete', $yii_event);
+        ClinicalEventSoftDeletedSystemEvent::dispatch($this);
     }
 
     /**
@@ -516,7 +572,7 @@ class Event extends BaseActiveRecordVersioned
         $properties['event_id'] = $this->id;
         $properties['episode_id'] = $this->episode_id;
         $properties['patient_id'] = $this->episode->patient_id;
-        $data = is_null($data)? 'Event Info: ' . $this->info : $data;
+        $data = is_null($data) ? 'Event Info: ' . $this->info : $data;
         parent::audit($target, $action, $data, $log, $properties);
     }
 
@@ -550,8 +606,9 @@ class Event extends BaseActiveRecordVersioned
             $element_class = null;
 
             // Temporarily install an error handler to deal with missing files.
-            // Plese make sure the restore_error_handler below the loop is present while this exists.
-            $yii_err_handler = set_error_handler(function($errno, $errstr, $errfile, $errline, $errcontext) use (&$yii_err_handler, &$element_class) {
+            // Please make sure the restore_error_handler below the loop is present while this exists.
+            $yii_err_handler = set_error_handler(function ($errno, $errstr, $errfile, $errline, $errcontext = []) use (&$yii_err_handler, &$element_class) {
+
                 /*
                  * More kludging - we just want to look for errors where include failed to open the class file,
                  * for missing element classes.
@@ -708,6 +765,7 @@ class Event extends BaseActiveRecordVersioned
      */
     public function automatedText()
     {
+
         $result = '';
         if ($this->is_automated && $this->automated_source) {
             // TODO: this really should be in the module API with some kind of default text here
@@ -717,9 +775,9 @@ class Event extends BaseActiveRecordVersioned
             if (property_exists($this->automated_source, 'address')) {
                 $result .= 'Optometrist Address: ' . $this->automated_source->address;
             }
-
-            return $result;
         }
+
+        return $result;
     }
 
     /**
@@ -730,7 +788,7 @@ class Event extends BaseActiveRecordVersioned
      */
     public function getEventsOfTypeForPatient(EventType $event_type, Patient $patient)
     {
-        $criteria = new CDbCriteria;
+        $criteria = new CDbCriteria();
         $criteria->compare('patient_id', $patient->id);
         $criteria->compare('event_type_id', $event_type->id);
         $criteria->addCondition('t.deleted = 0');
@@ -745,10 +803,10 @@ class Event extends BaseActiveRecordVersioned
      */
     public function getEventIcon($type = 'small')
     {
-        if ($api = $this->getApi()) {
-            if (method_exists($api, 'getEventIcon')) {
+        $api = $this->getApi();
+
+        if (is_object($api) && method_exists($api, 'getEventIcon')) {
                 return $api->getEventIcon($type, $this);
-            }
         }
 
         if ($this->eventType) {
@@ -764,10 +822,10 @@ class Event extends BaseActiveRecordVersioned
      */
     public function getEventName()
     {
-        if ($api = $this->getApi()) {
-            if (method_exists($api, 'getEventName')) {
-                return $api->getEventName($this);
-            }
+        $api = $this->getApi();
+
+        if (is_object($api) && method_exists($api, 'getEventName')) {
+            return $api->getEventName($this);
         }
 
         if ($this->firstEventSubtypeItem) {
@@ -951,5 +1009,152 @@ class Event extends BaseActiveRecordVersioned
             'event_issue_class' => $class,
             'event_issue_text' => $text,
         );
+    }
+
+    public function getPrefillElementsData()
+    {
+        $template_class = $this->eventType->template_class_name;
+
+        if (!$template_class) {
+            return [];
+        }
+
+        $elements = $this->getElements();
+
+        $prefilled = [];
+
+        foreach ($elements as $element) {
+            $result = $element->getPrefilledAttributes();
+
+            if ($result !== null) {
+                if ($element->canHaveMultipleOf()) {
+                    $prefilled[get_class($element)][$element->templateIndex] = $result;
+                } else {
+                    $prefilled[get_class($element)] = $result;
+                }
+            }
+        }
+
+        return $prefilled;
+    }
+
+    public function createTemplateFromEvent($template_name)
+    {
+        $template_class = $this->eventType->template_class_name;
+        $template_json = json_encode($this->getPrefillElementsData());
+
+        if (!$template_class) {
+            return null;
+        }
+
+        $template = new $template_class();
+
+        $transaction = Yii::app()->db->beginTransaction();
+
+        $event_template = new EventTemplate();
+        $event_template->event_type_id = $this->event_type_id;
+        $event_template->source_event_id = $this->id;
+        $event_template->name = $template_name;
+
+        if (!$event_template->save()) {
+            $transaction->rollback();
+
+            return null;
+        }
+
+        $event_template_user = new EventTemplateUser();
+        $event_template_user->event_template_id = $event_template->id;
+        $event_template_user->user_id = Yii::app()->user->id;
+
+        if (!$event_template_user->save()) {
+            $transaction->rollback();
+
+            return null;
+        }
+
+        if (!$template->setupAndSave($this, $event_template, $template_json)) {
+            $transaction->rollback();
+
+            return null;
+        }
+
+        if (empty($this->template_id)) {
+            $this->template_id = $event_template->id;
+
+            if (!$this->save()) {
+                $transaction->rollback();
+
+                return null;
+            }
+        }
+
+        $transaction->commit();
+
+        return $template;
+    }
+
+    public function updateTemplateFromEvent($event_template_id)
+    {
+        $template_class = $this->eventType->template_class_name;
+        $template_json = json_encode($this->getPrefillElementsData());
+
+        $template = $template_class::model()->find('event_template_id = ?', [$event_template_id]);
+
+        if ($template) {
+            if (
+                !EventTemplateUser::model()->exists(
+                    'event_template_id = :template_id AND user_id = :user_id',
+                    [':template_id' => $event_template_id, ':user_id' => Yii::app()->user->id]
+                )
+            ) {
+                throw new Exception("Cannot update template by this user");
+            }
+
+            if (!$template->updateTemplate($template_json)) {
+                throw new Exception("Could not update template from event");
+            }
+        } else {
+            throw new Exception("Could not update template from event: template not found");
+        }
+    }
+
+    public function getTemplateUpdateStatusForEvent($old_data)
+    {
+        $template_class = $this->eventType->template_class_name;
+
+        if (!$template_class) {
+            return EventTemplate::UPDATE_UNNEEDED;
+        }
+
+        if (!$this->template_id) {
+            return EventTemplate::UPDATE_CREATE_ONLY;
+        }
+
+        $template = $template_class::model()->find('event_template_id = ?', [$this->template_id]);
+
+        if (!$template) {
+            return EventTemplate::UPDATE_CREATE_ONLY;
+        }
+
+        $new_data = $this->getPrefillElementsData();
+
+        // The following equality check assumes that the data consists of arrays,
+        // either associative or indexed, that points to other arrays or simple values of integers/strings.
+        // The order matters with indexed arrays, e.g. ['foo', 'bar'] === ['foo', 'bar'] but ['foo', 'bar'] !== ['bar', 'foo'].
+        // As such this ordering is assumed - if it doesn't hold, a separate recursive equality function will be needed.
+        $data_has_changed = $old_data !== $new_data;
+
+        $status = $template->getUpdateStatus($this, $old_data, $new_data, $data_has_changed);
+        $user_can_update = EventTemplateUser::model()->exists(
+            'event_template_id = :template_id AND user_id = :user_id',
+            [':template_id' => $this->template_id, ':user_id' => Yii::app()->user->id]
+        );
+
+        // A template should only be updated by its owner
+        if ($status === EventTemplate::UPDATE_OR_CREATE && !$user_can_update) {
+            return EventTemplate::UPDATE_CREATE_ONLY;
+        } else {
+            return $status;
+        }
     }
 }

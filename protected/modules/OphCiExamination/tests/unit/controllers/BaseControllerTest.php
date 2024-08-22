@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -19,29 +20,17 @@ use OEModule\OphCiExamination\OphCiExaminationModule;
 
 abstract class BaseControllerTest extends \OEDbTestCase
 {
+    use \CreatesControllers;
     use \MocksSession;
     use \WithTransactions;
 
-    public function getController($cls, $methods = null)
+    public string $moduleCls = 'OphCiExamination';
+
+    public function tearDown(): void
     {
-        if ($methods === null) {
-            $methods = ['getControllerPrefix'];
-        } else {
-            $methods = array_merge(['getControllerPrefix'], $methods);
-        }
+        \Yii::app()->setComponent('controller', null);
 
-        $controller = $this->getMockBuilder($cls)
-                    ->setConstructorArgs(['default', new OphCiExaminationModule('OphCiExamination', null)])
-                    ->setMethods($methods)
-                    ->getMock();
-
-        $controller->method('getControllerPrefix')
-            ->willReturn('default');
-
-        $controller->init();
-
-        \Yii::app()->controller = $controller;
-        return $controller;
+        parent::tearDown();
     }
 
     protected function getMockAssetManager()
@@ -58,9 +47,12 @@ abstract class BaseControllerTest extends \OEDbTestCase
             ->getMock();
 
         $request->method('getPost')
-            ->will($this->returnCallback(function($key, $default) {
+            ->will($this->returnCallback(function ($key, $default) {
                 return $default; // always return the default
             }));
+
+        $request->method('getCookies')
+            ->will($this->returnValue($this->createMock(\CCookieCollection::class)));
 
         return $request;
     }

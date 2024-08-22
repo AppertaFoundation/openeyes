@@ -44,8 +44,8 @@
         let self = this;
 
         //Create the element selector content
-        const $navPopup = $('<nav />', {class: 'oe-element-selector', id: self.options.manage_element_selector});
-        let closeButton = $('<div class="close-icon-btn"><button class="blue hint cols-full">Select elements to add or remove from examination - Close when done &nbsp;<i class="oe-i remove-circle pro-theme medium-icon"></i></button></div>');
+        const $navPopup = $('<nav />', {class: 'oe-element-selector', id: self.options.manage_element_selector, 'data-test': self.options.manage_element_selector});
+        let closeButton = $('<div class="close-icon-btn"><button class="blue hint cols-full" data-test="close-btn">Select elements to add or remove from examination - Close when done &nbsp;<i class="oe-i remove-circle pro-theme medium-icon"></i></button></div>');
 
         $navPopup.append($elementPopup);
         $navPopup.append(closeButton);
@@ -269,7 +269,7 @@
     ManageElements.prototype.buildTreeItem = function(itemData) {
         let item;
 
-        let itemClass = 'selector-group';
+        let itemClass = 'selector-group outline';
 
         item = $("<div>")
             .data('element-type-class', itemData.class_name)
@@ -302,7 +302,7 @@
 
         $.each(childItems, function() {
             let id = this.name.replace(/\s/g, '-');
-            let subListItem = $("<li id=manage-elements-"+ id +">"+this.name+"</li>")
+            let subListItem = $(`<li id=manage-elements-${id} data-test=manage-elements-${id}>${this.name}</li>`)
                 .data('element-type-class', this.class_name)
                 .data('element-display-order', this.display_order)
                 .data('element-type-name', this.name)

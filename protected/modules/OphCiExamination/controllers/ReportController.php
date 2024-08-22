@@ -35,4 +35,11 @@ class ReportController extends \BaseReportController
         $this->pageTitle = 'Ready for second eye (unbooked) report';
         $this->render('ready_for_second_eye_unbooked');
     }
+
+    public function actionAE()
+    {
+        \Audit::add('Reports', 'view', print_r(['report-name' => 'AE'], true));
+        $this->pageTitle = 'A&E Patient List';
+        $this->render('ae_patient_list');
+    }
 }

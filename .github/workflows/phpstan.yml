@@ -1,0 +1,54 @@
+name: PHPStan
+
+on: [pull_request]
+
+jobs:
+  phpstan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get changed files
+        id: files
+        uses: futuratrepadeira/changed-files@v3.3.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: '^((?!tests)([a-zA-Z0-9\/]))+\.(php)$'
+
+      - name: List changed files
+        run: |
+          echo "Changed files are:"
+          echo "${{ steps.files.outputs.files_updated }}"
+          echo "New files are:"
+          echo "${{ steps.files.outputs.files_created }}"
+
+      - uses: php-actions/composer@v6
+        if: ${{ steps.files.outputs.files_updated != '' || steps.files.outputs.files_created != '' }}
+        with:
+          dev: yes
+          php_version: "8.0"
+          php_extensions: gd soap sockets zip
+
+      - name: Run PHPStan
+        id: phpstan
+        if: ${{ steps.files.outputs.files_updated != '' || steps.files.outputs.files_created != '' }}
+        uses: php-actions/phpstan@v3
+        with:
+          configuration: phpstan.neon
+          path: ${{ steps.files.outputs.files_updated }} ${{ steps.files.outputs.files_created }}
+          level: 0
+          php_version: 8.0
+          version: latest
+
+      #  continue-on-error: true
+
+      # - name: Create check run
+      #   uses: LouisBrunner/checks-action@v1.6.0
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     name: PHPStan analysis
+      #     # status: completed
+      #     conclusion: ${{ steps.phpstan.outcome }} # take status from phpstan action
+      #     output: |
+      #       {"summary":"${{ steps.phpstan.outputs.summary }}"}

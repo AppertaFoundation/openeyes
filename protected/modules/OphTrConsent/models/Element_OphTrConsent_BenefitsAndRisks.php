@@ -95,8 +95,8 @@ class Element_OphTrConsent_BenefitsAndRisks extends BaseEventTypeElement
         return array(
             'id' => 'ID',
             'event_id' => 'Event',
-            'benefits' => 'Benefits',
-            'risks' => 'Risks',
+            'benefits' => ' Intended benefits ',
+            'risks' => 'Significant, unavoidable or frequently occurring material risks ',
         );
     }
 
@@ -170,18 +170,66 @@ class Element_OphTrConsent_BenefitsAndRisks extends BaseEventTypeElement
 
         foreach ($benefits as $i => $benefit) {
             if ($i == 0) {
-                $this->benefits = ucfirst($benefit->name);
+                $this->benefits = '<ul><li>' . ucfirst($benefit->name) . '</li>';
             } else {
-                $this->benefits .= ', '.$benefit->name;
+                $this->benefits .= '<li>' . $benefit->name . '</li>';
             }
         }
+        $this->benefits .= '</ul>';
 
         foreach ($complications as $i => $complication) {
             if ($i == 0) {
-                $this->risks = ucfirst($complication->name);
+                $this->risks = '<ul><li>' . ucfirst($complication->name) . '</li>';
             } else {
-                $this->risks .= ', '.$complication->name;
+                $this->risks .= '<li>' . $complication->name . '</li>';
             }
         }
+        $this->risks .= '</ul>';
+    }
+
+    /**
+     * Retrieves a list of Risks.
+     *
+     * @return array
+     * @throws Exception
+     */
+    public function getAdditionalRiskSet()
+    {
+        $items = [];
+
+        $currentFirm =  Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+        $subspecialty_id = $currentFirm->serviceSubspecialtyAssignment->subspecialty_id;
+
+        if ($this->isNewRecord) {
+            $institution_id = Institution::model()->getCurrent()->id;
+        } else {
+            $institution_id = $this->event->institution_id;
+        }
+
+        $risks = \OphTrConsent_AdditionalRisk::model()
+            ->with('subspecialties')
+            ->findAll(
+                'active = 1 AND
+                institution_id=:institution_id AND 
+                (
+                    subspecialties.subspecialty_id=:subspecialty_id OR subspecialties.subspecialty_id IS NULL
+                )
+                ',
+                [":institution_id" => $institution_id, ":subspecialty_id" => $subspecialty_id]
+            );
+
+        foreach ($risks as $risk) {
+            $items[] = ['label' => (string)$risk->name];
+        }
+
+        if (count($items)===0) {
+            return [];
+        }
+
+        $itemSets[] = ['items' => $items ,
+            'header' => 'Additional risks' ,
+            'multiSelect' => true
+        ];
+        return $itemSets;
     }
 }

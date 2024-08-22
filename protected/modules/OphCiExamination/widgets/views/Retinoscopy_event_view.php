@@ -64,6 +64,10 @@
                                 <td><?= $element->getAttributeLabel("{$side}_refraction") ?></td>
                                 <td><?= CHtml::encode($element->{"{$side}_refraction" }) ?></td>
                             </tr>
+                            <tr>
+                                <td><?= $element->getAttributeLabel("{$side}_comments") ?></td>
+                                <td data-test="retinoscopy-<?= $side ?>-comment"><?= CHtml::encode($element->{"{$side}_comments" }) ?></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

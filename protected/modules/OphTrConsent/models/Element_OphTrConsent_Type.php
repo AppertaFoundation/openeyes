@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_ophtrconsent_type".
  *
@@ -35,7 +37,17 @@
  */
 class Element_OphTrConsent_Type extends BaseEventTypeElement
 {
+    use HasFactory;
     public $service;
+
+    public const TYPE_PATIENT_AGREEMENT_ID = 1;
+    public const TYPE_PARENTAL_AGREEMENT_ID = 2;
+    public const TYPE_PATIENT_PARENTAL_AGREEMENT_ID = 3;
+    public const TYPE_UNABLE_TO_CONSENT_ID = 4;
+    public const UNABLE_TO_CONSENT = [
+        self::TYPE_PARENTAL_AGREEMENT_ID,
+        self::TYPE_UNABLE_TO_CONSENT_ID
+    ];
 
     /**
      * Returns the static model of the specified AR class.
@@ -144,7 +156,9 @@ class Element_OphTrConsent_Type extends BaseEventTypeElement
 
     public function beforeSave()
     {
-        if (in_array(Yii::app()->getController()->getAction()->id, array('create', 'update'))) {
+        if (!is_null(Yii::app()->getController()) &&
+            !is_null(Yii::app()->getController()->getAction()) &&
+            in_array(Yii::app()->getController()->getAction()->id, array('create', 'update'))) {
             if (!$this->draft) {
                 $this->print = 1;
             } else {
@@ -154,6 +168,12 @@ class Element_OphTrConsent_Type extends BaseEventTypeElement
 
         return parent::beforeSave();
     }
+
+    public function isUnableToConsent()
+    {
+        return in_array($this->type_id,self::UNABLE_TO_CONSENT);
+    }
+
 
     public function isEditable()
     {

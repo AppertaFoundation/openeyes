@@ -23,7 +23,7 @@ use Yii;
 
 class PatientTicketing_AuthRules
 {
-    public function canProcessQueueSet($user_id, services\PatientTicketing_QueueSet $queueset)
+    public function canProcessQueueSet($data, $user_id, services\PatientTicketing_QueueSet $queueset)
     {
         if (Yii::app()->authManager->checkAccess('admin', $user_id)) {
             return true;

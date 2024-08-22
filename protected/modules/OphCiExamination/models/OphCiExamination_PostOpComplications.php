@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -18,8 +19,10 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
- * This is the model class for table "ophciexamination_comorbidities_item".
+ * This is the model class for table "ophciexamination_postop_complications".
  *
  * @property int $id
  * @property string $name
@@ -27,10 +30,12 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *
-     * @return OphCiExamination_Comorbidities_Item the static model class
+     * @return OphCiExamination_PostOpComplications the static model class
      */
     public static function model($className = __CLASS__)
     {
@@ -49,7 +54,7 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return array('order' => $this->getTableAlias(true, false) . '.display_order');
     }
 
     /**
@@ -104,8 +109,8 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
         $criteria->addCondition('active = 1');
 
         $criteria->addCondition('t.id NOT IN (SELECT DISTINCT complication_id '
-                                                .'FROM ophciexamination_postop_et_complications '
-                                                .'WHERE element_id = :element_id AND operation_note_id = :operation_note_id AND eye_id = :eye_id) ');
+                                                . 'FROM ophciexamination_postop_et_complications '
+                                                . 'WHERE element_id = :element_id AND operation_note_id = :operation_note_id AND eye_id = :eye_id) ');
 
         $criteria->params['element_id'] = $element_id;
         $criteria->params['operation_note_id'] = $operation_note_id;
@@ -128,6 +133,7 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
     /**
      * Named scope to fetch enabled items for the given subspecialty.
      *
+     * @param int $institution_id
      * @param int|null $subspecialty_id Null for default episode summary
      *
      * @return EpisodeSummaryItem
@@ -139,7 +145,7 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
             'order' => 'cs.display_order',
         );
 
-        $criteria['condition'] = 'cs.institution_id = :institution_id AND cs.subspecialty_id = :subspecialty_id';
+        $criteria['condition'] = '(cs.institution_id IS NULL OR cs.institution_id = :institution_id) AND cs.subspecialty_id = :subspecialty_id';
         $criteria['params'] = array('institution_id' => $institution_id, 'subspecialty_id' => $subspecialty_id);
 
         $this->getDbCriteria()->mergeWith($criteria);
@@ -150,22 +156,12 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
     /**
      * Named scope to fetch available (non-enabled) items for the given subspecialty.
      *
-     * @param int|null $subspecialty_id Null for default episode summary
-     *
      * @return EpisodeSummaryItem
      */
-    public function available($subspecialty_id = null)
+    public function available()
     {
-        $criteria = array();
-        if ($subspecialty_id) {
-            $criteria = array(
-                'join' => 'LEFT JOIN ophciexamination_postop_complications_subspecialty AS cs ON t.id = cs.complication_id AND cs.subspecialty_id = :subspecialty_id',
-            );
-
-            $criteria['condition'] = 'cs.subspecialty_id IS NULL';
-            $criteria['params'] = array('subspecialty_id' => $subspecialty_id);
-        }
-        $criteria['order'] = 't.display_order ASC, t.id ASC';
+        $criteria['join'] = 'LEFT JOIN ophciexamination_postop_complications_subspecialty AS cs ON t.id = cs.complication_id';
+        $criteria['order'] = 't.name ASC, t.id ASC';
 
         $this->getDbCriteria()->mergeWith($criteria);
 
@@ -191,8 +187,6 @@ class OphCiExamination_PostOpComplications extends \BaseActiveRecordVersioned
         );
 
         if ($item_ids) {
-            $item_ids = explode(',', $item_ids);
-
             $rows = array();
             foreach ($item_ids as $display_order => $complication_id) {
                 $rows[] = array(

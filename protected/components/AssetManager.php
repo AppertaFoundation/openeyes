@@ -68,6 +68,7 @@ class AssetManager extends CAssetManager
         'jquery-ui.js' => false,
         'jquery-ui.min.js' => false,
         'mustache.js' => false,
+        'mustache.min.js' => false,
         'eventemitter2.js' => false,
         'module.js' => false,
         'style.css' => false,

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -18,6 +19,7 @@
  */
 
 use OEModule\OphCiExamination\models\AllergyEntry;
+use OEModule\OphCiExamination\models\OphCiExaminationAllergyReaction;
 
 ?>
 
@@ -26,6 +28,7 @@ if (!isset($values)) {
     $values = array(
         'id' => $entry->id,
         'allergy_id' => $entry->allergy_id,
+        'reactions' => $entry->reactions,
         'allergy_display' => $entry->displayallergy,
         'other' => $entry->other,
         'comments' => $entry->comments,
@@ -37,65 +40,41 @@ $other_text_field_classes = $entry->hasErrors('other') ? 'highlighted-error erro
 
 <tr class="row-<?= $row_count; ?><?php echo !$removable ? " read-only" : ''; ?>" data-key="<?= $row_count; ?>">
     <td id="<?= $model_name ?>_entries_<?= $row_count ?>_allergy_has_allergy">
-            <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
-            <input type="hidden" name="<?= $field_prefix ?>[other]" value="<?= $values['other'] ?>"/>
-            <span class="js-other-allergy" style="display: none;">
+        <input type="hidden" name="<?= $field_prefix ?>[id]" value="<?= $values['id'] ?>"/>
+        <input type="hidden" name="<?= $field_prefix ?>[other]" value="<?= $values['other'] ?>"/>
+        <span class="js-other-allergy" style="display: none;">
             <?= CHtml::textField($field_prefix . '[other]', $values['other'], array('autocomplete' => 'off', 'class' => $other_text_field_classes));?>
         </span>
-            <span class="js-not-other-allergy">
+        <span class="js-not-other-allergy">
             <?= $values['allergy_display'];?>
         </span>
-            <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
-            </td>
-    <td>
-        <?php if ($removable) {
-            if ($values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT) { ?>
-                <label class="inline highlight">
-                    <?=\CHtml::radioButton(
-                        $field_prefix . '[has_allergy]',
-                        $values['has_allergy'] === (string)AllergyEntry::$PRESENT,
-                        array('value' => AllergyEntry::$PRESENT)
-                    ); ?>
-                    yes
-                </label>
-                <label class="inline highlight">
-                    <?=\CHtml::radioButton(
-                        $field_prefix . '[has_allergy]',
-                        $values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT,
-                        array('value' => AllergyEntry::$NOT_PRESENT)
-                    ); ?>
-                    no
-                </label>
-            <?php } else {
-                echo CHtml::hiddenField($field_prefix . '[has_allergy]', (string)AllergyEntry::$PRESENT);
+        <input type="hidden" name="<?= $field_prefix ?>[allergy_id]" value="<?= $values['allergy_id'] ?>"/>
+    </td>
+    <td class="reaction-selection">
+        <?php
+            echo CHtml::dropDownList(
+                $row_count . '_reaction_selection',
+                null,
+                CHtml::listData(
+                    OphCiExaminationAllergyReaction::model()->bydisplayorder()->findAllByAttributes(array('active' => '1')),
+                    'id',
+                    'name'
+                ),
+                ['class' => 'cols-10', 'empty' => 'Add reaction']
+            );
+            ?>
+        <ul id="<?=$field_prefix?>[reactions]" class="oe-multi-select inline">
+            <?php
+            foreach ($entry->reactions as $reaction) {
+                echo "<li>
+                            $reaction->name
+                            <i class=\"oe-i remove-circle small-icon pad-left\"></i>
+                            <input type=\"hidden\" name=\"OEModule_OphCiExamination_models_Allergies[entries][$row_count][reactions][]\" value=\"$reaction->id\">
+                        </li>";
             }
-        } else { ?>
-        <label class="inline highlight">
-            <?=\CHtml::radioButton(
-                $field_prefix . '[has_allergy]',
-                $values['has_allergy'] === (string)AllergyEntry::$NOT_CHECKED,
-                array('value' => AllergyEntry::$NOT_CHECKED)
-            ); ?>
-          Not checked
-        </label>
-        <label class="inline highlight">
-            <?=\CHtml::radioButton(
-                $field_prefix . '[has_allergy]',
-                $values['has_allergy'] === (string)AllergyEntry::$PRESENT,
-                array('value' => AllergyEntry::$PRESENT)
-            ); ?>
-          yes
-        </label>
-        <label class="inline highlight">
-            <?=\CHtml::radioButton(
-                $field_prefix . '[has_allergy]',
-                $values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT,
-                array('value' => AllergyEntry::$NOT_PRESENT)
-            ); ?>
-          no
-        </label>
-        <?php } ?>
-  </td>
+            ?>
+        </ul>
+    </td>
     <td>
     <div class="cols-full">
       <div class="js-comment-container flex-layout flex-left"
@@ -125,16 +104,63 @@ $other_text_field_classes = $entry->hasErrors('other') ? 'highlighted-error erro
         </button>
     </div>
     </td>
+    <td>
+        <?php if ($removable) {
+            if ($values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT) { ?>
+                <label class="inline highlight">
+                    <?=\CHtml::radioButton(
+                        $field_prefix . '[has_allergy]',
+                        $values['has_allergy'] === (string)AllergyEntry::$PRESENT,
+                        array('value' => AllergyEntry::$PRESENT)
+                    ); ?>
+                    yes
+                </label>
+                <label class="inline highlight">
+                    <?=\CHtml::radioButton(
+                        $field_prefix . '[has_allergy]',
+                        $values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT,
+                        array('value' => AllergyEntry::$NOT_PRESENT)
+                    ); ?>
+                    no
+                </label>
+            <?php } else {
+                echo CHtml::hiddenField($field_prefix . '[has_allergy]', (string)AllergyEntry::$PRESENT);
+            }
+        } else { ?>
+            <label class="inline highlight">
+                <?=\CHtml::radioButton(
+                    $field_prefix . '[has_allergy]',
+                    $values['has_allergy'] === (string)AllergyEntry::$NOT_CHECKED,
+                    array('value' => AllergyEntry::$NOT_CHECKED)
+                ); ?>
+                Not checked
+            </label>
+            <label class="inline highlight">
+                <?=\CHtml::radioButton(
+                    $field_prefix . '[has_allergy]',
+                    $values['has_allergy'] === (string)AllergyEntry::$PRESENT,
+                    array('value' => AllergyEntry::$PRESENT)
+                ); ?>
+                yes
+            </label>
+            <label class="inline highlight">
+                <?=\CHtml::radioButton(
+                    $field_prefix . '[has_allergy]',
+                    $values['has_allergy'] === (string)AllergyEntry::$NOT_PRESENT,
+                    array('value' => AllergyEntry::$NOT_PRESENT)
+                ); ?>
+                no
+            </label>
+        <?php } ?>
+    </td>
 
 
     <?php if ($removable) : ?>
       <td><i class="oe-i trash"></i></td>
     <?php else : ?>
         <td>
-            Read only
             <i class="js-has-tooltip oe-i info small pad right"
                data-tooltip-content="<?= $values['allergy_display'] . " is mandatory to collect."; ?>"></i>
         </td>
     <?php endif; ?>
-
 </tr>

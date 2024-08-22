@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -20,6 +21,7 @@ namespace OEModule\OphCoMessaging\components;
 
 use OEModule\OphCoMessaging\models\Element_OphCoMessaging_Message;
 use OEModule\OphCoMessaging\models\OphCoMessaging_Message_MessageType;
+use OEModule\OphCoMessaging\models\OphCoMessaging_Message_Recipient;
 
 /**
  * Class MessageCreator.
@@ -73,7 +75,7 @@ class MessageCreator
      */
     public function setMessageTemplate($template)
     {
-        if (\Yii::getPathOfAlias($template) && is_readable(\Yii::getPathOfAlias($template).'.php')) {
+        if (\Yii::getPathOfAlias($template) && is_readable(\Yii::getPathOfAlias($template) . '.php')) {
             $this->messageTemplate = $template;
         }
     }
@@ -135,13 +137,20 @@ class MessageCreator
             $messageElement = new Element_OphCoMessaging_Message();
             $messageElement->event_id = $messageEvent->id;
             $messageElement->created_user_id = $messageElement->last_modified_user_id = $this->sender->id;
-            $messageElement->for_the_attention_of_user_id = $this->recipient->id;
-
             $messageElement->message_type_id = $this->type->id;
+            $messageElement->sender_mailbox_id = $this->sender->personalMailbox->id ?? null;
+
+            $message_recipient = new OphCoMessaging_Message_Recipient();
+            $message_recipient->mailbox_id = $this->recipient->personalMailbox->id;
+            $message_recipient->primary_recipient = true;
+            $messageElement->recipients = [$message_recipient];
+
             if ($this->messageTemplate) {
                 $patient_identifier = \PatientIdentifierHelper::getIdentifierForPatient(
-                    \Yii::app()->params['display_primary_number_usage_code'],
-                    $this->episode->patient->id, $messageEvent->institution_id, $messageEvent->site_id
+                    \SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+                    $this->episode->patient->id,
+                    $messageEvent->institution_id,
+                    $messageEvent->site_id
                 );
                 $this->messageData['patient_identifier'] = $patient_identifier;
                 $messageElement->message_text = $this->renderTemplate();
@@ -150,10 +159,15 @@ class MessageCreator
             }
 
             if (!$messageElement->save()) {
-                throw new \CDbException('Element save failed: '.print_r($messageElement->getErrors(), true));
+                throw new \CDbException('Element save failed: ' . print_r($messageElement->getErrors(), true));
+            }
+            $messageElement->refresh();
+            $message_recipient->element_id = $messageElement->id;
+            if (!$message_recipient->save()) {
+                throw new \CDbException('Message recipient save failed: ' . print_r($message_recipient->getErrors(), true));
             }
         } else {
-            throw new \CDbException('Event save failed: '.print_r($messageEvent->getErrors(), true));
+            throw new \CDbException('Event save failed: ' . print_r($messageEvent->getErrors(), true));
         }
 
         return $messageElement;
@@ -182,7 +196,7 @@ class MessageCreator
     {
         $controller = new \CController('message');
 
-        return $controller->renderInternal(\Yii::getPathOfAlias($this->messageTemplate).'.php', $this->messageData, true);
+        return $controller->renderInternal(\Yii::getPathOfAlias($this->messageTemplate) . '.php', $this->messageData, true);
     }
 
     /**

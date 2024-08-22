@@ -17,6 +17,7 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
 
 /**
  * Class FamilyHistory_Entry
@@ -31,23 +32,20 @@ namespace OEModule\OphCiExamination\models;
  *
  * @property OphCiExaminationAllergy $allergy
  * @property Allergies $element
+ * @property array $reactions
  */
-class AllergyEntry extends \BaseElement
+class AllergyEntry extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public static $PRESENT = 1;
     public static $NOT_PRESENT = 0;
     public static $NOT_CHECKED = -9;
     public static $OTHER_VAL = 17;
 
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return PreviousOperation the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
+    protected $auto_update_relations = true;
+    protected $auto_validate_relations = true;
+
     /**
      * @return string the associated database table name
      */
@@ -63,13 +61,13 @@ class AllergyEntry extends \BaseElement
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('element_id, allergy_id, other, comments, has_allergy', 'safe'),
+            array('element_id, allergy_id, reactions, other, comments, has_allergy', 'safe'),
             array('allergy_id', 'required'),
             array('other', 'validateOtherAllergies'),
             array('has_allergy', 'required', 'message'=>'Status cannot be blank'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, element_id, allergy_id, other, comments, has_allergy', 'safe', 'on' => 'search'),
+            array('id, element_id, allergy_id, reaction_id, other, comments, has_allergy', 'safe', 'on' => 'search'),
         );
     }
 
@@ -78,12 +76,11 @@ class AllergyEntry extends \BaseElement
      */
     public function relations()
     {
-        // NOTE: you may need to adjust the relation name and the related
-        // class name for the relations automatically generated below.
-        return array(
-            'element' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\Element_OphCiExamination_Allergy', 'element_id'),
-            'allergy' => array(self::BELONGS_TO, 'OEModule\OphCiExamination\models\OphCiExaminationAllergy', 'allergy_id'),
-        );
+        return [
+            'element' => [self::BELONGS_TO, Allergies::class, 'element_id'],
+            'allergy' => [self::BELONGS_TO, OphCiExaminationAllergy::class, 'allergy_id'],
+            'reactions' => [self::MANY_MANY, OphCiExaminationAllergyReaction::class, 'ophciexamination_allergy_reaction_assignment(allergy_entry_id, reaction_id)']
+        ];
     }
     /**
      * @return array customized attribute labels (name=>label)
@@ -146,6 +143,19 @@ class AllergyEntry extends \BaseElement
         return $this->allergy ? $this->allergy->name : '';
     }
 
+    /**
+     * @return string
+     */
+    public function getReactionString()
+    {
+        $reactions = array();
+        foreach ($this->reactions as $reaction) {
+            $reactions[] = $reaction->name;
+        }
+
+        return implode(', ', $reactions);
+    }
+
 
     /**
      * @return string
@@ -165,11 +175,12 @@ class AllergyEntry extends \BaseElement
      * @throws Exception if record is new as it does not have a allergy_id to check against
      * @return bool true if entry is 'Other' (ie not in the standard list so needs editable field)
      */
-    public function isOther(){
+    public function isOther()
+    {
         if (!$this->isNewRecord) {
             return $this->allergy_id == AllergyEntry::$OTHER_VAL;
         } else {
-            throw new Exception('Cannot check if new allergy entry is other without proposed allergy id, 
+            throw new Exception('Cannot check if new allergy entry is other without proposed allergy id,
             new records do not have allergy_id set, please use staticIsOther($allergy_id)');
         }
     }

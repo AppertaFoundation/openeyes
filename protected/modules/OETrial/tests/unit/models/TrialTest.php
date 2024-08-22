@@ -12,8 +12,10 @@
  * @method trial_permission($fixtureId)
  * @method user_trial_assignment($fixtureId)
  */
-class TrialTest extends ActiveRecordTestCase
+class TrialTest extends ModelTestCase
 {
+    protected $element_cls = Trial::class;
+
     public $fixtures = array(
         'user' => 'User',
         'trial_type' => 'TrialType',
@@ -76,6 +78,37 @@ class TrialTest extends ActiveRecordTestCase
         $trial->started_date = date('Y-m-d', strtotime('1972-01-01'));
         $trial->closed_date = null;
         $this->assertEquals('present', $trial->getClosedDateForDisplay());
+    }
+
+    public function testClosedDateNotOfFutureDate()
+    {
+        $trial = $this->trial('trial1');
+        $trial->setScenario('manual');
+        $trial->started_date = date('Y-m-d', strtotime('1970-01-01'));
+        $trial->closed_date = date('Y-m-d', strtotime('+7 days'));
+
+        $this->assertAttributeInvalid($trial, 'closed_date', 'Closed date cannot be in the future');
+    }
+
+    public function testClosedDateClosesTrial()
+    {
+        $trial = $this->trial('trial1');
+        $trial->started_date = date('Y-m-d', strtotime('1970-01-01'));
+        $trial->closed_date = date('Y-m-d', strtotime('-1 days'));
+        $trial->save();
+
+        $this->assertEquals(0, $trial->is_open, 'The trial should close if closed date has been provided');
+    }
+
+    public function testTrialRemainsOpenIfNoClosedDateGiven()
+    {
+        $trial = $this->trial('trial1');
+        $trial->started_date = date('Y-m-d', strtotime('1970-01-01'));
+        $trial->closed_date = null;
+        $trial->save();
+
+        $this->assertEquals(1, $trial->is_open, 'The trial should remain open if no closed date provided');
+        $this->assertNull($trial->closed_date);
     }
 
     public function testDataProvidersExist()

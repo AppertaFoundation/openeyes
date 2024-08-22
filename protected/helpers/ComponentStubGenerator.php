@@ -23,16 +23,17 @@
  */
 class ComponentStubGenerator
 {
+    protected static $properties_cache = [];
+
     /**
      * @param string $class_name
      * @param array $properties
      * @return PHPUnit\Framework\MockObject\MockObject
      * @throws ReflectionException
      */
-    public static function generate($class_name, array $properties = array())
+    public static function generate($class_name, array $properties = [])
     {
-        $stub = (new PHPUnit\Framework\MockObject\Generator())->getMock($class_name, array(), array(), '', false, false, true, false);
-
+        $stub = (new \PHPUnit\Framework\MockObject\Generator())->getMock($class_name, array(), array(), '', false, false, true, false);
 
         self::propertiesSetAndMatch($stub, $properties);
 
@@ -43,7 +44,7 @@ class ComponentStubGenerator
      * Iterates through properties to set values on the stub that exists on the stub class. If $force is true,
      * will set the value regardless of whether or not the property exists on the element.
      *
-     * @param $stub PHPUnit\Framework\MockObject\MockObject
+     * @param $stub \PHPUnit\Framework\MockObject\MockObject
      * @param array $properties
      * @param bool  $force
      */
@@ -56,75 +57,26 @@ class ComponentStubGenerator
             }
         }
 
-        $stub->__phpunit_getInvocationMocker()->addMatcher(new ComponentStubMatcher($properties));
-    }
-}
-
-class ComponentStubMatcher implements PHPUnit\Framework\MockObject\Matcher\Invocation
-{
-    protected array $properties;
-
-    public function __construct(array $properties)
-    {
-        $this->properties = $properties;
-    }
-
-    public function toString() : string
-    {
-        return 'Component stub matcher';
-    }
-
-    public function hasMatchers()
-    {
-        return true;
-    }
-
-    /**
-     * @param PHPUnit\Framework\MockObject\Invocation $invocation
-     * @return bool|mixed|void
-     */
-    public function matches(PHPUnit\Framework\MockObject\Invocation $invocation)
-    {
-        if ($invocation->getMethodName() === '__set') {
-            $this->properties[$invocation->getParameters()[0]] = $invocation->getParameters()[1];
-            return;
+        static::$properties_cache[spl_object_id($stub)] = $properties;
+        if (method_exists($stub, '__set')) {
+            $stub->method('__set')
+                ->willReturnCallback(function (...$args) use ($stub) {
+                    static::$properties_cache[spl_object_id($stub)][$args[0]] = $args[1];
+                });
         }
 
-        if ($invocation->getMethodName() === '__get' || $invocation->getMethodName() === '__isset') {
-            return array_key_exists($invocation->getParameters()[0], $this->properties);
+        if (method_exists($stub, '__isset')) {
+            $stub->method('__isset')
+                ->willReturnCallback(function (...$args) use ($stub) {
+                    return isset(static::$properties_cache[spl_object_id($stub)][$args[0]]);
+                });
         }
 
-        return $this->methodNameToProperty($invocation, true);
-    }
-
-    public function invoked(PHPUnit\Framework\MockObject\Invocation $invocation)
-    {
-        if ($invocation->getMethodName() === '__get') {
-            return $this->properties[$invocation->getParameters()[0]];
+        if (method_exists($stub, '__get')) {
+            $stub->method('__get')
+                ->willReturnCallback(function (...$args) use ($stub) {
+                    return static::$properties_cache[spl_object_id($stub)][$args[0]] ?? null;
+                });
         }
-
-        if ($invocation->getMethodName() === '__isset') {
-            return isset($this->properties[$invocation->getParameters()[0]]);
-        }
-
-        return $this->methodNameToProperty($invocation, false);
-    }
-
-    public function verify()
-    {
-    }
-
-    protected function methodNameToProperty(PHPUnit\Framework\MockObject\Invocation $invocation, $return_bool)
-    {
-        if (preg_match('/^get(.*)$/', $invocation->getMethodName(), $matches) && count($invocation->getParameters()) === 0) {
-            $search = strtolower($matches[1]);
-            foreach ($this->properties as $name => $value) {
-                if (strtolower($name) === $search) {
-                    return $return_bool ? true : $value;
-                }
-            }
-        }
-
-        return $return_bool ? false : null;
     }
 }

@@ -1,4 +1,16 @@
 <?php
+
+namespace OEModule\OphDrPGDPSD\models;
+
+use OE\factories\models\traits\HasFactory;
+
+use Medication;
+use MedicationDuration;
+use MedicationFrequency;
+use MedicationRoute;
+use OphDrPrescription_DispenseCondition;
+use OphDrPrescription_DispenseLocation;
+
 /**
  * This is the model class for table "ophdrpgdpsd_pgdpsdmeds".
  *
@@ -23,8 +35,10 @@
  * @property OphDrPrescription_DispenseLocation $dispense_location
  * @property OphDrPGDPSD_PGDPSD $pgdpsd
  */
-class OphDrPGDPSD_PGDPSDMeds extends BaseActiveRecordVersioned
+class OphDrPGDPSD_PGDPSDMeds extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     public $laterality = null;
     /**
      * @return string the associated database table name
@@ -61,13 +75,13 @@ class OphDrPGDPSD_PGDPSDMeds extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'medication' => array(self::BELONGS_TO, 'Medication', 'medication_id'),
-            'pgdpsd' => array(self::BELONGS_TO, 'OphDrPGDPSD_PGDPSD', 'pgdpsd_id'),
-            'route' => array(self::BELONGS_TO, 'MedicationRoute', 'route_id'),
-            'frequency' => array(self::BELONGS_TO, 'MedicationFrequency', 'frequency_id'),
-            'duration' => array(self::BELONGS_TO, 'MedicationDuration', 'duration_id'),
-            'dispense_condition' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseCondition', 'dispense_condition_id'),
-            'dispense_location' => array(self::BELONGS_TO, 'OphDrPrescription_DispenseLocation', 'dispense_location_id'),
+            'medication' => array(self::BELONGS_TO, Medication::class, 'medication_id'),
+            'pgdpsd' => array(self::BELONGS_TO, OphDrPGDPSD_PGDPSD::class, 'pgdpsd_id'),
+            'route' => array(self::BELONGS_TO, MedicationRoute::class, 'route_id'),
+            'frequency' => array(self::BELONGS_TO, MedicationFrequency::class, 'frequency_id'),
+            'duration' => array(self::BELONGS_TO, MedicationDuration::class, 'duration_id'),
+            'dispense_condition' => array(self::BELONGS_TO, OphDrPrescription_DispenseCondition::class, 'dispense_condition_id'),
+            'dispense_location' => array(self::BELONGS_TO, OphDrPrescription_DispenseLocation::class, 'dispense_location_id'),
         );
     }
 
@@ -106,7 +120,7 @@ class OphDrPGDPSD_PGDPSDMeds extends BaseActiveRecordVersioned
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
-        $criteria=new CDbCriteria;
+        $criteria=new \CDbCriteria;
 
         $criteria->compare('id', $this->id);
         $criteria->compare('medication_id', $this->medication_id, true);
@@ -119,7 +133,7 @@ class OphDrPGDPSD_PGDPSDMeds extends BaseActiveRecordVersioned
         $criteria->compare('dispense_location_id', $this->dispense_location_id, true);
         $criteria->compare('pgdpsd_id', $this->pgdpsd_id);
 
-        return new CActiveDataProvider($this, array(
+        return new \CActiveDataProvider($this, array(
             'criteria'=>$criteria,
         ));
     }

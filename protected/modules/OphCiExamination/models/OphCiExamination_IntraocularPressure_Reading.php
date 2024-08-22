@@ -18,6 +18,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_intraocularpressure_reading".
  *
@@ -27,6 +29,8 @@ namespace OEModule\OphCiExamination\models;
  */
 class OphCiExamination_IntraocularPressure_Reading extends \BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *

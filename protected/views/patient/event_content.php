@@ -4,10 +4,10 @@
  * @var $form_id string
  */
 ?>
-<main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content" data-has-errors="<?=($has_errors ?? 'false') ?>">
 
-    <h2 class="event-title">
-        <?php echo $this->title ?>
+<main class="main-event <?php echo $this->moduleStateCssClass; ?>" id="event-content" data-has-errors="<?=($has_errors ?? 'false') ?>">
+    <h2 class="event-title" data-test="event-title">
+        <?php echo $this->getTitle() ?>
         <?php if ($this->event->is_automated) {
             $this->renderPartial('//patient/event_automated');
         } ?>
@@ -44,32 +44,37 @@
             <?php $errors = $this->event->getErrors();
             $error_class = isset($errors['event_date']) ? 'error' : '';
             ?>
-            <?php
-            $this->widget('application.widgets.DatePicker', array(
-                'element' => $this->event,
-                'name' => CHtml::modelName($this->event) . "[event_date]",
-                'field' => 'event_date',
-                'options' => array('maxDate' => 'today'),
-                'htmlOptions' => array(
-                    'style' => 'display:none;',
-                    'form' => $form_id,
-                    'nowrapper' => true,
-                    'class' => 'js-event-date-input ' . $error_class
-                ),
-                'layoutColumns' => array(
-                    'label' => 2,
-                    'field' => 2,
-                ),
-            ));
-            $this->widget('application.widgets.HiddenField', array(
-                'element' => $this->event,
-                'name' => CHtml::modelName($this->event) . "[last_modified_date]",
-                'field' => 'last_modified_date',
-                'htmlOptions' => array(
-                    'form' => $form_id,
-                ),
-            ));
-            ?>
+            <div class="extra-info">
+                <?php
+                    $this->widget('application.widgets.DatePicker', array(
+                        'element' => $this->event,
+                        'name' => CHtml::modelName($this->event) . "[event_date]",
+                        'field' => 'event_date',
+                        'options' => array('maxDate' => 'today'),
+                        'htmlOptions' => array(
+                            'style' => 'display:none;',
+                            'form' => $form_id,
+                            'nowrapper' => true,
+                            'class' => 'js-event-date-input ' . $error_class
+                        ),
+                        'layoutColumns' => array(
+                            'label' => 2,
+                            'field' => 1,
+                        ),
+                    ));
+
+                    $this->widget('application.widgets.HiddenField', array(
+                        'element' => $this->event,
+                        'name' => CHtml::modelName($this->event) . "[last_modified_date]",
+                        'field' => 'last_modified_date',
+                        'htmlOptions' => array(
+                            'form' => $form_id,
+                        ),
+                    ));
+
+                    echo CHtml::hiddenField('draft_id', isset($this->draft) ? $this->draft->id : '', ['form' => $form_id]);
+                ?>
+            </div>
             <script>
                 $(document).ready(function() {
                     const $date_input = $('.js-event-date-input');
@@ -94,16 +99,33 @@
                 });
             </script>
 
-          <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
-        <span class="js-has-tooltip" data-tooltip-content="Change Event date">
-            <i class="oe-i history large pad-left js-change-event-date"
-               style="display:<?= in_array($this->action->id, array('view', 'removed')) ? 'none' : 'block' ?>"></i>
-        </span>
+            <span class="extra-info js-event-date"><?= Helper::convertDate2NHS($this->event->event_date) ?></span>
+            <span class="js-has-tooltip" data-tooltip-content="Change Event date">
+                <i class="oe-i history large pad-left js-change-event-date"
+                   style="display:<?= in_array($this->action->id, array('view', 'removed')) ? 'none' : 'block' ?>"></i>
+            </span>
         <?php } ?>
-        </div>
+    </div>
 
     <?php $this->renderPartial('//patient/_patient_alerts') ?>
     <?php $this->renderPartial('//base/_messages'); ?>
+    <div id="js-auto-save-alerts" class="alert-box warning" style="display:none">
+        Auto save failed due to the following error(s):
+        <ul id="js-auto-save-alerts-list"></ul>
+    </div>
+    <?php if (isset($this->existing_draft) && $this->existing_draft->id) { ?>
+        <div id="js-existing-draft-banner"
+            class="alert-box issue has-actions"
+            data-existing-draft="<?= $this->existing_draft->id ?>"
+            data-existing-draft-url="<?= $this->existing_draft->originating_url ?>"
+            >
+            An existing draft event has been found for this event type. Do you wish to load the existing draft event?
+            <div class="alert-actions">
+                <button id="js-load-existing-draft" class="button blue hint">Yes</button>
+                <button id="js-delete-existing-draft" class="button blue hint">No (delete draft)</button>
+            </div>
+        </div>
+    <?php } ?>
     <?php if (
         $this->event->eventType->custom_hint_text
         && $this->event->eventType->hint_position === 'TOP'

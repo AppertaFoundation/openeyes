@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
 *
@@ -37,21 +38,24 @@ return array(
             'theatre_diaries' => array(
                 'title' => 'Theatre Diaries',
                 'uri' => 'OphTrOperationbooking/theatreDiary/index',
-                'position' => 10,
-                'requires_setting' => array('setting_key'=>'disable_theatre_diary', 'required_value'=>'off')
+                'requires_setting' => array('setting_key' => 'disable_theatre_diary', 'required_value' => 'off')
             ),
             'partial_bookings' => array(
                 'title' => 'Partial bookings waiting list',
                 'uri' => 'OphTrOperationbooking/waitingList/index',
-                'position' => 20,
                 'restricted' => array('Schedule operation' , 'Super schedule operation'),
+            ),
+            'theatre_management' => array(
+                'title' => 'Theatre Management',
+                'uri' => 'OphTrOperationbooking/admin/viewSequences',
+                'restricted' => array('Theatre Management'),
             ),
         ),
         'future_scheduling_limit' => '3 months',
         'admin_menu' => array(
             'OphTrOperationbooking' => [
-                'Sequences' => array('uri'=>'/OphTrOperationbooking/admin/viewSequences', 'requires_setting' => array('setting_key'=>'disable_theatre_diary', 'required_value'=>'off')),
-                'Sessions' => array('uri'=>'/OphTrOperationbooking/admin/viewSessions', 'requires_setting' => array('setting_key'=>'disable_theatre_diary', 'required_value'=>'off')),
+                'Sequences' => array('uri' => '/OphTrOperationbooking/admin/viewSequences', 'requires_setting' => array('setting_key' => 'disable_theatre_diary', 'required_value' => 'off')),
+                'Sessions' => array('uri' => '/OphTrOperationbooking/admin/viewSessions', 'requires_setting' => array('setting_key' => 'disable_theatre_diary', 'required_value' => 'off')),
                 'Wards' => '/OphTrOperationbooking/admin/viewWards',
                 'Theatres' => '/OphTrOperationbooking/admin/viewTheatres',
                 'Operation priorities' => '/OphTrOperationbooking/admin/operationPriorities',
@@ -61,9 +65,11 @@ return array(
                 'Letter warning rules' => '/OphTrOperationbooking/admin/viewLetterWarningRules',
                 'Operation name rules' => '/OphTrOperationbooking/admin/viewOperationNameRules',
                 'Waiting list contact rules' => '/OphTrOperationbooking/admin/viewWaitingListContactRules',
-                'Patient unavailable reasons' => '/OphTrOperationbooking/admin/viewPatientUnavailableReasons',
-                'Session unavailable reasons' => array('uri'=>'/OphTrOperationbooking/admin/viewSessionUnavailableReasons', 'requires_setting' => array('setting_key'=>'disable_theatre_diary', 'required_value'=>'off')),
+                'Patient unavailable reasons' => array('uri' => '/OphTrOperationbooking/admin/viewPatientUnavailableReasons', 'restricted' => array('admin')),
+                'Session unavailable reasons' => array('uri' => '/OphTrOperationbooking/admin/viewSessionUnavailableReasons', 'requires_setting' => array('setting_key' => 'disable_theatre_diary', 'required_value' => 'off')),
                 'Whiteboard' => '/OphTrOperationbooking/oeadmin/WhiteboardSettings/settings',
+                'Pre-assessment Types' => '/OphTrOperationbooking/admin/preassessmentType',
+                'Pre-assessment Locations' => '/OphTrOperationbooking/admin/preassessmentLocation',
             ]
         ),
         // Default anaesthetic settings

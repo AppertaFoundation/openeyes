@@ -37,20 +37,12 @@
                     <?php echo $form->checkBox(
                         $element,
                         'agrees_to_insecure_email_correspondence',
-                        array('nowrapper' => true)
+                        array('nowrapper' => true, 'data-test' => 'agrees_to_insecure_email_correspondence')
                     ) ?>
                 </div>
                 <div class="cols-8 column">
                     <?php
-                    // If it is the new record, get the patient_id from the url
-                    $patientId = Yii::app()->request->getQuery('patient_id', null);
-                    if (!isset($patientId)) {
-                        // patientId will be null on updating the event
-                        $eventId = $element->event_id;
-                        $event = Event::model()->findByPk($eventId);
-                        $patientId = $event->episode->patient_id;
-                    }
-                    $patient = Patient::model()->findByPk($patientId);
+                    $patient = $this->patient;
                     $address = $patient->contact->address;
                     $contact = $patient->contact;
                     $emailAddress = Yii::app()->request->getPost('Contact');
@@ -65,6 +57,28 @@
                     </span>
                 </div>
             </div>
+        </td>
+    </tr>
+    <?php
+    $exam_api = Yii::app()->moduleAPI->get('OphCiExamination');
+    $examination_communication_preferences = $exam_api->getLatestElement('OEModule\OphCiExamination\models\Element_OphCiExamination_CommunicationPreferences', $patient);
+    if ($examination_communication_preferences && !is_null($examination_communication_preferences->language_id)) {
+        $element->language_id = $examination_communication_preferences->language_id;
+    }
+    if ($examination_communication_preferences && !is_null($examination_communication_preferences->interpreter_required_id)) {
+        $element->interpreter_required_id = $examination_communication_preferences->interpreter_required_id;
+    }
+    ?>
+    <tr>
+        <td>
+            <?php echo $form->dropDownList($element, 'language_id',
+                CHtml::listData(Language::model()->findAll(array('order' => 'name asc')), 'id', 'name') + array('0'=>'Other'), array('empty' => '- Please select -'), false, array('label' => 6, 'field' => 6)) ?>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <?php echo $form->dropDownList($element, 'interpreter_required_id',
+                CHtml::listData(Language::model()->findAll(array('order' => 'name asc')), 'id', 'name') + array('0'=>'Other'), array('empty' => '- Please select -'), false, array('label' => 6, 'field' => 6)) ?>
         </td>
     </tr>
     </tbody>

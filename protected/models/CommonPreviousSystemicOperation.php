@@ -63,7 +63,7 @@ class CommonPreviousSystemicOperation extends BaseActiveRecordVersioned
         // will receive user inputs.
         return [
             ['name, display_order', 'safe'],
-            ['name', 'required'],
+            ['name, display_order', 'required'],
             ['name', 'length', 'max' => 1024],
             // The following rule is used by search().
             ['id, name', 'safe', 'on' => 'search'],
@@ -131,5 +131,15 @@ class CommonPreviousSystemicOperation extends BaseActiveRecordVersioned
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    /**
+     * Delete the related institutions for this element.
+     */
+    protected function beforeDelete()
+    {
+        CommonPreviousSystemicOperation_Institution::model()->deleteAll('common_previous_systemic_operation_id = ?', array($this->id));
+
+        return parent::beforeDelete();
     }
 }

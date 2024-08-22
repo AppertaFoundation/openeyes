@@ -25,13 +25,11 @@
  * @property int $disorder_id
  * @property int $eye_id
  * @property int $patient_id
- * @property int $episode_id
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
  * @property Eye $eye
  * @property Patient $patient
- * @property Episode $episode
  */
 class SecondaryDiagnosis extends BaseActiveRecordVersioned
 {
@@ -131,7 +129,7 @@ class SecondaryDiagnosis extends BaseActiveRecordVersioned
      * @return string
      */
     public function getOphthalmicDescription() {
-        return $this->eye->adjective.'~'.$this->disorder->term . '~' . $this->getDateText() . '~';
+        return $this->eye ? $this->eye->adjective.'~'.$this->disorder->term . '~' . $this->getDateText() . '~' : '~'.$this->disorder->term . '~' . $this->getDateText() . '~';
     }
 
     /**

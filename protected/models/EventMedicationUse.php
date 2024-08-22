@@ -17,6 +17,7 @@
  */
 
 use OEModule\OphCiExamination\models\HistoryMedicationsStopReason;
+use OEModule\OphDrPGDPSD\models\OphDrPGDPSD_PGDPSD;
 
 /**
  * This is the model class for table "event_medication_use".
@@ -153,9 +154,9 @@ class EventMedicationUse extends BaseElement
             array('stopped_in_event_id', 'default', 'setOnEmpty' => true, 'value' => null),
             array('stop_reason_id', 'validateStopReason'),
             array(
-                'id, event_id, copied_from_med_use_id, latest_prescribed_med_use_id, usage_type, usage_subtype, 
-                    medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration, 
-                    dispense_location_id, dispense_condition_id, start_date, end_date, last_modified_user_id, 
+                'id, event_id, copied_from_med_use_id, latest_prescribed_med_use_id, usage_type, usage_subtype,
+                    medication_id, form_id, laterality, dose, dose_unit_term, route_id, frequency_id, duration,
+                    dispense_location_id, dispense_condition_id, start_date, end_date, last_modified_user_id,
                     last_modified_date, created_user_id, created_date, bound_key, latest_med_use_id', 'safe', 'on' => 'search'
             ),
         );
@@ -654,13 +655,13 @@ class EventMedicationUse extends BaseElement
     public function getMedicationChangeHistory(array $change_history = []): array
     {
         $id = $this->hasLinkedPrescribedEntry() ? $this->prescription_item_id : $this->id;
-        if (!$id) {
+        if (!$id || array_key_exists($id, $change_history)) {
             return $change_history;
         }
         $previous_changed_medication = \EventMedicationUse::model()->findByAttributes(['latest_med_use_id' => $id]);
         if ($previous_changed_medication) {
             if (isset($previous_changed_medication->event) && $previous_changed_medication->isChangedMedication()) {
-                $change_history[] = [
+                $change_history[$id] = [
                     'change_date' => Helper::formatFuzzyDate($previous_changed_medication->event->event_date),
                     'dosage' => $previous_changed_medication->getDoseAndFrequency(false),
                     'frequency' => $previous_changed_medication->frequency ? $previous_changed_medication->frequency->code : '',
@@ -681,6 +682,10 @@ class EventMedicationUse extends BaseElement
      */
     public function getTaperChangeHistory(): array
     {
+        if(is_null($this->id)) {
+            return [];
+        }
+
         $change_history = [];
         $prescription_item = OphDrPrescription_Item::model()->findByPk($this->id);
         $start_date = new DateTime($prescription_item->start_date);
@@ -766,7 +771,8 @@ class EventMedicationUse extends BaseElement
     {
         $data = [];
 
-        $medication = Medication::model()->findByPk($this->medication_id);
+        // As the medication data changes infrequently, it should be safe to cache for at least 5 minutes
+        $medication = Medication::model()->cache(300)->findByPk($this->medication_id);
 
         $dosage = $this->getDoseAndFrequency();
         if (!empty($dosage)) {
@@ -1080,7 +1086,7 @@ class EventMedicationUse extends BaseElement
         $criteria->params['latest_med_use_id'] = $this->hasLinkedPrescribedEntry() ? $this->prescription_item_id : $this->id;
         $previous_medication = EventMedicationUse::model()->find($criteria);
 
-        if ($previous_medication && isset($previous_medication->event)) {
+        if ($previous_medication && isset($previous_medication->event) && (strtotime($previous_medication->created_date) < strtotime($this->created_date))) {
             if ($this->isContinuedMedication($previous_medication)) {
                 return $previous_medication;
             } else {
@@ -1246,8 +1252,11 @@ class EventMedicationUse extends BaseElement
             $exclude_models = $model->with('prescription', 'prescription.event', 'prescription.event.episode')
                 ->findAll('medication_id !=? and episode.patient_id=?', [$this->medication_id, $patient->id]);
         } else {
-            $exclude_models = $model->with('event', 'event.episode')
-                ->findAll('(medication_id !=? and episode.patient_id=?) or prescribe=?', [$this->medication_id, $patient->id, 1]);
+            $exclude_models_med = $model->with('event', 'event.episode')
+                ->findAll('(medication_id !=? and episode.patient_id=?)', [$this->medication_id, $patient->id]);
+            $exclude_models_prescribe = $model->with('event', 'event.episode')
+                ->findAll('prescribe=?', [1]);
+            $exclude_models = array_merge($exclude_models_med, $exclude_models_prescribe);
         }
 
         $exclude_ids = array_map(function ($item) {

@@ -19,8 +19,13 @@
 /**
  * A class that all OpenEyes active record classes should extend.
  *
- * Currently its only purpose is to remove all html tags to
- * prevent XSS.
+ * @property mixed $id
+ * @property ?CDbSchema $tableSchema
+ * @property mixed $created_date
+ * @property mixed $created_user_id
+ * @property mixed $last_modified_date
+ * @property mixed $last_modified_user_id
+ * @property boolean $isNewRecord
  */
 class BaseActiveRecord extends CActiveRecord
 {
@@ -59,7 +64,7 @@ class BaseActiveRecord extends CActiveRecord
      * @see self::getChangeUser
      * @var User
      */
-    private $change_user;
+    private $change_user = null;
 
     /**
      * Flag to indicate that model should only save to the db if actual changes have taken place on the model.
@@ -132,7 +137,7 @@ class BaseActiveRecord extends CActiveRecord
     /**
      * @var CApplication
      */
-    protected $app;
+    protected $app = null;
 
     /**
      * @param CApplication $app
@@ -147,7 +152,7 @@ class BaseActiveRecord extends CActiveRecord
      */
     public function getApp()
     {
-        if (!$this->app) {
+        if ($this->app === null) {
             $this->app = Yii::app();
         }
 
@@ -276,7 +281,7 @@ class BaseActiveRecord extends CActiveRecord
      */
     protected function getChangeUser()
     {
-        if (!$this->change_user) {
+        if ($this->change_user === null) {
             $this->change_user = \User::model()->findByPk($this->getChangeUserId());
         }
         return $this->change_user;
@@ -290,13 +295,12 @@ class BaseActiveRecord extends CActiveRecord
      */
     protected function getChangeUserId()
     {
-        try {
-            if (isset($this->getApp()->user)) {
-                return $this->getApp()->user->id === null ? 1 : $this->getApp()->user->id;
-            }
-        } catch (Exception $e) {
-            return 1;
+        if (method_exists($this->getApp(), 'getUser')) {
+            $user = $this->getApp()->getUser();
+            return $user && $user->id ? $user->id : 1;
         }
+
+        return 1;
     }
 
     /**
@@ -535,6 +539,7 @@ class BaseActiveRecord extends CActiveRecord
             // that should be ignored (because the actual relations we're interested in will update these)
             $thru_rels = array();
             $many_rels = array();
+            $has_one_rels = array();
             foreach ($record_relations as $name => $rel) {
                 if (in_array(get_class($rel), array(self::HAS_MANY, self::MANY_MANY))) {
                     $many_rels[] = $name;
@@ -542,7 +547,11 @@ class BaseActiveRecord extends CActiveRecord
                         $thru_rels[] = $rel->through;
                     }
                 }
+                if (get_class($rel) === self::HAS_ONE) {
+                    $has_one_rels[] = $name;
+                }
             }
+
             $safe_attributes = $this->getSafeAttributeNames();
             foreach ($many_rels as $name) {
                 if (in_array($name, $thru_rels) || !in_array($name, $safe_attributes)) {
@@ -571,6 +580,36 @@ class BaseActiveRecord extends CActiveRecord
                 // retrieving the original objects above resets the relation to what was in the db before this save
                 // process. We restore it the 'new objects' here, thereby maintaining consistency with the db.
                 $this->$name = $new_objs;
+            }
+
+            foreach ($has_one_rels as $relation_name) {
+                if (!in_array($relation_name, $safe_attributes)) {
+                    continue;
+                }
+                $relation_object = $record_relations[$relation_name];
+
+                $new_obj = $this->$relation_name;
+                $orig_obj = $this->getRelated($relation_name, true);
+
+                if ($new_obj && $new_obj->id && $orig_obj && ($new_obj->id === $orig_obj->id)) {
+                    // update
+                    $orig_obj->setAttributes($new_obj->getAttributes());
+                    $new_obj = $orig_obj;
+                }
+
+                // make sure the FK is right
+                $new_obj->{$relation_object->foreignKey} = $this->getPrimaryKey();
+
+
+                // set the relation so that it does not need to be retrieved from the db.
+                $reverse_relation = $this->getReverseRelation($new_obj, $relation_object);
+                if ($reverse_relation) {
+                    $new_obj->{$reverse_relation->name} = $this;
+                }
+
+                if (!$new_obj->save()) {
+                    throw new Exception("Unable to save {$relation_name}" . print_r($new_obj->getErrors(), true));
+                }
             }
         }
         parent::afterSave();
@@ -653,16 +692,22 @@ class BaseActiveRecord extends CActiveRecord
      */
     public function NHSDate($attribute, $empty_string = '-')
     {
-        if ($value = $this->getAttribute($attribute)) {
-            return Helper::convertMySQL2NHS($value, $empty_string);
+        $value = $this->getAttribute($attribute);
+        if (!$value) {
+            return $empty_string;
         }
+
+        return Helper::convertMySQL2NHS($value, $empty_string);
     }
 
     public function shortDate($attribute, $empty_string = '-')
     {
-        if ($value = $this->getAttribute($attribute)) {
-            return Helper::convertDate2Short($value, $empty_string);
+        $value = $this->getAttribute($attribute);
+        if (!$value) {
+            return $empty_string;
         }
+
+        return Helper::convertDate2Short($value, $empty_string);
     }
 
     /**
@@ -674,9 +719,11 @@ class BaseActiveRecord extends CActiveRecord
     public function NHSDateAsHTML($attribute, $empty_string = '-')
     {
         $value = $this->getAttribute($attribute);
-        if ($value) {
-            return Helper::convertMySQL2HTML($value, $empty_string);
+        if (!$value) {
+            return $empty_string;
         }
+
+        return Helper::convertMySQL2HTML($value, $empty_string);
     }
 
     /**
@@ -836,6 +883,28 @@ class BaseActiveRecord extends CActiveRecord
                 // and the foreignKey will be an array
                 if ($rel_type == self::HAS_MANY && !is_array($rel->foreignKey)) {
                     $this->validateRelation($rel_name, $rel->foreignKey);
+                }
+
+                if ($rel_type == self::HAS_ONE) {
+                    $rel_obj = $this->$rel_name;
+                    if ($rel_obj) {
+                        $foreign_key = $rel->foreignKey;
+                        $rel_obj->$foreign_key = $this->id;
+
+                        // if the model is a new record than there is no ID so we do not validate that fk field
+                        $to_be_validated = array_keys($rel_obj->attributes);
+                        if ($this->isNewRecord) {
+                            $fk = $rel->foreignKey;
+                            $to_be_validated = array_filter($to_be_validated, function ($attr) use ($fk) {
+                                return $attr !== $fk;
+                            });
+                        }
+                        if (!$rel_obj->validate($to_be_validated)) {
+                            foreach ($rel_obj->getErrors() as $fld => $err) {
+                                $this->addError($rel_name, implode(', ', $err));
+                            }
+                        }
+                    }
                 }
             }
         }

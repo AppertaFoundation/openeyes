@@ -1,3 +1,0 @@
-id,address1,address2,city,postcode,county,country_id,email,last_modified_user_id,last_modified_date,created_user_id,created_date,parent_class,parent_id,date_start,date_end,address_type_id
-1,"162 CITY ROAD",,LONDON,"EC1V 2PD","GREATER LONDON",1,,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",Contact,6,,,
-2,"162 City Road",,,"A1 2BC",,1,,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",Contact,5,,,

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -16,20 +17,35 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+use OEModule\OESysEvent\events\UserSavedSystemEvent;
+use OEModule\OphCoMessaging\models\Mailbox;
+use OEModule\OphCoMessaging\models\MailboxUser;
+
 /**
  * This is the model class for table "User".
  *
  * The followings are the available columns in table 'User':
  *
- * @property int    $id
+ * @property int $id
  * @property string $first_name
  * @property string $last_name
  * @property string $email
- * @property int    $global_firm_rights
- * @property date   $correspondence_sign_off_user_id
+ * @property int $global_firm_rights
+ * @property int $correspondence_sign_off_user_id
+ * @property string $correspondence_sign_off_text
+ * @property int $last_firm_id
+ *
+ * @property User $signOffUser
+ * @property Mailbox[] $mailboxes
+ * @property Mailbox $personalMailbox
+ * @property Team[] $teams
  */
 class User extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
+    private const PIN_REGEN_LIMIT = 5;
     /**
      * Returns the static model of the specified AR class.
      *
@@ -66,8 +82,10 @@ class User extends BaseActiveRecordVersioned
             // Added for uniqueness of username
             array('id, first_name, last_name, email, global_firm_rights, correspondence_sign_off_user_id', 'safe', 'on' => 'search'),
             array('title, first_name, last_name', 'match', 'pattern' => '/^[a-zA-Z]+(([\',. -][a-zA-Z ])?[a-zA-Z]*)*$/', 'message' => 'Invalid {attribute} entered.'),
+            array('correspondence_sign_off_text', 'required'),
+            array('correspondence_sign_off_text', 'length', 'max' => 255),
             array(
-                'first_name, last_name, email, global_firm_rights, title, qualifications, role, is_consultant, is_surgeon,
+                'first_name, last_name, email, global_firm_rights, title, role, is_consultant, is_surgeon,
                  has_selected_firms,doctor_grade_id, registration_code, signature_file_id, correspondence_sign_off_user_id',
                 'safe',
             ),
@@ -134,7 +152,12 @@ class User extends BaseActiveRecordVersioned
             'grade' => array(self::BELONGS_TO, 'DoctorGrade', 'doctor_grade_id'),
             'signature' => array(self::BELONGS_TO, 'ProtectedFile', 'signature_file_id'),
             'signOffUser' => array(self::BELONGS_TO, 'User', 'correspondence_sign_off_user_id'),
-            'authentications' => array(self::HAS_MANY, 'UserAuthentication', 'user_id')
+            'authentications' => array(self::HAS_MANY, 'UserAuthentication', 'user_id'),
+            'pincode' => array(self::HAS_ONE, 'UserPincode', 'user_id'),
+            'teams' => array(self::MANY_MANY, 'Team', 'team_user_assign(user_id, team_id)'),
+            'userMailboxes' => [self::HAS_MANY, MailboxUser::class, 'user_id'],
+            'mailboxes' => [self::HAS_MANY, Mailbox::class, 'mailbox_id', 'through' => 'userMailboxes'],
+            'personalMailbox' => [self::HAS_ONE, Mailbox::class, 'mailbox_id', 'through' => 'userMailboxes', 'on' => 'personalMailbox.is_personal=1']
         );
 
         if ($this->getScenario() !== 'portal_command') {
@@ -160,6 +183,27 @@ class User extends BaseActiveRecordVersioned
     public function getIs_doctor()
     {
         return $this->is_surgeon;
+    }
+
+    public function getHieAccessLevel()
+    {
+        $hie_roles = [
+            'HIE - Extended' => 'Level 4 - Extended',
+            'HIE - Summary' => 'Level 3 - Summary',
+            'HIE - Admin' => 'Level 2 - Admin',
+            'HIE - View' => 'Level 1 - Default View'
+        ];
+
+        $highest_role = null;
+
+        foreach ($hie_roles as $key => $value) {
+            if (Yii::app()->authManager->checkAccess($key, Yii::app()->user->id)) {
+                $highest_role = $value;
+                break;
+            }
+        }
+
+        return $highest_role;
     }
 
     public function changeFirm($firm_id)
@@ -189,6 +233,14 @@ class User extends BaseActiveRecordVersioned
         }
     }
 
+    public function init()
+    {
+        parent::init();
+        if ($this->isNewRecord) {
+            $this->global_firm_rights = 1;
+        }
+    }
+
     /**
      * @return array customized attribute labels (name=>label)
      */
@@ -205,6 +257,7 @@ class User extends BaseActiveRecordVersioned
             'is_surgeon' => 'Surgeon',
             'doctor_grade_id' => 'Grade',
             'role' => 'Position',
+            'correspondence_sign_off_text' => 'Correspondence sign-off text'
         );
     }
 
@@ -268,7 +321,7 @@ class User extends BaseActiveRecordVersioned
      * @return string
      * @throws Exception
      */
-    public function getNameAndInstitutionUsername($institution_id, bool $reversed = true): string
+    public function getNameAndInstitutionUsername($institution_id, bool $reversed = true, string $username_prefix = '', string $separator = ' '): string
     {
         $user_auth_id = Yii::app()->db->createCommand()
             ->select('ua.id')
@@ -288,19 +341,19 @@ class User extends BaseActiveRecordVersioned
         }
 
         if ($reversed) {
-            $return = $this->getReversedFullNameAndTitle();
+            $return = $this->getReversedFullNameAndTitle($separator);
         } else {
-            $return = $this->getFullNameAndTitle();
+            $return = $this->getFullNameAndTitle($separator);
         }
-        return $return . " ($user_auth->username)";
+        return $return . " ({$username_prefix}{$user_auth->username})";
     }
 
     /**
      * @return string
      */
-    public function getFullNameAndTitle()
+    public function getFullNameAndTitle(string $separator = ' ')
     {
-        return implode(' ', array($this->title, $this->first_name, $this->last_name));
+        return implode($separator, array($this->title, $this->first_name, $this->last_name));
     }
 
     /**
@@ -313,9 +366,14 @@ class User extends BaseActiveRecordVersioned
 
     public function getFirmsForCurrentInstitution()
     {
-        return array_filter($this->getAvailableFirms(), static function ($item) {
-            return Yii::app()->session['selected_institution_id'] === $item->institution_id;
-        });
+        $criteria = new CDbCriteria();
+        $criteria->addCondition('t.institution_id = ' . Yii::app()->session['selected_institution_id'] . ' OR t.institution_id IS NULL');
+        return $this->getAvailableFirms($criteria);
+    }
+
+    public function getInitials()
+    {
+        return mb_strtoupper($this->first_name[0] ?? null) . mb_strtoupper($this->last_name[0] ?? null);
     }
 
     /**
@@ -324,24 +382,24 @@ class User extends BaseActiveRecordVersioned
     public function getFullNameAndTitleAndQualifications()
     {
         return implode(' ', array(
-            $this->title,
-            $this->first_name,
-            $this->last_name,
-        )) . ($this->qualifications ? ' ' . $this->qualifications : '');
+                $this->title,
+                $this->first_name,
+                $this->last_name,
+            )) . ($this->contact->qualifications ?? '');
     }
 
     /**
      * @return string
      */
-    public function getReversedFullNameAndTitle()
+    public function getReversedFullNameAndTitle(string $separator = ' ')
     {
-        return implode(' ', array($this->title, $this->last_name, $this->first_name));
+        return implode($separator, array(strtoupper($this->last_name), ucwords($this->first_name), ucwords($this->title)));
     }
 
     public function getUsersFromCurrentInstitution()
     {
         $criteria = new CDbCriteria();
-        $criteria->join = "join user_authentication ua on ua.user_id = t.id";
+        $criteria->join .= "join user_authentication ua on ua.user_id = t.id";
         $criteria->join .= " join institution_authentication ia on ua.institution_authentication_id = ia.id";
         $criteria->compare('ia.institution_id', \Yii::app()->session['selected_institution_id']);
         $criteria->order = 't.last_name,t.first_name asc';
@@ -368,8 +426,8 @@ class User extends BaseActiveRecordVersioned
      *
      * @param       $target
      * @param       $action
-     * @param null  $data
-     * @param bool  $log
+     * @param null $data
+     * @param bool $log
      * @param array $properties
      */
     public function audit($target, $action, $data = null, $log = false, $properties = array())
@@ -421,6 +479,13 @@ class User extends BaseActiveRecordVersioned
         return parent::beforeSave();
     }
 
+    public function afterSave()
+    {
+        UserSavedSystemEvent::dispatch($this);
+
+        return parent::afterSave();
+    }
+
     public function getActiveSiteSelections()
     {
         return array_filter($this->siteSelections, function ($site) {
@@ -439,32 +504,9 @@ class User extends BaseActiveRecordVersioned
         $criteria->compare('institution_id', Institution::model()->getCurrent()->id);
         $criteria->addNotInCondition('id', $site_ids);
         $criteria->order = 'name asc';
+        $criteria->compare('active', 1);
 
         return Site::model()->findAll($criteria);
-    }
-
-    public function getNotSelectedFirmList()
-    {
-        $firms = Yii::app()->db->createCommand()
-            ->select('f.id, f.name, s.name AS subspecialty')
-            ->from('firm f')
-            ->leftJoin('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-            ->leftJoin('subspecialty s', 'ssa.subspecialty_id = s.id')
-            ->leftJoin('user_firm uf', 'uf.firm_id = f.id and uf.user_id = ' . Yii::app()->user->id)
-            ->where('uf.id is null and f.active = 1')
-            ->order('f.name, s.name')
-            ->queryAll();
-        $data = array();
-        foreach ($firms as $firm) {
-            if ($firm['subspecialty']) {
-                $data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
-            } else {
-                $data[$firm['id']] = $firm['name'];
-            }
-        }
-        natcasesort($data);
-
-        return $data;
     }
 
     /**
@@ -473,6 +515,16 @@ class User extends BaseActiveRecordVersioned
     public function getRoles()
     {
         return $this->id ? Yii::app()->authManager->getRoles($this->id) : array();
+    }
+
+    public function hasRole($targetRole): bool {
+        foreach ($this->getRoles() as $role) {
+            if ($targetRole === $role->name) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -514,7 +566,7 @@ class User extends BaseActiveRecordVersioned
                     $newPermission->trial_permission_id = TrialPermission::model()->find('code = ?', array('MANAGE'))->id;
                     $criteria = new CDbCriteria();
                     $criteria->condition = 'user_id=:user_id AND trial_id=:trial_id AND trial_permission_id=:trial_permission_id';
-                    $criteria->params = array(':user_id'=>$this->id,':trial_id'=>$trial->id,':trial_permission_id'=>$newPermission->trial_permission_id );
+                    $criteria->params = array(':user_id' => $this->id, ':trial_id' => $trial->id, ':trial_permission_id' => $newPermission->trial_permission_id);
                     if (UserTrialAssignment::model()->exists($criteria) == false) {
                         if (!$newPermission->save()) {
                             throw new CHttpException(500, 'The owner permission for the new trial could not be saved: '
@@ -533,7 +585,7 @@ class User extends BaseActiveRecordVersioned
                 foreach ($trials as $trial) {
                     $criteria = new CDbCriteria();
                     $criteria->condition = 'user_id=:user_id AND trial_id=:trial_id AND trial_permission_id=:trial_permission_id AND role IS NULL AND is_principal_investigator=:is_principal_investigator AND is_study_coordinator=:is_study_coordinator';
-                    $criteria->params = array(':user_id'=>$this->id,':trial_id'=>$trial->id,':trial_permission_id'=>TrialPermission::model()->find('code = ?', array('MANAGE'))->id,':is_principal_investigator'=>0,':is_study_coordinator'=>0 );
+                    $criteria->params = array(':user_id' => $this->id, ':trial_id' => $trial->id, ':trial_permission_id' => TrialPermission::model()->find('code = ?', array('MANAGE'))->id, ':is_principal_investigator' => 0, ':is_study_coordinator' => 0);
                     if (UserTrialAssignment::model()->exists($criteria)) {
                         if (!UserTrialAssignment::model()->deleteAll($criteria)) {
                             throw new CHttpException(500, 'The user permissions for this trial could not be removed: '
@@ -581,21 +633,23 @@ class User extends BaseActiveRecordVersioned
      *
      * @return Firm[]
      */
-    public function getAvailableFirms()
+    public function getAvailableFirms(CDbCriteria $crit = null)
     {
-        $crit = new CDbCriteria();
+        if (!$crit) {
+            $crit = new CDbCriteria();
+        }
         $crit->compare('t.active', 1);
         if (!$this->global_firm_rights) {
             $crit->join =
-                'join institution i on i.id = t.institution_id ' .
-                'join institution_authentication ia on ia.institution_id = i.id and ia.active = 1 ' .
-                'join user_authentication ua ON ua.institution_authentication_id = ia.id and ua.active = 1 ' .
-                'left join firm_user_assignment fua on fua.firm_id = t.id and fua.user_id = ua.user_id ' .
-                'left join user_firm_rights ufr on ufr.firm_id = t.id and ufr.user_id = ua.user_id ' .
+                'left join institution i on i.id = t.institution_id ' .
+                'left join institution_authentication ia on ia.institution_id = i.id and ia.active = 1 ' .
+                'left join user_authentication ua ON ua.institution_authentication_id = ia.id and ua.active = 1 ' .
+                'left join firm_user_assignment fua on fua.firm_id = t.id and fua.user_id = :user_id ' .
+                'left join user_firm_rights ufr on ufr.firm_id = t.id and ufr.user_id = :user_id ' .
                 'left join service_subspecialty_assignment ssa on ssa.id = t.service_subspecialty_assignment_id ' .
-                'left join user_service_rights usr on usr.service_id = ssa.service_id and usr.user_id = ua.user_id ';
+                'left join user_service_rights usr on usr.service_id = ssa.service_id and usr.user_id = :user_id ';
             $crit->addCondition("fua.id is not null or ufr.id is not null or usr.id is not null");
-            $crit->addCondition("ua.user_id = :user_id");
+            $crit->addCondition("t.institution_id IS NULL OR ua.user_id = :user_id");
             $crit->params[':user_id'] = $this->id;
         }
 
@@ -605,11 +659,11 @@ class User extends BaseActiveRecordVersioned
     public function getAllAvailableFirms()
     {
         $crit = new CDbCriteria();
-        $crit->compare('t.active', 1);
-        $crit->join = "join institution i on i.id = t.institution_id
-            join institution_authentication ia on ia.institution_id = i.id and ia.active = 1
-            join user_authentication ua on ua.institution_authentication_id = ia.id  and ua.active = 1";
-        $crit->compare('ua.user_id', $this->id);
+        $crit->join = "left join institution i on i.id = t.institution_id
+            left join institution_authentication ia on ia.institution_id = i.id and ia.active = 1
+            left join user_authentication ua on ua.institution_authentication_id = ia.id and ua.active = 1";
+        $crit->condition = '(t.institution_id IS NULL OR ua.user_id = :user_id) AND t.active = 1';
+        $crit->params[':user_id'] = Yii::app()->user->id;
 
         return Firm::model()->findAll($crit);
     }
@@ -637,7 +691,7 @@ class User extends BaseActiveRecordVersioned
      */
     public function portalUser()
     {
-        $username = \Yii::app()->params["portal_user"] ?? "portal_user";
+        $username = SettingMetadata::model()->getSetting("portal_user") ?: "portal_user";
         $criteria = new CDbCriteria();
         $criteria->compare('username', $username);
         $userAuthentication = UserAuthentication::model()->find($criteria);
@@ -653,20 +707,21 @@ class User extends BaseActiveRecordVersioned
     }
 
     /**
-     * @param $text
-     * @param $key
-     * @return string|null
+     * Returns a standalone img tag with a base64-encoded image of the user's signature
+     *
+     * @param array $html_options   Additional HTML options, @see \CHtml::img()
+     * @return string|null  The image or null if the user does not have a saved signature
      */
-    protected function decryptSignature($text, $key)
+    public function getSignatureImage(array $html_options = []): ?string
     {
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-        $decrypt = trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, base64_decode($text), MCRYPT_MODE_ECB, $iv));
-        if (Yii::app()->params['no_md5_verify']) {
-            return $decrypt;
-        }
-
-        return Helper::md5Verified($decrypt);
+        return !is_null($this->signature_file_id) ?
+            \CHtml::image(
+                "/protectedFile/view/" . $this->signature_file_id . "/?name=Signature",
+                "Signature",
+                $html_options
+            )
+            :
+            null;
     }
 
     /**
@@ -701,7 +756,7 @@ class User extends BaseActiveRecordVersioned
     {
         $pw_restrictions = Yii::app()->params['pw_restrictions'];
 
-        if ($pw_restrictions===null) {
+        if ($pw_restrictions === null) {
             $pw_restrictions = array(
                 'min_length' => 8,
                 'min_length_message' => 'Passwords must be at least 8 characters long',
@@ -715,13 +770,13 @@ class User extends BaseActiveRecordVersioned
             $pw_restrictions['min_length'] = 8;
         }
         if (!isset($pw_restrictions['min_length_message'])) {
-            $pw_restrictions['min_length_message'] = 'Passwords must be at least '.$pw_restrictions['min_length'].' characters long';
+            $pw_restrictions['min_length_message'] = 'Passwords must be at least ' . $pw_restrictions['min_length'] . ' characters long';
         }
         if (!isset($pw_restrictions['max_length'])) {
             $pw_restrictions['max_length'] = 70;
         }
         if (!isset($pw_restrictions['max_length_message'])) {
-            $pw_restrictions['max_length_message'] = 'Passwords must be at most '.$pw_restrictions['max_length'].' characters long';
+            $pw_restrictions['max_length_message'] = 'Passwords must be at most ' . $pw_restrictions['max_length'] . ' characters long';
         }
         if (!isset($pw_restrictions['strength_regex'])) {
             $pw_restrictions['strength_regex'] = "%.*%";
@@ -778,7 +833,7 @@ class User extends BaseActiveRecordVersioned
         $criteria = new CDbCriteria();
         $criteria->addInCondition('t.id', $user_ids);
 
-        if ( !empty($user_ids)) {
+        if (!empty($user_ids)) {
             $users = $this->findAll($criteria);
 
             foreach ($users as $id => $user) {
@@ -823,68 +878,87 @@ class User extends BaseActiveRecordVersioned
         }
         return $ret;
     }
-    /// NOTE: SSO is not currently supported under the multi-tenancy model. To support it, these functions will likely
-    /// need to move to UserAuthentication.
-    public function setSSOUserInformation($response)
+
+    public function setSAMLSSOUserInformation($response)
     {
-        // Set user credentials that login through SAML authentication
-        if (Yii::app()->params['auth_source'] === 'SAML') {
-            $this->username = $response['username'][0];
-            $this->first_name = $response['FirstName'][0];
-            $this->last_name = $response['LastName'][0];
-            $this->email = $response['username'][0];   // For SAML users, email would be their username
-            $this->title = array_key_exists('title', $response) ? $response['title'][0] : '';
-            $this->qualifications = array_key_exists('qualifications', $response) ? $response['qualifications'][0] : '';
-            $this->role = array_key_exists('role', $response) ? $response['role'][0] : '';
-        } elseif (Yii::app()->params['auth_source'] === 'OIDC') {
-            // Set the user credentials that login through OIDC suthentication
-            $this->username = $response['email'];       // OIDC users set emails as their usernames
-            $this->first_name = $response['given_name'];
-            $this->last_name = $response['family_name'];
-            $this->email = $response['email'];
-            $this->title = array_key_exists('title', $response) ? $response['title'] : '';
-            $this->qualifications = array_key_exists('qualifications', $response) ? $response['qualifications'] : '';
-            $this->role = array_key_exists('position', $response) ? $response['position'] : '';
-            $this->doctor_grade_id = array_key_exists('doctor_grade', $response) ? DoctorGrade::model()->find("grade = :grade", [':grade' => $response['doctor_grade']])->id : '';
-            $this->registration_code = array_key_exists('registration_code', $response) ? $response['registration_code'] : '';
-            $this->is_consultant = array_key_exists('consultant', $response) && strtolower($response['consultant']) === 'yes' ? 1 : 0;
-            $this->is_surgeon = array_key_exists('surgeon', $response) && strtolower($response['surgeon']) === 'yes' ? 1 : 0;
-        }
 
-        // Set the user active regardless
-        $this->active = true;
+        $this->first_name = $response['FirstName'][0];
+        $this->last_name = $response['LastName'][0];
+        $this->email = $response['username'][0];   // For SAML users, email would be their username
+        $this->title = array_key_exists('title', $response) ? $response['title'][0] : '';
+        $this->role = array_key_exists('role', $response) ? $response['role'][0] : '';
+
+        $user = self::model()->find('email = :email', array(':email' => $this->email));
+
         $this->setdefaultSSORights();
+        $this->setSSOContact(array_key_exists('qualifications', $response) ? $response['qualifications'][0] : '');
 
-        $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
-        $user = self::model()->find('username = :username', array(':username' => $this->username));
         //If the user is logging into the OE for the first time, assign default roles and firms
         if ($user === null) {
             if (!$this->save()) {
-                $this->audit('login', 'login-failed', "Cannot create user: $this->username", true);
-                throw new Exception('Unable to save User: '.print_r($this->getErrors(), true));
+                $this->audit('login', 'login-failed', "Cannot create user with email: $this->email", true);
+                throw new Exception('Unable to save User: ' . print_r($this->getErrors(), true));
             }
-            $this->id = self::model()->find('username = :username', array(':username' => $this->username))->id;
+            $this->id = self::model()->find('email = :email', array(':email' => $this->email))->id;
 
             $this->setdefaultSSOFirms();
             $this->setdefaultSSORoles();
         } else {
             $this->id = $user->id;
             // Update user information for returning users
-            if (Yii::app()->params['auth_source'] === 'OIDC') {
-                $this->setIsNewRecord(false);
-                $this->update();
+            $this->setIsNewRecord(false);
+            $this->update();
+        }
+        // Roles from the token need to be assigned to the user after every login
+        $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
+        if (!$defaultRights['default_enabled']) {
+            // Pass the array of roles from the token
+            $roles = isset($response['roles']) ? $response['roles'] : [];
+            $this->setRolesFromSSOToken($roles);
+        }
+    }
+
+    public function setOIDCSSOUserInformation($response)
+    {
+        $defaultRights = SsoDefaultRights::model()->findByAttributes(['source' => 'SSO']);
+        if (!$defaultRights['default_enabled']) {
+            $this->checkRolesFromSSOToken($response);
+        }
+
+        $allowedKeys = Yii::app()->params['OIDC_settings']['field_mapping_allow_list_with_defaults'];
+        foreach ($allowedKeys as $allowedKey => $defaultValue) {
+            if (array_key_exists($allowedKey, $response)) {
+                $this->$allowedKey = $response[$allowedKey];
+            } elseif (!$this->$allowedKey) {
+                $this->$allowedKey = $defaultValue;
             }
+        }
+
+        $this->setdefaultSSORights();
+        $this->setSSOContact(array_key_exists('qualifications', $response) ? $response['qualifications'] : '');
+
+        //If the user is logging into the OE for the first time, assign default roles and firms
+        if (!$this->id) {
+            if (!$this->save()) {
+                $this->audit('login', 'login-failed', "Cannot create user: $this->email", true);
+                throw new Exception('Unable to save User: ' . print_r($this->getErrors(), true));
+            }
+
+            $this->setdefaultSSOFirms();
+            $this->setdefaultSSORoles();
+        } else {
+            $this->setIsNewRecord(false);
+            if (!$this->update()) {
+                $this->audit('login', 'login-failed', "Cannot update user: $this->username", true);
+                throw new Exception('Unable to save User: ' . print_r($this->getErrors(), true));
+            };
         }
         // Roles from the token need to be assigned to the user after every login
         if (!$defaultRights['default_enabled']) {
             // Pass the array of roles from the token
-            $this->setRolesFromSSOToken($response['roles']);
+            $roles = isset($response['roles']) ? $response['roles'] : [];
+            $this->setRolesFromSSOToken($roles);
         }
-
-        return array(
-            'username' => $this->username,
-            'password' => $this->password
-        );
     }
 
     public function setdefaultSSORights()
@@ -915,26 +989,79 @@ class User extends BaseActiveRecordVersioned
         $this->saveRoles($defaultRoles);
     }
 
+    // We check that the roles from SSO provider are valid
+    public function checkRolesFromSSOToken($response)
+    {
+        $roles = isset($response['roles']) ? $response['roles'] : [];
+        $username = isset($response['email']) ? $response['email'] : '';
+        $first_name = isset($response['first_name']) ? $response['first_name'] : '';
+        $last_name = isset($response['last_name']) ? $response['last_name'] : '';
+        $name = "$first_name $last_name";
+
+        // Deny access if user has no roles
+        if (count($roles) < 1) {
+            $this->audit('SsoRoles', 'login-failed', "User $name ($username) has no roles assigned: ", true);
+            throw new Exception('User has no roles assigned');
+        }
+
+        $ssoRoles = SsoRoles::model()->findAll();
+        $ssoRoleNames = array_map(function ($role) {
+            return $role->name;
+        }, $ssoRoles);
+
+        // Deny access if the user doesn't have any of the OpenEyes SSO Roles defined in admin settings
+        if (count(array_intersect($roles, $ssoRoleNames)) < 1) {
+            $this->audit('SsoRoles', 'login-failed', "User $name ($username) has no valid OpenEyes roles assigned", true);
+            throw new Exception('User has no valid OpenEyes roles assigned');
+        }
+
+        //Deny access if strict SSO roles check is enabled and user has a role that doesn't exist in OpenEyes SSO roles defined in admin settings
+        if (
+            Yii::app()->params['strict_SSO_roles_check']
+            && count(array_intersect($roles, $ssoRoleNames)) !== count($roles)
+        ) {
+            $this->audit('SsoRoles', 'login-failed', "User $name ($username) has a role assigned that does not exist in OpenEyes SSO roles", true);
+            throw new Exception('User has a role assigned that does not exist in OpenEyes SSO roles');
+        }
+    }
+
     public function setRolesFromSSOToken($roles)
     {
         $assignedRoles = array();
         foreach ($roles as $role) {
-            $userRoles = SsoRoles::model()->find("name = :role", [':role' => $role]);
-            if (!$userRoles) {
-                $this->audit('SsoRoles', 'assign-role', 'SSO Role "' . $role . '" not found for user ' . $this->username);
-                if (Yii::app()->params['strict_SSO_roles_check']) {
-                    $this->audit('SsoRoles', 'login-failed', "SSO Role not found so cannot login: $this->username", true);
-                    throw new Exception('The role "' . $role . '" was not found in OpenEyes');
-                }
-            } else {
-                foreach ($userRoles->sso_roles_assignment as $userRole) {
-                    if (!in_array($userRole->authitem_role, $assignedRoles, true)) {
-                        $assignedRoles[] = $userRole->authitem_role;
-                    }
+            $ssoRole = SsoRoles::model()->find("name = :role", [':role' => $role]);
+            if (!$ssoRole) {
+                continue; // This case covers when user may have a role that doesn't map to any OE SSO roles
+            }
+            foreach ($ssoRole->sso_roles_assignment as $userRole) {
+                if (!in_array($userRole->authitem_role, $assignedRoles, true)) {
+                    $assignedRoles[] = $userRole->authitem_role;
                 }
             }
         }
         $this->saveRoles($assignedRoles);
+    }
+
+    public function setSSOContact(string $qualifications): void
+    {
+        $contact = $this->contact;
+        if (!$contact) {
+            $contact = new Contact();
+        }
+
+        $contact->title = $this->title;
+        $contact->first_name = $this->first_name;
+        $contact->last_name = $this->last_name;
+        $contact->email = $this->email;
+        if ($qualifications) {
+            $contact->qualifications = $qualifications;
+        }
+
+        if (!$contact->save()) {
+            throw new CHttpException(500, 'Unable to save user contact: ' . print_r($contact->getErrors(), true));
+        }
+
+        $this->contact_id = $contact->id;
     }
 
     /**
@@ -944,14 +1071,160 @@ class User extends BaseActiveRecordVersioned
      */
     public function CheckRequestOnExpiryWhitelist($request)
     {
-        $whitelist = !empty(Yii::app()->params['pw_status_checks']['pw_expired_whitelist']) ? Yii::app()->params['pw_status_checks']['pw_expired_whitelist'] : ['/profile/password', '/site/logout', '/User/testAuthenticated', '/Site/loginFromOverlay', 'User/getSecondsUntilSessionExpire', '/site/changesiteandfirm'];
+        $whitelist = !empty(Yii::app()->params['pw_status_checks']['pw_expired_whitelist']) ? Yii::app()->params['pw_status_checks']['pw_expired_whitelist'] : ['/profile/password', '/site/logout', '/User/actionGetSessionExpireTimestamp', '/Site/loginFromOverlay', '/Site/getOverlayPrepopulationData', '/site/changesiteandfirm'];
 
         foreach ($whitelist as $URL) {
             // check to see if the request starts with this whitelisted url
-            if (strpos($request, $URL)===0) {
+            if (strpos($request, $URL) === 0) {
                 return true;
             }
         }
         return false;
+    }
+
+    public function getUserNamesWithStatuses()
+    {
+        $usernames_with_statuses = [];
+        foreach ($this->authentications as $authentication) {
+            $is_active = $authentication->active ? 'Active' : 'Inactive';
+            $password_status = $authentication->isLocalAuth() ? $authentication->password_status : "LDAP";
+            $usernames_with_statuses[] = $authentication->username .
+                " <em class='fade'>($is_active / $password_status)</em>" . '<i class="oe-i info small small-icon pro-theme pad fade js-has-tooltip" data-tooltip-content="'
+                . ($authentication->institutionAuthentication ? $authentication->institutionAuthentication->description : 'SPEACIAL USER')
+                . '"> </i>';
+        }
+
+        return $usernames_with_statuses;
+    }
+
+    /**
+     * Check if provided PIN matches that of User's
+     *
+     * @param string $pincode
+     * @param int|null $user_id
+     * @param int|null $institution_id
+     * @param int|null $site_id
+     * @param UserAuthentication|null $user_authentication will contain a reference to the UserAuthentication if matched
+     * @return boolean
+     */
+    public function checkPin($pincode, $user_id = null, $institution_id = null, $site_id = null, &$user_authentication = null): bool
+    {
+        $pin_ok = false;
+
+        $institution_id = $institution_id ?? Institution::model()->getCurrent()->id;
+        $site_id = $site_id ?? Yii::app()->session['selected_site_id'];
+        $user_id = $user_id ?? $this->id;
+
+        $criteria = new CDbCriteria();
+        $criteria->with = [
+            'user',
+            'user.pincode',
+            'institutionAuthentication',
+        ];
+        $criteria->compare('t.user_id', $user_id);
+        $criteria->compare('t.active', true);
+        $criteria->compare('pincode.pincode', $pincode);
+        $criteria->compare('institutionAuthentication.institution_id', $institution_id);
+        $criteria->addCondition('site_id=:site_id || site_id IS NULL');
+        $criteria->params[':site_id'] = $site_id;
+
+        $user_authentication = UserAuthentication::model()->find($criteria);
+
+        $pin_ok = !is_null($user_authentication);
+
+        return $pin_ok;
+    }
+
+    /**
+     * @return string pincode value
+     */
+    public function getPincode()
+    {
+        return $this->pincode ? $this->pincode->value : 'No Pincode';
+    }
+
+    /**
+     * generate Pincode for users
+     *
+     * @param boolean $regenerate indicates if the process is to regenerate pin or to generate new pin
+     */
+    public function generatePin($regenerate = false)
+    {
+        $user_pin_obj = $this->pincode ?? new UserPincode();
+        if (!$regenerate && !$user_pin_obj->isNewRecord) {
+            return;
+        }
+        $audit_action = $regenerate ? 'Regenerate-pin' : 'Generate-pin';
+
+        $pincode = PincodeHelper::generatePincode();
+        $user_pin_obj->user_id = $this->id;
+        $user_pin_obj->pincode = $pincode;
+
+        if (!$flag = $user_pin_obj->save()) {
+            $this->addErrors($user_pin_obj->getErrors());
+        }
+
+        $audit_data = ($flag ? 'Success' : 'Failed') . ": update pincode to $pincode for user {$this->id}";
+
+        $this->audit('pincode', $audit_action, $audit_data);
+    }
+
+    /**
+     * query pincode history for the last 12 month
+     *
+     * @return array an array of pincode history
+     */
+    private function queryPincodeHistory()
+    {
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'version_date > NOW() - INTERVAL 12 month';
+        if (isset($this->pincode)) {
+            return $this->pincode->getPreviousVersionsWithCriteria($criteria);
+        } else {
+            return array();
+        }
+    }
+
+    /**
+     * @return bool indicates if the user reaches the limit
+     */
+    public function isPincodeRegenReachLimit()
+    {
+        if (!$this->pincode) {
+            return false;
+        }
+        $results = $this->queryPincodeHistory();
+
+        return self::PIN_REGEN_LIMIT - count($results) === 0;
+    }
+
+    /**
+     * Shows how many pincode can the user regenerates, and the date resets the count
+     *
+     * @return string a message to inform user the pincode regenerate status
+     */
+    public function pincodeRegenStatus()
+    {
+
+        $results = $this->queryPincodeHistory();
+
+        $min_date_obj = array_reduce($results, function ($r1, $r2) {
+            if (!$r1) {
+                return $r2;
+            }
+            if (!$r2) {
+                return $r1;
+            }
+            return $r1->version_date < $r2->version_date ? $r1 : $r2;
+        });
+        $remaining = $results ? self::PIN_REGEN_LIMIT - count($results) : self::PIN_REGEN_LIMIT;
+
+        $datetime_format = Helper::NHS_DATE_FORMAT . ' H:i:s';
+
+        $until_date = $min_date_obj ? date($datetime_format, strtotime('+1 year', strtotime($min_date_obj->version_date))) : date($datetime_format, strtotime('+1 year'));
+
+        $msg = "You can regenerate your pincode $remaining time(s) before $until_date";
+
+        return $msg;
     }
 }

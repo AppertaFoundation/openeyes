@@ -2,6 +2,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\models;
 
+
 use OEModule\OphCiExamination\models\ContrastSensitivity_Type;
 use OEModule\OphCiExamination\models\ContrastSensitivity_Result;
 use OEModule\OphCiExamination\models\ContrastSensitivity;
@@ -321,10 +322,10 @@ class ContrastSensitivityTest extends \ModelTestCase
 
         $my_letter_string = $instance->letter_string;
 
-        $this->assertContains($this->removeWhiteSpaceAndLineBreaks((string)$expected), $this->removeWhiteSpaceAndLineBreaks($my_letter_string));
+        $this->assertStringContainsString($this->removeWhiteSpaceAndLineBreaks((string)$expected), $this->removeWhiteSpaceAndLineBreaks($my_letter_string));
 
         if ($comment) {
-            $this->assertContains($comment, $my_letter_string);
+            $this->assertStringContainsString($comment, $my_letter_string);
         }
     }
 

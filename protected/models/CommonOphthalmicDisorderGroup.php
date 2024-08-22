@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "common_ophthalmic_disorder_group".
  *
@@ -24,20 +26,22 @@
  * @property int $id
  * @property string $name
  * @property int $display_order
- * @property int $institution
+ * @property Institution $institution
+ * @property int $subspecialty_id
  */
 class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
 {
-    use MappedReferenceData;
+    use HasFactory;
+    use OwnedByReferenceData;
 
-    protected function getSupportedLevels(): int
+    protected function getSupportedLevelMask(): int
     {
-        return ReferenceData::LEVEL_INSTITUTION;
+        return ReferenceData::LEVEL_SUBSPECIALTY | ReferenceData::LEVEL_INSTALLATION | ReferenceData::LEVEL_INSTITUTION;
     }
 
     protected function mappingColumn(int $level): string
     {
-        return $this->tableName().'_id';
+        return $this->tableName() . '_id';
     }
 
 
@@ -50,6 +54,7 @@ class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
     {
         return array(
             array('name', 'required'),
+            array('institution_id', 'safe'),
         );
     }
 
@@ -61,12 +66,24 @@ class CommonOphthalmicDisorderGroup extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
+            'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
+            'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
         );
     }
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return array('order' => $this->getTableAlias(true, false) . '.display_order');
+    }
+
+    /** Expands the reference level assignment for this group to be part of the name */
+    public function getFully_qualified_name()
+    {
+        $name = $this->name . ' - ';
+        if ($this->institution) {
+            return $name . $this->institution->short_name;
+        }
+
+        return $name . 'All';
     }
 }

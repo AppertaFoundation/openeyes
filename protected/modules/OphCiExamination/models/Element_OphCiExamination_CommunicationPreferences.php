@@ -28,6 +28,8 @@ use Yii;
  * @property int $event_id
  * @property int $correspondence_in_large_letters
  * @property int $agrees_to_insecure_email_correspondence
+ * @property \Language $language
+ * @property \Language $interpreter_required
  *
  */
 class Element_OphCiExamination_CommunicationPreferences extends \BaseEventTypeElement
@@ -64,10 +66,11 @@ class Element_OphCiExamination_CommunicationPreferences extends \BaseEventTypeEl
         // will receive user inputs.
         return array(
             array('correspondence_in_large_letters, agrees_to_insecure_email_correspondence', 'safe'),
+            array('language_id, interpreter_required_id', 'numerical', 'integerOnly' => true),
             array('correspondence_in_large_letters, agrees_to_insecure_email_correspondence', 'required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, correspondence_in_large_letters, agrees_to_insecure_email_correspondence, anticoagulant ', 'safe', 'on' => 'search'),
+            array('id, event_id, correspondence_in_large_letters, agrees_to_insecure_email_correspondence, anticoagulant,language_id, interpreter_required_id', 'safe', 'on' => 'search'),
         );
     }
 
@@ -81,6 +84,8 @@ class Element_OphCiExamination_CommunicationPreferences extends \BaseEventTypeEl
         return array(
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'language' => array(self::BELONGS_TO, 'Language', 'language_id'),
+            'interpreter_required' => array(self::BELONGS_TO, 'Language', 'interpreter_required_id'),
             'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
         );
     }
@@ -95,6 +100,8 @@ class Element_OphCiExamination_CommunicationPreferences extends \BaseEventTypeEl
             'event_id' => 'Event',
             'correspondence_in_large_letters' => 'Large print for correspondence',
             'agrees_to_insecure_email_correspondence' => 'Agrees to insecure email correspondence',
+            'language_id' => 'Language',
+            'interpreter_required_id' => 'Interpreter required',
         );
     }
 
@@ -129,5 +136,17 @@ class Element_OphCiExamination_CommunicationPreferences extends \BaseEventTypeEl
     public function canCopy()
     {
         return true;
+    }
+
+    public function beforeValidate()
+    {
+        if ($this->language_id == "") {
+            $this->language_id = null;
+        }
+
+        if ($this->interpreter_required_id == "") {
+            $this->interpreter_required_id = null;
+        }
+        return parent::beforeValidate();
     }
 }

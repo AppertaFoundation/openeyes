@@ -30,7 +30,7 @@ class PatientEventController extends BaseController
     {
         return array(
             array('allow',
-                'actions' => array('create'),
+                'actions' => array('create', 'loadDraft', 'hasServiceFirmForSubspecialty'),
                 'users' => array('@'),
             )
         );
@@ -136,6 +136,24 @@ class PatientEventController extends BaseController
     }
 
     /**
+     * @param $request
+     * @return EventDraft
+     * @throws CHttpException
+     */
+    protected function resolveDraft($request)
+    {
+        if ($draft_id = $request->getQuery('draft_id')) {
+            if (!$draft = EventDraft::model()->findByPk($draft_id)) {
+                throw new CHttpException(404, 'Event draft not found.');
+            }
+
+            return $draft;
+        } else {
+            throw new CHttpException(404, 'Invalid request.');
+        }
+    }
+
+    /**
      * @param Firm $context
      * @throws CHttpException
      */
@@ -166,6 +184,21 @@ class PatientEventController extends BaseController
         $app = $this->getApp();
         $request = $app->getRequest();
 
+        if ($request->getQuery('step_id')) {
+            Yii::app()->session['active_worklist_patient_id'] = $request->getQuery('worklist_patient_id');
+            Yii::app()->session['active_step_id'] = $request->getQuery('step_id');
+            $step = PathwayStep::model()->findByPk($request->getQuery('step_id'));
+            if (!$step) {
+                throw new CHttpException(404, 'Unable to retrieve associated worklist step.');
+            }
+            Yii::app()->session['active_step_state_data'] = json_decode(
+                $step->state_data,
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
+        }
+
         $patient = $this->resolvePatient($request);
         $context = $this->resolveContext($request);
         $event_type = $this->resolveEventType($request);
@@ -176,6 +209,72 @@ class PatientEventController extends BaseController
         }
         $this->setContext($context);
 
-        $this->redirect($app->createUrl($event_type->class_name . '/Default/create') . '?patient_id=' . $patient->id);
+        $params = [
+            'patient_id' => $patient->id
+        ];
+
+        if ($request->getQuery('event_subtype')) {
+            $params['event_subtype'] = $request->getQuery('event_subtype');
+        }
+
+        $query = "?" . http_build_query($params);
+        $this->redirect(
+            $app->createUrl($event_type->class_name . '/Default/create') . $query
+        );
+    }
+
+    /**
+     * Handles the request to carry out required back end actions before redirecting to the appropriate controller
+     * action for the draft to be loaded.
+     */
+    public function actionLoadDraft()
+    {
+        $app = $this->getApp();
+        $request = $app->getRequest();
+
+        $draft = $this->resolveDraft($request);
+
+        if ($draft->event) {
+            $context = $draft->event->firm;
+        } else {
+            $data = json_decode($draft->data, true);
+            $event_firm_id = $data["event-firm-id"] ?? null;
+
+            if (!$event_firm_id) {
+                $event_firm = Firm::model()->find(
+                    "service_subspecialty_assignment_id=:service_subspecialty_assignment_id AND institution_id=:institution_id AND runtime_selectable=1",
+                    [
+                        ":service_subspecialty_assignment_id" => $draft->episode->firm->service_subspecialty_assignment_id,
+                        ":institution_id" => Yii::app()->session['selected_institution_id']
+                    ]
+                );
+                $event_firm_id = $event_firm->id;
+                \Yii::app()->user->setFlash('issue', "Something went wrong while trying to restore the draft. Your context has been reset.");
+            }
+
+            $context = Firm::model()->findByPk($event_firm_id);
+
+            if (!$context) {
+                throw new Exception("Couldn't load draft, context not found.");
+            }
+        }
+        $this->setContext($context);
+
+        $this->redirect(
+            $app->createUrl($draft->originating_url . "&draft_id=" . $draft->id)
+        );
+    }
+
+    public function actionHasServiceFirmForSubspecialty()
+    {
+        $request = Yii::app()->getRequest();
+
+        $patient = $this->resolvePatient($request);
+
+        if ($patient && $episode = $patient->getOpenEpisodeOfSubspecialty($request->getQuery('subspecialty_id'))) {
+            $this->renderJSON($episode->firm_id);
+        } else {
+            $this->renderJSON(null);
+        }
     }
 }

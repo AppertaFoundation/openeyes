@@ -17,11 +17,11 @@
  */
 ?>
 <?php
-$htmlOptions = array();
+$ishidden = false;
 $collapse_style = '';
 $expand_style = '';
 if (!$row->isNewRecord) {
-    $htmlOptions['style'] = 'display: none;';
+    $ishidden = true;
     $collapse_style = 'display: none;';
 } else {
     $expand_style = 'display: none;';
@@ -32,36 +32,17 @@ $search_field = $params['model']::model()->getAutocompleteField();
 <span id="<?= "expand_{$params['field']}_{$i}"?>" style="<?= $expand_style ?>">[e]</span>
 <span id="<?= "collapse_{$params['field']}_{$i}"?>" style="<?= $collapse_style ?>">[x]</span>
 <input type="hidden" name="<?= "{$params['field']}[$i]" ?>" id="<?="{$params['field']}_{$i}"?>" value="<?= $row->{$params['field']} ?>"/>
-<?php
-$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-        'name' => "autocomplete_{$params['field']}[{$i}]",
-        'id' => "autocomplete_{$params['field']}_{$i}",
-        'source' => "js:function(request, response) {
-						$.ajax({
-							'url': '".Yii::app()->createUrl('/autocomplete/search')."',
-							'type':'GET',
-							'data':{
-								'term': request.term,
-								'model': '".$params['model']."',
-								'field': '".$search_field."'
-							},
-							'success': function(data) {
-								data = $.parseJSON(data);
-								response(data);
-							},
-						});
-					}",
-        'options' => array(
-            'minLength' => '2',
-            'select' => "js:function(event, ui) {
-				$('#{$params['field']}_{$i}').val(ui.item.id);
-				$('#display_{$params['field']}_{$i}').text(ui.item.label);
-				$('#autocomplete_{$params['field']}_{$i}').val('');
-				return false;
-			}",
-        ),
-        'htmlOptions' => $htmlOptions,
-    )); ?>
+
+<div <?php if ($ishidden) {
+    echo 'style="display:none"';
+     } ?>>
+    <?php
+        $this->widget(
+            'application.widgets.AutoCompleteSearch',
+            ['field_name' => "autocomplete_{$params['field']}[{$i}]"]
+        );
+        ?>
+</div>
 <script type="text/javascript">
     $(document).ready(function() {
         $('#<?= "expand_{$params['field']}_{$i}"?>').on('click', function() {
@@ -73,6 +54,24 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
             $('#<?= "autocomplete_{$params['field']}_{$i}" ?>').hide();
             $(this).hide();
             $('#<?= "expand_{$params['field']}_{$i}"?>').show();
+        });
+
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $(`[id="autocomplete_${'<?=$params['field'][$i]?>'}"]`),
+            url: '/autocomplete/search',
+            params: {
+                'model': function () {return "<?= $params['model'] ?>"},
+                'field': function () {return "<?= $search_field ?>"}
+            },
+            maxHeight: '200px',
+            onSelect: function() {
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                $('#<?= "{$params['field']}[{$i}]" ?>').val(response.id);
+                $('#<?= "display_{$params['field']}[{$i}]" ?>').text(response.label);
+                $('#<?= "autocomplete_{$params['field']}[{$i}]" ?>').val('');
+            }
         });
     });
 </script>

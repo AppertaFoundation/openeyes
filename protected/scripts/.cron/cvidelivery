@@ -1,0 +1,2 @@
+# Run to send the day's CVI applications
+${CRON_CVIDELIVERY_SCH:-25 00 * * *}   bash $WROOT/protected/scripts/cronrunner.sh '$WROOT/protected/scripts/cvidelivery.sh'

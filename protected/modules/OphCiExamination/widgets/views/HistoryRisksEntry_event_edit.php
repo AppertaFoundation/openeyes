@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -23,7 +24,6 @@ use OEModule\OphCiExamination\models\HistoryRisksEntry;
 ?>
 
 <?php
-
 if (!isset($values)) {
     $values = array(
         'id' => $entry->id,
@@ -42,14 +42,14 @@ if (!isset($values)) {
         echo CHtml::hiddenField($field_prefix . '[risk_id]', $values['risk_id'], ['id' => false]);
         echo CHtml::hiddenField($field_prefix . '[other]', $values['other'], ['id' => false]); ?>
         <label class="risk-display js-not-other-risk" data-id="<?= $values['risk_id'] ?>"
-               data-label="<?= $values['risk_display'] ?>"><?= ( $values['risk_display'] !== 'Other'? $values['risk_display'] : $values['other']); ?></label>
-        <span class="<?= $model_name ?>_other_wrapper js-other-risk" style="display: <?= $values['risk_display'] !== 'Other' || !empty($values['other']) ?'none':'' ?>">
+               data-label="<?= $values['risk_display'] ?>"><?= ( $values['risk_display'] !== 'Other' ? $values['risk_display'] : $values['other']); ?></label>
+        <span class="<?= $model_name ?>_other_wrapper js-other-risk" style="display: <?= $values['risk_display'] !== 'Other' || !empty($values['other']) ? 'none' : '' ?>">
         <?=\CHtml::textField(
             $field_prefix . '[other]',
             $values['other'],
             array(
-                'class' => 'other-type-input'.($entry->hasErrors('other') ? ' error': ''),
-                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                'class' => 'other-type-input' . ($entry->hasErrors('other') ? ' error' : ''),
+                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
             'id' => false)
         ) ?>
     </span>
@@ -81,12 +81,12 @@ if (!isset($values)) {
             <label class="inline highlight <?= $hasRiskErrorClass ?>">
                 <?=\CHtml::radioButton(
                     $field_prefix . '[has_risk]',
-                    $posted_not_checked,
-                    array('value' => HistoryRisksEntry::$NOT_CHECKED, 'id' => false,)
+                    $posted_not_checked || ($is_draft_event && $values['has_risk'] === (string)HistoryRisksEntry::$NOT_CHECKED),
+                    array('value' => HistoryRisksEntry::$NOT_CHECKED, 'id' => false, 'data-test' => "not_checked")
                 ); ?>
                 Not checked
             </label>
-            <label class="inline highlight <?= $hasRiskErrorClass ?>">
+            <label class="inline highlight <?= $hasRiskErrorClass ?>" data-test="yes">
                 <?=\CHtml::radioButton(
                     $field_prefix . '[has_risk]',
                     $values['has_risk'] === (string)HistoryRisksEntry::$PRESENT,
@@ -94,7 +94,7 @@ if (!isset($values)) {
                 ); ?>
                 Yes
             </label>
-            <label class="inline highlight <?= $hasRiskErrorClass ?>">
+            <label class="inline highlight <?= $hasRiskErrorClass ?>" data-test="no">
                 <?=\CHtml::radioButton(
                     $field_prefix . '[has_risk]',
                     $values['has_risk'] === (string)HistoryRisksEntry::$NOT_PRESENT,
@@ -117,7 +117,7 @@ if (!isset($values)) {
         'rows' => '1',
         'placeholder' => 'Comments',
         'autocomplete' => 'off',
-        'id' => strtr($field_prefix, '[]', '__').'_comments'
+        'id' => strtr($field_prefix, '[]', '__') . '_comments'
                                ]) ?>
         <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
       </div>

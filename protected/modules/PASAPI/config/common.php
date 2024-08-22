@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -41,6 +42,12 @@ return [
                         'method' => 'search',
                     ],
                 ],
+                'emergency_care_update' => [
+                    'update_emergency_care_update' => [
+                        'class' => 'OEModule\PASAPI\components\PasApiObserver',
+                        'method' => 'updateEmergencyCareVisit',
+                    ],
+                ],
                 'patient_search_update' => [
                     'search_pas' => [
                         'class' => 'OEModule\PASAPI\components\PasSearchUpdateObserver',
@@ -60,7 +67,7 @@ return [
     'params' => [
 
         'pasapi' => [
-            'enabled' => (getenv("OE_PASAPI_ENABLE") && trim(strtolower(getenv("OE_PASAPI_ENABLE")))) == "false" ? false : true,
+            'enabled' => getenv("OE_PASAPI_ENABLE") && trim(strtolower(getenv("OE_PASAPI_ENABLE"))) !== "false",
 
             // DEPRECATED 'url', this setting moved to the Admin section
             //'url' => getenv("OE_PASAPI_URL") ?: 'http://localhost:4200',

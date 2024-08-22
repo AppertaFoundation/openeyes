@@ -23,12 +23,26 @@ if ($this->checkPrintAccess()) {
 $device_information = DeviceInformation::model()->findByAttributes(['event_id' => $this->event->id]);
 $sop = isset($device_information->sop_instance_uid) ? $device_information->sop_instance_uid : [];
 
-if (!empty($sop) && Yii::app()->params['enable_forum_integration'] === 'on') {
+if (!empty($sop) && \SettingMetadata::model()->getSetting('enable_forum_integration') === 'on') {
     array_unshift(
         $this->event_actions,
         EventAction::link(
             'Open In Forum',
             ('oelauncher:forumsop/' . $sop),
+            null,
+            ['class' => 'button small']
+        )
+    );
+}
+
+$manufacturer_model_name = $device_information->manufacturer_model_name ?? null;
+if (isset($manufacturer_model_name) && $manufacturer_model_name === 'Triton' &&
+    \SettingMetadata::model()->getSetting('enable_imagenet_integration') === 'on') {
+    array_unshift(
+        $this->event_actions,
+        EventAction::link(
+            'Open In ImageNet',
+            ('oelauncher:imagenet/' . $this->jsVars['OE_patient_hosnum']),
             null,
             ['class' => 'button small']
         )

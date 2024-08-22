@@ -30,7 +30,7 @@ $current_trial_flag = 1;
                     <td>Trial</td>
                     <td><?php if ($can_view_trial) {
                             echo CHtml::link(CHtml::encode($trialPatient->trial->name),
-                            Yii::app()->controller->createUrl('/OETrial/trial/permissions',
+                            Yii::app()->controller->createUrl('/OETrial/trial/view',
                                 array('id' => $trialPatient->trial_id)));
                         } else {
                             echo CHtml::encode($trialPatient->trial->name);
@@ -82,7 +82,7 @@ $current_trial_flag = 1;
                     <td>Trial</td>
                     <td><?php if ($can_view_trial) {
                         echo CHtml::link(CHtml::encode($trialPatient->trial->name),
-                          Yii::app()->controller->createUrl('/OETrial/trial/permissions',
+                          Yii::app()->controller->createUrl('/OETrial/trial/view',
                             array('id' => $trialPatient->trial_id)));
                         } else {
                             echo CHtml::encode($trialPatient->trial->name);

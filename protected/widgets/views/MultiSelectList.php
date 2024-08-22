@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 if (isset($htmlOptions['options'])) {
@@ -59,7 +61,7 @@ $widgetOptionsJson = json_encode(array(
 
 <?php if (!@$htmlOptions['nowrapper']) { ?>
 <div id="<?php echo $div_id ?>"
-     class="<?php echo $div_class ?> row widget" <?php if ($hidden) {
+     class="<?php echo $div_class ?> row widget flex-layout" <?php if ($hidden) {
             ?>hidden<?php
             } ?>>
   <div class="cols-<?php echo $layoutColumns['label']; ?> column">
@@ -72,26 +74,28 @@ $widgetOptionsJson = json_encode(array(
     <div class="multi-select<?php if (!$inline) {
         echo ' multi-select-list';
                             } ?>"
-         data-options='<?php echo $widgetOptionsJson; ?>'
-            <?php if ($through) :
-                ?>data-statuses='<?= json_encode($through['options']) ?>' <?php
-            endif; ?>
+         data-options='<?= $widgetOptionsJson ?>'
+            <?= $through ? "data-statuses='" . json_encode($through['options']) : ''?>
     >
       <input type="hidden" name="<?=\CHtml::modelName($element) ?>[MultiSelectList_<?php echo $field ?>]"
              class="multi-select-list-name"/>
       <div class="multi-select-dropdown-container">
         <select id="<?=\CHtml::getIdByName($field) ?>"
                 class="MultiSelectList
-                    <?=($showRemoveAllLink)?' inline':''?>
-                    <?= isset($htmlOptions['class'])?$htmlOptions['class']:''?>
+                    <?=($showRemoveAllLink) ? ' inline' : ''?>
+                    <?= isset($htmlOptions['class']) ? $htmlOptions['class'] : ''?>
+                    <?= ($htmlOptions['hidedropdown'] ?? false) ? ' hidden' : '' ?>
                 "
                 name=""
-                style=""
+                style="<?= isset($htmlOptions['style']) ? $htmlOptions['style'] : ''?>"
             <?php if (isset($htmlOptions['data-linked-fields'])) { ?>
               data-linked-fields="<?php echo $htmlOptions['data-linked-fields'] ?>"
             <?php } ?>
             <?php if (isset($htmlOptions['data-linked-values'])) { ?>
               data-linked-values="<?php echo $htmlOptions['data-linked-values'] ?>"
+            <?php } ?>
+            <?php if (isset($htmlOptions['data-test'])) { ?>
+              data-test="<?php echo $htmlOptions['data-test'] ?>"
             <?php } ?>
                 data-searchable="<?php echo isset($htmlOptions['searchable']) && $htmlOptions['searchable'] ?>"
                 data-placeholder="Add <?php echo (isset($htmlOptions['label']) && $htmlOptions['label']) ? 'a ' . $htmlOptions['label'] : '' ?>"
@@ -122,7 +126,7 @@ $widgetOptionsJson = json_encode(array(
         <?php if (Yii::app()->request->isPostRequest && empty($selected_ids)) : ?>
           <input type="hidden" name="<?php echo $field ?>">
         <?php endif; ?>
-      <ul class="MultiSelectList multi-select-selections <?= !$found?' hide':''?><?= $sortable?' sortable':''?>">
+      <ul class="MultiSelectList multi-select-selections <?= !$found ? ' hide' : ''?><?= $sortable ? ' sortable' : ''?>">
             <?php foreach ($selected_ids as $id) {
                 if (isset($options[$id])) { ?>
                 <li>
@@ -171,13 +175,13 @@ $widgetOptionsJson = json_encode(array(
                           '#\[(.*)\]#',
                           '[${1}_through]',
                           $field
-                      ) ?>[<?= $id ?>][<?= $through['field'] ?>]">
+                                    ) ?>[<?= $id ?>][<?= $through['field'] ?>]">
                               <?php foreach ($through['options'] as $option_id => $option) { ?>
                             <option
                                 value="<?= $option_id ?>" <?php if ($currentField && $currentField == $option_id) :
                                     ?> selected <?php
                                        endif; ?>><?= $option ?></option>
-                                <?php } ?>
+                              <?php } ?>
                       </select>
                         <?php } ?>
                 </li>
@@ -191,7 +195,7 @@ $widgetOptionsJson = json_encode(array(
         <?php } ?>
 <?php
 $assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js', true);
+$widgetPath = $assetManager->getPublishedPathOfAlias('application.widgets.js');
 $assetManager->registerScriptFile('components/chosen/chosen.jquery.min.js');
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/MultiSelectList.js');
 ?>

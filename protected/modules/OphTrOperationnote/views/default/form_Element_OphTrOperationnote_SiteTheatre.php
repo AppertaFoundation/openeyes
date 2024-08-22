@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php $render_date = $form && (($this->action->id === strtolower($this::ACTION_TYPE_CREATE)) || $this->checkAdminAccess()) ?>
 
@@ -37,7 +39,13 @@
                     'id',
                     'short_name'
                 ),
-                array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
+                array(
+                    'nowrapper' => false,
+                    'empty' => '- None -',
+                    'class' => 'cols-full',
+                    'data-prefilled-value' => $template_data['site_id'] ?? '',
+                    'data-test' => 'site'
+                ),
                 false,
                 array('label' => 2, 'field' => 8)
             );
@@ -45,13 +53,15 @@
       </td>
       <td>
             <?php
-            if (array_key_exists(
-                'OphTrOperationbooking',
-                Yii::app()->modules
-            ) && in_array(
-                'ophtroperationbooking_operation_theatre',
-                Yii::app()->db->getSchema()->getTableNames()
-            )) {
+            if (
+                array_key_exists(
+                    'OphTrOperationbooking',
+                    Yii::app()->modules
+                ) && in_array(
+                    'ophtroperationbooking_operation_theatre',
+                    Yii::app()->db->getSchema()->getTableNames()
+                )
+            ) {
                 $siteId = ($element->site_id) ? $element->site_id : Yii::app()->session['selected_site_id'];
                 $getTheatreData = OphTrOperationbooking_Operation_Theatre::model()->findAll(array(
                   'condition' => 'active=1 and site_id=' . $siteId,
@@ -63,7 +73,12 @@
                         $element,
                         'theatre_id',
                         CHtml::listData($getTheatreData, 'id', 'name'),
-                        array('nowrapper' => false, 'class' => 'cols-full'),
+                        array(
+                            'nowrapper' => false,
+                            'class' => 'cols-full',
+                            'data-prefilled-value' => $template_data['theatre_id'] ?? '',
+                            'data-test' => 'theatre'
+                        ),
                         false,
                         array('label' => 2, 'field' => 8)
                     );
@@ -72,7 +87,13 @@
                         $element,
                         'theatre_id',
                         CHtml::listData($getTheatreData, 'id', 'name'),
-                        array('nowrapper' => false, 'empty' => '- None -', 'class' => 'cols-full'),
+                        array(
+                            'nowrapper' => false,
+                            'empty' => '- None -',
+                            'class' => 'cols-full',
+                            'data-prefilled-value' => $template_data['theatre_id'] ?? '',
+                            'data-test' => 'theatre'
+                        ),
                         false,
                         array('label' => 2, 'field' => 8)
                     );
@@ -96,9 +117,9 @@
       itemSets:[
         new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
             array_map(function ($item) {
-              return ['label' => $item->short_name, 'id' => $item->id];
+                return ['label' => $item->short_name, 'id' => $item->id];
             },
-            OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id)) 
+            OphTrOperationbooking_Operation_Theatre::getSiteList($element->theatre_id))
         ) ?>,
           {'header':'site', 'id':'site_id'})
       ],

@@ -1,8 +1,26 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 
-class OEDbTestCase extends CDbTestCase
+/**
+ * (C) Apperta Foundation, 2022
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2022, Apperta Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
+
+class OEDbTestCase extends TestCase
 {
+    use SupportsFixtures;
+    use InteractsWithFakedClasses;
+
     public $test_tables = [];
     protected $_fixture_manager;
     protected $tear_down_callbacks = [];
@@ -10,7 +28,7 @@ class OEDbTestCase extends CDbTestCase
 
     private static $traits_have_setup = [];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->setUpTraits();
@@ -30,7 +48,7 @@ class OEDbTestCase extends CDbTestCase
         $this->tear_down_callbacks[] = $callback;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach ($this->tear_down_callbacks as $callback) {
             $callback();
@@ -92,6 +110,11 @@ class OEDbTestCase extends CDbTestCase
         return $this->_fixture_manager;
     }
 
+    protected function getDbConnection()
+    {
+        return Yii::app()->getComponent(property_exists($this, 'connectionID') ? $this->connectionID : 'db');
+    }
+
     protected function createTestTable($table, $fields, $foreign_keys = null)
     {
         if (!$this->can_create_tables) {
@@ -105,7 +128,7 @@ class OEDbTestCase extends CDbTestCase
         $fields['last_modified_date'] = "datetime NOT NULL DEFAULT '1900-01-01 00:00:00'";
         $fields[] = 'PRIMARY KEY (id)';
 
-        $connection = $this->getFixtureManager()->dbConnection;
+        $connection = $this->getDbConnection();
 
         $connection->createCommand($connection->schema->createTable($table, $fields, 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'))->execute();
 
@@ -127,8 +150,8 @@ class OEDbTestCase extends CDbTestCase
         if (!$this->can_create_tables) {
             $this->fail('Attempting to drop table inside a test transaction will cause an implicit commit');
         }
-        $this->getFixtureManager()->dbConnection->createCommand(
-            $this->getFixtureManager()->dbConnection->schema->dropTable($table)
+        $this->getDbConnection()->createCommand(
+            $this->getDbConnection()->schema->dropTable($table)
         )->execute();
     }
 

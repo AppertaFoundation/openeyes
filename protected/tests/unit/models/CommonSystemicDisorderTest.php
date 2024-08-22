@@ -16,13 +16,18 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 class CommonSystemicDisorderTest extends ActiveRecordTestCase
 {
+    use MocksSession;
+
     public $fixtures = array(
         'Disorder',
         'specialties' => 'Specialty',
-        'commonsystemicdisorder' => 'CommonSystemicDisorder',
+        'commonsystemicdisorder' => CommonSystemicDisorder::class,
     );
+
+    private $model;
 
     public function getModel()
     {
@@ -43,7 +48,7 @@ class CommonSystemicDisorderTest extends ActiveRecordTestCase
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->model = new CommonSystemicDisorder();
@@ -95,6 +100,7 @@ class CommonSystemicDisorderTest extends ActiveRecordTestCase
     public function testGetList()
     {
         $expected = array();
+        $this->mockCurrentContext();
         foreach ($this->commonsystemicdisorder as $data) {
             $disorder = Disorder::model()->findByPk($data['disorder_id']);
             $expected[$disorder->id] = $disorder->term;

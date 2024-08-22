@@ -33,13 +33,25 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
             foreach ($htmlOptions['options'][$id] as $k => $v) {
                 $options[$k] = $v;
             }
-        } ?>
+        }
+        if (array_key_exists('test', $htmlOptions) && $htmlOptions['test'] !== null) {
+            $options['data-test'] = $htmlOptions['test'];
+        }
+        ?>
     <label class="inline highlight <?= $label_class ?>">
         <?php
         if (is_array($selected_items)) {
             $is_checked = in_array($id, $selected_items);
         } else {
             $is_checked = (!is_null($value) && $value == $id) && (!is_string($value) || $value != '');
+        }
+
+        if (array_key_exists('prefillable', $htmlOptions) && $htmlOptions['prefillable'] && $is_checked) {
+            if (@$options['class']) {
+                $options['class'] .= ' prefilled ';
+            } else {
+                $options['class'] = 'prefilled ';
+            }
         }
         ?>
         <?=\CHtml::checkBox(
@@ -53,9 +65,16 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
 
 <?php } else { ?>
   <fieldset id="<?=\CHtml::modelName($element) . '_' . $name ?>"
-            class="cols-full flex-layout flex-left <?= $fieldset_class ?>"<?php if ($hidden) {
-                ?> style="display: none;"<?php
-                                                   } ?>>
+            class="cols-full flex-layout flex-left <?= $fieldset_class ?>"
+            <?= $hidden ? 'style="display: none;"' : ''?>
+            <?php
+            if (array_key_exists('extra_fieldset_attributes', $htmlOptions)) {
+                foreach ($htmlOptions['extra_fieldset_attributes'] as $attr => $attr_val) {
+                    echo $attr . "=" . '"' . $attr_val . '"';
+                }
+            }
+            ?>
+    >
       <?php
       // Added hidden input below to enforce posting of current form element name.
       // When using radio or checkboxes if no value is selected then nothing is posted
@@ -69,10 +88,10 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
                 ?><?=\CHtml::encode($label); ?>:<?php
             } ?>
         </label>
-        <?php endif; ?>
+      <?php endif; ?>
       <?php if (!$no_element && $field) { ?>
         <input type="hidden" value="" name="<?=\CHtml::modelName($element) ?>[<?php echo $field ?>]">
-        <?php } ?>
+      <?php } ?>
     <div class="cols-<?php echo $layoutColumns['field']; ?>">
         <?php $i = 0; ?>
         <?php if ($label_above) { ?>
@@ -90,10 +109,17 @@ $label_class = isset($htmlOptions['label-class']) ? $htmlOptions['label-class'] 
                         $options[$k] = $v;
                     }
                 }
+                if (array_key_exists('test', $htmlOptions) && $htmlOptions['test'] !== null) {
+                    $options['data-test'] = $htmlOptions['test'];
+                }
                 $class = isset($options['class']) ? ($options['class'] . " ") : '';
-                $options['class'] = $class . str_replace(' ', '', $data_value);
+
                 $options['id'] = CHtml::modelName($element) . '_' . @$htmlOptions['field'] . '_' . $data_value;
                 $is_checked = in_array($id, $selected_items);
+                if (array_key_exists('prefillable', $htmlOptions) && $htmlOptions['prefillable'] && $is_checked) {
+                    $class .= ' prefilled ';
+                }
+                $options['class'] = $class . str_replace(' ', '', $data_value);
                 echo CHtml::checkBox("{$name}[]", $is_checked, $options);
                 ?>
               <?=\CHtml::encode($data_value) ?>

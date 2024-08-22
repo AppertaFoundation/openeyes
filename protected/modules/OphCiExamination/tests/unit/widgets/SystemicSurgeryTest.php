@@ -16,6 +16,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\widgets;
 
+
 use OEModule\OphCiExamination\controllers\DefaultController;
 use OEModule\OphCiExamination\models\SystemicSurgery as SystemicSurgeryModel;
 use OEModule\OphCiExamination\widgets\SystemicSurgery;
@@ -56,7 +57,7 @@ class SystemicSurgeryTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains('id="OEModule_OphCiExamination_models_SystemicSurgery_form"', $result);
+        $this->assertStringContainsString('id="OEModule_OphCiExamination_models_SystemicSurgery_form"', $result);
     }
 
     /** @test */

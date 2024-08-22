@@ -220,8 +220,7 @@ class WorklistManager extends CComponent
      */
     protected function getAppParam($name)
     {
-        return isset($this->yii->params[$name]) ?
-            $this->yii->params[$name] : null;
+        return SettingMetadata::model()->getSetting($name) !== null ? SettingMetadata::model()->getSetting($name) : null;
     }
 
     /**
@@ -308,12 +307,12 @@ class WorklistManager extends CComponent
         $reordered_definitions = [];
         foreach ($definitions as $key => $definition) {
             if ($definition->worklistCount === "0") {
-                $reordered_definitions[] = $definition;
+                $reordered_definitions[$key] = $definition;
                 unset($definitions[$key]);
             }
         }
 
-        return $reordered_definitions + $definitions;
+        return array_merge($reordered_definitions, $definitions);
     }
 
     /**
@@ -344,9 +343,7 @@ class WorklistManager extends CComponent
      */
     public function shouldRenderEmptyWorklist()
     {
-        return !is_null($this->getAppParam('worklist_show_empty')) ?
-            $this->getAppParam('worklist_show_empty')
-            : self::$DEFAULT_SHOW_EMPTY;
+        return SettingMetadata::model()->getSetting('worklist_show_empty') == 'on';
     }
 
     /**
@@ -382,7 +379,7 @@ class WorklistManager extends CComponent
      *
      * @throws Exception
      */
-    public function getDashboardRenderDates(DateTime $start_date, $end_date)
+    public function getDashboardRenderDates(DateTime $start_date, $end_date = null)
     {
         // in case the passed in date is being used for anything else
         $r_date = clone $start_date;
@@ -647,22 +644,36 @@ class WorklistManager extends CComponent
         return $worklists;
     }
 
-    public function getCurrentAutomaticWorklistsForUser($user, $start_date = null, $end_date = null)
+    public function getAllCurrentUniqueAutomaticWorklistsForUser($user, $start_date = null, $end_date = null, $filter = null)
     {
         $worklists = [];
+        $definitions = [];
 
         if (!$user) {
             $user = $this->getCurrentUser();
         }
+
         $institution = $this->getCurrentInstitution();
-        $site = $this->getCurrentSite();
-        $firm = $this->getCurrentFirm();
+
+        if ($filter) {
+            $site = $this->getModelForClass('Site')->findByPk($filter->getSiteId());
+
+            $firm = $filter->coversAllContexts()
+                  ? null
+                  : $this->getModelForClass('Firm')->findByPk($filter->getContextId());
+        } else {
+            $site = $this->getCurrentSite();
+            $firm = $this->getCurrentFirm();
+        }
 
         $days = $this->getDashboardRenderDates($start_date ? $start_date : new DateTime(), $end_date);
+
         foreach ($days as $when) {
+            list($new_worklists, $new_definitions) = $this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when, $filter);
 
+            $definitions = $definitions + $new_definitions;
 
-            foreach ($this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when) as $worklist) {
+            foreach ($new_worklists as $worklist) {
                 $worklist_patients = $this->getPatientsForWorklist($worklist);
                 if ($this->shouldRenderEmptyWorklist() || $worklist_patients->getTotalItemCount() > 0) {
                     $worklists[] = $worklist;
@@ -672,6 +683,7 @@ class WorklistManager extends CComponent
 
         $unique_ids = array();
         $unique_worklists = array();
+
         foreach ($worklists as $wl) {
             if(!in_array($wl->id, $unique_ids)) {
                 $unique_worklists[] = $wl;
@@ -679,10 +691,41 @@ class WorklistManager extends CComponent
             }
         }
 
-        return $unique_worklists;
+        return [$unique_worklists, $definitions];
     }
 
-    public function shouldDisplayWorklistForContext(Worklist $worklist, Institution $institution, Site $site, Firm $firm)
+    public function filterWorklistsBySelected($worklists, $filter)
+    {
+        if (!$filter || $filter->coversAllWorklists()) {
+            return $worklists;
+        }
+
+        $selected_ids = $filter->getWorklists();
+
+        return array_values(array_filter(
+            $worklists,
+            static function($worklist) use ($selected_ids) {
+                return in_array($worklist->id, $selected_ids);
+            }
+        ));
+    }
+
+    public function getCurrentAutomaticWorklistsForUser($user, $start_date = null, $end_date = null, $filter = null)
+    {
+        list($unique_worklists) = $this->getAllCurrentUniqueAutomaticWorklistsForUser($user, $start_date, $end_date, $filter);
+
+        return $this->filterWorklistsBySelected($unique_worklists, $filter);
+    }
+
+    /**
+     * @param Worklist    $worklist
+     * @param Institution $institution
+     * @param Site        $site
+     * @param Firm|null   $firm - If null, treat as being all firms
+     *
+     * @return bool
+     */
+    public function shouldDisplayWorklistForContext(Worklist $worklist, Institution $institution, Site $site, $firm)
     {
         if ($definition = $worklist->worklist_definition) {
             if ($definition->patient_identifier_type->institution_id == $site->institution_id) {
@@ -691,7 +734,7 @@ class WorklistManager extends CComponent
                     return true;
                 }
                 foreach ($display_contexts as $dc) {
-                    if ($dc->checkInstitution($institution) && $dc->checkSite($site) && $dc->checkFirm($firm)) {
+                    if ($dc->checkInstitution($institution) && $dc->checkSite($site) && ($firm === null || $dc->checkFirm($firm))) {
                         return true;
                     }
                 }
@@ -708,25 +751,36 @@ class WorklistManager extends CComponent
 
     /**
      * @param $user
-     * @param Site     $site
-     * @param Firm     $firm
-     * @param DateTime $when
+     * @param Site      $site
+     * @param Firm|null $firm  - If null, treat as being all firms
+     * @param DateTime  $when
+     * @param WorklistFilterQuery|null $filter
      *
      * @return array
      */
-    public function getCurrentAutomaticWorklistsForUserContext(Institution $institution, Site $site, Firm $firm, DateTime $when)
+    public function getCurrentAutomaticWorklistsForUserContext(Institution $institution, Site $site, $firm, DateTime $when, $filter = null)
     {
         $worklists = array();
         $model = $this->getModelForClass('Worklist');
         $model->automatic = true;
         $model->on = $when;
-        foreach ($model->with(array('worklist_definition', 'worklist_definition.display_contexts', 'worklist_patients'))->search(false)->getData() as $wl) {
+
+        $all_worklists = $model->with(['worklist_definition', 'worklist_definition.patient_identifier_type', 'worklist_definition.display_contexts', 'worklist_patients'])->search(false)->getData();
+        $definitions = [];
+
+        foreach ($all_worklists as $wl) {
             if ($this->shouldDisplayWorklistForContext($wl, $institution, $site, $firm)) {
-                $worklists[] = $wl;
+                if (!empty($wl->worklist_definition)) {
+                    $definitions[$wl->worklist_definition->id] = $wl->worklist_definition->name;
+                }
+
+                if (is_null($filter) || $filter->coversAllWorklistDefinitions() || in_array($wl->worklist_definition_id, $filter->getWorklistDefinitions())) {
+                    $worklists[] = $wl;
+                }
             }
         }
 
-        return $worklists;
+        return [$worklists, $definitions];
     }
 
     /**
@@ -832,6 +886,13 @@ class WorklistManager extends CComponent
             $current_attributes = $worklist_patient->getCurrentAttributesById();
             $valid_attributes = $worklist->getMappingAttributeIdsByName();
 
+            //remove attributes related to previous Worklist (Patient has been moved to an other Worklist)
+            foreach ($current_attributes as $currattr) {
+                if ($currattr->worklistattribute && $currattr->worklistattribute->worklist_id != $worklist->id) {
+                        $currattr->delete();
+                }
+            }
+
             foreach ($attributes as $attr => $val) {
                 if (!array_key_exists($attr, $valid_attributes)) {
                     throw new Exception("Unrecognised attribute {$attr} for {$worklist->name}");
@@ -920,6 +981,9 @@ class WorklistManager extends CComponent
                 $transaction->commit();
             }
 
+            $this->updatePathwayStatus($wp);
+            $wp->refresh();
+
             return $wp;
         } catch (Exception $e) {
             $this->addError($e->getMessage());
@@ -997,7 +1061,9 @@ class WorklistManager extends CComponent
         $content = '';
         $days = $this->getDashboardRenderDates(new DateTime());
         foreach ($days as $when) {
-            foreach ($this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when) as $worklist) {
+            list($worklists) = $this->getCurrentAutomaticWorklistsForUserContext($institution, $site, $firm, $when);
+
+            foreach ($worklists as $worklist) {
                 $content .= $this->renderWorklistForDashboard($worklist);
             }
         }
@@ -1040,6 +1106,18 @@ class WorklistManager extends CComponent
                 'pageSize' => $this->getWorklistPageSize(),
             ),
         ));
+    }
+
+    /**
+     * @TODO: test me
+     *
+     * @param $worklist
+     *
+     * @return CSqlDataProvider
+     */
+    public function getPatientsForWorklistSQL($worklist, $filter)
+    {
+        return $filter->getWorklistPatientsProvider($this->getWorklistPageSize(), $worklist);
     }
 
     /**
@@ -1419,6 +1497,41 @@ class WorklistManager extends CComponent
 
     /**
      * @param WorklistPatient $worklist_patient
+     * @param string $status_attribute
+     * @param string $status_attr_value
+     * @return void
+     * @throws Exception
+     */
+    protected function updatePathwayStatus(WorklistPatient $worklist_patient, string $status_attribute = 'Status', string $status_attr_value = 'Attended')
+    {
+        $start_status = $worklist_patient->getWorklistPatientAttribute($status_attribute);
+        if ($start_status
+            && strtolower($start_status->attribute_value) === strtolower($status_attr_value)) {
+            // Start the pathway immediately.
+            if (!$worklist_patient->pathway) {
+                $worklist_patient->worklist->worklist_definition->pathway_type->instancePathway($worklist_patient);
+                $worklist_patient->refresh();
+            }
+
+            $checkin_step = $worklist_patient->pathway->findCheckInStep();
+            $checkin_requested = $checkin_step && (int)$checkin_step->status === PathwayStep::STEP_REQUESTED;
+            if (!$worklist_patient->pathway->status || (int)$worklist_patient->pathway->status === Pathway::STATUS_LATER
+            || ((int)$worklist_patient->pathway->status === Pathway::STATUS_WAITING && $checkin_requested)) {
+                $worklist_patient->pathway->startPathway();
+            }
+        } else if ($worklist_patient->pathway
+            && strtolower($start_status->attribute_value) === "scheduled"
+            && !empty($worklist_patient->pathway->completed_steps)) {
+            $checkin_step = $worklist_patient->pathway->findCheckInStep(true);
+            if ($checkin_step) {
+                $checkin_step->undoStep();
+                $worklist_patient->pathway->updateStatus();
+            }
+        }
+    }
+
+    /**
+     * @param WorklistPatient $worklist_patient
      * @param DateTime        $when
      * @param array           $attributes
      * @param bool            $allow_worklist_change - only allow values to change that don't affect which worklist is mapped
@@ -1458,6 +1571,9 @@ class WorklistManager extends CComponent
                     throw new Exception('Could not update WorklistPatient');
                 }
             }
+
+            $this->updatePathwayStatus($worklist_patient);
+            $worklist_patient->refresh();
 
             if ($transaction) {
                 $transaction->commit();
@@ -1584,4 +1700,3 @@ class WorklistManager extends CComponent
         return \Yii::app()->user->getState("worklist_patient_id", null);
     }
 }
-

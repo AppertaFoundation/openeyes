@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2020
  * This file is part of OpenEyes.
@@ -69,8 +70,9 @@ $date_filter = Yii::app()->request->getPost('date-filter', '');
                     <?= CHtml::dropDownList('firm-id', 'All', ['All' => 'All ' . Firm::model()->contextLabel() . 's'],
                         array('disabled' => 'disabled', 'class' => 'cols-full')) ?>
                 <?php } else { ?>
+                    <?php $institution_id = Yii::app()->session['selected_institution_id']; ?>
                     <?= CHtml::dropDownList('firm-id', Yii::app()->request->getPost('firm-id', 'All'),
-                        ['All' => 'All ' . Firm::model()->contextLabel() . 's'] + Firm::model()->getList($subspecialty_id), array(
+                        ['All' => 'All ' . Firm::model()->contextLabel() . 's'] + Firm::model()->getList($institution_id, $subspecialty_id), array(
                             'disabled' => ($emergency_list == 1 ? 'disabled' : ''),
                             'class' => 'cols-full'
                         )) ?>

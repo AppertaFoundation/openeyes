@@ -59,9 +59,10 @@ class OphTrOperationbooking_ReportEUR extends BaseReport
             $deciding_question = max($eur->eurAnswerResults);
             $row = array();
             $primary_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
-                Yii::app()->params['display_primary_number_usage_code'],
+                SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
                 $eur->event->episode->patient->id,
-                $eur->event->institution_id, $eur->event->site_id
+                $eur->event->institution_id,
+                $eur->event->site_id
             ));
             $row['District Number'] = $primary_identifier_value;
             $row['1st/2nd Eye'] = $eur->eye_num == 1 ? '1st Eye' : '2nd Eye';
@@ -93,7 +94,7 @@ class OphTrOperationbooking_ReportEUR extends BaseReport
      */
     public function toCSV()
     {
-        $output = implode(',', $this->getColumns())."\n";
+        $output = implode(',', $this->getColumns()) . "\n";
         $output .= $this->array2Csv($this->eurs);
         return $output;
     }

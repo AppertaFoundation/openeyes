@@ -20,25 +20,20 @@ $(function () {
   var searchLoadingMsg = $('#search-loading-msg');
   var searchResults = $('#searchResults');
 
+  // waitingList/index pagination buttons
+  $(this).on('click', '.pagination a:not(.green.hint)', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    let url = new URL(`${window.location.protocol}//${window.location.host}${$(this).attr('href')}`);
+    getAndRenderOperations(url, searchLoadingMsg, searchResults);
+  });
+
   $(this).on('click', '#waitingList-filter button[type="submit"]', function (e) {
     e.preventDefault();
 
-    searchLoadingMsg.show();
-    searchResults.empty();
-    $('#btn_confirm_selected').addClass('disabled');
-
-    $.ajax({
-      'url': baseUrl + '/OphTrOperationbooking/waitingList/search',
-      'type': 'POST',
-      'data': $('#waitingList-filter').serialize(),
-      'success': function (data) {
-        searchResults.html(data);
-      },
-      complete: function () {
-        searchLoadingMsg.hide();
-        enableButtons();
-      }
-    });
+    let url = baseUrl + '/OphTrOperationbooking/waitingList/search';
+    getAndRenderOperations(url, searchLoadingMsg, searchResults);
   });
 
   $(this).on('click', '#btn_print', function (e) {
@@ -153,18 +148,6 @@ $(function () {
       });
 
   });
-
-  new OpenEyes.UI.StickyElement('.panel.actions', {
-    offset: -44,
-    enableHandler: function (instance) {
-      instance.element.width(instance.element.width());
-      instance.enable();
-    },
-    disableHandler: function (instance) {
-      instance.element.width('auto');
-      instance.disable();
-    }
-  });
 });
 
 function print_items_from_selector(sel, all) {
@@ -192,7 +175,7 @@ function print_items_from_selector(sel, all) {
     }
   } else {
     show_letter_warnings(nogp);
-    printIFrameUrl(baseUrl + '/OphTrOperationbooking/waitingList/printLetters', {'operations': operations, 'all': all});
+    printIFrameUrl(baseUrl + '/OphTrOperationbooking/waitingList/printLettersPdf', {'operations': operations, 'all': all});
   }
 }
 
@@ -208,4 +191,23 @@ function show_letter_warnings(nogp) {
       content: msg
     }).open();
   }
+}
+
+function getAndRenderOperations(url, loading_ele, result_ctn){
+  loading_ele.show();
+  result_ctn.empty();
+  $('#btn_confirm_selected').addClass('disabled');
+
+  $.ajax({
+    'url': url,
+    'type': 'POST',
+    'data': $('#waitingList-filter').serialize(),
+    'success': function (data) {
+      result_ctn.html(data);
+    },
+    complete: function () {
+      loading_ele.hide();
+      enableButtons();
+    }
+  });
 }

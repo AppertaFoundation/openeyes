@@ -222,7 +222,7 @@ class PatientSearch
                 $patient_criteria['terms_with_types'][] = [
                     'term' => $this->search_terms['term'],
                     // $type is stdClass so we fetch the actual PatientIdentifierType object
-                    'patient_identifier_type' => \PatientIdentifierType::model()->findByAttributes(['unique_row_str' => $patient_identifier_type])
+                    'patient_identifier_type' => \PatientIdentifierType::model()->findByAttributes(['unique_row_string' => $patient_identifier_type])
                 ];
             } else {
                 $patient_criteria['terms_with_types'] = $this->getTypesForCriteria($patient_criteria);
@@ -429,7 +429,7 @@ class PatientSearch
 
             if ($patient_identifier_type) {
                 $types = [];
-                $types[] = \PatientIdentifierType::model()->findByAttributes(['unique_row_str' => $patient_identifier_type]);
+                $types[] = \PatientIdentifierType::model()->findByAttributes(['unique_row_string' => $patient_identifier_type]);
             } else {
                 $types = $this->search_helper->getTypes();
             }
@@ -438,16 +438,11 @@ class PatientSearch
             $term = str_replace([' ', '-'], '', $term);
 
             foreach ($types as $type) {
-                if ($type->validate_regex) {
-                    $padded = sprintf($type->pad ?: '%s', $term);
-                    preg_match($type->validate_regex, $padded, $matches);
-
-                    $match = $matches[0] ?? null;
+                    $match = PatientIdentifierHelper::getPaddedTermRegexResult($term, $type->validate_regex, $type->pad);
 
                     if ($match) {
                         $valid_types[] = $match;
                     }
-                }
             }
         }
 

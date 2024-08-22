@@ -33,7 +33,9 @@ use OEModule\OphCiExamination\tests\traits\InteractsWithRetinoscopy;
  * @covers \OEModule\OphCiExamination\components\traits\Refraction_API
  * @group sample-data
  * @group strabismus
- *
+ * @group retinoscopy
+ * @group refraction
+ * @group correction-given
  */
 class OphCiExamination_API_RefractionTest extends \OEDbTestCase
 {
@@ -44,7 +46,7 @@ class OphCiExamination_API_RefractionTest extends \OEDbTestCase
 
     use \WithTransactions;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         OphCiExamination_API::clearDataCache();
@@ -92,8 +94,8 @@ class OphCiExamination_API_RefractionTest extends \OEDbTestCase
         $api = new OphCiExamination_API();
         $result = $api->getRefractionTextFromEvent($reading->event);
 
-        $this->assertContains($right_readings[0]->getSphericalEquivalent(), $result, "result should contain highest priority result on right");
-        $this->assertContains($left_readings[1]->getSphericalEquivalent(), $result, "result should contain highest priority result on left");
+        $this->assertStringContainsString($right_readings[0]->getSphericalEquivalent(), $result, "result should contain highest priority result on right");
+        $this->assertStringContainsString($left_readings[1]->getSphericalEquivalent(), $result, "result should contain highest priority result on left");
     }
 
     public function element_refraction_values_provider()

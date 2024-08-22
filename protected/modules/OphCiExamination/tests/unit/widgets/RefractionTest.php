@@ -51,8 +51,8 @@ class RefractionTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains('id="OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_right_form"', $result);
-        $this->assertContains('id="OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_left_form"', $result);
+        $this->assertStringContainsString('id="OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_right_form"', $result);
+        $this->assertStringContainsString('id="OEModule_OphCiExamination_models_Element_OphCiExamination_Refraction_left_form"', $result);
     }
 
     /** @test */
@@ -89,7 +89,7 @@ class RefractionTest extends \OEDbTestCase
         $result = ob_get_clean();
 
         $this->assertNotEmpty($result);
-        $this->assertContains($expected_readings_prefix, $result);
+        $this->assertStringContainsString($expected_readings_prefix, $result);
     }
 
     /** @test */
@@ -106,7 +106,7 @@ class RefractionTest extends \OEDbTestCase
         $result = ob_get_clean();
 
         $this->assertNotEmpty($result);
-        $this->assertContains('value="__other__" selected', $result, 'Other type should be selected');
+        $this->assertStringContainsString('value="__other__" selected', $result, 'Other type should be selected');
     }
 
     /** @test */
@@ -119,12 +119,12 @@ class RefractionTest extends \OEDbTestCase
         $result = $this->getWidgetRender($widget);
 
         foreach (['right', 'left'] as $side) {
-            $this->assertContains($element->{"{$side}_notes"}, $result);
+            $this->assertStringContainsString($element->{"{$side}_notes"}, $result);
             foreach ($element->{"{$side}_readings"} as $reading) {
                 foreach (['sphere', 'cylinder', 'type'] as $attr) {
-                    $this->assertContains($reading->{"{$attr}_display"}, $result, "reading result should be displayed");
+                    $this->assertStringContainsString($reading->{"{$attr}_display"}, $result, "reading result should be displayed");
                 }
-                $this->assertContains((string) $reading->axis, $result, "reading result should be displayed");
+                $this->assertStringContainsString((string) $reading->axis, $result, "reading result should be displayed");
             }
         }
     }

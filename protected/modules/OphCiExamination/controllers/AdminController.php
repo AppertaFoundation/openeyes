@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -20,7 +21,9 @@ namespace OEModule\OphCiExamination\controllers;
 
 use Audit;
 use CDbCriteria;
+use OELog;
 use OEModule\OphCiExamination\components\ExaminationHelper;
+use OEModule\OphCiExamination\controllers\traits\AdminForAdviceGiven;
 use OEModule\OphCiExamination\controllers\traits\AdminForColourVision;
 use OEModule\OphCiExamination\controllers\traits\AdminForContrastSensitivity;
 use OEModule\OphCiExamination\controllers\traits\AdminForElementAttribute;
@@ -52,6 +55,7 @@ class AdminController extends \ModuleAdminController
     use AdminForContrastSensitivity;
     use AdminForNinePositions;
     use AdminForStrabismusManagement;
+    use AdminForAdviceGiven;
 
     public $group = 'Examination';
 
@@ -84,12 +88,18 @@ class AdminController extends \ModuleAdminController
             }
         }
 
-        $model_list = models\OphCiExamination_Instrument::model()->findAll([
-            'order' => 'display_order asc',
-            'with' => 'institutions',
-            'condition' => !Yii::app()->user->checkAccess('admin') ? 'institutions_institutions.institution_id = :institution_id' : '',
-            'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
-        ]);
+        if (Yii::app()->user->checkAccess('admin')) {
+            $model_list = models\OphCiExamination_Instrument::model()->findAll([
+                'order' => 'display_order asc',
+            ]);
+        } else {
+            $model_list = models\OphCiExamination_Instrument::model()->findAll([
+                'order' => 'display_order asc',
+                'with' => 'institutions',
+                'condition' => 'institutions_institutions.institution_id = :institution_id',
+                'params' => [':institution_id' => Yii::app()->session['selected_institution_id']],
+            ]);
+        }
 
         $this->render('list_OphCiExamination_IOPInstruments', array(
             'model_class' => 'OphCiExamination_Instrument',
@@ -109,6 +119,11 @@ class AdminController extends \ModuleAdminController
                 $model->name = $post_attributes['name'];
                 $model->short_name = $post_attributes['short_name'];
                 $model->active = $post_attributes['active'];
+
+                if ($this->checkAccess('admin')) {
+                    $model->setScenario('installationAdminSave');
+                }
+
                 $model->save();
 
                 if (Yii::app()->user->checkAccess('admin')) {
@@ -123,8 +138,8 @@ class AdminController extends \ModuleAdminController
 
                 Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Instrument'));
                 Yii::app()->user->setFlash('success', 'IOP Instrument updated');
-            } catch (Exception $e) {
-                throw new CHttpException(500, $e->getMessage(), true);
+            } catch (\Exception $e) {
+                throw new \CHttpException(500, $e->getMessage(), true);
             }
 
             $this->redirect(array('ViewIOPInstruments'));
@@ -162,7 +177,7 @@ class AdminController extends \ModuleAdminController
                 $model->short_name = $post_attributes['short_name'];
                 $model->active = $post_attributes['active'];
 
-                $criteria=new CDbCriteria;
+                $criteria = new CDbCriteria();
                 $criteria->select = 'max(display_order) AS display_order';
                 $order = $model->model()->find($criteria);
                 $model->display_order = (int)$order['display_order'] + 1;
@@ -174,8 +189,8 @@ class AdminController extends \ModuleAdminController
                     Audit::add('admin', 'create', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Instrument'));
                     Yii::app()->user->setFlash('success', 'IOP Instrument created');
                 }
-            } catch (Exception $e) {
-                throw new CHttpException(500, $e->getMessage(), true);
+            } catch (\Exception $e) {
+                throw new \CHttpException(500, $e->getMessage(), true);
             }
 
             $this->redirect(array('ViewIOPInstruments'));
@@ -235,6 +250,7 @@ class AdminController extends \ModuleAdminController
 
         $this->render('create', array(
                 'model' => $model,
+                'title' => 'Add Injection Management No Treatment reason',
         ));
     }
 
@@ -260,6 +276,7 @@ class AdminController extends \ModuleAdminController
 
         $this->render('create', array(
                 'model' => $model,
+                'title' => 'Edit Injection Management No Treatment reason',
         ));
     }
 
@@ -273,7 +290,7 @@ class AdminController extends \ModuleAdminController
                 if ($drug = models\OphCiExamination_InjectionManagementComplex_NoTreatmentReason::model()->findByPk($id)) {
                     $drug->display_order = $i + 1;
                     if (!$drug->save()) {
-                        throw new \Exception('Unable to save drug: '.print_r($drug->getErrors(), true));
+                        throw new \Exception('Unable to save drug: ' . print_r($drug->getErrors(), true));
                     }
                 }
             }
@@ -296,12 +313,12 @@ class AdminController extends \ModuleAdminController
                 $model->active = false;
             }
             if (!$model->save()) {
-                throw new \Exception('Unable to set reason status: '.print_r($model->getErrors(), true));
+                throw new \Exception('Unable to set reason status: ' . print_r($model->getErrors(), true));
             }
 
             Audit::add('admin', 'set-reason-status', @$_POST['id'], null, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_InjectionManagementComplex_NoTreatmentReason'));
         } else {
-            throw new \Exception('Cannot find reason with id'.@$_POST['id']);
+            throw new \Exception('Cannot find reason with id' . @$_POST['id']);
         }
     }
 
@@ -369,7 +386,7 @@ class AdminController extends \ModuleAdminController
                     Audit::add('admin', 'create', $model->id, null, array('module' => 'OphCiExamination', 'model' => 'InjectionManagementComplex_Question'));
                     Yii::app()->user->setFlash('success', 'Injection Management Disorder Question added');
 
-                    $this->redirect('ViewOphCiExamination_InjectionManagementComplex_Question?disorder_id='.$model->disorder_id);
+                    $this->redirect('ViewOphCiExamination_InjectionManagementComplex_Question?disorder_id=' . $model->disorder_id);
                 }
             }
         } elseif (isset($_GET['disorder_id'])) {
@@ -379,6 +396,7 @@ class AdminController extends \ModuleAdminController
 
         $this->render('create', array(
             'model' => $model,
+            'title' => 'Add Injection Management Question',
         ));
     }
 
@@ -405,6 +423,7 @@ class AdminController extends \ModuleAdminController
         $this->render('update', array(
             'model' => $model,
             'cancel_uri' => \Yii::app()->request->urlReferrer ?: '/OphCiExamination/admin/viewOphCiExamination_InjectionManagementComplex_Question',
+            'title' => 'edit Injection Management Question',
         ));
     }
 
@@ -418,7 +437,7 @@ class AdminController extends \ModuleAdminController
                 if ($question = models\OphCiExamination_InjectionManagementComplex_Question::model()->findByPk($id)) {
                     $question->display_order = $i + 1;
                     if (!$question->save()) {
-                        throw new \Exception('Unable to save question: '.print_r($question->getErrors(), true));
+                        throw new \Exception('Unable to save question: ' . print_r($question->getErrors(), true));
                     }
                 }
             }
@@ -441,12 +460,12 @@ class AdminController extends \ModuleAdminController
                 $model->active = false;
             }
             if (!$model->save()) {
-                throw new \Exception('Unable to set question status: '.print_r($model->getErrors(), true));
+                throw new \Exception('Unable to set question status: ' . print_r($model->getErrors(), true));
             }
 
             Audit::add('admin', 'set-question-status', $_POST['id'], null, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_InjectionManagementComplex_Question'));
         } else {
-            throw new \Exception('Cannot find question with id'.@$_POST['id']);
+            throw new \Exception('Cannot find question with id' . @$_POST['id']);
         }
     }
 
@@ -454,10 +473,35 @@ class AdminController extends \ModuleAdminController
     {
         Audit::add('admin', 'list', null, false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Workflow'));
 
+        $institution_id = \Yii::app()->request->getParam('institution_id');
+
+        // Null $institution_id when unset -> selected institution at LEVEL_INSTITUTION,
+        // empty string in $institution_id when set to 'all institutions' in the view -> installation level data at LEVEL_INSTALLATION,
+        // otherwise find the institution and pass it in at LEVEL_INSTITUTION
+        if ($institution_id === null || !$this->checkAccess('admin')) {
+            $institution = Yii::app()->session->getSelectedInstitution();
+        } else {
+            $institution = \Institution::model()->findByPk($institution_id);
+        }
+
+        if ($institution === null) {
+            $workflows = models\OphCiExamination_Workflow::model()->findAllAtLevels(
+                \ReferenceData::LEVEL_INSTALLATION,
+                ['order' => 'name asc']
+            );
+        } else {
+            $workflows = models\OphCiExamination_Workflow::model()->findAllAtLevels(
+                \ReferenceData::LEVEL_INSTITUTION,
+                ['order' => 'name asc'],
+                $institution
+            );
+        }
+
         $this->render('list_OphCiExamination_Workflow', array(
                 'model_class' => 'OphCiExamination_Workflow',
-                'model_list' => models\OphCiExamination_Workflow::model()->findAll(['condition' => 'institution_id = :institution_id', 'order' => 'name asc', 'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]]),
+                'model_list' => $workflows,
                 'title' => 'Workflows',
+                'institution_id' => $institution->id ?? '',
         ));
     }
 
@@ -467,14 +511,8 @@ class AdminController extends \ModuleAdminController
         $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true, -1);
 
         if (isset($_POST[\CHtml::modelName($model)])) {
-            $model->attributes = $_POST[\CHtml::modelName($model)];
-
-            if ($model->save()) {
-                Audit::add('admin', 'create', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Workflow'));
-                Yii::app()->user->setFlash('success', 'Workflow added');
-
-                $this->redirect(array('editWorkflow', 'id' => $model->getPrimaryKey()));
-            }
+            // If there are validation errors, the returned model will contain them. It will redirect on success.
+            $model = $this->saveWorkflow($model, \Yii::app()->request->getParam(\CHtml::modelName($model)), 'create');
         }
 
         $this->render('update', array(
@@ -491,16 +529,8 @@ class AdminController extends \ModuleAdminController
         $model = models\OphCiExamination_Workflow::model()->findByPk((int) $id);
 
         if (isset($_POST[\CHtml::modelName($model)])) {
-            $updated_attributes = $_POST[\CHtml::modelName($model)];
-            $model->name = $updated_attributes['name'];
-            $model->institution_id = $updated_attributes['institution_id'];
-
-            if ($model->save()) {
-                Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
-                Yii::app()->user->setFlash('success', 'Workflow updated');
-
-                $this->redirect(array('viewWorkflows'));
-            }
+            // If there are validation errors, the returned model will contain them. It will redirect on success.
+            $model = $this->saveWorkflow($model, \Yii::app()->request->getParam(\CHtml::modelName($model)), 'update');
         }
 
         $this->render('update', array(
@@ -514,7 +544,7 @@ class AdminController extends \ModuleAdminController
     public function actionEditWorkflowStep()
     {
         if (!$step = models\OphCiExamination_ElementSet::model()->findByPk(@$_GET['step_id'])) {
-            throw new \Exception('ElementSetItem not found: '.@$_GET['step_id']);
+            throw new \Exception('ElementSetItem not found: ' . @$_GET['step_id']);
         }
 
         $element_type_ids = array();
@@ -582,7 +612,7 @@ class AdminController extends \ModuleAdminController
                 $step->position = $position;
 
                 if (!$step->save()) {
-                    throw new \Exception('Unable to save workflow step: '.print_r($step->getErrors(), true));
+                    throw new \Exception('Unable to save workflow step: ' . print_r($step->getErrors(), true));
                 }
             }
         }
@@ -595,11 +625,11 @@ class AdminController extends \ModuleAdminController
         $et_exam = \EventType::model()->find('class_name=?', array('OphCiExamination'));
 
         if (!$element_type = \ElementType::model()->find('event_type_id = ? and id = ?', array($et_exam->id, @$_POST['element_type_id']))) {
-            throw new \Exception('Unknown examination element type: '.@$_POST['element_type_id']);
+            throw new \Exception('Unknown examination element type: ' . @$_POST['element_type_id']);
         }
 
         if (!$step = models\OphCiExamination_ElementSet::model()->findByPk(@$_POST['step_id'])) {
-            throw new \Exception('Unknown element set: '.@$_POST['step_id']);
+            throw new \Exception('Unknown element set: ' . @$_POST['step_id']);
         }
 
         if (!models\OphCiExamination_ElementSetItem::model()->find('set_id=? and element_type_id=?', array($step->id, $element_type->id))) {
@@ -608,7 +638,7 @@ class AdminController extends \ModuleAdminController
             $item->element_type_id = $element_type->id;
 
             if (!$item->save()) {
-                throw new \Exception('Unable to save element set item: '.print_r($item->getErrors(), true));
+                throw new \Exception('Unable to save element set item: ' . print_r($item->getErrors(), true));
             }
         }
 
@@ -618,11 +648,11 @@ class AdminController extends \ModuleAdminController
     public function actionRemoveElementTypeFromWorkflowStep()
     {
         if (!$item = models\OphCiExamination_ElementSetItem::model()->find('set_id=? and id=?', array(@$_POST['step_id'], @$_POST['element_type_item_id']))) {
-            throw new \Exception('Element set item not found: '.@$_POST['element_type_item_id'].' in set '.@$_POST['step_id']);
+            throw new \Exception('Element set item not found: ' . @$_POST['element_type_item_id'] . ' in set ' . @$_POST['step_id']);
         }
 
         if (!$item->delete()) {
-            throw new \Exception('Unable to delete element set item: '.print_r($item->getErrors(), true));
+            throw new \Exception('Unable to delete element set item: ' . print_r($item->getErrors(), true));
         }
 
         echo '1';
@@ -639,7 +669,7 @@ class AdminController extends \ModuleAdminController
         $item->attributes = array_shift($post);
 
         if (!$item->save()) {
-            throw new \Exception('Unable to update element set item: '.print_r($item->getErrors(), true));
+            throw new \Exception('Unable to update element set item: ' . print_r($item->getErrors(), true));
         }
 
         echo '1';
@@ -648,16 +678,18 @@ class AdminController extends \ModuleAdminController
     public function actionAddworkflowStep()
     {
         if (!$workflow = models\OphCiExamination_Workflow::model()->findByPk(@$_POST['workflow_id'])) {
-            throw new \Exception('Workflow not found: '.@$_POST['workflow_id']);
+            throw new \Exception('Workflow not found: ' . @$_POST['workflow_id']);
         }
 
-        if ($current_last = models\OphCiExamination_ElementSet::model()->find(array(
+        if (
+            $current_last = models\OphCiExamination_ElementSet::model()->find(array(
             'condition' => 'workflow_id = :workflow_id',
             'params' => array(
                 ':workflow_id' => $workflow->id,
             ),
             'order' => 'position desc',
-        ))) {
+            ))
+        ) {
             $current_last_position = $current_last->position;
         } else {
             $current_last_position = 0;
@@ -666,10 +698,10 @@ class AdminController extends \ModuleAdminController
         $set = new models\OphCiExamination_ElementSet();
         $set->workflow_id = $workflow->id;
         $set->position = $current_last_position + 1;
-        $set->name = 'Step '.$set->position;
+        $set->name = 'Step ' . $set->position;
 
         if (!$set->save()) {
-            throw new \Exception('Unable to save element set: '.print_r($set->getErrors(), true));
+            throw new \Exception('Unable to save element set: ' . print_r($set->getErrors(), true));
         }
 
         $this->renderJSON(array(
@@ -682,7 +714,7 @@ class AdminController extends \ModuleAdminController
     public function actionRemoveWorkflowStep()
     {
         if (!$step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array(@$_POST['workflow_id'], @$_POST['element_set_id']))) {
-            throw new \Exception('Unknown element set '.@$_POST['element_set_id'].' for workflow '.@$_POST['workflow_id']);
+            throw new \Exception('Unknown element set ' . @$_POST['element_set_id'] . ' for workflow ' . @$_POST['workflow_id']);
         }
 
         $criteria = new CDbCriteria();
@@ -692,7 +724,7 @@ class AdminController extends \ModuleAdminController
         models\OphCiExamination_ElementSetItem::model()->deleteAll($criteria);
 
         if (!$step->delete()) {
-            throw new \Exception('Unable to remove element set: '.print_r($step->getErrors(), true));
+            throw new \Exception('Unable to remove element set: ' . print_r($step->getErrors(), true));
         }
 
         echo '1';
@@ -721,7 +753,7 @@ class AdminController extends \ModuleAdminController
             $workflow = new CDbCriteria();
             $workflow->addInCondition('id', $_POST['workflows']);
             if (!models\OphCiExamination_Workflow::model()->deleteAll($workflow)) {
-                throw new \Exception('Unable to remove Workflow : '.print_r(models\OphCiExamination_Workflow::model()->getErrors(), true));
+                throw new \Exception('Unable to remove Workflow : ' . print_r(models\OphCiExamination_Workflow::model()->getErrors(), true));
             }
             echo 1;
         }
@@ -733,13 +765,13 @@ class AdminController extends \ModuleAdminController
         $element_set_id = Yii::app()->request->getParam('element_set_id');
         $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array($workflow_id, $element_set_id));
         if (!$step) {
-            throw new \Exception('Unknown element set '.$element_set_id.' for workflow '.$workflow_id);
+            throw new \Exception('Unknown element set ' . $element_set_id . ' for workflow ' . $workflow_id);
         }
 
         $step->name = Yii::app()->request->getParam('step_name');
 
         if (!$step->save()) {
-            throw new \Exception('Unable to save element set: '.print_r($step->getErrors(), true));
+            throw new \Exception('Unable to save element set: ' . print_r($step->getErrors(), true));
         }
 
         echo '1';
@@ -751,13 +783,13 @@ class AdminController extends \ModuleAdminController
         $element_set_id = Yii::app()->request->getParam('element_set_id');
         $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array($workflow_id, $element_set_id));
         if (!$step) {
-            throw new \Exception('Unknown element set '.$element_set_id.' for workflow '.$workflow_id);
+            throw new \Exception('Unknown element set ' . $element_set_id . ' for workflow ' . $workflow_id);
         }
 
         $step->display_order_edited = Yii::app()->request->getParam('display_order_edited');
 
         if (!$step->save()) {
-            throw new \Exception('Unable to save element set: '.print_r($step->getErrors(), true));
+            throw new \Exception('Unable to save element set: ' . print_r($step->getErrors(), true));
         }
 
         echo '1';
@@ -767,20 +799,34 @@ class AdminController extends \ModuleAdminController
     {
         Audit::add('admin', 'list', null, false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_Workflow_Rule'));
 
+        $institution_id = \Yii::app()->request->getParam('institution_id', null);
+
+        if ($institution_id === null || !$this->checkAccess('admin')) {
+            $institution = Yii::app()->session->getSelectedInstitution();
+        } else {
+            $institution = \Institution::model()->findByPk($institution_id);
+        }
+
+        $workflows_criteria = models\OphCiExamination_Workflow::model()->getCriteriaForLevels(
+            $institution ? \ReferenceData::LEVEL_INSTITUTION : \ReferenceData::LEVEL_INSTALLATION,
+            null,
+            $institution
+        );
+
         $this->render('list_OphCiExamination_Workflow_Rules', array(
                 'model_class' => 'OphCiExamination_Workflow_Rule',
                 'model_list' => models\OphCiExamination_Workflow_Rule::model()->findAll(
-                    array(
-                        'condition' => 'institution_id IS NULL OR institution_id = :institution_id',
+                    [
+                        'with' => ['workflow' => $workflows_criteria->toArray()],
                         'order' => 't.id asc',
-                        'params' => [':institution_id' => Yii::app()->session['selected_institution_id']]
-                    )
+                    ]
                 ),
                 'title' => 'Workflow rules',
+                'institution_id' => $institution->id ?? '',
         ));
     }
 
-    public function actionGetInstitutionFirms($id)
+    public function actionGetInstitutionFirms($id = null)
     {
         $firms = Yii::app()->db->createCommand()
             ->select('id, name')
@@ -791,13 +837,20 @@ class AdminController extends \ModuleAdminController
         $this->renderJSON($firms);
     }
 
-    public function actionGetInstitutionWorkflows($id)
+    public function actionGetInstitutionWorkflows($id = null)
     {
-        $workflows = Yii::app()->db->createCommand()
-            ->select('id, name')
-            ->from('ophciexamination_workflow')
-            ->where('institution_id = :id', [':id' => $id])
-            ->queryAll();
+        $institution = \Institution::model()->findByPk($id);
+
+        $workflows = models\OphCiExamination_Workflow::model()->findAllAtLevels(
+            $institution ? \ReferenceData::LEVEL_INSTITUTION : \ReferenceData::LEVEL_INSTALLATION,
+            ['select' => 't.id, t.name', 'order' => 'name asc'],
+            $institution
+        );
+
+        $workflows = array_map(
+            static function ($workflow) { return ['id' => $workflow->id, 'name' => $workflow->name]; },
+            $workflows
+        );
 
         $this->renderJSON($workflows);
     }
@@ -832,7 +885,7 @@ class AdminController extends \ModuleAdminController
     {
         $model = new models\OphCiExamination_Workflow_Rule();
 
-        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), true, -1);
+        $assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->getModule()->name . '.assets'), true, -1);
 
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
@@ -858,7 +911,7 @@ class AdminController extends \ModuleAdminController
             foreach ($_POST['workflowrules'] as $rule_id) {
                 if ($rule = models\OphCiExamination_Workflow_Rule::model()->findByPk($rule_id)) {
                     if (!$rule->delete()) {
-                        throw new \Exception('Unable to delete workflow rule: '.print_r($rule->getErrors(), true));
+                        throw new \Exception('Unable to delete workflow rule: ' . print_r($rule->getErrors(), true));
                     }
                 }
             }
@@ -873,6 +926,44 @@ class AdminController extends \ModuleAdminController
             'Edit Overall Periods',
             'OEModule\OphCiExamination\models\OphCiExamination_OverallPeriod',
             ['div_wrapper_class' => 'cols-4']
+        );
+    }
+
+    public function actionManageDischargeStatuses()
+    {
+        $this->genericAdmin(
+            'Edit Discharge Statuses',
+            'OEModule\OphCiExamination\models\DischargeStatus',
+            [
+                'div_wrapper_class' => 'cols-4',
+                'extra_fields' => [
+                    'ecds_code' => [
+                        'type' => 'text',
+                        'field' => 'ecds_code'
+                    ]
+                ]
+            ]
+        );
+    }
+
+    public function actionManageDischargeDestinations()
+    {
+        $this->genericAdmin(
+            'Edit Discharge Destinations',
+            'OEModule\OphCiExamination\models\DischargeDestination',
+            [
+                'div_wrapper_class' => 'cols-4',
+                'extra_fields' => [
+                    'ecds_code' => [
+                        'type' => 'text',
+                        'field' => 'ecds_code'
+                    ],
+                    'institution_required' => [
+                        'type' => 'boolean',
+                        'field' => 'institution_required'
+                    ]
+                ]
+            ]
         );
     }
 
@@ -896,7 +987,8 @@ class AdminController extends \ModuleAdminController
                         'choices' => \Institution::model()->getTenantedList(true)],
                 ],
                 'filters_ready' => isset($_GET['institution_id']) && $_GET['institution_id'] === Yii::app()->session['selected_institution_id'],
-            ]);
+            ]
+        );
     }
 
     public function actionManageGlaucomaStatuses()
@@ -1007,6 +1099,10 @@ class AdminController extends \ModuleAdminController
                 'field' => 'followup',
                 'type' => 'boolean',
             ],
+            [
+                'field' => 'discharge',
+                'type' => 'boolean',
+            ],
         ];
 
         if (Yii::app()->moduleAPI->get('PatientTicketing')) {
@@ -1017,7 +1113,7 @@ class AdminController extends \ModuleAdminController
         }
 
         $this->genericAdmin(
-            'Edit Clinical Outcome Statuses',
+            'Edit Follow-up Statuses',
             'OEModule\OphCiExamination\models\OphCiExamination_ClinicOutcome_Status',
             array(
                 'extra_fields' => $extra_fields,
@@ -1037,25 +1133,34 @@ class AdminController extends \ModuleAdminController
         if ($institution_id === null) {
             $institution_id = Yii::app()->session['selected_institution_id'];
         }
+
+        $complications = models\OphCiExamination_PostOpComplications::model()->available()->findAll();
+        $selected_complications = models\OphCiExamination_PostOpComplications::model()->enabled($institution_id, $subspecialty_id)->findAll();
+
         $this->render('list_OphCiExamination_PostOpComplications', array(
                 'institution_id' => $institution_id,
                 'subspecialty_id' => $subspecialty_id,
-                'enabled_items' => models\OphCiExamination_PostOpComplications::model()->enabled($institution_id, $subspecialty_id)->findAll(),
-                'available_items' => models\OphCiExamination_PostOpComplications::model()->available($subspecialty_id)->findAll(),
+                'selected_complications' => $selected_complications,
+                'complications' => \CHtml::listData([...$complications, ...$selected_complications], 'id', 'name', ''),
         ));
     }
 
     public function actionUpdatePostOpComplications()
     {
-        $item_ids = Yii::app()->request->getParam('item_ids', array());
+        $complication_ids = Yii::app()->request->getParam('complication_ids', array());
         $institution_id = Yii::app()->request->getParam('institution_id', array());
         $subspecialty_id = Yii::app()->request->getParam('subspecialty_id', null);
 
         $tx = Yii::app()->db->beginTransaction();
-        models\OphCiExamination_PostOpComplications::model()->assign($item_ids, $institution_id, $subspecialty_id);
+        try {
+            models\OphCiExamination_PostOpComplications::model()->assign($complication_ids, $institution_id, $subspecialty_id);
+        } catch (\Exception $e) {
+            $tx->rollback();
+            throw new \Exception('Could not save PostOpComplications.');
+        }
         $tx->commit();
 
-        $this->redirect(array('/OphCiExamination/admin/postOpComplications?institution_id='. $institution_id .'&subspecialty_id='. $subspecialty_id));
+        $this->redirect(array('/OphCiExamination/admin/postOpComplications?institution_id=' . $institution_id . '&subspecialty_id=' . $subspecialty_id));
     }
 
     /*
@@ -1108,7 +1213,7 @@ class AdminController extends \ModuleAdminController
         if (isset($_POST[\CHtml::modelName($model)])) {
             $model->attributes = $_POST[\CHtml::modelName($model)];
             if ($model->save()) {
-               // Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
+                // Audit::add('admin', 'update', serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
                 Yii::app()->user->setFlash('success', 'Invoice status updated');
 
                 $this->redirect(array('InvoiceStatusList'));
@@ -1134,7 +1239,7 @@ class AdminController extends \ModuleAdminController
                 if ($rule = models\InvoiceStatus::model()->findByPk($rule_id)) {
                     if (!$rule->delete()) {
                         echo 'Unable to delete Invoice Status';
-                        throw new \Exception('Unable to delete Invoice Status: '.print_r($rule->getErrors(), true));
+                        throw new \Exception('Unable to delete Invoice Status: ' . print_r($rule->getErrors(), true));
                     }
                 }
             }
@@ -1273,32 +1378,16 @@ class AdminController extends \ModuleAdminController
         );
     }
 
-    public function actionMedicationManagementSets()
-    {
-        $this->genericAdmin(
-            'Medication Management drug sets',
-            models\MedicationManagementRefSet::class,
-            array(
-                'description' => 'Medications in these sets will be automatically be pulled into the medication management element.',
-                'label_field' => 'ref_set_id',
-                'extra_fields' => array(
-                    array('field' => 'ref_set_id', 'type' => 'lookup',
-                        'model' => \MedicationSet::class, ),
-                ),
-            )
-        );
-    }
-
     public function actionChangeWorkflowStepActiveStatus()
     {
         $step = models\OphCiExamination_ElementSet::model()->find('workflow_id=? and id=?', array($_POST['workflow_id'], $_POST['element_set_id']));
         if (!$step) {
-            throw new \Exception('Unknown element set '.$_POST['element_set_id'].' for workflow '.$_POST['workflow_id']);
+            throw new \Exception('Unknown element set ' . $_POST['element_set_id'] . ' for workflow ' . $_POST['workflow_id']);
         }
 
         $step->is_active = ($step->is_active === '1' ? 0 : 1);
         if (!$step->save()) {
-            throw new \Exception('Unable to change element set is_active status: '.print_r($step->getErrors(), true));
+            throw new \Exception('Unable to change element set is_active status: ' . print_r($step->getErrors(), true));
         }
 
         echo '1';
@@ -1306,11 +1395,51 @@ class AdminController extends \ModuleAdminController
 
     public function actionCorrectionTypes()
     {
-        $this->genericAdmin('Correction Types',
+        $this->genericAdmin(
+            'Correction Types',
             models\CorrectionType::class,
             [
                 'description' => 'Correction Types are used in multiple examination elements',
             ]
         );
+    }
+    public function actionRedFlags()
+    {
+        Audit::add('admin', 'list', null, false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_AE_RedFlags_Options'));
+
+        $this->genericAdmin('Edit Red Flags Options', 'OEModule\OphCiExamination\models\OphCiExamination_AE_RedFlags_Options', ['div_wrapper_class' => 'cols-5', 'return_url' => '/OphCiExamination/admin/redFlags'], null, true);
+    }
+
+    private function saveWorkflow($model, $updated_attributes, $action_name)
+    {
+        $model->name = $updated_attributes['name'];
+        $model->institution_id = $updated_attributes['institution_id'];
+
+        // $model->institution_id could be the empty string which will cause save to fail in the SQL update
+        $model->institution_id = $model->institution_id ? $model->institution_id : null;
+
+        if ($this->checkAccess('admin')) {
+            $model->setScenario('installationAdminSave');
+        }
+
+        $transaction = \Yii::app()->db->beginTransaction();
+
+        try {
+            if ($model->save()) {
+                Audit::add('admin', $action_name, serialize($model->attributes), false, array('module' => 'OphCiExamination', 'model' => 'OphCiExamination_ElementSet'));
+                Yii::app()->user->setFlash('success', 'Workflow updated');
+
+                $transaction->commit();
+                $this->redirect(array('viewWorkflows'));
+            } else {
+                $transaction->rollback();
+
+                return $model; // Holds validation errors
+            }
+        } catch (\Exception $e) {
+            $transaction->rollback();
+
+            throw $e;
+        }
     }
 }

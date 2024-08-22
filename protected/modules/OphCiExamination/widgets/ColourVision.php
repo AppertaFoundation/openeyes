@@ -54,13 +54,13 @@ class ColourVision extends \BaseEventElementWidget
     public function getReadingAttributeLabel($attr)
     {
         return OphCiExamination_ColourVision_Reading::model()->getAttributeLabel($attr);
-
     }
 
     public function getMethods()
     {
         if (!$this->available_methods) {
-            $this->available_methods = OphCiExamination_ColourVision_Method::model()->findAll();;
+            $this->available_methods = OphCiExamination_ColourVision_Method::model()->findAll();
+            ;
         }
         return $this->available_methods;
     }
@@ -88,8 +88,12 @@ class ColourVision extends \BaseEventElementWidget
 
     protected function ensureRequiredDataKeysSet(&$data)
     {
+        if (!array_key_exists('eye_id', $data)) {
+            return;
+        }
+
         foreach (['right', 'left'] as $side) {
-            if (!isset($data["{$side}_readings"]) && \SplitEventTypeElement::eyeHasSide('right', $data['eye_id'])) {
+            if (!isset($data["{$side}_readings"]) && \SplitEventTypeElement::eyeHasSide($side, $data['eye_id'])) {
                 $data["{$side}_readings"] = [];
             }
         }

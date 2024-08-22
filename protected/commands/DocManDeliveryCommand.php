@@ -1,4 +1,8 @@
 <?php
+
+use OEModule\PASAPI\models\PasApiAssignment;
+use OEModule\PASAPI\resources\PatientAppointment;
+
 /**
  * OpenEyes
  *
@@ -15,42 +19,10 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
-class DocManDeliveryCommand extends CConsoleCommand
+class DocManDeliveryCommand extends BaseDeliveryCommand
 {
-    //if export path provided it will overwrite the $path
-    public $export_path = null;
-    public $xml_template = '';
-
-    private $path;
-
-    private $event;
-
-    private $generate_xml = false;
-    private $with_print = false;
-
-    private $generate_csv = false;
-    private $csv_file_options = [
-        'file_name' => null,
-        'format' => 'OEGPLetterReport_%s.csv',
-        'header' => [
-            'hos_num',
-            'clinician_name',
-            'letter_type',
-            'letter_finalised_date',
-            'letter_created_date',
-            'last_significant_event_date',
-            'letter_sent_date',
-        ]
-    ];
-
-    /**
-     * Whether Internal referral tags generated into the xml, also processes XML for only Internal referrals as well
-     *
-     * BUT, it will not generate 3rd part (like WinDip) XML, to generate specific
-     *
-     * @var bool
-     */
-    private $with_internal_referral = true;
+    protected $with_internal_referral = true;
+    public bool $with_print = true;
 
     public function getHelp()
     {
@@ -62,68 +34,6 @@ yiic docmandelivery generateone --event_id=<event_id>
     --event_id: id of the event
 EOH;
     }
-
-    /**
-     * DocManDeliveryCommand constructor.
-     */
-    public function __construct()
-    {
-
-        $this->path = $this->export_path ? $this->export_path : Yii::app()->params['docman_export_dir'];
-
-        $template_path = dirname(Yii::app()->basePath) . '/protected/modules/OphCoCorrespondence/views/templates/xml/docman/';
-        if (!$this->xml_template) {
-            $template_name = isset(\Yii::app()->params['docman_xml_template']) ? \Yii::app()->params['docman_xml_template'] : 'default';
-            $this->xml_template = $template_path . $template_name . '.php';
-        }
-
-        $this->generate_xml = isset(\Yii::app()->params['docman_generate_xml']) && \Yii::app()->params['docman_generate_xml'];
-        $this->with_internal_referral = !isset(Yii::app()->params['docman_with_internal_referral']) || Yii::app()->params['docman_with_internal_referral'] !== false;
-        $this->with_print = isset(\Yii::app()->params['docman_with_print']) && \Yii::app()->params['docman_with_print'];
-
-        $this->checkPath($this->path);
-
-        if ($this->generate_csv = Yii::app()->params['docman_generate_csv']) {
-            $this->csv_file_options['file_name'] = implode(DIRECTORY_SEPARATOR, array($this->path, sprintf($this->csv_file_options['format'], date('Ymd'))));
-            $this->createCSVFile();
-        }
-
-        parent::__construct(null, null);
-    }
-
-    private function createCSVFile()
-    {
-        //if file doesn't exists we create one and put the header
-        if (!file_exists($this->csv_file_options['file_name'])) {
-            try {
-                $fp = fopen($this->csv_file_options['file_name'], 'ab');
-                fputcsv($fp, $this->csv_file_options['header']);
-                fclose($fp);
-            } catch (\Exception $exception) {
-                \OELog::log($exception->getMessage());
-            }
-        }
-    }
-
-    private function writeCSVFile($data)
-    {
-        $fp = fopen($this->csv_file_options['file_name'], 'ab');
-        fputcsv($fp, $data);
-        fclose($fp);
-    }
-
-    /**
-     * Create directory if not exist
-     * @param $path
-     */
-    private function checkPath($path)
-    {
-        if (!is_dir($path)) {
-            mkdir($path, 0777, true);
-            echo "ALERT! Directory " . $this->path . " has been created!";
-        }
-    }
-
 
     /**
      * Run the command.
@@ -144,13 +54,12 @@ EOH;
             $this->savePDFFile($document->document_target->document_instance->correspondence_event_id, $document->id);
             // $this->savePDFFile generates xml if required
         } elseif ($document->output_type == DocumentOutput::TYPE_INTERNAL_REFERRAL) {
-            $file_info = $this->getFileName($document->id, 'Internal');
+            $file_info = static::getFileName($this->event, $document->id, 'Internal');
             //Docman xml will be used
-            $xml_generated = $this->generateXMLOutput($file_info['filename'], $document);
+            $xml_generated = $this->generateXMLOutput($file_info, $this->event, $document);
 
             if ($xml_generated) {
                 $internal_referral_command = new InternalReferralDeliveryCommand();
-                $internal_referral_command->setFileRandomNumber($file_info['rand']);
 
                 //now we only generate PDF file, until the integration, the generate_xml is set to false in the InternalReferralDeliveryCommand
                 $internal_referral_command->actionGenerateOne($this->event->id);
@@ -288,7 +197,7 @@ EOH;
 
             curl_close($ch);
 
-            $filename = $this->getFileName($output_id)['filename'];
+            $filename = static::getFileName($this->event, $output_id);
 
             $content_rtf = null;
             if (getenv("RTF_HOSTNAME") != null) {
@@ -329,7 +238,7 @@ EOH;
 
             $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
             if ($this->generate_xml) {
-                $xml_generated = $this->generateXMLOutput($filename, $document_output);
+                $xml_generated = $this->generateXMLOutput($filename, $this->event, $document_output);
             }
 
             if (!$pdf_generated || ($this->generate_xml && !$xml_generated)) {
@@ -394,71 +303,6 @@ EOH;
     }
 
     /**
-     * @param int $document_output_id The id column of the document_output table
-     * @param string $prefix Prefix to be prepended to the filename
-     * @return array Name of the output file
-     */
-    private function getFileName($document_output_id, $prefix = '')
-    {
-        $replacePairs = [
-            '{prefix}' => '',
-            '{event.id}' => '',
-            '{patient.hos_num}' => '',
-            '{random}' => '',
-            '{gp.nat_id}' => '',
-            '{document_output.id}' => '',
-            '{event.last_modified_date}' => '',
-            '{date}' => ''
-        ];
-
-        $fileNameFormat = Yii::app()->params['docman_filename_format'];
-        $templateStrings = $this->getStringsToReplace($fileNameFormat);
-
-        $local_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
-            'LOCAL',
-            $this->event->episode->patient->id,
-            $this->event->institution_id, $this->event->site_id
-        ));
-
-        foreach ($templateStrings as $templateString) {
-            switch ($templateString) {
-                case '{prefix}':
-                    $replacePairs[$templateString] = isset($prefix) && !empty($prefix) ? $prefix . '_' : '';
-                    break;
-                case '{patient.hos_num}':
-                    $replacePairs[$templateString] = $local_identifier_value;
-                    break;
-                case '{event.id}':
-                    $replacePairs[$templateString] = $this->event->id;
-                    break;
-                case '{random}':
-                    $rand = rand();
-                    $replacePairs[$templateString] = $rand;
-                    break;
-                case '{gp.nat_id}':
-                    $gp = $this->event->episode->patient->gp;
-                    if ($gp) {
-                        $replacePairs[$templateString] = $gp->nat_id;
-                    }
-                    break;
-                case '{document_output.id}':
-                    $replacePairs[$templateString] = $document_output_id;
-                    break;
-                case '{event.last_modified_date}':
-                    $replacePairs[$templateString] = date('Ymd_His', strtotime($this->event->last_modified_date));
-                    break;
-                case '{date}':
-                    $replacePairs[$templateString] = date('YmdHis');
-                    break;
-            }
-        }
-
-        $filename = strtr($fileNameFormat, $replacePairs);
-
-        return ['filename' => $filename, 'rand' => isset($rand) ? $rand : ''];
-    }
-
-    /**
      * Generating and XML file
      *
      * @param $filename
@@ -466,90 +310,40 @@ EOH;
      * @return bool
      * @throws CException
      */
-    private function generateXMLOutput($filename, $document_output)
+    private function generateXMLOutput($filename, \Event $event, $document_output)
     {
-        $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $this->event->id));
-        $sub_obj = isset($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty) ? $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty : null;
-        $pasapi_assignment =  \OEModule\PASAPI\models\PasApiAssignment::model()->findByAttributes([
-                    'resource_type' => \OEModule\PASAPI\resources\PatientAppointment::$resource_type,
-                    'internal_id' => $this->event->worklist_patient_id,
+        $element_letter = ElementLetter::model()->findByAttributes(array("event_id" => $event->id));
+        $pasapi_assignment =  PasApiAssignment::model()->findByAttributes([
+                    'resource_type' => PatientAppointment::$resource_type,
+                    'internal_id' => $event->worklist_patient_id,
                     'internal_type' => '\WorklistPatient']);
 
-        $local_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
-            'LOCAL',
-            $this->event->episode->patient->id,
-            $this->event->institution_id, $this->event->site_id
-        ));
-        $global_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
-            'GLOBAL',
-            $this->event->episode->patient->id,
-            $this->event->institution_id, $this->event->site_id
-        ));
-
-        //I decided to pass each value separately to keep the XML files clean and easier to modify each value if necessary
-        $data = [
-            'hos_num' => $local_identifier_value,
-            'nhs_num' => $global_identifier_value,
-            'full_name' => $this->event->episode->patient->contact->getFullName(),
-            'last_name' => $this->event->episode->patient->contact->last_name,
-            'first_name' => $this->event->episode->patient->contact->first_name,
-            'patient_title' => $this->event->episode->patient->contact->title,
-            'second_forename' => '',
-            'title' => $this->event->episode->patient->contact->title,
-            'dob' => $this->event->episode->patient->dob,
-            'date_of_death' => $this->event->episode->patient->date_of_death,
-            'gender' => $this->event->episode->patient->gender,
-            'address' => isset($this->event->episode->patient->contact->address) ? $this->event->episode->patient->contact->address->getLetterArray() : [],
-            'address1' => isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->address1) : '',
-            'city' => isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->city) : '',
-            'county' => isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->county) : '',
-            'post_code' => isset($this->event->episode->patient->contact->address) ? ($this->event->episode->patient->contact->address->postcode) : '',
-
-            'gp_nat_id' => isset($this->event->episode->patient->gp->nat_id) ? $this->event->episode->patient->gp->nat_id : null,
-            'gp_name' => isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->getFullName() : null,
-            'gp_first_name' => isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->first_name : null,
-            'gp_last_name' => isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->last_name : null,
-            'gp_title' => isset($this->event->episode->patient->gp->contact) ? $this->event->episode->patient->gp->contact->title : null,
-
-            'practice_code' => isset($this->event->episode->patient->practice->code) ? $this->event->episode->patient->practice->code : '',
-            'event_id' => $this->event->id,
-            'event_date' => $this->event->event_date,
-            'subspeciality' => isset($sub_obj->ref_spec) ? $sub_obj->ref_spec : 'SS',
-            'subspeciality_name' => isset($sub_obj->name) ? $sub_obj->name : 'Support Services',
+        $data = $this->getGeneralDataForTemplate($filename, $event);
+        $extra_data = [
             'site_name' => $element_letter->site->name,
             'site_short_name' => $element_letter->site->short_name,
-            'letter_type' => isset($element_letter->letterType->name) ? $element_letter->letterType->name : '',
-            'letter_type_id' => isset($element_letter->letterType->id) ? $element_letter->letterType->id : '',
+            'letter_type' => $element_letter->letterType->name ?? '',
+            'letter_type_id' => $element_letter->letterType->id ?? '',
             'with_internal_referral' => $this->with_internal_referral,
             'service_to' => isset($element_letter->toSubspecialty) ? $element_letter->toSubspecialty->ref_spec : '',
             'consultant_to' => isset($element_letter->toFirm) ? $element_letter->toFirm->pas_code : '',
             'consultant_title' => isset($element_letter->toFirm->consultant) ? $element_letter->toFirm->consultant->title : '',
             'consultant_first_name' => isset($element_letter->toFirm->consultant) ? $element_letter->toFirm->consultant->first_name : '',
             'consultant_last_name' => isset($element_letter->toFirm->consultant) ? $element_letter->toFirm->consultant->last_name : '',
-
             'is_urgent' => $element_letter->is_urgent ? 1 : '',
             'is_same_condition' => $element_letter->is_same_condition ? 'True' : 'False',
             'location_code' => isset($element_letter->toLocation) ? $element_letter->toLocation->site->location_code : '',
-            'output_type' => $document_output->output_type,
-
             'visit_id' => $pasapi_assignment ? $pasapi_assignment->resource_id : '',
-            'document_links' => [$filename],
+            'output_type' => $document_output->output_type,
+            'with_internal_referral' => $this->with_internal_referral
         ];
 
-        $xml = $this->renderFile($this->xml_template, ['data' => $data], true);
+        // $extra_data + $data :
+        // for keys that exist in both arrays, the elements from the left-hand ($extra_data) array will be used,
+        // and the matching elements from the right-hand ($data) array will be ignored
+        $xml = $this->renderFile($this->xml_template, ['data' => ($extra_data + $data)], true);
 
         return file_put_contents($this->path . "/" . $filename . ".xml", $this->cleanXML($xml)) !== false;
-    }
-
-    /**
-     * Special function to sanitize XML
-     *
-     * @param string $xml
-     * @return string
-     */
-    private function cleanXML($xml)
-    {
-        return str_replace("&", "and", $xml);
     }
 
     /**
@@ -570,71 +364,5 @@ EOH;
         $output->updateStatus(DocumentOutput::STATUS_FAILED);
 
         return $output->save();
-    }
-
-    /**
-     * @param $data
-     */
-    private function logData($data)
-    {
-        if ($this->generate_csv) {
-            $doc_log = new DocumentLog();
-            $doc_log->attributes = $data;
-            $doc_log->save();
-
-            $this->writeCSVFile($data);
-        }
-    }
-
-    private function getLastSignificantEventDate(Event $event)
-    {
-        $correspondence_date = $event->event_date;
-
-        $event_type = EventType::model()->find('class_name=?', array('OphTrOperationnote'));
-        $event_type_id = $event_type->id;
-
-        $criteria = new CDbCriteria();
-        $criteria->condition = "episode_id = '" . $event->episode->id
-            . "' AND event_date <= '$correspondence_date' AND deleted = 0 AND event_type_id = '$event_type_id'";
-        $criteria->order = 'event_date desc, created_date desc';
-
-        $last_opnote_date = '';
-        if ($op_note = Event::model()->find($criteria)) {
-            $last_opnote_date = $op_note->event_date;
-        }
-
-        $event_type = EventType::model()->find('class_name=?', array('OphCiExamination'));
-        $event_type_id = $event_type->id;
-
-        $criteria = new CDbCriteria();
-        $criteria->condition = "episode_id = '" . $event->episode->id
-            . "' AND event_date <= '$correspondence_date' AND deleted = 0 AND event_type_id = '$event_type_id'";
-        $criteria->order = 'event_date desc, created_date desc';
-
-        $last_exam_date = '';
-        if ($examEvent = Event::model()->find($criteria)) {
-            $last_exam_date = $examEvent->event_date;
-        }
-
-        $last_significant_event_date = '';
-        if (!$last_exam_date && $last_opnote_date) {
-            $last_significant_event_date = $last_opnote_date;
-        }
-        if ($last_exam_date && !$last_opnote_date) {
-            $last_significant_event_date = $last_exam_date;
-        }
-        if (!$last_exam_date && !$last_opnote_date) {
-            $last_significant_event_date = null;
-        }
-        if ($last_exam_date && $last_opnote_date) {
-            $diff = date_diff(date_create($last_exam_date), date_create($last_opnote_date));
-            if ($diff->days >= 0) {
-                $last_significant_event_date = $last_opnote_date;
-            } else {
-                $last_significant_event_date = $last_exam_date;
-            }
-        }
-
-        return $last_significant_event_date;
     }
 }

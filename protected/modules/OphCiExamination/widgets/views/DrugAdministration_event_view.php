@@ -2,12 +2,15 @@
     <?php
     $last = end($assigned_psds);
     foreach ($assigned_psds as $key => $assigned_psd) {
-            $appointment_details = $assigned_psd->getAppointmentDetails();
-            $assignment_type_name = $assigned_psd->getAssignmentTypeAndName();
-            $is_active = $assigned_psd->active;
-            $is_relevant = $assigned_psd->isrelevant;
-            $grey_out_section = !$is_relevant || !$is_active ? 'fade' : null;
-            $deleted_tag = $assigned_psd->getDeletedUI();
+        if ($assigned_psd->anyAssociatedEventDeleted()) {
+            continue;
+        }
+        $appointment_details = $assigned_psd->getAppointmentDetails();
+        $assignment_type_name = $assigned_psd->getAssignmentTypeAndName();
+        $is_active = $assigned_psd->active;
+        $is_relevant = $assigned_psd->isrelevant;
+        $grey_out_section = !$is_relevant || !$is_active ? 'fade' : null;
+        $deleted_tag = $assigned_psd->getDeletedUI();
         ?>
     <div class="order-block">
         <div class="flex row">
@@ -65,11 +68,11 @@
                         ?>
                         <tr class="<?=$grey_out_section;?>">
                             <td>
-                                <?php if(!$is_active && !$entry->administered) {?>
+                                <?php if (!$is_active && !$entry->administered) {?>
                                     <del>
                                 <?php } ?>
                                 <?=$entry->medication->getLabel(true)?>
-                                <?php if(!$is_active && !$entry->administered) {?>
+                                <?php if (!$is_active && !$entry->administered) {?>
                                     </del>
                                 <?php } ?>
                             </td>
@@ -104,12 +107,12 @@
                 <div class="row">
                     <?php if ($assigned_psd->comment) {?>
                     <i class="oe-i comments-who small pad-right js-has-tooltip" data-tooltip-content="<small>User comment by </small><br><?=$assigned_psd->comment->commented_user->getFullName()?>"></i>
-                    <span class="user-comment"><?=$assigned_psd->comment?></span>
+                    <span class="user-comment"><?=\OELinebreakReplacer::replace($assigned_psd->comment)?></span>
                     <?php } ?>
                 </div>
             </div>
         </div>
-        <?php if($last !== $assigned_psd) {?>
+        <?php if ($last !== $assigned_psd) {?>
             <hr class="divider">
         <?php }?>
     </div>

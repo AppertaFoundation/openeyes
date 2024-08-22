@@ -70,6 +70,8 @@
      * @property {string|null} [iframe=null] - A URL string to load the dialog content
      * in via an iFrame.
      * @property {string|null} [title=null] - The dialog title.
+     * @property {string|null} [dataTest=popup-content] - A data test attribute used to locate the 
+     * element during testing.
      * @property {string|null} [dialogClass=dialog] - A CSS class string to be added to
      * the main dialog container.
      * @property {boolean} [constrainToViewport=false] - Constrain the dialog dimensions
@@ -89,12 +91,12 @@
         title: null,
         popupClass: 'oe-popup',
         popupContentClass: 'oe-popup-content',
+        dataTest: 'popup-content',
         modal: true,
         dialogClass: 'dialog',
         resizable: false,
         draggable: false,
         constrainToViewport: false,
-        width: 440,
         height: 'auto',
         minHeight: 'auto',
         show: 'fade'
@@ -113,11 +115,13 @@
         this.content = $('<div />', {class: 'oe-popup-wrap'});
         var closeButton = '<div class="close-icon-btn"><i class="oe-i remove-circle pro-theme"></i></div>';
         var popup = $('<div class="' + this.options.popupClass + '"></div>');
-        popup.css('width', this.options.width);
-        $('<div class="title">' + this.options.title + '</div>' + closeButton + '<div class="' + this.options.popupContentClass + '"></div>').appendTo(popup);
+        if (this.options.width) {
+            popup.css('width', this.options.width);
+        }
+        
+        $('<div class="title">' + this.options.title + '</div>' + closeButton + '<div class="' + this.options.popupContentClass + '" data-test="' + this.options.dataTest + '"></div>').appendTo(popup);
 
         this.content.append(popup);
-        this.setClose($(this.content).find('.close-icon-btn'));
         // Add default content (if any exists)
         if (!this.options.url) {
             this.setContent(this.options.content);
@@ -136,6 +140,7 @@
             content = this.getContent(options);
         }
         $(this.content).find('.oe-popup-content').append(content);
+
         if ($(':input[type="submit"]', this.content).length) {
             $(':input[type="submit"]', this.content).get(0).focus();
         }
@@ -331,8 +336,20 @@
    */
   Dialog.prototype.open = function () {
     $('body').prepend(this.content);
+    this.setClose($(this.content).find('.close-icon-btn'));
     this.emit("open");
   };
+
+    /**
+     * Opens (shows) the dialog.
+     * @name OpenEyes.UI.Dialog#open
+     * @method
+     * @public
+     */
+    Dialog.prototype.openOnTop = function () {
+        $('body').append(this.content);
+        this.emit("open");
+    };
 
   /**
    * Closes (hides) the dialog.
@@ -342,7 +359,7 @@
    */
   Dialog.prototype.close = function () {
     this.emit("close");
-    $('.oe-popup-wrap').remove();
+    $('.oe-popup-wrap').not('#js-overlay').remove();
   };
 
   /**
@@ -380,7 +397,7 @@
                 dialog.options.closeCallback();
             }
             dialog.emit("close");
-            $('.oe-popup-wrap').remove();
+            $('.oe-popup-wrap').not('#js-overlay').remove();
         });
     };
 

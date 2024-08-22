@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "secondaryto_common_oph_disorder".
  * This model allows for the definition of "secondary to" options for disorders specified in CommonOphthalmicDisorder
@@ -25,8 +27,10 @@
  *
  * @property int $id
  * @property int $disorder_id
+ * @property int $institution_id
  * @property int $finding_id
  * @property int $parent_id
+ * @property string $letter_macro_text
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
@@ -35,16 +39,12 @@
  */
 class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 {
-    use MappedReferenceData;
+    use HasFactory;
+    use OwnedByReferenceData;
 
-    protected function getSupportedLevels(): int
+    protected function getSupportedLevelMask(): int
     {
-        return ReferenceData::LEVEL_INSTITUTION;
-    }
-
-    protected function mappingColumn(int $level): string
-    {
-        return $this->tableName().'_id';
+        return ReferenceData::LEVEL_SUBSPECIALTY | ReferenceData::LEVEL_INSTITUTION | ReferenceData::LEVEL_INSTALLATION;
     }
 
 
@@ -69,7 +69,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return array('order' => $this->getTableAlias(true, false) . '.display_order');
     }
 
     /**
@@ -82,7 +82,11 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
         return array(
                 array('parent_id', 'required'),
                 array('disorder_id, finding_id, parent_id', 'length', 'max' => 10),
-                array('id, disorder_id, finding_id, parent_id, letter_macro_text, created_date, created_user_id, last_modified_date, last_modified_user_id', 'safe'),
+                array('letter_macro_text', 'length', 'max' => 255),
+                array(
+                    'id, disorder_id, institution_id, finding_id, parent_id, letter_macro_text, created_date, created_user_id, last_modified_date, last_modified_user_id',
+                    'safe'
+                ),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
                 array('id, disorder_id, finding_id', 'safe', 'on' => 'search'),
@@ -100,7 +104,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
                 'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id', 'condition' => 'disorder.active = 1'),
                 'finding' => array(self::BELONGS_TO, 'Finding', 'finding_id', 'condition' => 'finding.active = 1'),
                 'parent' => array(self::BELONGS_TO, 'CommonOphthalmicDisorder', 'parent_id'),
-                'institutions' => array(self::MANY_MANY, 'Institution', $this->tableName().'_institution('.$this->tableName().'_id, institution_id)'),
+                'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
         );
     }
     /**
@@ -111,6 +115,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
         return array(
             'id' => 'ID',
             'disorder_id' => 'Disorder',
+            'institution_id' => 'Institution',
             'finding_id' => 'Finding',
             'parent_id' => 'Parent',
             'letter_macro_text' => 'Letter macro text',
@@ -180,6 +185,7 @@ class SecondaryToCommonOphthalmicDisorder extends BaseActiveRecordVersioned
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('disorder_id', $this->disorder_id, true);
+        $criteria->compare('institution_id', $this->institution_id, true);
         $criteria->compare('finding_id', $this->finding_id, true);
 
         return new CActiveDataProvider(get_class($this), array(

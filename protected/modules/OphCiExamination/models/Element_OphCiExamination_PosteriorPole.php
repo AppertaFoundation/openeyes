@@ -44,6 +44,7 @@ class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
 {
     use traits\CustomOrdering;
     public $service;
+    public $exclude_element_from_empty_discard_check = true;
 
     /**
      * Returns the static model of the specified AR class.
@@ -111,6 +112,15 @@ class Element_OphCiExamination_PosteriorPole extends \SplitEventTypeElement
      * @return bool
      */
     public function canCopy()
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     * @return bool
+     */
+    public function isDirtyWhenNewRecord(): bool
     {
         return true;
     }

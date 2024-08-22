@@ -92,9 +92,9 @@ outfile="$outfile.zip"
 # Note that this script ignores the old db.conf method. If you are still using this deprecated
 # method, then you'll need to manually set the relevant environment variables to match your db.conf
 if [ ! -z "$MYSQL_ROOT_PASSWORD" ]; then
-  dbpassword="-p$MYSQL_ROOT_PASSWORD"
+  dbpassword="$MYSQL_ROOT_PASSWORD"
 elif [ -f "/run/secrets/MYSQL_ROOT_PASSWORD" ]; then
-  dbpassword="-p$(</run/secrets/MYSQL_ROOT_PASSWORD)"
+  dbpassword="$(</run/secrets/MYSQL_ROOT_PASSWORD)"
 else
   dbpassword=""
 fi
@@ -120,7 +120,7 @@ echo "*** Backing up ${DATABASE} ***"
 if [ $ignore_archive == 1 ]; then
   # remove all tables starting with archive_
   SQL_STRING='SHOW TABLES LIKE "archive_%";'
-  DBS=$(echo "$SQL_STRING" | mysql -h "${host}" -u ${username} "${dbpassword}" --port="${port}" -Bs --database="${DATABASE}")
+  DBS=$(echo "$SQL_STRING" | MYSQL_PWD="${dbpassword}" mysql -h "${host}" -u ${username} --port="${port}" -Bs --database="${DATABASE}")
   #-B is for batch - tab-separated columns, newlines between rows
   #-s is for silent - produce less output
   #both result in escaping special characters
@@ -163,13 +163,16 @@ folder=$(dirname $outfile)
 # make sure the directory exists
 [ "$folder" != "." ] && mkdir -p "$folder" 2>/dev/null || :
 
-SIZE_BYTES=$(mysql -h ${host} -u ${username} ${dbpassword} --port=${port} --skip-column-names <<<"SELECT ROUND(SUM(data_length) * 0.92) AS "size_bytes" FROM information_schema.TABLES WHERE TABLE_SCHEMA = '${DATABASE}' AND TABLE_NAME NOT IN ($DONT_CALCULATE_LIST);")
+SIZE_BYTES=$(MYSQL_PWD="${dbpassword}" mysql -h ${host} -u ${username} --port=${port} --skip-column-names <<<"SELECT ROUND(SUM(data_length) * 0.92) AS "size_bytes" FROM information_schema.TABLES WHERE TABLE_SCHEMA = '${DATABASE}' AND TABLE_NAME NOT IN ($DONT_CALCULATE_LIST);")
 echo "Data size = approx $(expr $SIZE_BYTES / 1024 / 1024) mb"
 echo "Dumping structure..."
-eval mysqldump -h ${host} -u ${username} ${dbpassword} --port=${port} --routines --events --triggers --single-transaction ${IGNORED_TABLES_STRING} --no-data${extraparams} ${DATABASE} | pv >${tmpfile}
+eval MYSQL_PWD="${dbpassword}" mysqldump -h ${host} -u ${username} --port=${port} --single-transaction ${IGNORED_TABLES_STRING} --skip-triggers --no-data${extraparams} ${DATABASE} | pv >${tmpfile}
 
 echo "Dumping content..."
-eval mysqldump -h ${host} -u ${username} ${dbpassword} --port=${port} --routines --events --triggers --single-transaction --no-create-info --skip-triggers "${EXCLUDED_TABLES_STRING}" "${IGNORED_TABLES_STRING}"$extraparams ${DATABASE} | pv --progress --size $SIZE_BYTES >>${tmpfile}
+eval MYSQL_PWD="${dbpassword}" mysqldump -h ${host} -u ${username} --port=${port} --single-transaction --no-create-info --skip-triggers "${EXCLUDED_TABLES_STRING}" "${IGNORED_TABLES_STRING}"$extraparams ${DATABASE} | pv --progress --size $SIZE_BYTES >>${tmpfile}
+
+echo "Dumping procedures and triggers..."
+eval MYSQL_PWD="${dbpassword}" mysqldump -h ${host} -u ${username} --port=${port} --routines --events --triggers --single-transaction --no-create-info --no-data "${EXCLUDED_TABLES_STRING}" "${IGNORED_TABLES_STRING}"$extraparams ${DATABASE} | pv >>${tmpfile}
 
 if [[ $nozip -eq 0 ]]; then
   echo "Zipping to ${outfile}..."

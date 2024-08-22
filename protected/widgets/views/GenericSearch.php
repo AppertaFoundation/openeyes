@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -53,8 +55,9 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
                             <?php
                             $name .= '[value]';
                             echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                 'placeholder' => $comparePlaceholder,
+                                'class' => 'cols-full search',
                             )); ?>
                         </td>
                         <?php
@@ -93,9 +96,8 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
                             <?php
                             $comparePlaceholder = $search->getModel()->getAttributeLabel($key);
                             $name = 'search[precision][' . $key . ']';
-
                             echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                 'placeholder' => $comparePlaceholder,
                             )); ?>
                         </td>
@@ -104,17 +106,19 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
                     case 'disorder':
                         ?>
                         <td id="diagnosis-search">
-                            <span id="enteredDiagnosisText" style="display: none;">&nbsp;</span>
-                            <?php
-                                $this->controller->renderPartial('//disorder/disorderAutoComplete', array(
-                                    'class' => 'search',
-                                    'name' => $key,
-                                    'code' => '',
-                                    'value' => Yii::app()->request->getQuery('search[disorder_id]', ''),
-                                    'clear_diagnosis' => '&nbsp;<i class="oe-i remove-circle small" aria-hidden="true" id="clear-diagnosis-widget"></i>',
-                                    'placeholder' => 'Search for a diagnosis',
-                                ));
-                            ?>
+                            <div style='position: relative'>
+                                <span id="enteredDiagnosisText" style="display: none;">&nbsp;</span>
+                                <?php
+                                    $this->controller->renderPartial('//disorder/disorderAutoComplete', array(
+                                        'class' => 'search',
+                                        'name' => $key,
+                                        'code' => '',
+                                        'value' => Yii::app()->request->getQuery('search[disorder_id]', ''),
+                                        'clear_diagnosis' => '&nbsp;<i class="oe-i remove-circle small" aria-hidden="true" id="clear-diagnosis-widget"></i>',
+                                        'placeholder' => 'Search for a diagnosis',
+                                    ));
+                                ?>
+                            </div>
                         </td>
                         <?php
                         break;
@@ -135,24 +139,24 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
                                 'changeMonth'   => $changeMonth,
                                 'changeYear'    => $changeYear,
                                 'altFormat'     => 'yy-mm-dd',
-                                'altField'      => '#'.$datePickerID.'_alt',
+                                'altField'      => '#' . $datePickerID . '_alt',
                                 'dateFormat'    => Helper::NHS_DATE_FORMAT_JS,
                                 'yearRange'     => $yearRange
                             ),
-                            'htmlOptions' =>array(
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'htmlOptions' => array(
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                 'placeholder' => $search->getModel()->getAttributeLabel($key),
                             )
                         )) ?>
-                        <input type="hidden" name="<?php echo $name ?>" id="<?php echo $datePickerID.'_alt' ?>" />
+                        <input type="hidden" name="<?php echo $name ?>" id="<?php echo $datePickerID . '_alt' ?>" />
                         </td> <?php
                         break;
                 }
-                else : ?>
+            else : ?>
                 <td>
                     <?php
                     echo CHtml::textField($name, $search->getSearchTermForAttribute($key), array(
-                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'placeholder' => $search->getModel()->getAttributeLabel($key),
                     ));
                     ?>
@@ -162,7 +166,8 @@ if ($search->getSearchItems() && is_array($search->getSearchItems())) :
         endforeach;
         ?>
         <td class="submit-row">
-            <button class="button small primary event-action" name="save" formmethod="get" type="submit">Search</button>
+            <button class="button small primary event-action blue hint" name="save" formmethod="get" type="submit"
+            data-test="search-button">Search</button>
         </td>
         </tr>
     </table>

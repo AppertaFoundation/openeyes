@@ -47,7 +47,7 @@ class BirthHistoryTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains('id="OEModule_OphCiExamination_models_BirthHistory_form"', $result);
+        $this->assertStringContainsString('id="OEModule_OphCiExamination_models_BirthHistory_form"', $result);
     }
 
     /** @test */
@@ -72,14 +72,14 @@ class BirthHistoryTest extends \OEDbTestCase
     }
 
     /** @test */
-    public function element_input_weight_kgs_is_set_when_created()
+    public function element_input_weight_grams_is_set_from_kgs_when_created()
     {
         $element = new BirthHistoryModel();
         $weight = rand(1, 10000);
 
-        $this->getWidgetInstanceForElement($element, ['input_weight_kgs' => $weight/1000]);
+        $this->getWidgetInstanceForElement($element, ['input_weight_kgs' => sprintf("%.3f", $weight / 1000)]);
 
-        $this->assertEquals($weight, $element->weight_grams);
+        $this->assertEqualsWithDelta($weight, $element->weight_grams, 0.0001);
         $this->assertEquals(BirthHistoryModel::$WEIGHT_GRAMS, $element->weight_recorded_units);
     }
 
@@ -92,7 +92,7 @@ class BirthHistoryTest extends \OEDbTestCase
 
         $this->getWidgetInstanceForElement($element, ['input_weight_lbs' => "{$lbs}", 'input_weight_ozs' => ($ozs < 10 ? "0" : "") . "{$ozs}"]);
 
-        $this->assertEquals((16*$lbs) + $ozs, $element->weight_ozs);
+        $this->assertEquals((16 * $lbs) + $ozs, $element->weight_ozs);
         $this->assertEquals(BirthHistoryModel::$WEIGHT_OZS, $element->weight_recorded_units);
     }
 
@@ -112,7 +112,7 @@ class BirthHistoryTest extends \OEDbTestCase
 
         $this->getWidgetInstanceForElement($element, [
             'gestation_weeks' => 40, // ensure don't get failure because no required attributes set
-            BirthHistory::$INPUT_LB_PORTION_FLD => (string) rand(1,11),
+            BirthHistory::$INPUT_LB_PORTION_FLD => (string) rand(1, 11),
             BirthHistory::$INPUT_OZ_PORTION_FLD => (string) rand(16, 30)]);
 
         $this->assertAttributeInvalid($element, 'weight_ozs', "Too many ozs");
@@ -180,7 +180,7 @@ class BirthHistoryTest extends \OEDbTestCase
         $element->weight_grams = rand(100, 10000);
         $widget = $this->getWidgetInstanceForElement($element);
 
-        $this->assertEquals($element->weight_grams/1000, $widget->getInputWeightKgs());
+        $this->assertEqualsWithDelta($element->weight_grams / 1000, $widget->getInputWeightKgs(), 0.00001);
         $this->assertNull($widget->getInputWeightLbsPortion());
         $this->assertNull($widget->getInputWeightOzsPortion());
     }
@@ -252,7 +252,7 @@ class BirthHistoryTest extends \OEDbTestCase
         $this->assertEquals(BirthHistory::$INPUT_LB_OZS_MODE, $widget->inputWeightMode());
         $this->assertEquals(7, $widget->getInputWeightLbsPortion());
         $this->assertEquals(4, $widget->getInputWeightOzsPortion());
-        $this->assertEquals((7*16) + 4, $element->weight_ozs);
+        $this->assertEquals((7 * 16) + 4, $element->weight_ozs);
         $this->assertNull($widget->getInputWeightKgs());
     }
 }

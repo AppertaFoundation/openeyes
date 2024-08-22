@@ -9,7 +9,7 @@ class m180409_140353_shortcodes_for_observations extends CDbMigration
             ->from('event_type')
             ->where('class_name=:class_name', array(':class_name' => 'OphCiExamination'))
             ->queryScalar();
-        
+
         $this->insert('patient_shortcode', array(
             'event_type_id' => $event_type_id,
             'default_code' => 'lbp',
@@ -18,7 +18,7 @@ class m180409_140353_shortcodes_for_observations extends CDbMigration
             'description' => 'Last BP (returned as systolic / diastolic - e.g, 100/80)',
             'last_modified_user_id' => '1',
         ));
-        
+
         $this->insert('patient_shortcode', array(
             'event_type_id' => $event_type_id,
             'default_code' => 'lo2',
@@ -27,7 +27,7 @@ class m180409_140353_shortcodes_for_observations extends CDbMigration
             'description' => 'Last O2 Stat',
             'last_modified_user_id' => '1',
         ));
-        
+
         $this->insert('patient_shortcode', array(
             'event_type_id' => $event_type_id,
             'default_code' => 'lbg',
@@ -36,7 +36,7 @@ class m180409_140353_shortcodes_for_observations extends CDbMigration
             'description' => 'Last Blood Glucose',
             'last_modified_user_id' => '1',
         ));
-        
+
         $this->insert('patient_shortcode', array(
             'event_type_id' => $event_type_id,
             'default_code' => 'lh1',
@@ -45,7 +45,7 @@ class m180409_140353_shortcodes_for_observations extends CDbMigration
             'description' => 'Last HbA1c',
             'last_modified_user_id' => '1',
         ));
-        
+
         $this->insert('patient_shortcode', array(
             'event_type_id' => $event_type_id,
             'default_code' => 'lht',
@@ -54,7 +54,7 @@ class m180409_140353_shortcodes_for_observations extends CDbMigration
             'description' => 'Last Height',
             'last_modified_user_id' => '1',
         ));
-        
+
         $this->insert('patient_shortcode', array(
             'event_type_id' => $event_type_id,
             'default_code' => 'lwt',
@@ -63,7 +63,7 @@ class m180409_140353_shortcodes_for_observations extends CDbMigration
             'description' => 'Last Weight',
             'last_modified_user_id' => '1',
         ));
-        
+
         $this->insert('patient_shortcode', array(
             'event_type_id' => $event_type_id,
             'default_code' => 'bmi',
@@ -84,5 +84,4 @@ class m180409_140353_shortcodes_for_observations extends CDbMigration
         $this->delete('patient_shortcode', '`default_code`="lo2"');
         $this->delete('patient_shortcode', '`default_code`="lbp"');
     }
-
 }

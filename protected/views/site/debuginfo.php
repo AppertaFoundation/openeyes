@@ -42,55 +42,83 @@ if (is_object($user_auth)) {
 $thisEnv = Yii::app()->params['environment'];
 
 $buildinfo = "";
-
-
-if (file_exists('buildinfo.txt')) {
-    $buildinfo = '<pre>' . htmlspecialchars(@file_get_contents('buildinfo.txt')) . '</pre>';
+$root_path = dirname(Yii::app()->basePath);
+if (file_exists($root_path . '/buildinfo.txt')) {
+    $buildinfo = '<pre>' . htmlspecialchars(@file_get_contents($root_path . '/buildinfo.txt')) . '</pre>';
 } elseif (file_exists('.git/HEAD')) {
     $commit = preg_replace('/[\s\t].*$/s', '', @file_get_contents(Yii::app()->basePath . '/../.git/FETCH_HEAD'));
     $buildinfo .= "Commit: " . htmlspecialchars($commit) . '</br>';
     $buildinfo .= "Commit Date: " . htmlspecialchars(exec(" git log -1 --format=%cd " . $commit)) . ' <br/> ';
-
     if (strtolower($thisEnv == 'dev')) {
-        $branch = "<br/><div style='height:150px;
-    overflow - y:scroll;border:1px solid #000; margin-bottom:10px'>";
-        exec(Yii::app()->basePath . '/scripts/oe-which.sh', $lines);
-        foreach ($lines as $line) {
-            $branch .= htmlspecialchars(trim(strtr($line, array('[32m' => '', '[39m' => '', '--' => ':')))) . '<br/>';
-        }
-        $branch .= '</div>';
+        $lines = shell_exec(Yii::app()->basePath . '/scripts/oe-which.sh');
+        $branch = htmlspecialchars(trim(strtr($lines, array(
+            chr(27) . '[32m' => '',
+            chr(27) . '[39m' => '',
+            '--' => ':',
+            'Done' => ''
+        ))));
     } else {
         if (file_exists('.git/HEAD')) {
             $ex = explode('/', file_get_contents('.git/HEAD'));
             $branch = htmlspecialchars(array_pop($ex));
         }
     }
-
-    $buildinfo .= "Branch: " . $branch . "<br/>";
 } else {
     echo "nothing";
 }
 
-
-
+$imageinfo = '';
+if (file_exists('/imageinfo.txt')) {
+    $imageinfo = htmlspecialchars(trim(@file_get_contents('/imageinfo.txt')));
+}
 
 ?>
-<div id="debug-info-modal">
+<div id="debug-info-modal ">
     <p><strong>This information is provided to assist the helpdesk in diagnosing any problems</strong></p>
-    <code class="js-to-copy-to-clipboard">
+    <div class="js-to-copy-to-clipboard">
         Served by: <?php echo $hostname?><br />
-        Date: <?php echo date('d.m.Y H:i:s')?><br />
-        <?= $buildinfo ?>
-        
-
+        Date: <?php echo date('d.m.Y H:i:s') . " (" . date_default_timezone_get() . ")" ?><br />
         OpenEyes Version: <?= Yii::App()->params['oe_version'] ?><br />
         User agent: <?php echo htmlspecialchars(@$_SERVER['HTTP_USER_AGENT']) . "<br/>";?>
         Client IP: <?php echo htmlspecialchars(@$_SERVER['REMOTE_ADDR'])?><br />
         Username: <?php echo $username?><br />
         Firm: <?php echo $firm?><br />
-
-    </code>
+        <?= $buildinfo ?>
+        <?php if (isset($branch)) { ?>
+            <table style="margin: 0;">
+                <colgroup>
+                    <col class="cols-1">
+                    <col class="cols-10">
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <td>Branches: </td>
+                        <td><pre><?= $branch ?></pre></td>
+                    </tr>
+                </tbody>
+            </table>
+        <?php } ?>
+        <table style="margin: 0;">
+            <colgroup>
+                <col class="cols-1">
+                <col class="cols-10">
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td>Modules running: </td>
+                    <td>
+                        <div style="column-count: 3">
+                            <?php foreach (Yii::app()->modules as $key => $val) {
+                                echo $key . "<br/>";
+                            } ?>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <br />
+    <p><?= $imageinfo ? 'Image info: ' . $imageinfo : '' ?></p>
     <p class="js-copy-to-clipboard" data-copy-content-selector=".js-to-copy-to-clipboard" style="cursor: pointer;">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19 19" class="oe-i-e" style="background: transparent;">
             <title>Copy to clipboard</title>
@@ -99,4 +127,5 @@ if (file_exists('buildinfo.txt')) {
             <polygon points="4 10.87 4 4 10.87 4 10.87 5.13 12.87 5.13 12.87 2 2 2 2 12.87 5.13 12.87 5.13 10.87 4 10.87"/>
         </svg>
     </p>
+    
 </div>

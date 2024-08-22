@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,12 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+?>
+
+<?php use OEModule\OphCiExamination\models\HistoryMacro; ?>
+<?php
+  $purifier = new CHtmlPurifier();
 ?>
 <div class="element-fields flex-layout full-width ">
   <div class="cols-10 flex-layout col-gap">
@@ -24,7 +31,7 @@
             'description',
             array('rows' => '1', 'class' => 'autosize', 'nowrapper' => true),
             false,
-            array('placeholder' => 'Enter comments here')
+            array('placeholder' => 'Enter comments here', 'data-test' => 'history-description')
         ) ?>
     </div>
     <div class="cols-half">
@@ -45,11 +52,14 @@
         No previous managements recorded.
         <?php endif; ?>
       </strong>
-      
+
     </div>
   </div>
   <div class="add-data-actions flex-item-bottom">
-    <button class="button hint green js-add-select-search" type="button" id="show-add-to-history">
+    <button class="button hint green js-add-standard-set" type="button" data-test="add-to-history-template">
+        Add template
+    </button>
+    <button class="button hint green js-add-select-search" type="button" id="show-add-to-history" data-test="add-to-history">
       <i class="oe-i plus pro-theme"></i>
     </button>
   </div>
@@ -75,6 +85,21 @@ foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->su
         'multiSelect' => $attribute->is_multiselect === '1' ? true : false
     ];
 }
+
+$macros = HistoryMacro::model()->findAll([
+        'with' => 'subspecialties',
+        'condition' => '(subspecialties_subspecialties.subspecialty_id = :subspecialty_id OR subspecialties_subspecialties.subspecialty_id IS NULL) AND active = 1',
+        'params' => [':subspecialty_id' => $firm->getSubspecialtyID()],
+        'order' => 'display_order asc',
+    ]);
+$standardSet = [];
+foreach ($macros as $macro) {
+    $standardSet[] = [
+        'items' => $macro->name,
+        'id' => $macro->id,
+        'body' => $macro->body,
+    ];
+}
 ?>
 <script type="text/javascript" id="history-add-to-dialog">
   $(function () {
@@ -88,13 +113,34 @@ foreach ($this->getAttributes($element, $firm->serviceSubspecialtyAssignment->su
       liClass: 'restrict-width',
       onReturn: function (adderDialog, selectedItems) {
                 inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
-        autosize.update(inputText);
+        autosize(inputText);
         inputText.trigger('oninput');
         return true;
       }
     });
 
+    new OpenEyes.UI.AdderDialog({
+        openButton: $('.js-add-standard-set'),
+        itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
+            array_map(function ($macro) {
+                return ['label' => $macro['items'], 'id' => $macro['id']];
+            }, $standardSet)
+        )?>, {'multiSelect': true})],
+        liClass: 'restrict-width',
+        onReturn: function (adderDialog, selectedItems) {
+            selectedItems.forEach( function (item) {
+                <?php foreach ($standardSet as $set) : ?>
+                if (<?= $set['id'] ?> === item.id) {
+                  inputText.val(addLineBreakToString(inputText.val()) + "<?= html_entity_decode($purifier->purify(rtrim(preg_replace('/[\r\n]+/', '\n', $set['body'])))) ?>");
+                }
+                <?php endforeach; ?>
+            });
+            autosize();
+            inputText.trigger('oninput');
+            return true;
+        }
+    });
+
   });
 
 </script>
-

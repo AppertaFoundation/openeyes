@@ -47,7 +47,7 @@
                 </div>
                 <div class="inactive-form" style="display: <?php if ($element->hasEye($eye_side)) {
                     ?> none <?php
-                } ?>">
+                                                           } ?>">
                     <div class="add-side">
                         <a href="#">Add <?= $eye_side ?> side <span class="icon-add-side"></span></a>
                     </div>

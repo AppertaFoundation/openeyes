@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * The followings are the available columns in table '':.
  *
@@ -24,10 +26,12 @@
  *
  * The followings are the available model relations:
  * @property Event $event
+ * @property LetterString_Institution[] $institution_relations
  */
 class LetterString extends LetterStringBase
 {
     use MappedReferenceData;
+    use HasFactory;
 
     protected function getSupportedLevels(): int
     {
@@ -87,6 +91,7 @@ class LetterString extends LetterStringBase
             'elementType' => array(self::HAS_ONE, 'ElementType', ['class_name' => 'element_type']),
             'eventType' => array(self::HAS_ONE, 'EventType', ['class_name' => 'event_type']),
             'institutions' => array(self::MANY_MANY, 'Institution', 'ophcocorrespondence_letter_string_institution(letter_string_id,institution_id)'),
+            'institution_relations' => array(self::HAS_MANY, LetterString_Institution::class, 'letter_string_id'),
             'sites' => array(self::MANY_MANY, 'Site', 'ophcocorrespondence_letter_string_site(letter_string_id,site_id)'),
         );
     }
@@ -119,10 +124,27 @@ class LetterString extends LetterStringBase
 
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
+        $criteria->compare('institution_id', $this->institutions->id, true);
 
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    public function afterValidate()
+    {
+        $entry = $_POST['LetterString'];
+        if (isset($entry)) {
+            if (array_key_exists('sites', $entry) && is_array($entry['sites']) && count($entry['sites']) > 0) {
+                $this->sites = \Site::model()->findAllByPk($entry['sites']);
+            } elseif (array_key_exists('institutions', $entry) && strcmp($entry['institutions'], "") !== 0) {
+                $this->institutions = \Institution::model()->findAllByPk($entry['institutions']);
+            } elseif (!array_key_exists('display_order', $entry)) {
+                $this->addError('institutions', 'A letter string has to belong to either an institution or a site' . json_encode($_POST['LetterString']));
+            }
+        }
+
+        return parent::afterValidate();
     }
 
     public function substitute($patient)

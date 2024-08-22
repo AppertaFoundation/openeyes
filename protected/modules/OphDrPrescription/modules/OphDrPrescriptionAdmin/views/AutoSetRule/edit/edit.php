@@ -15,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <h2>Add/Edit Drug Set</h2>
@@ -41,7 +42,7 @@
                             $set,
                             'name',
                             ['class' => 'cols-full',
-                            'autocomplete' => \Yii::app()->params['html_autocomplete']
+                            'autocomplete' => \SettingMetadata::model()->getSetting('html_autocomplete')
                             ]
                         ) ?>
                     </td>

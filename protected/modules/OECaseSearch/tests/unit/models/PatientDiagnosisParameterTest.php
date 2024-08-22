@@ -14,7 +14,7 @@ use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
  * @method Episode episode($fixtureId)
  * @method Event event($fixtureId)
  */
-class PatientDiagnosisParameterTest extends CDbTestCase
+class PatientDiagnosisParameterTest extends OEDbTestCase
 {
     /**
      * @var PatientDiagnosisParameter $parameter
@@ -30,20 +30,20 @@ class PatientDiagnosisParameterTest extends CDbTestCase
         'episode' => 'Episode',
     );
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->parameter = new PatientDiagnosisParameter();
         $this->parameter->id = 0;
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->parameter);

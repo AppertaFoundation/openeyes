@@ -21,29 +21,40 @@
         <tbody>
         <tr>
             <td>
-                <?= $form->dropDownList($element, 'correctiontype_id',
-                    CHtml::listData($element->correctiontype_options, 'id', 'name'), [
+                <?= $form->dropDownList(
+                    $element,
+                    'correctiontype_id',
+                    CHtml::listData($element->correctiontype_options, 'id', 'name'),
+                    [
                         'empty' => '- Select -',
                         'nowrapper' => true,
                         'data-adder-header' => $element->getAttributeLabel('correctiontype_id')
-                    ]); ?>
+                    ]
+                ); ?>
             </td>
             <td>
-                <?= $form->dropDownList($element, 'with_head_posture',
-                    CHtml::listData($element->with_head_posture_options, 'id', 'name'), [
+                <?= $form->dropDownList(
+                    $element,
+                    'with_head_posture',
+                    CHtml::listData($element->with_head_posture_options, 'id', 'name'),
+                    [
                         'empty' => '- Select -',
                         'nowrapper' => true,
                         'data-adder-header' => $element->getAttributeLabel('with_head_posture')
-                    ]); ?>
+                    ]
+                ); ?>
             </td>
             <td>
-                <?=\CHtml::activeTextArea($element, 'comments',
+                <?=\CHtml::activeTextArea(
+                    $element,
+                    'comments',
                     array(
                         'rows' => 1,
                         'placeholder' => $element->getAttributeLabel('comments'),
-                        'class' => 'cols-full',
+                        'class' => 'cols-full autosize',
                         'style' => 'overflow-wrap: break-word; height: 24px;',
-                    )) ?>
+                    )
+                ) ?>
             </td>
         </tr>
         </tbody>

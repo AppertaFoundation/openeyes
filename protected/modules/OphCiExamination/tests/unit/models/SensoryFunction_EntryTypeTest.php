@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\models;
 
+
 use OEModule\OphCiExamination\models\SensoryFunction_EntryType;
 use OEModule\OphCiExamination\tests\unit\models\testingtraits\HasLookupBehavioursToTest;
 
@@ -33,5 +34,4 @@ class SensoryFunction_EntryTypeTest extends \ModelTestCase
     use HasLookupBehavioursToTest;
 
     protected $element_cls = SensoryFunction_EntryType::class;
-
 }

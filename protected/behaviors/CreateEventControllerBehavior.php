@@ -15,6 +15,12 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OEModule\OphDrPGDPSD\models\{
+    OphDrPGDPSD_AssignedUser,
+    OphDrPGDPSD_AssignedTeam
+};
+
 class CreateEventControllerBehavior extends CBehavior
 {
     protected $current_episode;
@@ -35,6 +41,31 @@ class CreateEventControllerBehavior extends CBehavior
     }
 
     /**
+     * @return bool
+     */
+    public function getUserHasPGDPSDAssignments(): bool
+    {
+        if (\Yii::app()->user->checkAccess('Prescribe') || \Yii::app()->user->checkAccess('Med Administer')) {
+            return true;
+        }
+        // Short circuit if the user is directly assigned to at least 1 PSD/PGD (more efficient).
+        if (OphDrPGDPSD_AssignedUser::model()->exists('user_id = :user_id', [':user_id' => $this->owner->getApp()->user->id])) {
+            return true;
+        }
+        $user_teams = Yii::app()->db->createCommand()
+            ->select('team_id')
+            ->from('team_user_assign')
+            ->join('team', 'team.id = team_id')
+            ->where('user_id = :user_id AND team.active <> 0')
+            ->bindValues([':user_id' => $this->owner->getApp()->user->id])
+            ->queryColumn();
+        if (count($user_teams) <= 0) {
+            return false;
+        }
+        return OphDrPGDPSD_AssignedTeam::model()->exists('team_id IN (' . implode(', ', $user_teams) . ')');
+    }
+
+    /**
      * Supports the more complex RBAC rules for newer event types by providing a structure for
      * specifying the operation and arguments that should be used to check create access for an event.
      *
@@ -51,7 +82,7 @@ class CreateEventControllerBehavior extends CBehavior
      * @return array
      * @throws Exception
      */
-    public function getCreateArgsForEventTypeOprn($event_type, $skip_args = array())
+    public function getCreateArgsForEventTypeOprn($event_type, array $skip_args = array())
     {
         $create_oprn = 'OprnCreateEvent';
         $args = array('firm', 'episode');
@@ -68,6 +99,7 @@ class CreateEventControllerBehavior extends CBehavior
         $create_args = array($create_oprn);
         foreach ($args as $arg) {
             if (in_array($arg, $skip_args)) {
+                $create_args[] = null;
                 continue;
             }
             switch ($arg) {
@@ -82,6 +114,9 @@ class CreateEventControllerBehavior extends CBehavior
                     break;
                 case 'event_type':
                     $create_args[] = $event_type;
+                    break;
+                case 'has_pgdpsd_assignments':
+                    $create_args[] = $this->getUserHasPGDPSDAssignments();
                     break;
                 default:
                     $create_args[] = $arg;

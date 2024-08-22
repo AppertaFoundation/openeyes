@@ -83,6 +83,7 @@ if ($errors = $form->errorSummary($model)) {
         <?php echo $form->dropDownList($model, 'site_id', $sites, [
             'class' => 'cols-full',
             'disabled' => $disable_site,
+            'data-test' => 'change-site-site-context-popup',
         ]); ?>
     </td>
   </tr>
@@ -91,14 +92,14 @@ if ($errors = $form->errorSummary($model)) {
         <?= $model->getAttributeLabel('firm_id') ?>
     </td>
     <td>
-        <?php echo $form->dropDownList($model, 'firm_id', $firms, array('class' => 'cols-full')); ?>
+        <?php echo $form->dropDownList($model, 'firm_id', $firms, array('class' => 'cols-full', 'data-test' => 'change-firm-site-context-popup')); ?>
     </td>
   </tr>
 
   <?php if ($this->mode === "popup"): ?>
     <tr>
       <td colspan="2" class="align-right">
-          <?=\CHtml::submitButton('Confirm change', array('class' => 'green hint')); ?>
+          <?=\CHtml::submitButton('Confirm change', array('class' => 'green hint', 'data-test' => 'confirm-change-site-context-popup',)); ?>
       </td>
     </tr>
   <?php endif; ?>

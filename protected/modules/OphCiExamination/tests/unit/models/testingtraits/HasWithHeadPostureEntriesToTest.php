@@ -55,5 +55,4 @@ trait HasWithHeadPostureEntriesToTest
         [$instance, $entry_attribute] = $this->getElementInstanceWithHeadPostureEntry();
         $this->assertInstanceDoesNotHaveErrorsWithHeadPostureElement($instance, $entry_attribute);
     }
-
 }

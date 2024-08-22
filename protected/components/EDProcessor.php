@@ -198,7 +198,7 @@ SELECT
 -- All episodes for subject patient (see restriction)
 FROM episode in_ep
 -- All events for subject patient
-JOIN event in_ev
+INNER JOIN event in_ev
   ON in_ev.episode_id = in_ep.id
 -- All EyeDraw data point for subject patient events
 JOIN mview_datapoint_node in_mdp
@@ -221,12 +221,13 @@ AND in_ecd.eyedraw_carry_forward_canvas_flag = 1
 -- By identifying NEWER events data within same set-intersection-tuple/laterality in sub-query)
 AND in_ev.deleted = 0
 AND in_ep.deleted = 0
+AND (in_ep.change_tracker = 0 OR in_ep.change_tracker IS NULL)
 AND NOT EXISTS (
     SELECT 1
     -- All episodes for subject patient (see restriction)
     FROM episode in2_ep
     -- All events for subject patient
-    JOIN event in2_ev
+    INNER JOIN event in2_ev
       ON in2_ev.episode_id = in2_ep.id
     -- All EyeDraw data point for subject patient events
     JOIN mview_datapoint_node in2_mdp
@@ -245,6 +246,7 @@ AND NOT EXISTS (
   AND (in2_ev.event_date, in2_ev.created_date) > (in_ev.event_date, in_ev.created_date)
   AND in2_ev.deleted = 0
   AND in2_ep.deleted = 0
+  AND (in2_ep.change_tracker = 0 OR in2_ep.change_tracker IS NULL)
 )
 ORDER BY
   'a'
@@ -377,6 +379,22 @@ EOSQL;
         }
     }
 
+    public function getElementEyedrawDoodles(Patient $patient, $element, $side, $attribute)
+    {
+        $fields = array();
+        if (!in_array((int)$side, array(Eye::RIGHT, Eye::LEFT))) {
+            $side = Eye::RIGHT;
+        }
+        $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element->getElementType()->id);
+
+        if ($doodle_data = $this->retrieveDoodlesForSide($patient->id, $canvas_mnemonic, $side)) {
+            $fields[$attribute] = '[' . implode(',', $doodle_data) . ']';
+        } else {
+            $fields[$attribute] = '[' . implode(',', $this->getInitDoodlesForCanvas($canvas_mnemonic)) . ']';
+        }
+        return $fields;
+    }
+
     /**
      * Add doodles to the given element attribute, unless certain doodles are already defined in that attribute
      *
@@ -396,15 +414,134 @@ EOSQL;
         foreach ($doodles as $doodle_spec) {
             $doodle_class = $doodle_spec['doodle_class'];
             $unless = array_key_exists('unless', $doodle_spec) ? $doodle_spec['unless'] : array();
-            if (!array_intersect($unless, array_map(function($c) { return $c['subclass']; }, $current))) {
-                $d = $this->getInitDoodles(array($doodle_class));
-                if ($d[0] === '') {
+
+            if (!array_intersect($unless, array_map(function($class) { return $class['subclass']; }, $current))) {
+                $init_doodles = $this->getInitDoodles(array($doodle_class));
+                if ($init_doodles[0] === '') {
                     throw new CException("Attempt to add eyedraw doodle $doodle_class when no init json defined. Have you loaded the latest config?");
                 }
-                $append[] = json_decode($d[0]);
+                $append[] = json_decode($init_doodles[0]);
             }
         }
 
         $element->$attribute = json_encode(array_merge($current, $append));
+    }
+
+    public function buildElementEyedrawDoodles($ed_field, $doodles = array())
+    {
+        $current = json_decode($ed_field, true);
+        if (!is_array($current)) {
+            $current = array();
+        }
+
+        $append = array();
+        foreach ($doodles as $doodle_spec) {
+            $doodle_class = $doodle_spec['doodle_class'];
+            $unless = array_key_exists('unless', $doodle_spec) ? $doodle_spec['unless'] : array();
+
+            if (!array_intersect($unless, array_map(function($class) { return $class['subclass']; }, $current))) {
+                $init_doodles = $this->getInitDoodles(array($doodle_class));
+                if ($init_doodles[0] === '') {
+                    throw new CException("Attempt to add eyedraw doodle $doodle_class when no init json defined. Have you loaded the latest config?");
+                }
+                $append[] = json_decode($init_doodles[0]);
+            }
+        }
+
+        return json_encode(array_merge($current, $append));
+    }
+
+    public function applyNewElementEyedrawData($element_type_id, string $patient_json, string $new_json): string
+    {
+        $patient_data = json_decode($patient_json, true);
+        $new_data = json_decode($new_json, true);
+
+        $doodles_to_overwrite = $this->getCarryForwardDoodlesForElementType($element_type_id, $this->getDoodleClassesFromEyedrawData($patient_data));
+        $new_data = $this->removeDoodleClasses($new_data, $doodles_to_overwrite);
+        $new_data = $this->addDoodleClasses($new_data, $patient_data, $doodles_to_overwrite);
+
+        return json_encode(array_values($new_data));
+    }
+
+    /**
+     * From the given doodle classes, returns a list of those classes that should be
+     * carried forward to the given element type (from its id)
+     *
+     * @param mixed $element_type_id
+     * @param array $doodle_classes
+     * @return array
+     */
+    public function getCarryForwardDoodlesForElementType($element_type_id, array $doodle_classes = []): array
+    {
+        $canvas_mnemonic = $this->getCanvasMnemonicForElementType($element_type_id);
+
+        return $this->app->db
+            ->createCommand()
+            ->select('eyedraw_class_mnemonic')
+            ->from('eyedraw_canvas_doodle')
+            ->where([
+                'and',
+                ['and', 'eyedraw_carry_forward_canvas_flag <> 0', 'canvas_mnemonic = :canvas_mnemonic'],
+                ['in', 'eyedraw_class_mnemonic', $doodle_classes]
+            ],
+            [':canvas_mnemonic' => $canvas_mnemonic])
+            ->queryColumn();
+    }
+
+    /**
+     * Get the distinct list of Eyedraw doodles contained within the structured data
+     *
+     * @param array $eyedraw_data
+     * @return array
+     */
+    protected function getDoodleClassesFromEyedrawData(array $eyedraw_data): array
+    {
+        return array_unique(
+            array_filter(
+                array_map(function ($possible_doodle) {
+                    return $possible_doodle['subclass'] ?? null;
+                }, $eyedraw_data),
+                function ($doodle_class) {
+                    return $doodle_class !== null;
+                }
+            )
+        );
+    }
+
+    /**
+     * Remove all instances of the given doodle classes from the structured data
+     *
+     * @param array $eyedraw_data
+     * @param array $doodle_classes
+     * @return array
+     */
+    protected function removeDoodleClasses(array $eyedraw_data, array $doodle_classes): array
+    {
+        return array_filter(
+            $eyedraw_data,
+            function ($possible_doodle) use ($doodle_classes) {
+                return !array_key_exists('subclass', $possible_doodle)
+                    || !in_array($possible_doodle['subclass'], $doodle_classes);
+            }
+        );
+    }
+
+    /**
+     * Take all instances of the given doodle classes from source, and add them to the target
+     *
+     * @param array $target
+     * @param array $source
+     * @param [type] $doodle_classes
+     * @return array
+     */
+    protected function addDoodleClasses(array $target, array $source, $doodle_classes): array
+    {
+        foreach ($source as $possible_doodle) {
+            if (array_key_exists('subclass', $possible_doodle) && in_array($possible_doodle['subclass'], $doodle_classes)) {
+                $target[] = $possible_doodle;
+            }
+        }
+
+        return $target;
     }
 }

@@ -84,8 +84,9 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) {
 
       <div>
         <?php if (\Yii::app()->user->checkAccess('Prescribe')) { ?>
-            <button id="add-standard-set-btn" class="button hint green" type="button">Add standard set</button>
-            <button class="button hint green" id="add-prescription-btn" type="button">
+            <button id="add-standard-set-btn" class="button hint green" data-test="add-standard-set-button" type="button">Add standard set</button>
+
+            <button class="button hint green" id="add-prescription-btn" data-test="add-prescription-button" type="button">
               <i class="oe-i plus pro-theme"></i>
             </button>
         <?php } else {?>
@@ -119,18 +120,18 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
 
 <script type="text/javascript">
   <?php
-    $common_systemic = Medication::model()->listCommonSystemicMedications(true, true);
+    $firm = $this->getApp()->session->getSelectedFirm();
+    $site = $this->getApp()->session->getSelectedSite();
+
+    $subspecialty_id = $firm ? $firm->getSubspecialtyID() : null;
+
+    $common_systemic = Medication::model()->listCommonSystemicMedications($subspecialty_id, true, $site->id ?? null, true);
     foreach ($common_systemic as &$medication) {
         $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
     }
 
-    $firm_id = $this->getApp()->session->get('selected_firm_id');
-    $site_id = $this->getApp()->session->get('selected_site_id');
-    if ($firm_id) {
-      /** @var Firm $firm */
-        $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
-        $subspecialty_id = $firm->getSubspecialtyID();
-        $common_ophthalmic = Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site_id, true);
+    if ($firm) {
+        $common_ophthalmic = Medication::model()->listBySubspecialtyWithCommonMedications($subspecialty_id, true, $site->id ?? null, true);
         foreach ($common_ophthalmic as &$medication) {
             $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
         }
@@ -139,18 +140,21 @@ if (is_a(Yii::app()->getController(), 'DefaultController')) { ?>
     }
     ?>
   new OpenEyes.UI.AdderDialog({
+    id: 'add-prescription',
     openButton: $('#add-prescription-btn'),
     itemSets: [
       new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           $common_systemic
       ) ?>, {
         'multiSelect': true,
+        id: 'common-systemic',
         header: "Common Systemic"
       }),
       new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
           $common_ophthalmic
       ) ?>, {
         'multiSelect': true,
+        id: 'common-opthalmic',
         header: "Common Ophthalmic"
       })
     ],

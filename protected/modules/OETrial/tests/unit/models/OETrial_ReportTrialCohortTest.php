@@ -3,7 +3,10 @@
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Diagnoses;
 use OEModule\OphCiExamination\models\OphCiExamination_Diagnosis;
 
-class OETrial_ReportTrialCohortTest extends CDbTestCase
+/**
+ * @method Patient patient($fixtureId)
+ */
+class OETrial_ReportTrialCohortTest extends OEDbTestCase
 {
     protected $instance;
 
@@ -30,20 +33,22 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         'disorder' => Disorder::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->session['selected_institution_id'] = 1;
+        Yii::app()->session['selected_site_id'] = 1;
         Yii::app()->params['display_primary_number_usage_code'] = 'LOCAL';
         Yii::app()->getModule('OETrial');
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         unset(Yii::app()->session['selected_institution_id']);
+        unset(Yii::app()->session['selected_site_id']);
         unset(Yii::app()->params['display_primary_number_usage_code']);
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->instance = new OETrial_ReportTrialCohort();
@@ -51,7 +56,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         $this->instance->user_selected_site_id = 1;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         unset($this->instance);
         parent::tearDown();
@@ -130,8 +135,8 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
             'external_trial_identifier' => $item->trials[0]->external_trial_identifier,
             'trial_patient_id' => $item->trials[0]->id,
             'comment' => $item->trials[0]->comment,
-            'all_ids' => $localIdentifier->patientIdentifierType->long_title . ' (' . $localIdentifier->patientIdentifierType->institution->name . '): ' . $localIdentifier->getDisplayValue() . ', ' .
-                            $globalIdentifier->patientIdentifierType->long_title . ' (' . $globalIdentifier->patientIdentifierType->institution->name . '): ' . $globalIdentifier->getDisplayValue() . ', ',
+            'all_ids' => $localIdentifier->patientIdentifierType->short_title . ' (' . $localIdentifier->patientIdentifierType->institution->short_name . '): ' . $localIdentifier->getDisplayValue() . ', ' .
+                            $globalIdentifier->patientIdentifierType->short_title . ' (' . $globalIdentifier->patientIdentifierType->institution->short_name . '): ' . $globalIdentifier->getDisplayValue() . ', ',
         );
 
         $this->instance->addPatientResultItem($patient);
@@ -166,8 +171,8 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
         $localIdentifier = $item->localIdentifiers[0];
         $globalIdentifier = $item->globalIdentifier;
 
-        $IDStr = $localIdentifier->patientIdentifierType->long_title . ' (' . $localIdentifier->patientIdentifierType->institution->name . '): ' . $localIdentifier->getDisplayValue() . ', ' .
-            $globalIdentifier->patientIdentifierType->long_title . ' (' . $globalIdentifier->patientIdentifierType->institution->name . '): ' . $globalIdentifier->getDisplayValue() . ', ';
+        $IDStr = $localIdentifier->patientIdentifierType->short_title . ' (' . $localIdentifier->patientIdentifierType->institution->short_name . '): ' . $localIdentifier->getDisplayValue() . ', ' .
+            $globalIdentifier->patientIdentifierType->short_title . ' (' . $globalIdentifier->patientIdentifierType->institution->short_name . '): ' . $globalIdentifier->getDisplayValue() . ', ';
         $baseStr = str_replace('{{IDs}}', $IDStr, $baseStr);
         $patient = array(
             'id' => $item->id,
@@ -176,7 +181,7 @@ class OETrial_ReportTrialCohortTest extends CDbTestCase
             'last_name' => $item->last_name,
             'external_trial_identifier' => $item->trials[0]->external_trial_identifier,
             'trial_patient_id' => $item->trials[0]->id,
-            'comment'=>$item->trials[0]->comment,
+            'comment' => $item->trials[0]->comment,
         );
         $this->instance->addPatientResultItem($patient);
         $this->assertEquals($baseStr, $this->instance->toCSV());

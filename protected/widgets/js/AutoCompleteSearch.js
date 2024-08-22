@@ -80,14 +80,27 @@ OpenEyes.UI = OpenEyes.UI || {};
         return str.trim();
     }
 
-    function initAutocomplete(input, autocomplete_url, autocomplete_max_height, params, search_data_prefix) {
-        input.on('input', function () {
+    function initAutocomplete(input, autocomplete_url, autocomplete_max_height, params, minimum_character_length, search_data_prefix) {
+        function _debounce(func, wait = 300) {
+            let timer;
+            return function (...args) {
+                const later = () => {
+                    clearTimeout(timer);
+                    func(...args);
+                };
+                clearTimeout(timer);
+                timer = setTimeout(later, wait);
+            };
+        }
+
+        const debouncedInputHandler = _debounce(function(input_value) {
+            search_term = input_value;
             inputbox = input;
             inputbox.parent().find('.alert-box').addClass('hidden');
-            search_term = this.value.trim();
 
+            let minLength = minimum_character_length;
             // if input is empty
-            if (search_term.length < 2) {
+            if (search_term.length < minLength) {
                 timeout_id = setTimeout(function () {
                     if (search_term.length === 1) {
                         inputbox.parent().find('.js-min-chars').removeClass('hidden');
@@ -128,6 +141,7 @@ OpenEyes.UI = OpenEyes.UI || {};
                                 successResponse(response);
                             } else {
                                 inputbox.parent().find('.js-no-result').removeClass('hidden');
+                                inputbox.parent().find('ul').addClass('hidden');
                             }
                             searching = false;
                             current_focus = -1;
@@ -136,6 +150,11 @@ OpenEyes.UI = OpenEyes.UI || {};
                         }
                     });
             }
+        });
+
+        input.on('input', function () {
+            exports.input = $(this);
+            debouncedInputHandler(this.value.trim());
         });
 
         input.parent().find(".oe-autocomplete").on('click', '.oe-menu-item', function () {
@@ -173,9 +192,8 @@ OpenEyes.UI = OpenEyes.UI || {};
     function successResponse(response) {
 	    $(".oe-autocomplete").empty();
 	    var search_options = ``;
-
         $.each(response,function(index, value) {
-        	search_options += `<li class="oe-menu-item" role="presentation"><a id="ui-id-`+index+`" tabindex="-1" style="text-align: justify">`;
+            search_options += `<li class="oe-menu-item" role="presentation" data-test="autocomplete-match"><a id="ui-id-` + index + `" tabindex="-1">`;
             if (value.fullname !== undefined) {
                 search_options += matchSearchTerm(value.fullname);
             }
@@ -225,12 +243,16 @@ OpenEyes.UI = OpenEyes.UI || {};
         init: function (options) {
             if (options.input) {
                 set_onSelect(options.input, options.onSelect);
-	    		initAutocomplete(options.input, options.url, ('maxHeight' in options )? options.maxHeight:null, options.params);
+                let minimumCharacterLength = ('minimumCharacterLength' in options )? options.minimumCharacterLength : 2;
+	    		initAutocomplete(options.input, options.url, ('maxHeight' in options )? options.maxHeight:null, options.params, minimumCharacterLength);
                 return exports.AutoCompleteSearch;
             }
         },
         getResponse: function () {
             return exports.item_clicked;
+        },
+        getInput: function() {
+            return exports.input;
         }
     };
 

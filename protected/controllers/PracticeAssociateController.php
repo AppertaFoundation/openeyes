@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -50,7 +51,8 @@ class PracticeAssociateController extends BaseController
      * (i.e. Contact, Gp and Contact Practice Associate)
      * @throws CException
      */
-    public function actionCreate() {
+    public function actionCreate()
+    {
         if (isset($_POST['Contact'], $_POST['gp_data_retrieved'])) {
             $contact_practice_associate = new ContactPracticeAssociate();
             $contact_practice_associate->practice_id = $_POST['PracticeAssociate']['practice_id'];
@@ -71,8 +73,10 @@ class PracticeAssociateController extends BaseController
                     $query = Yii::app()->db->createCommand()
                         ->select('cpa.id')
                         ->from('contact_practice_associate cpa')
-                        ->where('cpa.gp_id = :gp_id and cpa.practice_id = :practice_id',
-                            array(':gp_id'=> $gpDetails->gpId,':practice_id'=> $contact_practice_associate->practice_id))
+                        ->where(
+                            'cpa.gp_id = :gp_id and cpa.practice_id = :practice_id',
+                            array(':gp_id' => $gpDetails->gpId,':practice_id' => $contact_practice_associate->practice_id)
+                        )
                         ->queryAll();
 
                     $isDuplicate = count($query);
@@ -80,7 +84,9 @@ class PracticeAssociateController extends BaseController
                     if ($isDuplicate === 0) {
                         $contact_practice_associate->gp_id = $gpDetails->gpId;
                     } else {
-                        echo CJSON::encode(array('error' => 'This practitioner is already associated with the selected practice.'));
+                        echo CJSON::encode(
+                            ['error' => 'This ' . strtolower(\SettingMetadata::model()->getSetting('general_practitioner_label')) . ' is already associated with the selected practice.']
+                        );
                         Yii::app()->end();
                     }
                 } else {
@@ -101,30 +107,31 @@ class PracticeAssociateController extends BaseController
         }
     }
 
-    public function actionGetGpWithPractice($id, $gp_id, $practice_id){
-        $return_array = array('gp_id'=>$gp_id,'practice_id'=>$practice_id,'content'=>'');
-        $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id'=>$gp_id,'practice_id'=>$practice_id));
-        if (isset($practice_contact_associate)){
+    public function actionGetGpWithPractice($id, $gp_id, $practice_id)
+    {
+        $return_array = array('gp_id' => $gp_id,'practice_id' => $practice_id,'content' => '');
+        $practice_contact_associate = ContactPracticeAssociate::model()->findByAttributes(array('gp_id' => $gp_id,'practice_id' => $practice_id));
+        if (isset($practice_contact_associate)) {
             $gp = $practice_contact_associate->gp;
             $practice = $practice_contact_associate->practice;
-            $providerNo = isset($practice_contact_associate->provider_no) ? ' ('.$practice_contact_associate->provider_no.') ' : '';
-            $role = $gp->getGPROle()?' - '.$gp->getGPROle():'';
-            $practiceNameAddress = $practice->getPracticeNames() ? ' - '.$practice->getPracticeNames():'';
+            $providerNo = isset($practice_contact_associate->provider_no) ? ' (' . $practice_contact_associate->provider_no . ') ' : '';
+            $role = $gp->getGPROle() ? ' - ' . $gp->getGPROle() : '';
+            $practiceNameAddress = $practice->getPracticeNames() ? ' - ' . $practice->getPracticeNames() : '';
             $inputGpElement = '';
             $inputPracticeElement = '';
-            if($id !== 'js-selected_gp') {
-                $inputGpElement = '<input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="'.$gp_id.'">';
-                $inputPracticeElement = '<input type="hidden" name="ExtraContact[practice_id][]" class="js-extra-practices" value="'.$practice_id.'">';
+            if ($id !== 'js-selected_gp') {
+                $inputGpElement = '<input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="' . $gp_id . '">';
+                $inputPracticeElement = '<input type="hidden" name="ExtraContact[practice_id][]" class="js-extra-practices" value="' . $practice_id . '">';
             }
-            $return_array['content'] = '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress.'</span><i id="js-remove-extra-gp-'.$gp->id.'-'.$practice->id.'" class="oe-i remove-circle small-icon pad-left"></i>'.$inputGpElement.$inputPracticeElement.'</li>';
-            $return_array['label'] = $gp->getCorrespondenceName().$providerNo.$role.$practiceNameAddress;
-        }else{
+            $return_array['content'] = '<li><span class="js-name" style="text-align:justify">' . $gp->getCorrespondenceName() . $providerNo . $role . $practiceNameAddress . '</span><i id="js-remove-extra-gp-' . $gp->id . '-' . $practice->id . '" class="oe-i remove-circle small-icon pad-left"></i>' . $inputGpElement . $inputPracticeElement . '</li>';
+            $return_array['label'] = $gp->getCorrespondenceName() . $providerNo . $role . $practiceNameAddress;
+        } else {
             $gp = Gp::model()->findByPk($gp_id);
             $inputGpElement = '';
-            if($id !== 'js-selected_gp') {
-                $inputGpElement = '<input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="'.$gp_id.'">';
+            if ($id !== 'js-selected_gp') {
+                $inputGpElement = '<input type="hidden" name="ExtraContact[gp_id][]" class="js-extra-gps" value="' . $gp_id . '">';
             }
-            $return_array['content'] = '<li><span class="js-name" style="text-align:justify">'.$gp->getCorrespondenceName().'</span><i id="js-remove-extra-gp-'.$gp->id.'" class="oe-i remove-circle small-icon pad-left"></i>'.$inputGpElement.'</li>';
+            $return_array['content'] = '<li><span class="js-name" style="text-align:justify">' . $gp->getCorrespondenceName() . '</span><i id="js-remove-extra-gp-' . $gp->id . '" class="oe-i remove-circle small-icon pad-left"></i>' . $inputGpElement . '</li>';
         }
         echo CJSON::encode($return_array);
     }
@@ -152,15 +159,11 @@ class PracticeAssociateController extends BaseController
                     $gp->nat_id = 0;
                 }
 
-                if ($gp->obj_prof === null) {
-                    $gp->obj_prof = 0;
-                }
-
                 if ($gp->save()) {
                     $transaction->commit();
                     Audit::add('Gp', $action . '-gp', "Practitioner manually [id: $gp->id] {$action}ed.");
                     if (!$isAjax) {
-                        $this->redirect(array('view','id'=>$gp->id));
+                        $this->redirect(array('view','id' => $gp->id));
                     }
                 } else {
                     if ($isAjax) {

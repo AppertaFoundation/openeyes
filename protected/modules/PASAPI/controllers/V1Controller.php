@@ -19,14 +19,17 @@ namespace OEModule\PASAPI\controllers;
  */
 
 use OEModule\PASAPI\models\PasApiAssignment;
+use OEModule\PASAPI\resources\BaseResource;
 use OEModule\PASAPI\resources\Patient;
 use OEModule\PASAPI\resources\PatientAppointment;
+use OEModule\PASAPI\resources\PatientMerge;
 use PatientIdentifier;
 use UserIdentity;
 
 class V1Controller extends \CController
 {
-    protected static $resources = array('Patient', 'PatientAppointment');
+    protected static $resources = array('Patient', 'PatientAppointment', 'PatientMerge');
+    protected static $create_only_resources = ['DidNotAttend'];
     protected static $version = 'V1';
     protected static $supported_formats = array('xml');
 
@@ -63,12 +66,24 @@ class V1Controller extends \CController
     {
         if (in_array($actionID, static::$resources)) {
             $_GET['resource_type'] = $actionID;
+
             switch (\Yii::app()->getRequest()->getRequestType()) {
                 case 'PUT':
                     return parent::createAction('Update');
                     break;
                 case 'DELETE':
                     return parent::createAction('Delete');
+                    break;
+                default:
+                    $this->sendResponse(405);
+                    break;
+            }
+        }
+        if (in_array($actionID, static::$create_only_resources)) {
+            $_GET['resource_type'] = $actionID;
+            switch (\Yii::app()->getRequest()->getRequestType()) {
+                case 'PUT':
+                    return parent::createAction('Create');
                     break;
                 default:
                     $this->sendResponse(405);
@@ -96,14 +111,17 @@ class V1Controller extends \CController
         }
 
         if (!in_array($this->output_format, static::$supported_formats)) {
-            $this->sendResponse(406, 'PASAPI only supports ' . implode(',', static::$supported_formats));
+            $this->sendResponse(406);
         }
 
         if (!isset($_SERVER['PHP_AUTH_USER'])) {
             $this->sendResponse(401);
         }
+
         $identity = new UserIdentity($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'], null, null);
-        if (!$identity->authenticate()) {
+        list($authentication_success, $authentication_msg) = $identity->authenticate();
+
+        if (!$authentication_success) {
             $this->sendResponse(401);
         }
 
@@ -111,12 +129,6 @@ class V1Controller extends \CController
 
         if (!\Yii::app()->user->checkAccess('OprnApi')) {
             $this->sendResponse(403);
-        }
-
-        foreach (\SettingMetadata::model()->findAll() as $metadata) {
-            if (!$metadata->element_type && !isset(\Yii::app()->params[$metadata->key])) {
-                \Yii::app()->params[$metadata->key] = $metadata->getSetting($metadata->key);
-            }
         }
 
         return parent::beforeAction($action);
@@ -128,8 +140,9 @@ class V1Controller extends \CController
     public function expectedParametersForAction($action)
     {
         return array(
-            'update' => 'id',
+            'update' => 'id, identifier-type',
             'delete' => 'id',
+            'create' => null,
         )[strtolower($action->id)];
     }
 
@@ -179,11 +192,54 @@ class V1Controller extends \CController
 
     /**
      * @param $resource_type
+     */
+    public function actionCreate($resource_type)
+    {
+        $resource_model = $this->getResourceModel($resource_type);
+        $body = \Yii::app()->request->rawBody;
+
+        try {
+            $resource = $resource_model::fromXml(static::$version, $body, array(
+                'update_only' => false, // Always new
+                'partial_record' => false,
+            ));
+
+            if (!$resource->isEnabled()) {
+                $response['Message'] = "$resource_type not created as it is disabled in the admin settings.";
+
+                $this->sendSuccessResponse(200, $response);
+                return;
+            }
+
+            if (!$id = $resource->save()) {
+                if ($resource->errors) {
+                    $this->sendErrorResponse(400, $resource->errors);
+                    return;
+                }
+                $this->sendErrorResponse(400, "Failed to create $resource_type.");
+                return;
+            }
+
+            if ($resource->warnings) {
+                $response['Warnings'] = $resource->warnings;
+            }
+            $response['Id'] = $id;
+            $response['Message'] = "Successfully created $resource_type.";
+            $this->sendSuccessResponse(201, $response);
+        } catch (\Exception $e) {
+            $errors = $resource->errors ?? [];
+            $errors[] = $e->getMessage();
+
+            $this->sendErrorResponse(500, $errors);
+        }
+    }
+
+    /**
+     * @param $resource_type
      * @param $id
      */
     public function actionUpdate($resource_type, $id, $identifier_type)
     {
-        $patient_identifier_type = null;
         if (!in_array($resource_type, static::$resources)) {
             $this->sendErrorResponse(404, "Unrecognised Resource type {$resource_type}");
         }
@@ -195,10 +251,13 @@ class V1Controller extends \CController
         $resource_model = $this->getResourceModel($resource_type);
 
         $body = \Yii::app()->request->rawBody;
-
-        $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_str' => $identifier_type]);
+        $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_string' => $identifier_type]);
+        if ($patient_identifier_type) {
+            \Yii::app()->session["selected_institution_id"] = $patient_identifier_type->institution_id;
+        }
 
         try {
+            /** @var BaseResource $resource */
             $resource = $resource_model::fromXml(static::$version, $body, array(
                 'update_only' => $this->getUpdateOnly(),
                 'partial_record' => $this->getPartialRecord(),
@@ -206,12 +265,22 @@ class V1Controller extends \CController
 
             $resource->id = $id; // LOCAL number
 
-            if ($resource instanceof Patient) { // this is \PASAPI\resources\Patient
-                $this->validatePatientResource($resource, $id, $identifier_type);
-            }
+            switch ($resource_type) {
+                case "Patient":
+                    /** @var Patient $resource */
+                    $this->validatePatientResource($resource, $id, $identifier_type);
+                    break;
 
-            if ($resource instanceof PatientAppointment) {
-                $resource->setPatientIdentifierType($patient_identifier_type);
+                case "PatientAppointment":
+                    /** @var PatientAppointment $resource */
+                    $resource->setPatientIdentifierType($patient_identifier_type);
+                    break;
+
+                case "PatientMerge":
+                    /** @var PatientMerge $resource */
+                    $resource->setPatientIdentifierType($patient_identifier_type)
+                             ->setAndValidatePatients();
+                    break;
             }
 
             if ($resource->errors) {
@@ -288,7 +357,7 @@ class V1Controller extends \CController
 
                     if ($duplicate_patient_identifier) {
                         $duplicate_patient_identifier->deleted = 1;
-                        $duplicate_patient_identifier->source_info = \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING . $patient->id. '['.time().']';
+                        $duplicate_patient_identifier->source_info = \PatientIdentifierHelper::PATIENT_IDENTIFIER_DELETED_BY_STRING . $patient->id . '[' . time() . ']';
                         $duplicate_patient_identifier->save();
                     }
 
@@ -333,7 +402,7 @@ class V1Controller extends \CController
 
             $this->sendSuccessResponse($status_code, $response);
         } catch (\Exception $e) {
-            $errors = $resource->errors;
+            $errors = isset($resource) ? $resource->errors : [];
             $errors[] = $e->getMessage();
             $errors[] = $e->getTraceAsString();
 
@@ -467,7 +536,7 @@ class V1Controller extends \CController
 
     private function validatePatientResource($resource, $id, $identifier_type)
     {
-        $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_str' => $identifier_type]);
+        $patient_identifier_type = \PatientIdentifierType::model()->findByAttributes(['unique_row_string' => $identifier_type]);
 
         if (!$patient_identifier_type) {
             $this->sendErrorResponse(404, ['PatientIdentifierType cannot be found based on "identifier-type": ' . $identifier_type]);

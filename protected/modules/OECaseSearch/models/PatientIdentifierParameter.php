@@ -124,8 +124,8 @@ class PatientIdentifierParameter extends CaseSearchParameter implements DBProvid
      */
     public function query(): string
     {
-        $op = '=';
-        return "SELECT DISTINCT p.patient_id 
+        $op = $this->operation;
+        return "SELECT DISTINCT p.patient_id
 FROM patient_identifier p
 WHERE (:p_type_{$this->id} IS NULL OR p.patient_identifier_type_id {$op} :p_type_{$this->id})
   AND p.value {$op} :p_id_number_{$this->id}";
@@ -136,7 +136,7 @@ WHERE (:p_type_{$this->id} IS NULL OR p.patient_identifier_type_id {$op} :p_type
         $patients = Yii::app()->db->createCommand(
             "SELECT DISTINCT p.value FROM patient_identifier p
 WHERE p.value LIKE :term
-ORDER BY p.value LIMIT " . self::_AUTOCOMPLETE_LIMIT,
+ORDER BY CAST(p.value AS unsigned), p.value LIMIT " . self::_AUTOCOMPLETE_LIMIT,
 
         )
             ->bindValues(array('term' => "%$term%"))

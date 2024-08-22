@@ -5,7 +5,7 @@
     $assigned_user_ids = array_map(function ($assigned_user) {
         return $assigned_user->id;
     }, $assigned_users);
-    $assigned_users = $assigned_user_ids ? $this->api->getInstitutionUserAuth(null, true, $assigned_user_ids) : array();
+    $assigned_users = $assigned_user_ids ? $this->api->getInstitutionUserAuth(true, $assigned_user_ids) : array();
     $assigned_users = array_map(function ($assigned_user) {
         return $assigned_user->user->getUserPermissionDetails();
     }, $assigned_users);
@@ -54,7 +54,7 @@
                             $pgdpsd,
                             'attributes[name]',
                             [
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                 'class' => 'cols-full'
                             ]
                         ); ?>
@@ -67,7 +67,7 @@
                             $pgdpsd,
                             'attributes[description]',
                             [
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                                 'class' => 'cols-full'
                             ]
                         ); ?>

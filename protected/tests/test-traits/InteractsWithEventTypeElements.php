@@ -69,7 +69,9 @@ EOSQL;
             $element->event_id = $event->getPrimaryKey();
         }
 
-        $element->save();
+        if (!$element->save()) {
+            throw new \RuntimeException(print_r($element->getErrors(), true));
+        }
 
         return $element;
     }

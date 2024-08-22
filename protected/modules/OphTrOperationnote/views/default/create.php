@@ -51,9 +51,27 @@ $this->event_actions[] = EventAction::button(
   </div>
 <?php } ?>
 
-<?php $this->renderOpenElements($this->action->id, $form); ?>
-<?php $this->renderOptionalElements($this->action->id, $form); ?>
+<?php $outpatient_minor_op = isset($outpatient_minor_op) ? $outpatient_minor_op : false ?>
+<?php $this->renderOpenElements($this->action->id, $form, array('outpatient_minor_op' => $outpatient_minor_op, 'templates_for_unbooked' => $templates_for_unbooked)); ?>
+<?php $this->renderOptionalElements($this->action->id, $form, array('outpatient_minor_op' => $outpatient_minor_op, 'templates_for_unbooked' => $templates_for_unbooked)); ?>
 <?php $this->displayErrors($errors, true) ?>
 
 <?php $this->endWidget(); ?>
+
+<?php
+$template = !empty($this->template) ? $this->template : ((!empty($this->event) && $this->event->template) ? $this->event->template : null);
+
+if ($template) {
+    $opnote_template = $template->opnote_templates;
+    $procedure_set = $opnote_template->procedure_set;
+    $filtered_templates = OphTrOperationnote_Template::model()->forUserId(\Yii::app()->user->id)->forProcedureSet($procedure_set)->findAll();
+
+    $this->renderPartial('OphTrOperationnote_Template_prefill_selection', [
+    'procedures' => $procedure_set->procedures,
+    'filtered_templates' => $filtered_templates,
+    'selected_template_id' => $template->id
+    ]);
+}
+?>
+
 <?php $this->endContent(); ?>

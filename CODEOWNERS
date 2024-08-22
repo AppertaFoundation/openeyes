@@ -1,0 +1,14 @@
+# Code owners will be notified of all PRs. In some cases, their approval will be required before a PR can be merged.
+# Each line is a file pattern followed by one or more owners.
+
+# These owners will be the default owners for everything in
+# the repo. Unless a later match takes precedence,
+# @global-owner1 and @global-owner2 will be requested for
+# review when someone opens a pull request.
+*       @openeyes/CODEOWNERS
+
+# Order is important; the last matching pattern takes the most
+# precedence. 
+
+# Scripts are used for deployment and should be reviewd by the devops team.
+/protected/scripts/ @ToukanLabs/DevOps

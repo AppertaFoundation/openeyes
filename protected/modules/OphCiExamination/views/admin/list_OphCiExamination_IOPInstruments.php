@@ -44,7 +44,7 @@
                         <?= CHtml::activeHiddenField($model, "[$i]display_order"); ?>
                         <?= CHtml::activeHiddenField($model, "[$i]id"); ?>
                     </td>
-                    <td><?= $model->name ?></td>
+                    <td data-test="iop-instrument-name"><?= $model->name ?></td>
                     <td><?= $model->short_name ?></td>
                     <td>
                         <?php $institutions = CHtml::listData($model->institutions, 'id', 'name');

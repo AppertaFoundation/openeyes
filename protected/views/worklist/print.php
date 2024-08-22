@@ -20,7 +20,61 @@ if ($date_from === '' && $date_to === '') {
 
 $logo_helper = new LogoHelper();
 
+if (empty($filter)) {
+    $filter = new WorklistFilterQuery();
+}
+
 ?>
+
+<style>
+  @media print {
+    @page {
+      /* size: landscape; */
+      width: 100%;
+    }
+
+    #title {
+      text-align: center;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    .oec-patients, .oec-group {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .oec-patients th,
+    .oec-patients td {
+      text-align: left;
+      padding: 3px 10px;
+      border: 1px double black;
+    }
+
+    .oec-patients tr:not(:last-child) {
+      border-bottom: 1px solid black;
+    }
+
+    .oec-patients th:first-child,
+    .oec-patients td:first-child {
+      padding-left: 10px;
+    }
+
+    .oec-patients th:last-child,
+    .oec-patients td:last-child {
+      padding-right: 10px;
+      text-align: right;
+    }
+
+    .label {
+      font-weight: 600;
+    }
+  }
+</style>
 
 <header class="print-header">
     <div class="logo">
@@ -48,7 +102,13 @@ $logo_helper = new LogoHelper();
         </tbody>
     </table>
 
-    <?php foreach ($worklists as $worklist) : ?>
-        <?php echo $this->renderPartial('_worklist', array('worklist' => $worklist, 'is_printing' => true)); ?>
-    <?php endforeach; ?>
+    <?php
+    if ($filter->getCombineWorklistsStatus()) {
+        echo $this->renderPartial('_worklist', array('worklist' => $worklists, 'is_printing' => true, 'filter' => $filter));
+    } else {
+        foreach ($worklists as $worklist) {
+            echo $this->renderPartial('_worklist', array('worklist' => $worklist, 'is_printing' => true, 'filter' => $filter));
+        }
+    }
+    ?>
 </main>

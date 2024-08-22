@@ -6,27 +6,27 @@
  * @covers CaseSearchParameter
  * @method Patient patient($fixtureId)
  */
-class PatientDeceasedParameterTest extends CDbTestCase
+class PatientDeceasedParameterTest extends OEDbTestCase
 {
     protected PatientDeceasedParameter $parameter;
     protected $fixtures = array(
         'patient' => 'Patient',
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->parameter = new PatientDeceasedParameter();
         $this->parameter->id = 0;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->parameter);

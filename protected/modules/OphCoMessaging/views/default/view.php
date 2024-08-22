@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,17 +15,9 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-$this->beginContent('//patient/event_container', array('no_face'=>true));
 
+$this->beginContent('//patient/event_container', array('no_face' => true));
 // Event actions
-if ($this->canMarkRead()) {
-    $this->event_actions[] = EventAction::link(
-        'Mark message as read',
-        Yii::app()->createUrl($this->getModule()->name.'/Default/markRead/'.$this->event->id),
-        array('level' => 'read'),
-        array('class' => 'small')
-    );
-}
 
 if ($this->checkPrintAccess()) {
     $this->event_actions[] = EventAction::printButton();

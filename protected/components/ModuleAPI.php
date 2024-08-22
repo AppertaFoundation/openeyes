@@ -35,9 +35,9 @@ class ModuleAPI extends CApplicationComponent
         }
 
         if ($module = Yii::app()->getModule($moduleName)) {
-            if ($et = EventType::model()->find('class_name = ?', array($moduleName))) {
+            if ($et = EventType::model()->cache(1000)->find('class_name = ?', array($moduleName))) {
                 // if the module has been inherited from, and has its own API, should return that instead
-                if ($child = EventType::model()->find('parent_event_type_id = ?', array($et->id))) {
+                if ($child = EventType::model()->cache(1000)->find('parent_event_type_id = ?', array($et->id))) {
                     if ($child_api = self::get($child->class_name, $data_context)) {
                         return $child_api;
                     }

@@ -92,4 +92,10 @@ class StrabismusManagement_Entry extends \BaseElement implements SidedData
         }
         return 'Bilateral';
     }
+
+    public function __clone()
+    {
+        $this->unsetAttributes(['id', 'element_id']);
+        $this->setIsNewRecord(true);
+    }
 }

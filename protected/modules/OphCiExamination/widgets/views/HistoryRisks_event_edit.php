@@ -26,6 +26,7 @@ $missing_req_risks = $this->getMissingRequiredRisks();
 $required_risk_ids = array_map(function ($r) {
     return $r->id;
 }, $this->getRequiredRisks());
+$is_draft_event = !empty(Yii::app()->request->getParam('draft_id'));
 ?>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
 
@@ -60,7 +61,7 @@ $required_risk_ids = array_map(function ($r) {
         <th>Action</th>
       <tr>
       </thead>
-      <tbody>
+      <tbody data-test="risks_body">
         <?php if (count($element->entries) || count($missing_req_risks)) : ?>
             <?php
             $row_count = 0;
@@ -75,6 +76,7 @@ $required_risk_ids = array_map(function ($r) {
                     'row_count' => $row_count,
                     'removable' => false,
                     'posted_not_checked' => $element->widget->postedNotChecked($row_count),
+                    'is_draft_event' => $is_draft_event,
                     )
                 );
                 $row_count++;
@@ -92,6 +94,7 @@ $required_risk_ids = array_map(function ($r) {
                     'removable' => !in_array($entry->risk_id, $required_risk_ids),
                     'risks' => $risks_options,
                     'posted_not_checked' => $element->widget->postedNotChecked($row_count),
+                    'is_draft_event' => $is_draft_event,
                     )
                 );
                 $row_count++;
@@ -120,7 +123,8 @@ $required_risk_ids = array_map(function ($r) {
               'removable' => true,
               'risks' => $risks_options,
               'posted_not_checked' => false,
-              'values' => array(
+              'is_draft_event' => $is_draft_event,
+                'values' => array(
                   'id' => '',
                   'risk_id' => '{{risk_id}}',
                   'risk_display' => '{{risk_display}}',

@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "et_ophtroperationnote_procedurelist".
  *
@@ -33,6 +35,8 @@
  */
 class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
 {
+    use HasFactory;
+
     public $service;
 
     /**
@@ -77,7 +81,7 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
+            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
@@ -87,6 +91,15 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
             'procedure_assignments' => array(self::HAS_MANY, 'OphTrOperationnote_ProcedureListProcedureAssignment', 'procedurelist_id', 'order' => 'display_order ASC'),
             'bookingEvent' => array(self::BELONGS_TO, 'Event', 'booking_event_id'),
         );
+    }
+
+    protected function beforeSave()
+    {
+        if (!$this->booking_event_id) {
+            $this->booking_event_id = null;
+        }
+
+        return parent::beforeSave();
     }
 
     /**
@@ -120,6 +133,14 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
         return new CActiveDataProvider(get_class($this), array(
             'criteria' => $criteria,
         ));
+    }
+
+    public function getPrefillableAttributeSet()
+    {
+        return [
+            'eye_id',
+            'procedures' => 'id',
+        ];
     }
 
     /**
@@ -161,7 +182,7 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
         // delete remaining current procedures
         foreach ($current_procedures as $pa) {
             if (!$pa->delete()) {
-                throw new Exception('Unable to delete procedure assignment: '.print_r($pa->getErrors(), true));
+                throw new Exception('Unable to delete procedure assignment: ' . print_r($pa->getErrors(), true));
             }
         }
     }
@@ -179,7 +200,7 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
             $this->event->episode->episode_status_id = 4;
 
             if (!$this->event->episode->save()) {
-                throw new Exception('Unable to change episode status for episode '.$this->event->episode->id);
+                throw new Exception('Unable to change episode status for episode ' . $this->event->episode->id);
             }
 
             if ($this->booking_event_id && $api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
@@ -207,7 +228,7 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
         $criteria = new CDbCriteria();
         $criteria->order = 't.display_order asc';
 
-        if (!in_array(Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty->name, array('Adnexal', 'Strabismus'))) {
+        if (SettingMetadata::model()->getSetting('opbooking_disable_both_eyes') == 'on') {
             $criteria->addCondition('t.id != :three');
             $criteria->params[':three'] = 3;
         }
@@ -218,5 +239,20 @@ class Element_OphTrOperationnote_ProcedureList extends Element_OpNote
     public function getContainer_form_view()
     {
         return false;
+    }
+
+    protected function applyComplexData($data, $index): void
+    {
+        $procs = array();
+        if (isset($data['Procedures_procs'])) {
+            foreach ($data['Procedures_procs'] as $proc_id) {
+                $procs[] = Procedure::model()->findByPk($proc_id);
+            }
+        } elseif (isset($data[$this->elementType->class_name]['procedures'])) {
+            foreach ($data[$this->elementType->class_name]['procedures'] as $proc_id) {
+                $procs[] = Procedure::model()->findByPk($proc_id);
+            }
+        }
+        $this->procedures = $procs;
     }
 }

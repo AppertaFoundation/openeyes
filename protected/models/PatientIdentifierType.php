@@ -1,6 +1,22 @@
 <?php
 
 /**
+ * (C) Apperta Foundation, 2022
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
+ * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @link http://www.openeyes.org.uk
+ *
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (C) 2022, Apperta Foundation
+ * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ */
+
+use OE\factories\models\traits\HasFactory;
+
+/**
  * This is the model class for table "patient_identifier_type".
  *
  * The followings are the available columns in table 'patient_identifier_type':
@@ -13,8 +29,9 @@
  * @property string $validate_regex
  * @property string $value_display_prefix
  * @property string $value_display_suffix
- * @property string $unique_row_str
+ * @property string $unique_row_string
  * @property string $pad
+ * @property string $validation_example
  * @property string $last_modified_user_id
  * @property string $last_modified_date
  * @property string $created_user_id
@@ -29,6 +46,8 @@
  */
 class PatientIdentifierType extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const GLOBAL_USAGE_TYPE = "GLOBAL";
     const LOCAL_USAGE_TYPE = "LOCAL";
     /**
@@ -46,7 +65,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
     {
         return array(
             array('id, usage_type, short_title, long_title, institution_id, site_id, validate_regex,
-             value_display_prefix, value_display_suffix, unique_row_str,pad, spacing_rule,pas_api',
+             value_display_prefix, value_display_suffix, unique_row_string,pad, spacing_rule,pas_api, validation_example',
                 'safe'),
             array('short_title, institution_id, validate_regex', 'required'),
             array('usage_type', 'validateUsageType'),
@@ -70,26 +89,6 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
             'patientIdentifierStatuses' => array(self::HAS_MANY, 'PatientIdentifierStatus', 'patient_identifier_type_id'),
         );
     }
-
-    /**
-     * This is necessary to NOT include unique_row_str as it is auto generated
-     *
-     * @param bool $runValidation
-     * @param null $attributes
-     * @param bool $allow_overriding
-     * @return bool
-     * @throws Exception
-     */
-    public function save($runValidation = true, $attributes = null, $allow_overriding = false)
-    {
-        if (!$attributes) {
-            $attributes = array_values(array_filter(array_keys($this->getAttributes()), fn ($m) => $m != 'unique_row_str'));
-        }
-
-        return parent::save($runValidation, $attributes, $allow_overriding);
-    }
-
-
 
     /**
      * Relation added manually as two foreign keys on single column causes Yii to
@@ -120,16 +119,18 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
             'created_user_id' => 'Created User',
             'created_date' => 'Created Date',
             'pad' => 'Padding',
+            'validation_example' => 'Validation Example',
             'spacing_rule' => 'Spacing Rule',
-            'pas_api' => 'PAS'
+            'pas_api' => 'PAS',
+            'unique_row_string' => 'Unique Identifier'
         );
     }
 
     public function validateUsageType()
     {
         $existing_identifier = PatientIdentifierType::model()->find([
-            'condition' => 'unique_row_str = :unique_row_str',
-            'params' => [':unique_row_str' => $this->generateUniqueRowStringIdentifier()]
+            'condition' => 'unique_row_string = :unique_row_string',
+            'params' => [':unique_row_string' => $this->generateUniqueRowStringIdentifier()]
         ]);
         if ($existing_identifier && $existing_identifier->id !== $this->id) {
             $this->addError('usage_type', 'There is already a ' . strtolower($this->usage_type) . ' usage type for the chosen site');
@@ -180,13 +181,10 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
      * @param string $term
      * @return bool
      */
-    public function validateTerm(string $term, bool $allow_blank = false) : bool
+    public function validateTerm(string $term, bool $allow_blank = false): bool
     {
         if ($this->validate_regex) {
-            $padded = sprintf($this->pad ?:  '%s', $term);
-            preg_match($this->validate_regex, $padded, $matches);
-
-            $match = $matches[0] ?? null;
+            $match = PatientIdentifierHelper::getPaddedTermRegexResult($term, $this->validate_regex, $this->pad);
 
             if ($match) {
                 return true;
@@ -205,7 +203,7 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
      *
      * @return string
      */
-    public function getTitleWithInstitution() : string
+    public function getTitleWithInstitution(): string
     {
         return $this->long_title . ' (' . $this->institution->name . ')';
     }
@@ -224,6 +222,13 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
      */
     public function beforeSave()
     {
+        $unique_row_string_site_id = $this->site_id;
+
+        if (!isset($this->site_id) || $this->site_id === '') {
+            $unique_row_string_site_id = 0;
+        }
+
+        $this->unique_row_string = $this->usage_type . '-' . $this->institution_id . '-' . $unique_row_string_site_id;
         if ($this->pas_api) {
             if (is_array($this->pas_api)) {
                 $this->pas_api = json_encode($this->pas_api);
@@ -244,9 +249,95 @@ class PatientIdentifierType extends BaseActiveRecordVersioned
      * @param $string
      * @return bool
      */
-    public function isValidJson($string) : bool
+    public function isValidJson($string): bool
     {
         json_decode($string);
         return (json_last_error() == JSON_ERROR_NONE);
+    }
+
+    /** Returns a next highest value for an identifier type
+     *
+     * @param $type_id
+     * @param $auto_increment_start
+     * @return int
+     */
+    public static function getNextValueForIdentifierType($type_id, $auto_increment_start)
+    {
+        $primary_identifier = PatientIdentifierHelper::getMaxIdentifier($type_id);
+        if (!is_null($primary_identifier)) {
+            $primary_identifier_value = PatientIdentifierHelper::getIdentifierValue($primary_identifier);
+            $primary_identifier_value = preg_replace('/[^0-9]+/', '', $primary_identifier_value);
+            if ($primary_identifier_value < $auto_increment_start) {
+                return $auto_increment_start;
+            } else {
+                return ($primary_identifier_value + 1);
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Returns a bool which represents whether the patient identifier is editable
+     * @param $user
+     * @param $institution
+     * @param $site
+     * @return bool
+     */
+    public function isEditableBy(\CWebUser $user, Institution $institution, ?Site $site = null): bool
+    {
+        if ($user->checkAccess('admin')) {
+            return true;
+        }
+
+        $display_order_settings = $this->getTypeDisplayOrder($institution, $site);
+        if (!$display_order_settings) {
+            return false;
+        }
+
+        return !$display_order_settings->only_editable_by_admin;
+    }
+
+    protected function getTypeDisplayOrder(Institution $institution, ?Site $site = null): ?PatientIdentifierTypeDisplayOrder
+    {
+        return $this->filterTypeDisplayOrderForSite(
+            $this->filterTypeDisplayOrderForInstitution($institution),
+            $site
+        );
+    }
+
+    private function filterTypeDisplayOrderForInstitution(Institution $institution): array
+    {
+        return array_filter(
+            $this->typeDisplayOrder,
+            function ($type_display_order) use ($institution) {
+                return $type_display_order->institution_id === $institution->id;
+            }
+        );
+    }
+
+    private function filterTypeDisplayOrderForSite(array $type_display_orders, ?Site $site = null): ?PatientIdentifierTypeDisplayOrder
+    {
+        if ($site !== null) {
+            $for_site = array_filter(
+                $type_display_orders,
+                function ($type_display_order) use ($site) {
+                    return $type_display_order->site_id === $site->id;
+                }
+            );
+            if (count($for_site)) {
+                $first_element = array_shift($for_site);
+                return $first_element;
+            }
+        }
+
+        $type_display_order = array_filter(
+            $type_display_orders,
+            function ($type_display_order) use ($site) {
+                return empty($type_display_order->site_id);
+            }
+        );
+
+        $type_display_order_first_element = array_shift($type_display_order);
+        return $type_display_order_first_element ?? null;
     }
 }

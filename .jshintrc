@@ -1,5 +1,5 @@
 {
-  "esversion": 6,
+  "esversion": 9,
   "curly": false,
   "eqeqeq": true,
   "immed": true,

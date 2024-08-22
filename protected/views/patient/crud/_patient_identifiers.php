@@ -13,17 +13,36 @@
             <?= $form->error($patient_identifier, 'value') ?>
         </td>
         <td>
+            <div class="flex-layout">
             <?php
-                echo $form->textField($patient_identifier, 'value', [
-                    'placeholder' => $patient_identifier->patientIdentifierType->long_title,
-                    'maxlength' => 40,
-                    'size' => 40,
-                    'autocomplete' => Yii::app()->params['html_autocomplete'],
-                    'name' => 'PatientIdentifier[' . $index . '][value]',
-                    'onblur' => "findDuplicatesByPatientIdentifier($index);",
-                ]);
-                echo CHtml::hiddenField('PatientIdentifier[' . $index . '][patient_identifier_type_id]', $patient_identifier->patient_identifier_type_id);
+                $is_patient_identifier_editable = $patient_identifier->patientIdentifierType->isEditableBy(Yii::app()->user, Institution::model()->getCurrent(), Site::model()->getCurrent());
+
+                // To edit a patient identifier value you must take an extra action to make it editable, as this is a sensitive field do the input is disabled by default in update mode
+                echo $form->textField(
+                    $patient_identifier,
+                    'value',
+                    [
+                        'placeholder' => $patient_identifier->patientIdentifierType->long_title,
+                        'maxlength' => 40,
+                        'size' => 40,
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                        'name' => "PatientIdentifier[{$index}][value]",
+                        'onblur' => "findDuplicatesByPatientIdentifier($index);",
+                        'readonly' => (!$is_patient_identifier_editable || $is_update),
+                        'style' => ($is_update && Yii::app()->user->checkAccess('admin')) ? 'width: 95%' : '',
+                        'class' => $is_update ? 'fade' : '',
+                    ]
+                );
+                echo CHtml::hiddenField("PatientIdentifier[{$index}][patient_identifier_type_id]", $patient_identifier->patient_identifier_type_id);
             ?>
+            <?php if ($is_patient_identifier_editable && $is_update) { ?>
+                    <a onclick="removePatientIdentifierReadonlyAttribute(this);" style="cursor: pointer">
+                        <i class="oe-i medium pencil pad js-has-tooltip" data-tooltip-content='Click to edit <?= $patient_identifier->patientIdentifierType->short_title ?>'></i>
+                    </a>
+            </div>
+            <?php } elseif (!$is_patient_identifier_editable || $is_update) { ?>
+                <i class="oe-i medium info pad js-has-tooltip" data-tooltip-content='<?= $patient_identifier->patientIdentifierType->short_title ?> can only be editied by an admin user'></i>
+            <?php } ?>
         </td>
     </tr>
     <?php if ($pid_type_necessity_values[$patient_identifier->patient_identifier_type_id]['status_necessity'] !== 'hidden') { ?>
@@ -35,13 +54,14 @@
             </td>
             <td>
                 <?= $form->dropDownList(
-                        $patient_identifier,
-                        'patient_identifier_status_id',
-                        CHtml::listData($patient_identifier->patientIdentifierType->patientIdentifierStatuses, 'id', 'description'), [
+                    $patient_identifier,
+                    'patient_identifier_status_id',
+                    CHtml::listData($patient_identifier->patientIdentifierType->patientIdentifierStatuses, 'id', 'description'),
+                    [
                             'empty' => '-- select --',
                             'name' => 'PatientIdentifier[' . $index . '][patient_identifier_status_id]',
                         ],
-                    );
+                );
                 ?>
             </td>
         </tr>
@@ -65,5 +85,13 @@
                 $response.addClass(response_class)
             }
         });
+    }
+
+    function removePatientIdentifierReadonlyAttribute(element) {
+        const inputEl = $(element).siblings("input[type!='hidden']");
+        inputEl.removeAttr('readonly');
+        inputEl.removeClass('fade');
+
+        $(element).remove();
     }
 </script>

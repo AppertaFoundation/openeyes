@@ -10,6 +10,26 @@ Typically, most tests for models should inherit from the `ModelTestCase` class. 
 
 Developers are encouraged to continue adding to the library of useful abstractions for tests, and refactoring where appropriate if improvements can be made.
 
+## Class name collisions
+
+OpenEyes consists of a number of different modules that contain classes without namespacing. Naming conventions have been
+employed in a lot of cases to avoid class name collisions. However, certain conventions encourage it, specifically with controllers - most modules contain a `DefaultController` class. If the test suite contains separate tests for these classes, PHP will fail to load the correct class consistently, as it will not reconcile the correct path for loading the class.
+
+To resolve this, such tests must be run in separate processes, to ensure that the correct PHP file is loaded for the class. This is achieved with two specific annotations on the test class
+
+```
+/**
+ * @runTestsInSeparateProcesses
+ * @preserveGlobalState disabled
+ */
+class ExampleTest extends OEDbTestCasse
+{}
+```
+
+Both of these annotations should be added to ensure loading is done correctly.
+
+The adjustments that have been made to the testing environment can be seen in `bootstrap_process_isolation.php`
+
 ## Testing Traits
 
 `OEDbTestCase` inspects the test class to determine which traits are being used. If those traits have a setup method, this will be run as part of the setup for each test. The setup method should be called setup[TraitName]. For example, `WithTransactions` has a `setupWithTransactions` method.

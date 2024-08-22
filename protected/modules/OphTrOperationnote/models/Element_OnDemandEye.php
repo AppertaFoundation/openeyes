@@ -54,4 +54,21 @@ class Element_OnDemandEye extends Element_OnDemand
     {
         $this->eye = $eye;
     }
+
+    public function getDefaults(array $context): array
+    {
+        $eye = null;
+        if ($context['action'] === 'create' && $context['booking_procedures']) {
+            $api = Yii::app()->moduleAPI->get('OphTrOperationbooking');
+            $eye = $api->getEyeForOperation($context['booking']->event_id);
+            $this->setEye($eye);
+        } elseif ($context['action'] === 'create' && !empty($context['unbooked_eye'])) {
+            $eye = $context['unbooked_eye'];
+            $this->setEye($eye);
+        }
+        $fields = array(
+            'eye' => $eye,
+        );
+        return array_merge($fields, parent::getDefaults($context));
+    }
 }

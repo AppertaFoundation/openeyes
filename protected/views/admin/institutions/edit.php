@@ -69,7 +69,7 @@ $default_urls = $logo_helper->getLogoURLs();
     'method' => "POST",
     'htmlOptions' => array('enctype' => 'multipart/form-data')
 ]); ?>
-<div class="cols-7">
+<div class="cols-10">
     <?= $this->renderPartial('_form_errors', array('errors' => $errors)) ?>
     <?php
     $sites_headers = [
@@ -125,7 +125,7 @@ $default_urls = $logo_helper->getLogoURLs();
                             $field,
                             [
                                 'class' => 'cols-full',
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             ]
                         ); ?>
                     </td>
@@ -143,7 +143,7 @@ $default_urls = $logo_helper->getLogoURLs();
                             'remote_id',
                             [
                                 'class' => 'cols-full',
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             ]
                         );
                     } ?>
@@ -157,7 +157,7 @@ $default_urls = $logo_helper->getLogoURLs();
                         'pas_key',
                         [
                             'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                         ]
                     ) ?>
                 </td>
@@ -173,7 +173,7 @@ $default_urls = $logo_helper->getLogoURLs();
                             $field,
                             [
                                 'class' => 'cols-full',
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             ]
                         ) ?>
                     </td>
@@ -190,7 +190,7 @@ $default_urls = $logo_helper->getLogoURLs();
                             $field,
                             [
                                 'class' => 'cols-full',
-                                'autocomplete' => Yii::app()->params['html_autocomplete'],
+                                'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                             ]
                         ); ?>
                     </td>
@@ -205,7 +205,7 @@ $default_urls = $logo_helper->getLogoURLs();
                         CHtml::listData(Country::model()->findAll(), 'id', 'name'),
                         [
                             'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete'],
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         ]
                     ); ?>
                 </td>
@@ -288,14 +288,14 @@ $default_urls = $logo_helper->getLogoURLs();
             <tr>
                 <td><?= $institution->getAttributeLabel('first_used_site_id'); ?></td>
                 <td><?= \CHtml::activeDropDownList(
-                        $institution,
-                        'first_used_site_id',
-                        CHtml::listData(Site::model()->findAllByAttributes(['institution_id' => $institution->id]), 'id', 'name'),
-                        [
+                    $institution,
+                    'first_used_site_id',
+                    CHtml::listData(Site::model()->findAllByAttributes(['institution_id' => $institution->id]), 'id', 'name'),
+                    [
                             'class' => 'cols-full',
                             'empty' => '- None -'
                         ]
-                    ); ?></td>
+                ); ?></td>
             </tr>
         </tbody>
     </table>
@@ -339,7 +339,7 @@ $default_urls = $logo_helper->getLogoURLs();
         ); ?>
     </div>
 </div>
-<div class="cols-7">
+<div class="cols-10">
     <table class="standard" id="institution-sites-table" style="display: none">
         <thead>
             <tr>
@@ -364,7 +364,7 @@ $default_urls = $logo_helper->getLogoURLs();
         </tbody>
     </table>
 </div>
-<div class="cols-7">
+<div class="cols-10">
     <br>
     <h2>Authentication Methods</h2>
     <hr class="divider">
@@ -406,7 +406,7 @@ $default_urls = $logo_helper->getLogoURLs();
     </div>
     <br>
 </div>
-<div class="cols-7">
+<div class="cols-10">
     <br>
 
     <h2>Patient Identifier Numbering Systems</h2>
@@ -463,10 +463,10 @@ $default_urls = $logo_helper->getLogoURLs();
     </div>
     <br>
 </div>
-<div class="cols-7">
+<div class="cols-10">
     <br>
 
-    <?php $patient_identifier_usage_type = $request->getParam('patient_identifier_usage_type') ?: $app->params['display_primary_number_usage_code'];
+    <?php $patient_identifier_usage_type = $request->getParam('patient_identifier_usage_type') ?: SettingMetadata::model()->getSetting('display_primary_number_usage_code');
     $patient_identifier_site = $request->getParam('patient_identifier_site', null);
     $criteria = new CDbCriteria();
     $criteria->condition = 'institution_id=:institution_id AND patient_identifier_type_id IN (SELECT id FROM patient_identifier_type WHERE usage_type=:usage_type)';
@@ -495,18 +495,20 @@ $default_urls = $logo_helper->getLogoURLs();
 
     <h2>Patient Identifier Display Preferences</h2>
     <hr class="divider">
+
     <?= \CHtml::dropDownList(
         'patient_identifier_usage_type',
         $patient_identifier_usage_type,
-        CHtml::listData(PatientIdentifierType::model()->findAll(['select' => 't.usage_type', 'distinct' => true]), 'usage_type', 'usage_type')
+        CHtml::listData(PatientIdentifierType::model()->findAll(['select' => 't.usage_type', 'distinct' => true]), 'usage_type', 'usage_type'),
+        ['class' => 'cols-4']
     ); ?>
     <?= \CHtml::dropDownList(
         'patient_identifier_site',
         $patient_identifier_site,
         CHtml::listData(Site::model()->findAll('institution_id=:institution_id', [':institution_id' => $institution->id]), 'id', 'name'),
-        ['empty' => 'NOT SITE SPECIFIC']
+        ['empty' => 'NOT SITE SPECIFIC','class' => 'cols-4']
     ); ?>
-    <table class="standard sortable" id="patient_identifiers_entry_table">
+    <table class="standard sortable" id="patient_identifiers_entry_table" data-test="patient-identifiers-entry-table">
         <thead>
             <tr>
                 <th>&uarr;&darr;</th>
@@ -521,6 +523,9 @@ $default_urls = $logo_helper->getLogoURLs();
                 <th>Protocols</th>
                 <th>Necessity</th>
                 <th>Status Necessity</th>
+                <th>Auto Increment</th>
+                <th>Auto Increment Start</th>
+                <th>Only Editable By Admin</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -537,7 +542,7 @@ $default_urls = $logo_helper->getLogoURLs();
                         </td>
                         <td><?= $identifier_rule->patientIdentifierType->usage_type ?: '-' ?></td>
                         <td><?= $identifier_rule->patientIdentifierType->long_title ?: '-' ?></td>
-                        <td><?= $identifier_rule->patientIdentifierType->short_title ?: '-' ?></td>
+                        <td data-test="identifier-short-title"><?= $identifier_rule->patientIdentifierType->short_title ?: '-' ?></td>
                         <td><?= $identifier_rule->institution->name ?: '-' ?></td>
                         <td><?= $identifier_rule->patientIdentifierType->site ? $identifier_rule->patientIdentifierType->site->name : '-'; ?></td>
                         <td><?= $identifier_rule->patientIdentifierType->value_display_prefix ?: '-' ?></td>
@@ -547,17 +552,24 @@ $default_urls = $logo_helper->getLogoURLs();
                                 'placeholder' => 'add multiple: AB|CD|EF',
                             ]) ?></td>
                         <td><?= \CHtml::activeDropDownList(
-                                $identifier_rule,
-                                "[{$row_count}]necessity",
-                                $necessity_options_with_labels,
+                            $identifier_rule,
+                            "[{$row_count}]necessity",
+                            $necessity_options_with_labels,
+                                ['data-test' => 'necessity-dropdown']
                             ) ?>
                         </td>
                         <td><?= \CHtml::activeDropDownList(
-                                $identifier_rule,
-                                "[{$row_count}]status_necessity",
-                                $necessity_options_with_labels,
+                            $identifier_rule,
+                            "[{$row_count}]status_necessity",
+                            $necessity_options_with_labels,
                             ) ?>
                         </td>
+                        <td><?= \CHtml::activeCheckBox($identifier_rule, "[{$row_count}]auto_increment") ?></td>
+                        <td><?= \CHtml::activeTextField($identifier_rule, "[{$row_count}]auto_increment_start", [
+                                'placeholder' => 'Auto Increment Start',
+                                'class' => 'cols-4'
+                            ]) ?></td>
+                        <td><?= \CHtml::activeCheckBox($identifier_rule, "[{$row_count}]only_editable_by_admin") ?></td>
                         <td><a href="javascript:void(0)" class="js-delete_patient_identifier">Delete</a></td>
                     </tr>
                 <?php } ?>
@@ -570,7 +582,7 @@ $default_urls = $logo_helper->getLogoURLs();
     </table>
     <div class="flex-layout flex-right">
         <div id="patient_identifier_popup" class="add-data-actions flex-item-bottom">
-            <button class="button hint green" id="add-new-rule" type="button">
+            <button class="button hint green" id="add-new-rule" data-test="add-new-display-preference" type="button">
                 <i class="oe-i plus pro-theme"></i>
             </button>
         </div>
@@ -647,6 +659,7 @@ $default_urls = $logo_helper->getLogoURLs();
             ></td>
         <td>
             <select id = "PatientIdentifierTypeDisplayOrder_{{row_count}}_necessity"
+                    data-test="necessity-dropdown"
                     name = "PatientIdentifierTypeDisplayOrder[{{row_count}}][necessity]" >
                 {{#necessity_options}} <option value="{{option}}" >{{label}}</option>{{/necessity_options}}
             </select>
@@ -656,6 +669,34 @@ $default_urls = $logo_helper->getLogoURLs();
                     name = "PatientIdentifierTypeDisplayOrder[{{row_count}}][status_necessity]" >
                 {{#necessity_options}} <option value="{{option}}" >{{label}}</option>{{/necessity_options}}
             </select>
+        </td>
+        <td>
+            <input id="ytPatientIdentifierTypeDisplayOrder_{{row_count}}_auto_increment"
+                   type="hidden"
+                   value="0"
+                   name="PatientIdentifierTypeDisplayOrder[{{row_count}}][auto_increment]">
+
+            <input id="PatientIdentifierTypeDisplayOrder_{{row_count}}_auto_increment"
+                   type="checkbox"
+                   value="1"
+                   name="PatientIdentifierTypeDisplayOrder[{{row_count}}][auto_increment]">
+        </td>
+        <td>
+            <input class="cols-4"
+                   type="text"
+                   value="0"
+                   name="PatientIdentifierTypeDisplayOrder[{{row_count}}][auto_increment_start]">
+        </td>
+        <td>
+            <input id="ytPatientIdentifierTypeDisplayOrder_{{row_count}}_only_editable_by_admin"
+                   type="hidden"
+                   value="0"
+                   name="PatientIdentifierTypeDisplayOrder[{{row_count}}][only_editable_by_admin]">
+
+            <input id="PatientIdentifierTypeDisplayOrder_{{row_count}}_only_editable_by_admin"
+                   type="checkbox"
+                   value="1"
+                   name="PatientIdentifierTypeDisplayOrder[{{row_count}}][only_editable_by_admin]">
         </td>
         <td><a href="javascript:void(0)" class="js-delete_patient_identifier">Delete</a></td>
     </tr>
@@ -719,7 +760,7 @@ $default_urls = $logo_helper->getLogoURLs();
         new OpenEyes.UI.AdderDialog({
             openButton: $('#add-new-rule'),
             itemSets: [new OpenEyes.UI.AdderDialog.ItemSet(<?= CJSON::encode(
-                                                                array_map(function ($identifier) {
+                array_map(function ($identifier) {
                                                                     return [
                                                                         'label' => $identifier->long_title . ' (' . $identifier->institution->name . ')',
                                                                         'id' => $identifier->id,
@@ -731,8 +772,8 @@ $default_urls = $logo_helper->getLogoURLs();
                                                                         'prefix' => $identifier->value_display_prefix ?: '',
                                                                         'suffix' => $identifier->value_display_suffix ?: ''
                                                                     ];
-                                                                }, $identifier_types)
-                                                            ) ?>, {
+                }, $identifier_types)
+            ) ?>, {
                 'multiSelect': true
             })],
             onOpen: function(adder_dialog) {

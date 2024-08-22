@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\controllers;
 
+
 use OEModule\OphCiExamination\controllers\DefaultController;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
 use OEModule\OphCiExamination\models\OphCiExamination_VisualAcuity_Method;
@@ -36,6 +37,12 @@ class DefaultControllerVisualAcuityTest extends BaseDefaultControllerTest
     use \WithTransactions;
     use InteractsWithVisualAcuity;
 
+    public function tearDown(): void
+    {
+        $_GET = [];
+        parent::tearDown();
+    }
+
     /** @test */
     public function saving_a_simple_element()
     {
@@ -51,6 +58,8 @@ class DefaultControllerVisualAcuityTest extends BaseDefaultControllerTest
     /** @test */
     public function saving_element_with_readings()
     {
+        $this->mockCurrentContext();
+
         $unit = $this->getStandardVisualAcuityUnit();
 
         $form_data = [
@@ -80,7 +89,7 @@ class DefaultControllerVisualAcuityTest extends BaseDefaultControllerTest
     {
         $element = $this->generateSavedVisualAcuityElementWithReadings();
 
-        $this->setVariablesInSession($element->event->episode->firm_id);
+        $this->mockCurrentContext($element->event->episode->firm);
 
         // set up the request data for submitting values
         $_REQUEST['patient_id'] = $element->event->episode->patient_id;
@@ -109,7 +118,7 @@ class DefaultControllerVisualAcuityTest extends BaseDefaultControllerTest
 
         $episode = $patient->episodes[0];
         // enables controller to know what episode the event will be created in.
-        $this->setVariablesInSession($episode->firm_id);
+        $this->mockCurrentContext($episode->firm);
 
         ob_start();
 
@@ -123,7 +132,7 @@ class DefaultControllerVisualAcuityTest extends BaseDefaultControllerTest
 
         $this->assertNotEmpty($response);
         // brittle here as the attribute order is not guaranteed in the input element
-        $this->assertContains("value=\"{$record_mode_value}\" name=\"{$record_mode_field_name}\"", $response);
+        $this->assertStringContainsString("value=\"{$record_mode_value}\" name=\"{$record_mode_field_name}\"", $response);
     }
 
     /**

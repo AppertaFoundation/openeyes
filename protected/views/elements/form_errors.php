@@ -15,13 +15,12 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
-?>
-<?php if (isset($errors) && !empty($errors)) {
-    ?>
-    <div class="alert-box error with-icon<?php if (isset($bottom) && $bottom) {
-        echo ' bottom';
-                                         }
-                                            ?>">
+
+$is_bottom = isset($bottom) && $bottom;
+
+if (isset($errors) && !empty($errors)) { ?>
+    <div class="alert-box error with-icon<?= $is_bottom ? ' bottom' : '' ?>"
+        <?= !$is_bottom ? " data-test=\"validation-errors\"" : ''?>>
         <?php if (isset($errorHeaderMessage) && !empty($errorHeaderMessage)) { ?>
             <p><?= $errorHeaderMessage ?></p>
         <?php } else { ?>
@@ -42,7 +41,7 @@
     $(document).ready(function () {
         <?php if (isset($elements) && is_array($elements)) {
             foreach ($elements as $element) { ?>
-        var errorObject = <?php $element->getFrontEndErrors(); ?>;
+        var errorObject = <?= json_encode($element->getFrontEndErrors()) ?>;
         for (k = 0; k < errorObject.length; k++) {
             var $field = $('#' + errorObject[k]);
             $field.closest('.element').find('.element-title').addClass('error');

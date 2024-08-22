@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -21,9 +22,12 @@ namespace OEModule\PatientTicketing\models;
 use BaseActiveRecord;
 use BaseActiveRecordVersioned;
 use Institution;
+use OE\factories\models\traits\HasFactory;
 
 class QueueSetCategory_Institution extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *

@@ -1,24 +1,28 @@
 <?php
-    $va_unit_list = array();
+$va_unit_list = array();
+$default_va_unit = strtolower($default_va_unit);
 foreach ($va_units as $key => $value) {
-    if ($key === $default_va_unit) {
-        $va_unit_list[] = array(
-            'label' => $key,
-            'id' => $value,
-            'defaultSelected' => true,
-        );
-    } else {
-        $va_unit_list[] = array(
-            'label' => $key,
-            'id' => $value,
-        );
+    $option = array(
+        'label' => $value['name'],
+        'id' => $value['id'],
+    );
+    if(strtolower($key) === $default_va_unit){
+        $option['defaultSelected'] = true;
     }
+    $va_unit_list[] = $option;
+}
+
+$default_va_name = null;
+$default_va_id = null;
+if(isset($va_units[$default_va_unit])){
+    $default_va_name = $va_units[$default_va_unit]['name'];
+    $default_va_id = $va_units[$default_va_unit]['id'];
 }
 ?>
 <tr class="custom-filter">
     <td>VA Units</td>
     <td data-name="analytics_va_unit">
-        <span class="selected-filter" data-label="<?=$default_va_unit?>" data-id="<?=$va_units[$default_va_unit]?>"><?=$default_va_unit?></span>
+        <span class="selected-filter" data-label="<?=$default_va_name?>" data-id="<?=$default_va_id?>"><?=$default_va_name?></span>
     </td>
     <td>
         <button class="button hint green thin js-add-select-btn" id="show-analytics-filter-va-units" type="button">

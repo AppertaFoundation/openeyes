@@ -13,7 +13,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
 <div class="oe-home oe-allow-for-fixing-hotlist">
     <div class="oe-full-header flex-layout">
         <div class="title wordcaps">
-            <b>Practitioner Summary</b>
+            <b><?= \SettingMetadata::model()->getSetting('general_practitioner_label'); ?> Summary</b>
         </div>
     </div>
     <div class="oe-full-content oe-new-patient flex-layout flex-top">
@@ -48,6 +48,14 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                     </tr>
                     <tr>
                         <td>
+                            National Id:
+                        </td>
+                        <td>
+                            <?php echo isset($model->nat_id) ? CHtml::encode($model->nat_id) : 'Unknown'; ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
                             Role:
                         </td>
                         <td>
@@ -74,9 +82,9 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                     <div class="row">
                         <div class="large-12 column end">
                             <p><?php echo CHtml::link(
-                                'Update Practitioner Details',
+                                'Update ' . \SettingMetadata::model()->getSetting('general_practitioner_label') . ' Details',
                                 $this->createUrl('/gp/update', array('id' => $model->id))
-                            ); ?></p>
+                               ); ?></p>
                         </div>
                     </div>
                 </div>
@@ -115,16 +123,16 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                         <tr>
                             <td colspan="7">
                                 <?php
-                                $this->widget('LinkPager', array(
-                                    'pages' => $dataProvider->getPagination(),
-                                    'maxButtonCount' => 15,
-                                    'cssFile' => false,
-                                    'selectedPageCssClass' => 'current',
-                                    'hiddenPageCssClass' => 'unavailable',
-                                    'htmlOptions' => array(
-                                        'class' => 'pagination',
-                                    ),
-                                ));
+                                                                                                                    $this->widget('LinkPager', array(
+                                                                                                                        'pages' => $dataProvider->getPagination(),
+                                                                                                                        'maxButtonCount' => 15,
+                                                                                                                        'cssFile' => false,
+                                                                                                                        'selectedPageCssClass' => 'current',
+                                                                                                                        'hiddenPageCssClass' => 'unavailable',
+                                                                                                                        'htmlOptions' => array(
+                                                                                                                            'class' => 'pagination',
+                                                                                                                        ),
+                                                                                                                    ));
                                 ?>
                             </td>
                         </tr>

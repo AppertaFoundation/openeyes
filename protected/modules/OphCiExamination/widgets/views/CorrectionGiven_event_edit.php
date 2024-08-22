@@ -21,11 +21,12 @@ $model_name = \CHtml::modelName($element);
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath("CorrectionGiven.js") ?>"></script>
 <div class="element-fields element-eyes">
+    <?php echo $form->hiddenField($element, 'eye_id', array('class' => 'sideField')) ?>
     <?php foreach (['left' => 'right', 'right' => 'left'] as $page_side => $eye_side) { ?>
         <div class="js-element-eye <?= $eye_side ?>-eye js-correction-given-form <?= $page_side ?>" data-side="<?= $eye_side ?>" id="<?= "{$model_name}_{$eye_side}_form" ?>">
         <!-- active-form should not have any other classes -->
             <div class="active-form" style="<?= $element->hasEye($eye_side) ? '' : 'display: none;' ?>">
-                <div class="remove-side"><i class="oe-i remove-circle small"></i></div>
+                <div class="remove-side"><i class="oe-i remove-circle small" data-test="<?= "correction-given-remove-{$eye_side}-side" ?>"></i></div>
                 <div class="flex-layout">
                     <table class="cols-10">
                         <colgroup>
@@ -58,6 +59,7 @@ $model_name = \CHtml::modelName($element);
                                            name="<?= "{$model_name}[{$eye_side}_refraction]" ?>"
                                            value="<?= CHtml::encode($element->{"{$eye_side}_refraction"}) ?>"
                                            style="<?= $element->{"{$eye_side}_as_found"} ? "display: none;" : "" ?>"
+                                           data-test="<?= "correction-given-{$eye_side}-refraction" ?>"
                                     />
                                 </td>
                             </tr>
@@ -65,7 +67,7 @@ $model_name = \CHtml::modelName($element);
                     </table>
                     <!-- use flex to position the 'add-data-actions' -->
                     <div class="add-data-actions flex-item-bottom ">
-                        <button class="button hint green  js-add-select-btn" data-adder-trigger="true"><i class="oe-i plus pro-theme"></i></button>
+                        <button class="button hint green  js-add-select-btn" data-adder-trigger="true" data-test="<?= "correction-given-add-{$eye_side}-side" ?>"><i class="oe-i plus pro-theme"></i></button>
                     </div><!-- add-data-actions -->
                 </div>
             </div><!-- end of active-form -->

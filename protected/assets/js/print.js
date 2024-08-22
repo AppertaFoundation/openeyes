@@ -26,25 +26,51 @@
  * @param data - associative array of GET values to append to URL
  */
 function printIFrameUrl(url, data) {
-    if (data) {
-        url += '?' + $.param(data);
-    }
 
     $('#print_content_iframe').remove();
     var iframe = $('<iframe></iframe>');
     iframe.attr({
         id: 'print_content_iframe',
         name: 'print_content_iframe',
-        src: url,
         style: 'display: none;',
+        src: '#'
     });
     $('body').append(iframe);
-    window.frames.print_content_iframe.print();
 
-    // re-enable the buttons
-    $('#print_content_iframe').load(function () {
-        enableButtons();
-    });
+    var formdata = "YII_CSRF_TOKEN=" + YII_CSRF_TOKEN;
+    if(data) {
+       formdata += "&" + $.param(data);
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", url);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.responseType = "blob";
+    xhr.onload = function () {
+        if (this.status === 200) {
+            const responseContentType = filterResponseContentType(this.getResponseHeader('content-type'));
+
+            if (responseContentType !== ''){
+                const blob = new Blob([xhr.response], {type: responseContentType});
+                const bloburl = window.URL.createObjectURL(blob);
+
+                $('#print_content_iframe').attr('src', bloburl);
+                $("#print_content_iframe").load(function () {
+                    window.frames.print_content_iframe.print();
+                    // re-enable the buttons
+                    enableButtons();
+                    window.URL.revokeObjectURL(bloburl);
+                });
+            }
+        }
+    };
+    xhr.send(formdata);
+}
+
+function filterResponseContentType(header) {
+    const parametersStartIndex = header.indexOf(';');
+    const type = parametersStartIndex === -1 ? header.trim() : header.slice(0, parametersStartIndex).trim();
+
+    return ['application/pdf', 'text/html'].indexOf(type.toLowerCase()) !== -1 ? header : '';
 }
 
 function printEvent(printOptions) {

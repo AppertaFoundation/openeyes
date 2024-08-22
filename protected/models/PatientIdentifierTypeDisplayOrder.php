@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "patient_identifier_type_display_order".
  *
@@ -31,6 +33,10 @@
  * @property string $last_modified_date
  * @property string $created_user_id
  * @property string $created_date
+ * @property string $unique_row_string
+ * @property bool $auto_increment
+ * @property integer $auto_increment_start
+ * @property bool $only_editable_by_admin
  *
  * The followings are the available model relations:
  * @property PatientIdentifierType $patientIdentifierType
@@ -39,6 +45,8 @@
  */
 class PatientIdentifierTypeDisplayOrder extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */
@@ -69,24 +77,6 @@ class PatientIdentifierTypeDisplayOrder extends BaseActiveRecordVersioned
     }
 
     /**
-     * This is necessary to not include unique_row_str as it is auto generated
-     *
-     * @param bool $runValidation
-     * @param null $attributes
-     * @param bool $allow_overriding
-     * @return bool
-     * @throws Exception
-     */
-    public function save($runValidation = true, $attributes = null, $allow_overriding = false)
-    {
-        if (!$attributes) {
-            $attributes = array_values(array_filter(array_keys($this->getAttributes()), fn ($m) => $m != 'unique_row_str'));
-        }
-
-        return parent::save($runValidation, $attributes, $allow_overriding);
-    }
-
-    /**
      * @return array validation rules for model attributes.
      */
     public function rules()
@@ -95,8 +85,9 @@ class PatientIdentifierTypeDisplayOrder extends BaseActiveRecordVersioned
             ['institution_id, display_order, patient_identifier_type_id, necessity, status_necessity', 'required'],
             ['necessity', 'validateNecessity'],
             ['status_necessity', 'validateNecessity'],
-            ['search_protocol_prefix', 'length','max' => 100],
-            ['institution_id, display_order, patient_identifier_type_id, necessity, status_necessity, site_id, search_protocol_prefix, searchable', 'safe'],
+            ['search_protocol_prefix', 'length', 'max' => 100],
+            ['institution_id, display_order, patient_identifier_type_id, necessity, status_necessity, site_id,
+             search_protocol_prefix, searchable,unique_row_string, auto_increment, auto_increment_start, only_editable_by_admin', 'safe'],
         ];
     }
 
@@ -145,7 +136,7 @@ class PatientIdentifierTypeDisplayOrder extends BaseActiveRecordVersioned
     }
 
 
-    public function getSearchProtocols() : array
+    public function getSearchProtocols(): array
     {
         $protocols = [];
         if ($this->search_protocol_prefix) {
@@ -158,5 +149,17 @@ class PatientIdentifierTypeDisplayOrder extends BaseActiveRecordVersioned
         }
 
         return $protocols;
+    }
+
+    public function beforeSave()
+    {
+        $unique_row_string_site_id = $this->site_id;
+        if (!isset($this->site_id) || $this->site_id === '') {
+            $unique_row_string_site_id = 0;
+        }
+
+        $this->unique_row_string = $this->patient_identifier_type_id . '-' . $this->institution_id . '-' . $unique_row_string_site_id;
+
+        return parent::beforeSave();
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -102,7 +104,7 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                     $rule,
                     'warning_text',
                     [
-                        'autocomplete' => Yii::app()->params['html_autocomplete'],
+                        'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'class' => 'cols-full',
                         'rows' => 5
                     ]

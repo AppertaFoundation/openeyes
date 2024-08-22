@@ -1,52 +1,50 @@
-<phpunit bootstrap="bootstrap.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="false"
-         convertWarningsToExceptions="true"
-         stopOnFailure="false"
-         verbose="false">
-    <testsuites>
-        <testsuite name="all">
-            <directory suffix="Test.php">./unit</directory>
-            <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
-            <directory suffix="Test.php">../modules/*/tests/unit/components</directory>
-            <directory suffix="Test.php">../modules/*/tests/unit/controllers</directory>
-            <directory suffix="Test.php">../modules/*/tests/unit/widgets</directory>
-        </testsuite>
-        <testsuite name="Modules">
-            <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
-            <directory suffix="Test.php">../modules/*/tests/unit/components</directory>
-            <exclude>./</exclude>
-        </testsuite>
-        <testsuite name="core">
-            <directory suffix="Test.php">./unit</directory>
-        </testsuite>
-    </testsuites>
-    <groups>
-        <exclude>
-            <group>functional</group>
-            <group>undefined</group>
-            <group>elements</group>
-            <group>services</group>
-            <group>components</group>
-        </exclude>
-    </groups>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">../models</directory>
-            <directory suffix=".php">../components</directory>
-            <directory suffix=".php">../controllers</directory>
-            <directory suffix=".php">../modules/*/models</directory>
-            <directory suffix=".php">../modules/*/components</directory>
-            <exclude>
-                <directory suffix=".php">../components/summaryWidgets/views</directory>
-                <directory suffix=".php">../components/views</directory>
-                <directory suffix=".php">../modules/*/components/views</directory>
-                <directory suffix=".php.sample">../modules/*/components/sample</directory>
-            </exclude>
-        </whitelist>
-    </filter>
-    <php>
-        <ini name="output_buffering" value="On" />
-    </php>
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="bootstrap.php" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="false" convertWarningsToExceptions="true" stopOnFailure="false" verbose="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage>
+    <include>
+      <directory suffix=".php">../models</directory>
+      <directory suffix=".php">../components</directory>
+      <directory suffix=".php">../controllers</directory>
+      <directory suffix=".php">../modules/*/models</directory>
+      <directory suffix=".php">../modules/*/components</directory>
+    </include>
+    <exclude>
+      <directory suffix=".php">../components/summaryWidgets/views</directory>
+      <directory suffix=".php">../components/views</directory>
+      <directory suffix=".php">../modules/*/components/views</directory>
+      <directory suffix=".php.sample">../modules/*/components/sample</directory>
+    </exclude>
+  </coverage>
+  <testsuites>
+    <testsuite name="all">
+      <directory suffix="Test.php">./feature</directory>
+      <directory suffix="Test.php">./unit</directory>
+      <directory suffix="Test.php">../modules/*/tests/feature</directory>
+      <directory suffix="Test.php">../modules/*/tests/unit/components</directory>
+      <directory suffix="Test.php">../modules/*/tests/unit/controllers</directory>
+      <directory suffix="Test.php">../modules/*/tests/unit/listeners</directory>
+      <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
+      <directory suffix="Test.php">../modules/*/tests/unit/widgets</directory>
+    </testsuite>
+    <testsuite name="Modules">
+      <directory suffix="Test.php">../modules/*/tests/unit/models</directory>
+      <directory suffix="Test.php">../modules/*/tests/unit/components</directory>
+      <exclude>./</exclude>
+    </testsuite>
+    <testsuite name="core">
+      <directory suffix="Test.php">./unit</directory>
+    </testsuite>
+  </testsuites>
+  <groups>
+    <exclude>
+      <group>functional</group>
+      <group>undefined</group>
+      <group>elements</group>
+      <group>services</group>
+      <group>components</group>
+    </exclude>
+  </groups>
+  <php>
+    <ini name="output_buffering" value="On"/>
+  </php>
 </phpunit>

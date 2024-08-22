@@ -233,4 +233,32 @@ class PupillaryAbnormalities extends \SplitEventTypeElement
             }
         }
     }
+
+    /**
+     * check either confirmation of no pupillary abnormalities or at least one pupillary abnormality entry
+     */
+    public function afterValidate()
+    {
+        $hasLeftEntry = false;
+        $hasRightEntry = false;
+
+        foreach ($this->entries as $i => $entry) {
+            if ($entry->eye_id == \Eye::LEFT) {
+                $hasLeftEntry = true;
+            }
+            if ($entry->eye_id == \Eye::RIGHT) {
+                $hasRightEntry = true;
+            }
+        }
+
+        if (!$hasLeftEntry && !$this->no_pupillaryabnormalities_date_left && $this->hasLeft()) {
+            $this->addError('left', 'Left side has no data.');
+        }
+
+        if (!$hasRightEntry && !$this->no_pupillaryabnormalities_date_right && $this->hasRight()) {
+            $this->addError('right', 'Right side has no data.');
+        }
+
+        parent::afterValidate();
+    }
 }

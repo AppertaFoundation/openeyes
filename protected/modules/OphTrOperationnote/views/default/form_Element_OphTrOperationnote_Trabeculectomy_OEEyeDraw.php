@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2014
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2014, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
@@ -40,7 +42,7 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
     'height' => 300,
     'template' => 'OEEyeDrawWidget_InlineToolbar',
     'scale' => 0.72,
-    'autoReport'=>'Element_OphTrOperationnote_Trabeculectomy_report',
+    'autoReport' => 'Element_OphTrOperationnote_Trabeculectomy_report',
     'listenerArray' => array(
         'trabeculectomyController',
     ),
@@ -67,4 +69,3 @@ $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
         ),
     ),
 ));
-?>

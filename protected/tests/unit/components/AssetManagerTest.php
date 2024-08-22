@@ -15,6 +15,16 @@
 class CustomBasePathAliasAssetManager extends AssetManager
 {
     const BASE_PATH_ALIAS = 'application.tests.fixtures.assets';
+
+    public function getRegisteredForType($type)
+    {
+        return $this->$type;
+    }
+
+    public function getPriorityForType($type)
+    {
+        return $this->{$type . 'Priority'};
+    }
 }
 
 class AssetManagerTest extends PHPUnit_Framework_TestCase
@@ -24,7 +34,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
     private $globalInstance;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->globalInstance = Yii::app()->assetManager;
 
@@ -44,34 +54,6 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance->isAjaxRequest = false;
 
         return $instance;
-    }
-
-    /**
-     * @covers AssetManager
-     */
-    public function testInstanceCreated()
-    {
-        $this->assertTrue(
-            $this->globalInstance instanceof AssetManager,
-            'Yii::app()->assetManager should be an instance of AssetManager'
-        );
-
-        $this->assertTrue(
-            $this->globalInstance instanceof CAssetManager,
-            'AssetManager should extend CAssetManager'
-        );
-
-        $cacheBuster = PHPUnit_Framework_Assert::readAttribute($this->globalInstance, 'cacheBuster');
-        $this->assertTrue(
-            $cacheBuster instanceof CacheBuster,
-            'cacheBuster property on AssetManager instance should be an instance of CacheBuster'
-        );
-
-        $clientScript = PHPUnit_Framework_Assert::readAttribute($this->globalInstance, 'clientScript');
-        $this->assertTrue(
-            $clientScript instanceof ClientScript,
-            'clientScript property on AssetManager instance should be an instance of ClientScript'
-        );
     }
 
     /**
@@ -212,7 +194,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
     public function testRegisterCoreCssFile()
     {
         $assetManager = $this->getMockBuilder('CustomBasePathAliasAssetManager')
-            ->setMethods(array('registerCssFile'))
+            ->onlyMethods(['registerCssFile'])
             ->getMock();
 
         $assetManager->init();
@@ -220,47 +202,37 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $assetManager->setBaseUrl(self::BASE_URL);
 
         // Calling registerCoreCssFile with only the path specified.
-        $assetManager->expects($this->at(0))
+        $assetManager->expects($this->exactly(4))
             ->method('registerCssFile')
-            ->with(
-                Yii::app()->clientScript->getCoreScriptUrl().'/test.css',
-                false,
-                null,
-                AssetManager::OUTPUT_ALL,
-                true
-            );
-
-        // Calling registerCoreCssFile with path and priority.
-        $assetManager->expects($this->at(1))
-            ->method('registerCssFile')
-            ->with(
-                Yii::app()->clientScript->getCoreScriptUrl().'/test.css',
-                false,
-                10,
-                AssetManager::OUTPUT_ALL,
-                true
-            );
-
-        // Calling registerCoreCssFile with path, priority and output.
-        $assetManager->expects($this->at(2))
-            ->method('registerCssFile')
-            ->with(
-                Yii::app()->clientScript->getCoreScriptUrl().'/test.css',
-                false,
-                10,
-                AssetManager::OUTPUT_PRINT,
-                true
-            );
-
-        // Calling registerCoreCssFile with path, priority, output and preRegister.
-        $assetManager->expects($this->at(3))
-            ->method('registerCssFile')
-            ->with(
-                Yii::app()->clientScript->getCoreScriptUrl().'/test.css',
-                false,
-                10,
-                AssetManager::OUTPUT_PRINT,
-                false
+            ->withConsecutive(
+                [
+                    Yii::app()->clientScript->getCoreScriptUrl() . '/test.css',
+                    false,
+                    null,
+                    AssetManager::OUTPUT_ALL,
+                    true
+                ],
+                    [
+                    Yii::app()->clientScript->getCoreScriptUrl() . '/test.css',
+                    false,
+                    10,
+                    AssetManager::OUTPUT_ALL,
+                    true
+                ],
+                [
+                    Yii::app()->clientScript->getCoreScriptUrl() . '/test.css',
+                    false,
+                    10,
+                    AssetManager::OUTPUT_PRINT,
+                    true
+                ],
+                [
+                    Yii::app()->clientScript->getCoreScriptUrl() . '/test.css',
+                    false,
+                    10,
+                    AssetManager::OUTPUT_PRINT,
+                    false
+                ]
             );
 
         $assetManager->registerCoreCssFile('test.css');
@@ -284,12 +256,12 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
          * @var $clientScript ClientScript
          */
         $clientScript = $this->getMockBuilder('ClientScript')
-            ->setMethods(array('registerCoreScript'))
+            ->onlyMethods(['registerCoreScript'])
             ->getMock();
 
         $instance->setClientScript($clientScript);
 
-        $clientScript->expects($this->at(0))
+        $clientScript->expects($this->once())
             ->method('registerCoreScript')
             ->with('script');
 
@@ -305,6 +277,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
     private function runTestAddingFiles($type = null)
     {
         $instance = self::getInstance();
+        $priority = $instance->getPriorityForType($type);
 
         $registerMethod = $type === 'css' ? 'registerCssFile' : 'registerScriptFile';
 
@@ -312,8 +285,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance->{$registerMethod}("{$type}/file1.{$type}");
 
         $publishedPath = $instance->getPublishedPathOfAlias();
-        $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
-        $priority = PHPUnit_Framework_Assert::readAttribute(new AssetManager(), $type.'Priority');
+        $files = $instance->getRegisteredForType($type);
 
         /* Test the files were added to the relevant array. */
         $keys = array_keys($files);
@@ -358,7 +330,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $alias = CustomBasePathAliasAssetManager::BASE_PATH_ALIAS.'.'.$type;
         $publishedPath = $instance->getPublishedPathOfAlias($alias);
         $instance->{$registerMethod}("file.{$type}", $alias);
-        $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
+        $files = $instance->getRegisteredForType($type);
         $keys = array_keys($files);
 
         $this->assertTrue(
@@ -368,7 +340,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
         // /* Test with custom priority.*/
         $instance->{$registerMethod}("{$type}/file2.{$type}", null, 10);
-        $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
+        $files = $instance->getRegisteredForType($type);
         $last = array_pop($files);
 
         $this->assertEquals(
@@ -379,7 +351,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
 
         // /* Test with custom output.*/
         $instance->{$registerMethod}("{$type}/file3.{$type}", null, null, AssetManager::OUTPUT_PRINT);
-        $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
+        $files = $instance->getRegisteredForType($type);
         $last = array_pop($files);
         $this->assertEquals(
             AssetManager::OUTPUT_PRINT,
@@ -392,10 +364,10 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         // First, we create a mock for the clientScript to check if the correct
         // method is called with the correct params.
         $clientScript = $this->getMockBuilder('ClientScript')
-            ->setMethods(array($registerMethod))
+            ->onlyMethods(array($registerMethod))
             ->getMock();
 
-        $clientScript->expects($this->at(0))
+        $clientScript->expects($this->once())
             ->method($registerMethod)
             ->with($instance->createUrl("{$type}/file4.{$type}", null, false));
 
@@ -404,7 +376,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance->{$registerMethod}("{$type}/file4.{$type}", null, null, AssetManager::OUTPUT_ALL, false);
 
         $publishedPath = $instance->getPublishedPathOfAlias();
-        $files = PHPUnit_Framework_Assert::readAttribute($instance, $type);
+        $files = $instance->getRegisteredForType($type);
         $keys = array_keys($files);
         $lastKey = array_pop($keys);
 
@@ -471,7 +443,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance = self::getInstance();
 
         $clientScript = $this->getMockBuilder('ClientScript')
-            ->setMethods(array('registerCssFile', 'registerScriptFile'))
+            ->onlyMethods(array('registerCssFile', 'registerScriptFile'))
             ->getMock();
 
         $instance->setClientScript($clientScript);
@@ -493,26 +465,22 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance = self::getInstance();
 
         $clientScript = $this->getMockBuilder('ClientScript')
-            ->setMethods(array('registerCssFile', 'registerScriptFile'))
+            ->onlyMethods(array('registerCssFile', 'registerScriptFile'))
             ->getMock();
 
         $instance->setClientScript($clientScript);
 
-        $clientScript->expects($this->at(0))
-            ->method('registerCssFile')
-            ->with($instance->createUrl('css/style2.css', null, false));
+        $clientScript->method('registerCssFile')
+            ->withConsecutive(
+                [$instance->createUrl('css/style2.css', null, false)],
+                [$instance->createUrl('css/style1.css', null, false)]
+            );
 
-        $clientScript->expects($this->at(1))
-            ->method('registerCssFile')
-            ->with($instance->createUrl('css/style1.css', null, false));
-
-        $clientScript->expects($this->at(2))
-            ->method('registerScriptFile')
-            ->with($instance->createUrl('js/script2.js', null, false));
-
-        $clientScript->expects($this->at(3))
-            ->method('registerScriptFile')
-            ->with($instance->createUrl('js/script1.js', null, false));
+        $clientScript->method('registerScriptFile')
+            ->withConsecutive(
+                [$instance->createUrl('js/script2.js', null, false)],
+                [$instance->createUrl('js/script1.js', null, false)]
+            );
 
         $instance->registerScriptFile('js/script1.js', null, 10);
         $instance->registerCssFile('css/style1.css', null, 10);
@@ -528,27 +496,20 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance = self::getInstance();
 
         $clientScript = $this->getMockBuilder('ClientScript')
-            ->setMethods(array('registerCssFile', 'registerScriptFile'))
+            ->onlyMethods(array('registerCssFile', 'registerScriptFile'))
             ->getMock();
 
-        $clientScript->expects($this->at(0))
-            ->method('registerCssFile')
-            ->with($instance->createUrl('css/all.css', null, false));
+        $clientScript->method('registerCssFile')
+            ->withConsecutive(
+                [$instance->createUrl('css/all.css', null, false)],
+                [$instance->createUrl('css/style.css', null, false)]
+            );
 
-        $clientScript->expects($this->at(1))
-            ->method('registerCssFile')
-            ->with($instance->createUrl('css/style.css', null, false));
-
-        $clientScript->expects($this->exactly(2))
-                ->method('registerCssFile');
-
-        $clientScript->expects($this->at(2))
-            ->method('registerScriptFile')
-            ->with($instance->createUrl('js/all.js', null, false));
-
-        $clientScript->expects($this->at(3))
-            ->method('registerScriptFile')
-            ->with($instance->createUrl('js/style.js', null, false));
+        $clientScript->method('registerScriptFile')
+            ->withConsecutive(
+                [$instance->createUrl('js/all.js', null, false)],
+                [$instance->createUrl('js/style.js', null, false)]
+            );
 
         $clientScript->expects($this->exactly(2))
                 ->method('registerScriptFile');
@@ -569,30 +530,20 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance = self::getInstance();
 
         $clientScript = $this->getMockBuilder('ClientScript')
-            ->setMethods(array('registerCssFile', 'registerScriptFile'))
+            ->onlyMethods(array('registerCssFile', 'registerScriptFile'))
             ->getMock();
 
-        $clientScript->expects($this->at(0))
-            ->method('registerCssFile')
-            ->with($instance->createUrl('css/all.css', null, false));
+        $clientScript->method('registerCssFile')
+            ->withConsecutive(
+                [$instance->createUrl('css/all.css', null, false)],
+                [$instance->createUrl('css/print.css', null, false)]
+            );
 
-        $clientScript->expects($this->at(1))
-            ->method('registerCssFile')
-            ->with($instance->createUrl('css/print.css', null, false));
-
-        $clientScript->expects($this->exactly(2))
-                ->method('registerCssFile');
-
-        $clientScript->expects($this->at(2))
-            ->method('registerScriptFile')
-            ->with($instance->createUrl('js/all.js', null, false));
-
-        $clientScript->expects($this->at(3))
-            ->method('registerScriptFile')
-            ->with($instance->createUrl('js/print.js', null, false));
-
-        $clientScript->expects($this->exactly(2))
-                ->method('registerScriptFile');
+        $clientScript->method('registerScriptFile')
+            ->withConsecutive(
+                [$instance->createUrl('js/all.js', null, false)],
+                [$instance->createUrl('js/print.js', null, false)]
+            );
 
         $instance->setClientScript($clientScript);
         $instance->isPrintRequest = true;
@@ -611,30 +562,20 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance = self::getInstance();
 
         $clientScript = $this->getMockBuilder('ClientScript')
-            ->setMethods(array('registerCssFile', 'registerScriptFile'))
+            ->onlyMethods(array('registerCssFile', 'registerScriptFile'))
             ->getMock();
 
-        $clientScript->expects($this->at(0))
-            ->method('registerCssFile')
-            ->with($instance->createUrl('css/all.css', null, false));
+        $clientScript->method('registerCssFile')
+            ->withConsecutive(
+                [$instance->createUrl('css/all.css', null, false)],
+                [$instance->createUrl('css/ajax.css', null, false)]
+            );
 
-        $clientScript->expects($this->at(1))
-            ->method('registerCssFile')
-            ->with($instance->createUrl('css/ajax.css', null, false));
-
-        $clientScript->expects($this->exactly(2))
-                ->method('registerCssFile');
-
-        $clientScript->expects($this->at(2))
-            ->method('registerScriptFile')
-            ->with($instance->createUrl('js/all.js', null, false));
-
-        $clientScript->expects($this->at(3))
-            ->method('registerScriptFile')
-            ->with($instance->createUrl('js/ajax.js', null, false));
-
-        $clientScript->expects($this->exactly(2))
-                ->method('registerScriptFile');
+        $clientScript->method('registerScriptFile')
+            ->withConsecutive(
+                [$instance->createUrl('js/all.js', null, false)],
+                [$instance->createUrl('js/ajax.js', null, false)]
+            );
 
         $instance->setClientScript($clientScript);
         $instance->isAjaxRequest = true;
@@ -660,7 +601,7 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
             ->setMethods(array('reset'))
             ->getMock();
 
-        $clientScript->expects($this->at(0))
+        $clientScript->expects($this->once())
             ->method('reset');
 
         $instance->setClientScript($clientScript);
@@ -668,8 +609,8 @@ class AssetManagerTest extends PHPUnit_Framework_TestCase
         $instance->registerScriptFile('js/style.js');
         $instance->reset();
 
-        $css = PHPUnit_Framework_Assert::readAttribute($instance, 'css');
-        $js = PHPUnit_Framework_Assert::readAttribute($instance, 'js');
+        $css = $instance->getRegisteredForType('css');
+        $js = $instance->getRegisteredForType('js');
 
         $this->assertEquals(
             array(),

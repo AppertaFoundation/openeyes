@@ -158,7 +158,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         if (selectedValues['direction'].length) {
             displayElements.push(
                 this.options.directionOptions[
-                    this.options.directionOptions.findIndex(option => option.id === selectedValues['direction'].toString())
+                this.options.directionOptions.findIndex(option => option.id === selectedValues['direction'].toString())
                 ]['label']);
         }
         if (selectedValues['torsion'].length) {
@@ -167,7 +167,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         if (selectedValues['deviation'].length) {
             displayElements.push(
                 this.options.deviationOptions[
-                    this.options.deviationOptions.findIndex(option => option.id === selectedValues['deviation'].toString())
+                this.options.deviationOptions.findIndex(option => option.id === selectedValues['deviation'].toString())
                 ]['abbreviation']
             );
         }
@@ -192,8 +192,7 @@ OpenEyes.UI = OpenEyes.UI || {};
         return this.options.container.querySelector('.gaze-container[data-gaze-type="' + gazeType + '"]');
     };
 
-    Synoptophore.prototype.validateAdderDialogSelection = function (adderDialog)
-    {
+    Synoptophore.prototype.validateAdderDialogSelection = function (adderDialog) {
         const somethingSelected = this.allFieldIds
             .map(id => this.getSelectedValueFromAdderDialog(adderDialog, id))
             .filter(val => val.length > 0)

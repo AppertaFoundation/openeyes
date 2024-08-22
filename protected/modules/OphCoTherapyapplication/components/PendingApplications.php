@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -122,7 +123,7 @@ class PendingApplications
         $institution_id = Institution::model()->getCurrent()->id;
         $site_id = Yii::app()->session['selected_site_id'];
         $extended_data = [];
-        $primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
+        $primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
         $patient_identifier_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution($primary_number_usage_code, $institution_id, $site_id);
 
         foreach ($data as $row) {

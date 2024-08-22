@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\components;
 
+
 use OEModule\OphCiExamination\components\ExaminationCreator;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_Refraction;
 use OEModule\OphCiExamination\models\Element_OphCiExamination_VisualAcuity;
@@ -42,7 +43,7 @@ class ExaminationCreatorTest extends \OEDbTestCase
     use \WithFaker;
     use InteractsWithVisualAcuity;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

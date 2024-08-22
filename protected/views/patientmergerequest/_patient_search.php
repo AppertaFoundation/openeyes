@@ -1,4 +1,4 @@
- <?php
+<?php
     $dob_mandatory = \SettingMetadata::model()->checkSetting('dob_mandatory_in_search', 'on');
 
     $this->beginWidget('CActiveForm', array(
@@ -15,12 +15,30 @@
     <div class="data-group">
         <div class="search-examples">
             Find a patient by
-            <!--            Parameterised for CERA-519-->
-            <strong><?php echo (\SettingMetadata::model()->getSetting('hos_num_label'))?></strong>,
-            <strong><?php echo \SettingMetadata::model()->getSetting('nhs_num_label')?> </strong>,
-            <?php if (!$dob_mandatory): ?><strong>Firstname Surname</strong> or<?php endif; ?>
+            <?php
+
+            $institution_id = \Yii::app()->session['selected_institution_id'];
+            $selected_site_id = \Yii::app()->session['selected_site_id'];
+
+            $display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
+            $display_secondary_number_usage_code = SettingMetadata::model()->getSetting('display_secondary_number_usage_code');
+            $primary_identifier = PatientIdentifierHelper::getPatientIdentifierType($display_primary_number_usage_code, $institution_id);
+            $secondary_identifier = PatientIdentifierHelper::getPatientIdentifierType($display_secondary_number_usage_code, $institution_id);
+            if ($primary_identifier) :
+                ?> <strong><?= $primary_identifier->long_title ?></strong>,
+                <?php
+            endif;
+            if ($secondary_identifier) :
+                ?> <strong><?= $secondary_identifier->long_title ?> </strong>,
+                <?php
+            endif;
+            if (!$dob_mandatory) :
+                ?><strong>Firstname Surname</strong> or<?php
+            endif; ?>
             <strong>Firstname Surname DOB</strong> or
-            <?php if (!$dob_mandatory): ?><strong>Surname, Firstname</strong> or<?php endif; ?>
+            <?php if (!$dob_mandatory) :
+                ?><strong>Surname, Firstname</strong> or<?php
+            endif; ?>
             <strong>Surname, Firstname DOB</strong>.
         </div>
 

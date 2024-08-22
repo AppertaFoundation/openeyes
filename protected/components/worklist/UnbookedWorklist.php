@@ -33,7 +33,7 @@ class UnbookedWorklist extends CComponent
      * @param $site_id
      * @param $subspecialty_id
      * @param null $firm_id
-     * @return bool|null
+     * @return Worklist|null
      * @throws Exception
      */
     public function createWorklist(DateTime $date, $site_id, $subspecialty_id, $firm_id = null)
@@ -70,7 +70,7 @@ class UnbookedWorklist extends CComponent
         $tomorrow->modify('tomorrow');
 
         $criteria = new \CDbCriteria();
-        $criteria->addCondition('worklist_definition_id = :worklist_definition_id');
+        $criteria->addCondition('t.worklist_definition_id = :worklist_definition_id');
         $criteria->addCondition('start >= :start');
         $criteria->addCondition('end < :end');
         $criteria->params[':start'] = $today->format('Y-m-d H:i:s');

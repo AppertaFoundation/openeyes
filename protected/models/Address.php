@@ -1,5 +1,4 @@
 <?php
-
 /**
  * OpenEyes
  *
@@ -15,6 +14,8 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+use OE\factories\models\traits\HasFactory;
 
 /**
  * This is the model class for table "address".
@@ -38,6 +39,8 @@
  */
 class Address extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * Returns the static model of the specified AR class.
      *
@@ -98,7 +101,7 @@ class Address extends BaseActiveRecordVersioned
             'address2' => 'Address2',
             'city' => 'City',
             'postcode' => 'Postcode',
-            'county' => Yii::app()->params['county_label'],
+            'county' => \SettingMetadata::model()->getSetting('county_label'),
             'country_id' => 'Country',
             'address_type_id' => 'Address Type',
         );
@@ -168,8 +171,20 @@ class Address extends BaseActiveRecordVersioned
         foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
             if (!empty($this->$field) && trim($this->$field) != ',' && trim($this->$field) != "") {
                 $line = $this->$field;
-                if (($newlines_setting = SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
-                    $addressParts = explode("\n", $line);
+                $addressParts = explode("\n", $line);
+                if ((string)SettingMetadata::model()->getSetting('correspondence_address_force_city_state_postcode_on_same_line') === "on") {
+                    foreach ($addressParts as $part) {
+                        if ($tempAddress === null) {
+                            $tempAddress = $part . "\n";
+                        } elseif ($field === 'city') {
+                            $tempAddress .= $part;
+                        } elseif ($field === 'county' || $field === 'postcode') {
+                            $tempAddress .= ' ' . $part;
+                        } else {
+                            $tempAddress .= $part . "\n";
+                        }
+                    }
+                } elseif (($newlines_setting = SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
                     foreach ($addressParts as $part) {
                         if ($linecount == 0 && $tempAddress == null){
                             $tempAddress = $part;
@@ -199,7 +214,9 @@ class Address extends BaseActiveRecordVersioned
             }
         }
         // add the tempAddress to address[] if setting set to not -1 (if we have a value in tempAddress)
-        if ($tempAddress !== null &&(SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
+        if ($tempAddress !== null &&
+            ((SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) ||
+            (string)SettingMetadata::model()->getSetting('correspondence_address_force_city_state_postcode_on_same_line') === "on") {
             foreach (explode("\n", $tempAddress) as $part) {
                 $part = trim($part);
                 if ($part != null &&  $part != ',' && $part != '') {
@@ -292,6 +309,13 @@ class Address extends BaseActiveRecordVersioned
         }
         $this->date_start = Helper::convertNHS2MySQL($this->date_start);
         $this->date_end = Helper::convertNHS2MySQL($this->date_end);
+
+        if ($this->isNewRecord) {
+            if ($this->country_id == "") {
+                $this->country_id = $this->getDefaultCountryId();
+            }
+        }
+
         return parent::beforeValidate();
     }
 }

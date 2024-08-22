@@ -18,7 +18,6 @@
  */
 class InternalReferralDeliveryCommand extends CConsoleCommand
 {
-
     private $path;
 
     // integration required to generate xml
@@ -30,19 +29,7 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
 
     private $csv_format = 'OEInternalReferralLetterReport_%s.csv';
 
-    private $file_random_number;
-
-    public function setFileRandomNumber($number)
-    {
-        $this->file_random_number = $number;
-    }
-
-    public function getFileRandomNumber()
-    {
-        return $this->file_random_number ? $this->file_random_number : rand();
-    }
-
-
+    private DocmanRetriever $retriever;
 
     /**
      * InternalReferralDelivery constructor.
@@ -77,6 +64,9 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
             echo "ALERT! Directory " . $this->path . " has been created!";
         }
 
+        $this->retriever = Yii::app()->getComponent('contentForDeliveryRetriever');
+        $this->retriever->addQueryParam('referral', self::class);
+
         parent::__construct(null, null);
     }
 
@@ -110,10 +100,10 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
             echo 'Processing event ' . $event->id . ' :: Internal Referral' . PHP_EOL;
 
             $pdf_generated = $this->savePDFFile($event->id, $document->id);
-            $filename = $this->getFileName($event);
+            $filename = BaseDeliveryCommand::getFileName($event, $document->id, 'Internal');
 
             if ($this->generate_xml) {
-                $xml_generated = $this->generateXMLOutput($event, $filename);
+                $xml_generated = $this->generateXMLOutput($document->id, $event, $filename);
             }
 
             if (!$pdf_generated || ($this->generate_xml && !$xml_generated)) {
@@ -127,7 +117,8 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
                 $local_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
                     'LOCAL',
                     $event->episode->patient->id,
-                    $event->institution_id, $event->site_id
+                    $event->institution_id,
+                    $event->site_id
                 ));
 
                 $this->logData(array(
@@ -167,112 +158,68 @@ class InternalReferralDeliveryCommand extends CConsoleCommand
      */
     private function savePDFFile($event_id, $output_id)
     {
-        $pdf_generated = false;
-        $xml_generated = false;
         $event = Event::model()->findByPk($event_id);
-        $document_output = DocumentOutput::model()->findByPk($output_id);
-
 
         if ($event) {
-            $login_page = Yii::app()->params['docman_login_url'];
-            $username = Yii::app()->params['docman_user'];
-            $password = Yii::app()->params['docman_password'];
-            $print_url = Yii::app()->params['docman_print_url'];
-            $inject_autoprint_js = Yii::app()->params['docman_inject_autoprint_js'];
-
-            $ch = curl_init();
-
-            curl_setopt($ch, CURLOPT_URL, $login_page);
-            // disable SSL certificate check for locally issued certificates
-            if (Yii::app()->params['disable_ssl_certificate_check']) {
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            }
-            curl_setopt($ch, CURLOPT_FRESH_CONNECT, true);
-            curl_setopt($ch, CURLOPT_COOKIESESSION, true);
-            curl_setopt($ch, CURLOPT_COOKIEJAR, '/tmp/cookie.txt');
-            curl_setopt($ch, CURLOPT_COOKIEFILE, '/tmp/cookie.txt');
-
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_COOKIE , "institution_id=$event->institution_id;site_id=$event->site_id");
-
-            $response = curl_exec($ch);
-            if (curl_errno($ch)) {
-                die(curl_error($ch));
-            }
-
-            preg_match("/YII_CSRF_TOKEN = '(.*)';/", $response, $token);
-
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
-            curl_setopt($ch, CURLOPT_POST, true);
-
-            $params = array(
-                'LoginForm[username]' => $username,
-                'LoginForm[password]' => $password,
-            );
-            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
-
-            curl_exec($ch);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, false);
-            curl_setopt($ch, CURLOPT_URL, $print_url . $event->id . '?auto_print=' . (int)$inject_autoprint_js . '&print_only_gp=0');
-            $content = curl_exec($ch);
-
-            curl_close($ch);
+            $content = $this->retriever->contentForEvent($event);
 
             if (substr($content, 0, 4) !== "%PDF") {
-                echo 'File is not a PDF for event id: '.$event->id."\n";
+                echo 'File is not a PDF for event id: ' . $event->id . "\n";
                 $this->updateFailedDelivery($output_id);
                 return false;
             }
 
-            $filename = $this->getFileName($event);
+            $filename = BaseDeliveryCommand::getFileName($event, $output_id, 'Internal');
 
-            return $pdf_generated = (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
+            return (file_put_contents($this->path . "/" . $filename . ".pdf", $content) !== false);
+        } else {
+            return false;
         }
     }
 
     /**
-     * Returns file name based on the event
-     *
-     * @param Event $event
-     * @return string
+     * @param $string
+     * @return array Return the array of strings that needs to be replaced
      */
-    private function getFileName(\Event $event)
+    private function getStringsToReplace($string)
     {
-        $local_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(
-            'LOCAL',
-            $event->episode->patient->id,
-            $event->institution_id, $event->site_id
-        ));
-        if (!isset(Yii::app()->params['filename_format']) || Yii::app()->params['filename_format'] === 'format1') {
-            $filename = "OPENEYES_Internal_" . (str_replace(' ', '', $local_identifier_value)) . '_' . $event->id . "_" . $this->getFileRandomNumber();
-        } else {
-            if (Yii::app()->params['filename_format'] === 'format2') {
-                $filename = 'Internal_' . (str_replace(' ', '', $local_identifier_value)) . '_' . date(
-                    'YmdHi',
-                    strtotime($event->last_modified_date)
-                ) . '_' . $event->id;
-            } else {
-                if (Yii::app()->params['filename_format'] === 'format3') {
-                    $filename = 'Internal_' . (str_replace(' ', '', $local_identifier_value)) . '_edtdep-OEY_' .
-                        date('Ymd_His', strtotime($event->last_modified_date)) . '_' . $event->id;
-                }
+        $tokens = [
+            '{' => '}',
+        ];
+
+        $closeTokens = array_flip($tokens);
+        $results = [];
+        $stack = [];
+        $result = "";
+        for ($i = 0; $i < strlen($string); ++$i) {
+            $s = $string[$i];
+            if (isset($tokens[$s])) {
+                $stack[] = $s;
+                $result .= $s;
+            } elseif (isset($closeTokens[$s])) {
+                $result .= $s;
+                $results[] = $result;
+                $result = "";
+                array_pop($stack);
+            } elseif (!empty($stack)) {
+                $result .= $s;
             }
         }
 
-        return $filename;
+        return $results;
     }
 
     /**
      * Generate XML file
      *
+     * @param int $document_output_id
      * @param Event $event
      * @param $filename
      * @return bool
      */
-    private function generateXMLOutput(\Event $event, $filename)
+    private function generateXMLOutput(int $document_output_id, \Event $event, $filename)
     {
-        $data = Yii::app()->internalReferralIntegration->constructRequestData($event, $this->path . "/" . $this->getFileName($event) . ".pdf");
+        $data = Yii::app()->internalReferralIntegration->constructRequestData($event, $this->path . "/" . BaseDeliveryCommand::getFileName($event, $document_output_id, 'Internal') . ".pdf");
         $xml = $this->renderFile($this->xml_template_file, $data, true);
         return (file_put_contents($this->path . "/" . $filename . ".XML", $this->cleanXML($xml)) !== false);
     }

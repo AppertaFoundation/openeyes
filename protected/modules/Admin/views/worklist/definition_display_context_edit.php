@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="admin box">
@@ -29,11 +31,11 @@
             'field' => 5,
         ),
     ))?>
-    <?php echo $form->dropDownList($display_context, 'institution_id', Institution::model()->getList(false), array('empty' => '- Any -')) ?>
+    <?php echo $form->dropDownList($display_context, 'institution_id', Institution::model()->getTenantedList(false), array('empty' => '- Any -')) ?>
     <?php echo $form->dropDownList($display_context, 'site_id', Site::model()->getListForCurrentInstitution(), array('empty' => '- Any -')) ?>
     <?php echo $form->dropDownList($display_context, 'subspecialty_id', Subspecialty::model()->getList(), array('empty' => '- Any -')) ?>
     <?php echo $form->dropDownList($display_context, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => '- Any -')) ?>
 
-    <?php echo $form->formActions(array('cancel-uri' => '/Admin/worklist/definitionDisplayContexts/'.$display_context->worklist_definition->id))?>
+    <?php echo $form->formActions(array('cancel-uri' => '/Admin/worklist/definitionDisplayContexts/' . $display_context->worklist_definition->id))?>
     <?php $this->endWidget()?>
 </div>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 $institution_id = Institution::model()->getCurrent()->id;
@@ -28,7 +30,7 @@ $site_id = Yii::app()->session['selected_site_id'];
     <table class="standard transport">
         <thead>
         <tr>
-            <th><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(Yii::app()->params['display_primary_number_usage_code'], $institution_id, $site_id) ?></th>
+            <th><?= PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $institution_id, $site_id) ?></th>
             <th>Patient</th>
             <th>TCI date</th>
             <th>Admission time</th>
@@ -53,14 +55,15 @@ $site_id = Yii::app()->session['selected_site_id'];
             <?php foreach ($operations as $operation) { ?>
                 <tr class="status <?= $operation->transportColour ?>">
                     <td>
-                        <?= PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $operation->event->episode->patient->id, $institution_id, $site_id)) ?>
+                        <?= PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $operation->event->episode->patient->id, $institution_id, $site_id)) ?>
                         <?php
                         $this->widget(
                             'application.widgets.PatientIdentifiers',
                             [
                                 'patient' => $operation->event->episode->patient,
                                 'show_all' => true
-                            ]); ?>
+                            ]
+                        ); ?>
                     </td>
                     <td class="patient">
                         <?= \CHtml::link('<strong>' . trim(strtoupper($operation->event->episode->patient->last_name)) . '</strong>, ' . $operation->event->episode->patient->first_name, Yii::app()->createUrl('OphTrOperationbooking/default/view/' . $operation->event_id)) ?>

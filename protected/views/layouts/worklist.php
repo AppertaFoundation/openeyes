@@ -22,31 +22,23 @@
     <?php $this->renderPartial('//base/head/_assets'); ?>
     <?php $this->renderPartial('//base/head/_tracking'); ?>
 </head>
-<body class="open-eyes">
+<body class="open-eyes oe-grid basic">
+    <!-- Minimum screen width warning -->
+    <div id="oe-minimum-width-warning">Device width not supported</div>
 
-<?php (YII_DEBUG) ? $this->renderPartial('//base/_debug') : null; ?>
+    <?php (YII_DEBUG) ? $this->renderPartial('//base/_debug') : null; ?>
 
-<div class="container main" role="main">
+    <!-- Branding (logo) -->
+    <div class="openeyes-brand">
+        <?php $this->renderPartial('//base/_brand'); ?>
+    </div>
+    <div id="oe-restrict-print">
+        <h1>This page is intended to be viewed online and may not be printed.<br>Please use the print icon on the page to generate a hard copy.</h1>
+    </div>
+    <?php $this->renderPartial('//base/_header', ['as_clinic' => true]); ?>
 
-    <?php $this->renderPartial('//base/_header'); ?>
-
-    <div class="container content">
-
-        <div class="box content admin-content">
-            <div class="data-group">
-                <aside class="cols-3 column sidebar admin">
-                    <?php $this->renderPartial('//worklist/sidebar'); ?>
-                </aside>
-                <div class="cols-9 column admin">
-                    <?php echo $content; ?>
-                </div>
-            </div>
-        </div>
-
-    </div><!-- /.content -->
+    <?php echo $content; ?>
 
     <?php $this->renderPartial('//base/_footer'); ?>
-
-</div><!-- /.main.container -->
 </body>
 </html>

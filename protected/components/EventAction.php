@@ -24,6 +24,7 @@ class EventAction
     public $label;
     public $href;
     public $htmlOptions;
+    public $selectOptions;
     public $options = array(
         'level' => 'primary',
         'disabled' => false,
@@ -41,6 +42,26 @@ class EventAction
         }
 
         return $action;
+    }
+
+    public static function dropdownToButton( $label, $name, $selectOptions = [], $options = null, $htmlOptions = null )
+    {
+        $action = new self($label, 'dropdown', $options, $htmlOptions);
+
+        $action->selectOptions = $selectOptions;
+        $action->htmlOptions['name'] = $name;
+        if (!isset($action->htmlOptions['class'])) {
+            $action->htmlOptions['class'] = 'primary';
+        }
+        if (!isset($action->htmlOptions['id'])) {
+            $action->htmlOptions['id'] = 'et_'.strtolower($name);
+        }
+        if (!isset($action->htmlOptions['empty'])) {
+            $action->htmlOptions['empty'] = 'Please select';
+        }
+
+        return $action;
+
     }
 
     public static function printButton($label = 'Print this event', $name = 'print', $options = array(), $htmlOptions = array())
@@ -82,6 +103,9 @@ class EventAction
         if ($this->options['level'] === 'save') {
             $this->htmlOptions['class'] .= ' green';
         }
+        if ($this->options['level'] === 'draft') {
+            $this->htmlOptions['class'] .= ' blue';
+        }
         if ($this->options['level'] === 'delete') {
             $label = '';
             $this->htmlOptions['class'] = 'button trash header-icon-btn icon';
@@ -103,6 +127,15 @@ class EventAction
         if ($this->options['disabled']) {
             $this->htmlOptions['class'] .= ' disabled';
             $this->htmlOptions['disabled'] = 'disabled';
+        }
+
+        $data_test_suffix = str_replace('&amp;', 'and', str_replace(' ', '-', strtolower($label)));
+
+        $this->htmlOptions['data-test'] = 'event-action-' . $data_test_suffix;
+
+        if (!empty($this->htmlOptions['icon-class'])) {
+            $icon_class = $this->htmlOptions['icon-class'];
+            $label = "<i class='oe-i small pad-r $icon_class'></i>" . $label;
         }
 
         if ($this->type === 'button') {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,10 +15,13 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var $Element_OphTrOperationbooking_Operation[] $operations
  */
+
 ?>
 <?php
-$this->beginContent('//patient/event_container', array('no_face'=>true));
+$this->beginContent('//patient/event_container', array('no_face' => true));
 $assetAliasPath = 'application.modules.OphTrOperationbooking.assets';
 $this->moduleNameCssClass .= ' edit';
 ?>
@@ -53,34 +57,46 @@ $warnings = $this->patient->getWarnings($clinical);
       </header>
 
       <input type="hidden" name="SelectBooking"/>
+      <input type="hidden" name="template_id"/>
 
       <div class="data-group">
           <div class="data-value flex-layout">
             <p>
                 <?php if (count($operations) > 0) : ?>
-                  Please indicate whether this operation note relates to a booking or an unbooked emergency:
+                  Please indicate whether this operation note relates to a booking, an unbooked emergency or an outpatient minor note:
                 <?php else : ?>
-                  There are no open bookings in the current episode so only an emergency operation note can be created.
+                  There are no open bookings in the current episode so only an emergency or outpatient minor operation note can be created.
                 <?php endif; ?>
             </p>
           </div>
           <br/>
-        <div class="cols-8">
+        <div class="cols-10">
           <div class="data-group" style="padding-left: 100px">
-            <table class="cols-10 last-left">
+            <table class="cols-10">
               <thead>
               <tr>
                 <th>Booked Date</th>
                 <th>Procedure</th>
                 <th>Comments</th>
+                <th></th>
               </tr>
               </thead>
               <tbody>
 
-                <?php foreach ($operations as $operation) : ?>
+                <?php foreach ($operations as $operation) :
+                    $procedure_set = ProcedureSet::findForBooking($operation->id);
+
+                    $templates = array();
+                    if ($procedure_set) {
+                        $templates = OphTrOperationnote_Template::model()
+                          ->forUserId(Yii::app()->user->id)
+                          ->forProcedureSet($procedure_set)
+                          ->findAll();
+                    }
+                    ?>
                 <tr>
                   <td>
-                    <span class="cols-3 column <?php echo $theatre_diary_disabled ? 'hide' : '' ?>">
+                    <span class="cols-4 column <?php echo $theatre_diary_disabled ? 'hide' : '' ?>">
                     <?php if (!$theatre_diary_disabled) {
                         if ($operation->booking) {
                             echo $operation->booking->session->NHSDate('date');
@@ -89,25 +105,79 @@ $warnings = $this->patient->getWarnings($clinical);
                     </span>
                   </td>
                   <td>
-                    <a href="#" class="booking-select" data-eye-id="<?=$operation->eye->id?>" data-booking="booking<?= $operation->event_id ?>">
-                        <?php
-                        echo implode('<br />', array_map(function ($procedure) use ($operation) {
-                            return $operation->eye->name . ' ' . $procedure->term;
-                        }, $operation->procedures));
-                        ?>
-                    </a>
+                    <?php
+                    echo implode('<br />', array_map(function ($procedure) use ($operation) {
+                        return $operation->eye->name . ' ' . $procedure->term;
+                    }, $operation->procedures));
+                    ?>
                   </td>
                   <td>
                       <?= $operation->comments; ?>
+                      <?php
+                        $existing_consent_criteria = new CDbCriteria();
+                        $existing_consent_criteria->with = ['event'];
+                        $existing_consent_criteria->compare('event.deleted', 0);
+                        $existing_consent_criteria->compare('t.booking_event_id', $operation->event_id);
+                        $has_consent = Element_OphTrConsent_Procedure::model()->find($existing_consent_criteria);
+
+                        if ($has_consent) {
+                            $withdrawal_criteria = new CDbCriteria();
+                            $withdrawal_criteria->compare('event_id', $has_consent->event_id);
+                            $withdrawal = Element_OphTrConsent_Withdrawal::model()->find($withdrawal_criteria);
+                            if ($withdrawal && $withdrawal->signature_id !== null) { ?>
+                            <div class="alert-box warning with-icon">
+                              This event has a consent which has been withdrawn.
+                            </div>
+                            <?php } ?>
+                        <?php } ?>
+                  </td>
+                  <td>
+                    <ul class="row-list">
+                        <li>
+                            <button class="booking-select" data-eye-id="<?=$operation->eye->id?>" data-booking="booking<?= $operation->event_id ?>">
+                                Create op note
+                            </button>
+                        </li>
+                        <?php
+                        if (count($templates) == 0) { ?>
+                            <li><small class="fade">No pre-fill templates</small></li>
+                        <?php } else {
+                            foreach ($templates as $template) { ?>
+                            <li>
+                                <button class="booking-select"
+                                    data-eye-id="<?=$operation->eye->id?>"
+                                    data-booking="booking<?= $operation->event_id ?>"
+                                    data-template="<?= $template->event_template_id ?>"
+                                    data-test="template-entry">
+                                    <i class="oe-i starline small pad-r"></i>
+                                    <?= $template->name ?>
+                                </button>
+                            </li>
+                            <?php }
+                        } ?>
+                    </ul>
                   </td>
                 </tr>
                 <?php endforeach; ?>
               <tr>
                 <td>N/A</td>
                 <td>
-                  <a href="#" class="booking-select" data-booking="emergency">Emergency / Unbooked<a>
+                  Emergency / Unbooked
                 </td>
                 <td></td>
+                <td>
+                   <button class="booking-select" data-booking="emergency">Create default op note</button>
+                </td>
+              </tr>
+              <tr>
+                <td>N/A</td>
+                <td>
+                  Outpatient Minor Ops
+                </td>
+                <td></td>
+                <td>
+                   <button class="booking-select" data-booking="outpatient-minor-op" data-test="create-minor-ops-note">Create minor ops note</button>
+                </td>
               </tr>
               </tbody>
             </table>
@@ -122,8 +192,9 @@ $warnings = $this->patient->getWarnings($clinical);
      * set the selected booking and submit the form
      * @param booking
      */
-    function selectBooking(booking) {
+    function selectBooking(booking, template) {
         $('[name="SelectBooking"]').val(booking);
+        $('[name="template_id"]').val(template);
         $('#operation-note-select').submit();
     }
 
@@ -131,20 +202,11 @@ $warnings = $this->patient->getWarnings($clinical);
     $('.booking-select').on('click', function () {
         let eyeId = $(this).data('eye-id');
         let booking = $(this).data('booking');
-        if (eyeId === 3) {
-            // if the procedure is for BOTH eyes, show an alert:
-            new OpenEyes.UI.Dialog.Alert({
-                content: "Bilateral cataract operation notes are not currently supported. Please complete details for the first eye in this event, then create a second operation note event for the second eye.",
-                closeCallback: function () {
-                    selectBooking(booking);
-                }
-            }).open();
-        }
-        else {
-            selectBooking(booking);
-        }
+
+        let template_id = $(this).data('template') ? $(this).data('template') : null;
+        
+        selectBooking(booking, template_id);
     });
   });
 </script>
 <?php $this->endContent(); ?>
-

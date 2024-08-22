@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) Copyright Apperta Foundation, 2020
  * This file is part of OpenEyes.
@@ -19,7 +20,7 @@ foreach ($results as $result) {
         $observations = $result->observations;
     }
 }
-$element = $observations ?? new $model;
+$element = $observations ?? new $model();
 // INR results
 $api = Yii::app()->moduleAPI->get('OphInLabResults');
 $patientId = $_GET['patient_id'] ?? $this->patient->id;
@@ -33,9 +34,9 @@ $inrResult = $api->getLabResultTypeResult($patientId, $eventId, "INR");
         if (isset($results)) {
             echo \CHtml::hiddenField('Element_OphTrOperationchecklists_Admission[checklistResults][' . $question->id . '][id]', @$results[$question->id]->id);
         }
-        echo \CHtml::hiddenField('Element_OphTrOperationchecklists_Admission[checklistResults]['. $question->id . '][question_id]', $question->id);
-        echo \CHtml::hiddenField('Element_OphTrOperationchecklists_Admission[checklistResults][' . $question->id . '][answer_id]', @$results[$question->id]->answer_id, array('id'=> 'result_answer_id' . 'Element_OphTrOperationchecklists_Admission[checklistResults]' . $question->id));
-        echo \CHtml::hiddenField('Element_OphTrOperationchecklists_Admission[checklistResults][' . $question->id . '][answer]', @$results[$question->id]->answer, array('id'=> 'result_answer' . 'Element_OphTrOperationchecklists_Admission[checklistResults]' . $question->id));
+        echo \CHtml::hiddenField('Element_OphTrOperationchecklists_Admission[checklistResults][' . $question->id . '][question_id]', $question->id);
+        echo \CHtml::hiddenField('Element_OphTrOperationchecklists_Admission[checklistResults][' . $question->id . '][answer_id]', @$results[$question->id]->answer_id, array('id' => 'result_answer_id' . 'Element_OphTrOperationchecklists_Admission[checklistResults]' . $question->id));
+        echo \CHtml::hiddenField('Element_OphTrOperationchecklists_Admission[checklistResults][' . $question->id . '][answer]', @$results[$question->id]->answer, array('id' => 'result_answer' . 'Element_OphTrOperationchecklists_Admission[checklistResults]' . $question->id));
         ?>
         <tr>
             <td colspan="3">
@@ -45,7 +46,7 @@ $inrResult = $api->getLabResultTypeResult($patientId, $eventId, "INR");
                 <?php if ($question->is_comment_field_required) : ?>
                     <?php $comment_button_id = $model_relation . $question->id . '_comment'; ?>
                     <div class="cols-full ">
-                        <button id="<?= $comment_button_id.'_button' ?>"
+                        <button id="<?= $comment_button_id . '_button' ?>"
                                 type="button"
                                 class="button js-add-comments"
                                 style="<?php if (isset($results[$question->id]->comment) && @$results[$question->id]->comment != '') :
@@ -59,7 +60,7 @@ $inrResult = $api->getLabResultTypeResult($patientId, $eventId, "INR");
                              style="<?php if (! (isset($results[$question->id]->comment) && @$results[$question->id]->comment != '')) :
                                     ?>display: none;<?php
                                     endif; ?>"
-                             data-comment-button="#<?= $comment_button_id.'_button' ?>">
+                             data-comment-button="#<?= $comment_button_id . '_button' ?>">
                             <?=\CHtml::textArea($name_stub . '[' . $question->id . '][comment]', @$results[$question->id]->comment, array(
                                 'class' => 'autosize cols-full js-comment-field',
                                 'rows' => 1,
@@ -82,7 +83,7 @@ $inrResult = $api->getLabResultTypeResult($patientId, $eventId, "INR");
                 <?= CHtml::textField(
                     $name_stub . '[' . $question->id . ']' . '[' . $relation . ']'  . '[blood_pressure_systolic]',
                     isset($element) ? $element->blood_pressure_systolic : '',
-                    ['class' => "cols-4", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    ['class' => "cols-4", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'style' => 'display:inline-block;',
                         'tabindex' => '1']
                 ); ?>
@@ -90,8 +91,8 @@ $inrResult = $api->getLabResultTypeResult($patientId, $eventId, "INR");
                 <?= CHtml::textField(
                     $name_stub . '[' . $question->id . ']' . '[' . $relation . ']'  . '[blood_pressure_diastolic]',
                     isset($element) ? $element->blood_pressure_diastolic : '',
-                    ['class' => "cols-4", 'autocomplete' => Yii::app()->params['html_autocomplete'],
-                        'style' => 'display:inline-block;',
+                    ['class' => "cols-4", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                        'style' => 'display:inline - block;',
                         'tabindex' => '2']
                 ); ?>
             </td>
@@ -104,7 +105,7 @@ $inrResult = $api->getLabResultTypeResult($patientId, $eventId, "INR");
                 <?= CHtml::textField(
                     $name_stub . '[' . $question->id . ']' . '[' . $relation . ']' . '[pulse]',
                     isset($element) ? $element->pulse : '',
-                    ['class' => "cols-4", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    ['class' => "cols-4", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'tabindex' => '3']
                 ); ?>
             </td>
@@ -117,7 +118,7 @@ $inrResult = $api->getLabResultTypeResult($patientId, $eventId, "INR");
                 <?= CHtml::textField(
                     $name_stub . '[' . $question->id . ']' . '[' . $relation . ']' . '[temperature]',
                     isset($element) ? $element->temperature : '',
-                    ['class' => "cols-4", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    ['class' => "cols-4", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'tabindex' => '4']
                 ); ?>
             </td>
@@ -132,7 +133,7 @@ $inrResult = $api->getLabResultTypeResult($patientId, $eventId, "INR");
                 <?= CHtml::textField(
                     $name_stub . '[' . $question->id . ']' . '[' . $relation . ']' . '[respiration]',
                     isset($element) ? $element->respiration : '',
-                    ['class' => "cols-4", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    ['class' => "cols-4", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'tabindex' => '5']
                 ); ?>
             </td>
@@ -145,7 +146,7 @@ $inrResult = $api->getLabResultTypeResult($patientId, $eventId, "INR");
                 <?= CHtml::textField(
                     $name_stub . '[' . $question->id . ']' . '[' . $relation . ']' . '[o2_sat]',
                     isset($element) ? $element->o2_sat : '',
-                    ['class' => "cols-4", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    ['class' => "cols-4", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'tabindex' => '6']
                 ); ?>
             </td>
@@ -158,7 +159,7 @@ $inrResult = $api->getLabResultTypeResult($patientId, $eventId, "INR");
                 <?= CHtml::textField(
                     $name_stub . '[' . $question->id . ']' . '[' . $relation . ']' . '[ews]',
                     isset($element) ? $element->ews : '',
-                    ['class' => "cols-4", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    ['class' => "cols-4", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'tabindex' => '7']
                 ); ?>
             </td>
@@ -173,7 +174,7 @@ $inrResult = $api->getLabResultTypeResult($patientId, $eventId, "INR");
                 <?= CHtml::textField(
                     $name_stub . '[' . $question->id . ']' . '[' . $relation . ']' . '[blood_glucose]',
                     isset($element) ? $element->blood_glucose : '',
-                    ['class' => "cols-4", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    ['class' => "cols-4", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'tabindex' => '8']
                 ); ?>
             </td>
@@ -186,7 +187,7 @@ $inrResult = $api->getLabResultTypeResult($patientId, $eventId, "INR");
                 <?= CHtml::textField(
                     $name_stub . '[' . $question->id . ']' . '[' . $relation . ']' . '[hba1c]',
                     isset($element) ? $element->hba1c : '',
-                    ['class' => "cols-4", 'autocomplete' => Yii::app()->params['html_autocomplete'],
+                    ['class' => "cols-4", 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
                         'tabindex' => '9']
                 ); ?>
             </td>

@@ -174,7 +174,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
         $output_type_map = [
             \DocumentOutput::TYPE_PRINT => 'Print',
             \DocumentOutput::TYPE_DOCMAN => 'Docman',
-            \DocumentOutput::TYPE_INTERNAL_REFFERAL => 'Internal Referral',
+            \DocumentOutput::TYPE_INTERNAL_REFERRAL => 'Internal Referral',
         ];
         return array_key_exists($type, $output_type_map)
             ? $output_type_map[$type]
@@ -192,7 +192,7 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
                 $row['link'] = Yii::app()->createURL('/OphLeEpatientletter/default/view/' . $row['l2_event_id']);
             }
 
-            $row['identifier'] = $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $row['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
+            $row['identifier'] = $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $row['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
             $row['all_ids'] = PatientIdentifierHelper::getAllPatientIdentifiersForReports($row['patient_id']);
 
             $this->letters[] = $row;
@@ -341,11 +341,11 @@ class OphCoCorrespondence_ReportLetters extends BaseReport
     {
         $output = $this->description() . "\n\n";
 
-        $output .= $this->getPatientIdentifierPrompt().','.Patient::model()->getAttributeLabel('dob').','.Patient::model()->getAttributeLabel('first_name').','.Patient::model()->getAttributeLabel('last_name').','.Patient::model()->getAttributeLabel('gender').",Consultant's name,Site,Date,Type,Status,Link," . $this->getAttributeLabel('all_ids') . "\n";
+        $output .= $this->getPatientIdentifierPrompt() . ',' . Patient::model()->getAttributeLabel('dob') . ',' . Patient::model()->getAttributeLabel('first_name') . ',' . Patient::model()->getAttributeLabel('last_name') . ',' . Patient::model()->getAttributeLabel('gender') . ",Consultant's name,Site,Date,Type,Status,Link," . $this->getAttributeLabel('all_ids') . "\n";
 
         foreach ($this->letters as $letter) {
-            $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'], $letter['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
-            $output .= "\"{$patient_identifier_value}\",\"".($letter['dob'] ? date('j M Y', strtotime($letter['dob'])) : 'Unknown')."\",\"{$letter['first_name']}\",\"{$letter['last_name']}\",\"{$letter['gender']}\",\"{$letter['cons_first_name']} {$letter['cons_last_name']}\",\"".(isset($letter['name']) ? $letter['name'] : 'N/A').'","'.date('j M Y', strtotime($letter['created_date'])).'","'.$letter['type'].'","'.ucfirst($letter['status']).'","'.$letter['link'].'","'.$letter['all_ids']."\"\n";
+            $patient_identifier_value = PatientIdentifierHelper::getIdentifierValue(PatientIdentifierHelper::getIdentifierForPatient(SettingMetadata::model()->getSetting('display_primary_number_usage_code'), $letter['patient_id'], $this->user_institution_id, $this->user_selected_site_id));
+            $output .= "\"{$patient_identifier_value}\",\"" . ($letter['dob'] ? date('j M Y', strtotime($letter['dob'])) : 'Unknown') . "\",\"{$letter['first_name']}\",\"{$letter['last_name']}\",\"{$letter['gender']}\",\"{$letter['cons_first_name']} {$letter['cons_last_name']}\",\"" . (isset($letter['name']) ? $letter['name'] : 'N/A') . '","' . date('j M Y', strtotime($letter['created_date'])) . '","' . $letter['type'] . '","' . ucfirst($letter['status']) . '","' . $letter['link'] . '","' . $letter['all_ids'] . "\"\n";
         }
 
         return $output;

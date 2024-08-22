@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -19,15 +20,27 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
 
     public function actionEdit()
     {
+        $institution = Institution::model()->getCurrent();
+        $institution_id = $institution->id;
+        $subspecialty_id = Yii::app()->getRequest()->getParam('subspecialty_id');
+
+        // make sure only admin can accept institution_id from param
+        if ($this->checkAccess('admin')) {
+            $institution_id = \Yii::app()->request->getParam(
+                'institution_id',
+                $institution_id
+            );
+        }
+
         $procedures = Procedure::model()->findAll(['order' => 'term']);
         $procedure_options = array_map(function ($procedure) {
             return $procedure->getAttributes(["id", "term"]);
-        },
-        $procedures);
+        }, $procedures);
+
         $this->jsVars['procedure_options'] = $procedure_options;
 
+        $institutions = Institution::model()->getTenanted();
         if ($this->checkAccess('admin')) {
-            $institutions = Institution::model()->getTenanted();
             $institution_options = array_map(
                 static function ($institution) {
                     return $institution->getAttributes(["id", "name"]);
@@ -35,13 +48,10 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
                 $institutions
             );
         } else {
-            $institution = Institution::model()->getCurrent();
             $institution_options = [$institution->getAttributes(["id", "name"])];
         }
 
         $this->jsVars['institution_options'] = $institution_options;
-
-        $subspecialty_id = Yii::app()->getRequest()->getParam('subspecialty_id', null);
 
         if (Yii::app()->request->isPostRequest) {
             $transaction = Yii::app()->db->beginTransaction();
@@ -50,28 +60,27 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
                 $assignments = Yii::app()->request->getParam('ProcedureSubspecialtyAssignment', []);
 
                 $ids = [];
-                foreach ($assignments as $key => $assignment) {
-                    $procedureSubspecialtyAssignment = ProcedureSubspecialtyAssignment::model()->findByPk($assignment['id']);
-                    if (!$procedureSubspecialtyAssignment) {
-                        $procedureSubspecialtyAssignment = new ProcedureSubspecialtyAssignment();
-                        $procedureSubspecialtyAssignment['id'] = null;
+                foreach ($assignments as $key => $assignment_id) {
+                    $assignment = ProcedureSubspecialtyAssignment::model()->findByPk($assignment_id['id']);
+                    if (!$assignment) {
+                        $assignment = new ProcedureSubspecialtyAssignment();
                     }
 
-                    $procedureSubspecialtyAssignment->proc_id = $assignment['procedure_id'];
-                    $procedureSubspecialtyAssignment->display_order = $display_orders[$key];
-                    $procedureSubspecialtyAssignment->subspecialty_id = Yii::app()->request->getParam('subspecialty_id', null);
-                    $procedureSubspecialtyAssignment->need_eur = $assignment['need_eur'] ?? 0;
+                    $assignment->proc_id = $assignment_id['procedure_id'];
+                    $assignment->display_order = $display_orders[$key];
+                    $assignment->subspecialty_id = $subspecialty_id;
+                    $assignment->need_eur = $assignment_id['need_eur'] ?? 0;
 
                     if ($this->checkAccess('admin')) {
-                        $procedureSubspecialtyAssignment->institution_id = $assignment['institution_id'];
+                        $assignment->institution_id = $assignment_id['institution_id'];
                     } else {
-                        $procedureSubspecialtyAssignment->institution_id = Institution::model()->getCurrent()->id;
+                        $assignment->institution_id = $institution_id;
                     }
-                    if (!$procedureSubspecialtyAssignment->save()) {
-                        $errors[] = $procedureSubspecialtyAssignment->getErrors();
+                    if (!$assignment->save()) {
+                        $errors[] = $assignment->getErrors();
                     }
 
-                    $ids[] = $procedureSubspecialtyAssignment->id;
+                    $ids[] = $assignment->id;
                 }
 
                 // Delete items
@@ -82,10 +91,8 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
                 }
 
                 $criteria->compare('subspecialty_id', $subspecialty_id);
+                $criteria->compare('institution_id', $institution_id);
 
-                if (!$this->checkAccess('admin')) {
-                    $criteria->compare('institution_id', Institution::model()->getCurrent()->id);
-                }
                 $to_delete = ProcedureSubspecialtyAssignment::model()->findAll($criteria);
 
                 foreach ($to_delete as $item) {
@@ -113,7 +120,7 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
                 $transaction->rollback();
                 foreach ($errors as $error) {
                     foreach ($error as $attribute => $error_array) {
-                        $display_errors = '<strong>'.$procedureSubspecialtyAssignment->getAttributeLabel($attribute) .
+                        $display_errors = '<strong>' . $assignment->getAttributeLabel($attribute) .
                           ':</strong> ' . implode(', ', $error_array);
                         Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
                     }
@@ -128,15 +135,8 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
         $criteria = new CDbCriteria();
         $criteria->order = 'display_order';
         $criteria->compare('subspecialty_id', $subspecialty_id);
-        if (!$this->checkAccess('admin')) {
-            $criteria->compare('institution_id', Institution::model()->getCurrent()->id);
-        }
+        $criteria->compare('institution_id', $institution_id);
 
-        if ((int)ProcedureSubspecialtyAssignment::model()->count($criteria) === 0) {
-            $criteria->condition = '';
-            $criteria->params = array();
-            $criteria->compare('subspecialty_id', $subspecialty_id);
-        }
         $this->render('/edit_ProcedureSubspecialtyAssignment', [
         'dataProvider' => new CActiveDataProvider('ProcedureSubspecialtyAssignment', [
         'criteria' => $criteria,
@@ -145,6 +145,8 @@ class ProcedureSubspecialtyAssignmentController extends \BaseAdminController
         'subspecialty_id' => $subspecialty_id,
         'subspecialities' => Subspecialty::model()->findAll(),
         'procedure_list' => $procedures,
+        'institutions' => $institutions,
+        'institution_id' => $institution_id
         ]);
     }
 }

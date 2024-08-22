@@ -22,7 +22,7 @@
         );
         ?>
     <input type="text"
-        autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
+        autocomplete="<?php echo SettingMetadata::model()->getSetting('html_autocomplete') ?>"
         name="search" id="js-pgd-search" placeholder="Search PGD/PSDs..."
         value="<?php echo !empty($search) ? strip_tags($search) : ''; ?>"
     />

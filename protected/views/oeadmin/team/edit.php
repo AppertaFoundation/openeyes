@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
     $assigned_users = $team->users ? : $team->temp_users ? : array();
@@ -20,7 +22,7 @@
     $assigned_user_ids = array_map(function ($assigned_user) {
         return $assigned_user->id;
     }, $assigned_users);
-    $assigned_users = $assigned_user_ids ? $this->api->getInstitutionUserAuth(null, true, $assigned_user_ids) : array();
+    $assigned_users = $assigned_user_ids ? $this->api->getInstitutionUserAuth(true, $assigned_user_ids) : array();
     $assigned_users = array_map(function ($assigned_user) {
         return $assigned_user->user->getUserPermissionDetails();
     }, $assigned_users);
@@ -41,6 +43,9 @@
             ),
         ]
     );
+
+    $can_change_activation = $team->isNewRecord
+                           || $this->checkAccess('OprnSetTeamActivation', $team->id) || $this->checkAccess('Super Team Manager');
     ?>
 <div class="row divider">
     <div class="cols-full">
@@ -54,10 +59,12 @@
                                 $team,
                                 'attributes[name]',
                                 [
-                                    'autocomplete' => Yii::app()->params['html_autocomplete'],
-                                    'class' => 'cols-full'
+                                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                                    'class' => 'cols-full',
+                                    'data-test' => 'team-name',
                                 ]
-                            );?>
+                            )
+                            ?>
                     </td>
                 </tr>
                 <tr>
@@ -68,21 +75,32 @@
                                 $team->contact ? : new Contact(),
                                 'attributes[email]',
                                 [
-                                    'autocomplete' => Yii::app()->params['html_autocomplete'],
-                                    'class' => 'cols-full'
+                                    'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'),
+                                    'class' => 'cols-full',
+                                    'data-test' => 'team-email',
                                 ]
-                            );?>
+                            )
+                            ?>
                     </td>
                 </tr>
                 <tr>
                     <td>Active*</td>
                     <td>
+                        <?php
+                        if (!$can_change_activation) { ?>
+                            <input type="hidden" name="Team[attributes][active]" value="<?= $team->active ? '1' : '0' ?>" />
+                        <?php } ?>
                         <?=
                             \CHtml::activeCheckBox(
                                 $team,
                                 'attributes[active]',
-                                array('checked' => $team->isNewRecord ? true : $team->active)
-                            );?>
+                                [
+                                    'checked' => $team->isNewRecord ? true : $team->active,
+                                    'data-test' => 'team-active',
+                                    'disabled' => !$can_change_activation,
+                                ]
+                            )
+                            ?>
                     </td>
                 </tr>
             </tbody>
@@ -90,7 +108,7 @@
     </div>
 </div>
 <?php
-    $this->renderPartial('/default/_user_assignment', array('users' => $users, 'assigned_users' => $assigned_users, 'prefix' => $prefix));
+    $this->renderPartial('/default/_user_team_assignment', array('team' => $team, 'super_user' => $super_user, 'users' => $users, 'assigned_users' => $assigned_users, 'prefix' => $prefix));
 if ($team->is_childTeam) {
     ?>
 <div class="row divider">

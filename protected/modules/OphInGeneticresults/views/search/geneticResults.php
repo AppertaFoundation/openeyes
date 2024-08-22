@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="box admin">
   <h2>Genetic test/result</h2>
@@ -23,7 +25,7 @@
         <?php
         $institution = Institution::model()->getCurrent();
         $selected_site_id = Yii::app()->session['selected_site_id'];
-        $primary_identifier_usage_type = Yii::app()->params['display_primary_number_usage_code'];
+        $primary_identifier_usage_type = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
 
         $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
           'id' => 'searchform',
@@ -150,7 +152,7 @@
               </tr>
               </tbody>
             </table>
-        <button id="search_tests" class="secondary right" type="submit">
+        <button id="search_tests" class="secondary right blue hint" type="submit">
           Search
         </button>
       </div>
@@ -169,91 +171,98 @@
           <span class="column_no_results">
                   <?php if (!empty($_GET)) { ?>
                     No results found.
-                    <?php } else { ?>
+                  <?php } else { ?>
                     Enter criteria to search for genetic results.
-                    <?php } ?>
+                  <?php } ?>
           </span>
         </div>
         <?php } ?>
 
         <?php if (!empty($genetic_tests)) { ?>
-        <table class="standard">
-          <thead>
-          <tr>
-            <th><?=\CHtml::link('Result date', $this->getUri(array('sortby' => 'date'))) ?></th>
-<!--            <th>--><?php //echo CHtml::link('Subject Id', $this->getUri(array('sortby' => 'genetics-patient-id'))) ?><!--</th>-->
-            <th><?=\CHtml::link('Hospital no', $this->getUri(array('sortby' => 'hos_num'))) ?></th>
-            <th><?=\CHtml::link('Family Id', $this->getUri(array('sortby' => 'genetics-pedigree-id'))) ?></th>
-            <th><?=\CHtml::link('Patient name', $this->getUri(array('sortby' => 'patient_name'))) ?></th>
-            <th>Maiden Name</th>
-            <th><?=\CHtml::link('Gene', $this->getUri(array('sortby' => 'gene'))) ?></th>
-<!--            <th>--><?php //echo CHtml::link('Method', $this->getUri(array('sortby' => 'method'))) ?><!--</th>-->
-            <th><?=\CHtml::link('Hom', $this->getUri(array('sortby' => 'homo'))) ?></th>
-        <th><?=\CHtml::link('Base Change', $this->getUri(array('sortby' => 'base_change'))) ?></th>
-        <th><?=\CHtml::link('Amino Acid Change', $this->getUri(array('sortby' => 'amino_acid_change'))) ?></th>
-<!--            <th>--><?php //echo CHtml::link('Result', $this->getUri(array('sortby' => 'result'))) ?><!--</th>-->
-            <th><?=\CHtml::link('Effect', $this->getUri(array('sortby' => 'effect'))) ?></th>
-          </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($genetic_tests as $i => $test) { ?>
-            <tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInGeneticresults/default/view/' . $test->event_id) ?>">
-                  <td><?php echo $test->NHSDate('result_date') ?></td>
-<!--                  <td>--><?php //echo CHtml::link($test->event->episode->patient->geneticsPatient->id, '/Genetics/subject/view/id/' . $test->event->episode->patient->geneticsPatient->id ); ?><!--</td>-->
-                  <td>
-                      <?php $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
-                          $test->event->episode->patient->id, $institution->id, $selected_site_id); ?>
-                      <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?>
-                      <?php $this->widget(
-                          'application.widgets.PatientIdentifiers',
-                          [
-                              'patient' => $test->event->episode->patient,
-                              'show_all' => true,
-                              'tooltip_size' => 'small'
-                          ]); ?>
-                  </td>
-                <td>
-                    <?php foreach ($test->event->episode->patient->geneticsPatient->pedigrees as $i => $pedigrees) : ?>
-                        <?php if ($i > 0) {
-                            echo ", ";
-                        } ?>
-                        <?=\CHtml::link($pedigrees->id, '/Genetics/pedigree/view/id/' . $pedigrees->id); ?>
-                    <?php endforeach; ?>
-                </td>
-                  <td><?php echo strtoupper($test->event->episode->patient->last_name) ?>, <?php echo $test->event->episode->patient->first_name ?></td>
-                  <td><?php echo $test->event->episode->patient->contact->maiden_name ?></td>
-                  <td><?php echo str_replace(',', ', ', $test->gene->name) ?></td>
-<!--                  <td>--><?php //echo $test->method->name ?><!--</td>-->
-                  <td><?php echo $test->homo ? 'Yes' : 'No' ?></td>
-                  <td><?php echo $test->base_change ?></td>
-                  <td><?php echo $test->amino_acid_change ?></td>
-<!--                <td>--><?php //echo $test->result ?><!--</td>-->
-                <td><?php echo $test->effect->name ?></td>
-            </tr>
-            <?php } ?>
-          </tbody>
-          <tfoot class="pagination-container">
-          <tr>
-              <td colspan="3">
-                  <?php $to = ($pagination->getItemCount() < $pagination->limit) ? $pagination->getItemCount() : ($pagination->limit * ($pagination->getCurrentPage()+1)); ?>
-                  Showing <?php echo $pagination->offset + 1; ?> to <?php echo $to; ?> of <?php echo $pagination->getItemCount(); ?>
-              </td>
-            <td colspan="6">
-                <?php
-                    $this->widget('CLinkPager', array(
-                        'currentPage' => $pagination->getCurrentPage(),
-                        'itemCount' => $pagination->getItemCount(),
-                        'pageSize' => $pagination->getPageSize(),
-                        'maxButtonCount' => 10,
-                        'header'=> '',
-                        'htmlOptions'=>array('class'=>'pagination right'),
-                        'selectedPageCssClass' => 'current'
-                    ));
-                ?>
-            </td>
-          </tr>
-          </tfoot>
-        </table>
+            <div class="cols-12 column">
+                <table class="standard">
+                    <thead>
+                    <tr>
+                        <th><?=\CHtml::link('Result date', $this->getUri(array('sortby' => 'date'))) ?></th>
+                        <!--            <th>--><?php //echo CHtml::link('Subject Id', $this->getUri(array('sortby' => 'genetics-patient-id'))) ?><!--</th>-->
+                        <th><?=\CHtml::link('Hospital no', $this->getUri(array('sortby' => 'hos_num'))) ?></th>
+                        <th><?=\CHtml::link('Family Id', $this->getUri(array('sortby' => 'genetics-pedigree-id'))) ?></th>
+                        <th><?=\CHtml::link('Patient name', $this->getUri(array('sortby' => 'patient_name'))) ?></th>
+                        <th>Maiden Name</th>
+                        <th><?=\CHtml::link('Gene', $this->getUri(array('sortby' => 'gene'))) ?></th>
+                        <!--            <th>--><?php //echo CHtml::link('Method', $this->getUri(array('sortby' => 'method'))) ?><!--</th>-->
+                        <th><?=\CHtml::link('Hom', $this->getUri(array('sortby' => 'homo'))) ?></th>
+                        <th><?=\CHtml::link('Base Change', $this->getUri(array('sortby' => 'base_change'))) ?></th>
+                        <th><?=\CHtml::link('Amino Acid Change', $this->getUri(array('sortby' => 'amino_acid_change'))) ?></th>
+                        <!--            <th>--><?php //echo CHtml::link('Result', $this->getUri(array('sortby' => 'result'))) ?><!--</th>-->
+                        <th><?=\CHtml::link('Effect', $this->getUri(array('sortby' => 'effect'))) ?></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($genetic_tests as $i => $test) { ?>
+                        <tr class="clickable" data-uri="<?php echo Yii::app()->createUrl('/OphInGeneticresults/default/view/' . $test->event_id) ?>">
+                            <td><?php echo $test->NHSDate('result_date') ?></td>
+                            <!--                  <td>--><?php //echo CHtml::link($test->event->episode->patient->geneticsPatient->id, '/Genetics/subject/view/id/' . $test->event->episode->patient->geneticsPatient->id ); ?><!--</td>-->
+                            <td>
+                                <?php $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
+                                    SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+                                    $test->event->episode->patient->id,
+                                    $institution->id,
+                                    $selected_site_id
+                                ); ?>
+                                <?= PatientIdentifierHelper::getIdentifierValue($primary_identifier) ?>
+                                <?php $this->widget(
+                                    'application.widgets.PatientIdentifiers',
+                                    [
+                                    'patient' => $test->event->episode->patient,
+                                    'show_all' => true,
+                                    'tooltip_size' => 'small'
+                                    ]
+                                ); ?>
+                        </td>
+                            <td>
+                                <?php foreach ($test->event->episode->patient->geneticsPatient->pedigrees as $i => $pedigrees) : ?>
+                                    <?php if ($i > 0) {
+                                        echo ", ";
+                                    } ?>
+                                    <?=\CHtml::link($pedigrees->id, '/Genetics/pedigree/view/id/' . $pedigrees->id); ?>
+                                <?php endforeach; ?>
+                            </td>
+                            <td><?php echo strtoupper($test->event->episode->patient->last_name) ?>, <?php echo $test->event->episode->patient->first_name ?></td>
+                            <td><?php echo $test->event->episode->patient->contact->maiden_name ?></td>
+                            <td><?php echo str_replace(',', ', ', $test->gene->name) ?></td>
+                            <!--                  <td>--><?php //echo $test->method->name ?><!--</td>-->
+                            <td><?php echo $test->homo ? 'Yes' : 'No' ?></td>
+                            <td><?php echo $test->base_change ?></td>
+                            <td><?php echo $test->amino_acid_change ?></td>
+                            <!--                <td>--><?php //echo $test->result ?><!--</td>-->
+                            <td><?php echo $test->effect->name ?></td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                    <tfoot class="pagination-container">
+                    <tr>
+                        <td colspan="3">
+                            <?php $to = ($pagination->getItemCount() < $pagination->limit) ? $pagination->getItemCount() : ($pagination->limit * ($pagination->getCurrentPage() + 1)); ?>
+                            Showing <?php echo $pagination->offset + 1; ?> to <?php echo $to; ?> of <?php echo $pagination->getItemCount(); ?>
+                        </td>
+                        <td colspan="6">
+                            <?php
+                            $this->widget('LinkPager', array(
+                                'currentPage' => $pagination->getCurrentPage(),
+                                'itemCount' => $pagination->getItemCount(),
+                                'pageSize' => $pagination->getPageSize(),
+                                'maxButtonCount' => 10,
+                                'header' => '',
+                                'htmlOptions' => array('class' => 'pagination right'),
+                                'selectedPageCssClass' => 'current'
+                            ));
+                            ?>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
         <?php } ?>
   </form>
 </div>

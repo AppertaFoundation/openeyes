@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
 use RRule\RRule;
 
 /**
@@ -24,24 +25,33 @@ use RRule\RRule;
  * The followings are the available columns in table:
  *
  * @property int                                $id
- * @property int                                $patient_identifier_type_id
  * @property string                             $name
- * @property string                             $rrule
  * @property string                             $description
  * @property string                             $worklist_name
+ * @property string                             $rrule
  * @property string                             $start_time
  * @property string                             $end_time
  * @property DateTime                           $active_from
  * @property DateTime                           $active_until
+ * @property bool                               $scheduled
+ * @property int                                $display_order
+ * @property int                                $patient_identifier_type_id
+ * @property int                                $pathway_type_id
+ *
+ * The followings are the available model relations:
+ *
  * @property Worklist[]                         $worklists
  * @property WorklistDefinitionMapping[]        $mappings
  * @property WorklistDefinitionMappingp[]       $displayed_mappings
  * @property WorklistDefinitionMappingp[]       $hidden_mappings
  * @property WorklistDefinitionDisplayContext[] $display_contexts
  * @property PatientIdentifierType $patient_identifier_type
+ * @property PathwayType $pathway_type
  */
 class WorklistDefinition extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */
@@ -77,12 +87,12 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             $this->name = $clean_name;
         }
 
-        if ( preg_match('/^(\d{2}):(\d{2})$/', $this->start_time)) {
+        if (preg_match('/^(\d{2}):(\d{2})$/', $this->start_time)) {
             // the format is 00:00, we need to append :00
             $this->start_time .= ':00';
         }
 
-        if ( preg_match('/^(\d{2}):(\d{2})$/', $this->end_time)) {
+        if (preg_match('/^(\d{2}):(\d{2})$/', $this->end_time)) {
             // the format is 00:00, we need to append :00
             $this->end_time .= ':00';
         }
@@ -98,12 +108,12 @@ class WorklistDefinition extends BaseActiveRecordVersioned
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, rrule, worklist_name, start_time, end_time, description, patient_identifier_type_id', 'safe'),
+            array('name, description, worklist_name, rrule, start_time, end_time, patient_identifier_type_id', 'safe'),
             array('rrule', 'validateRrule'),
-            array('name, rrule, start_time, end_time, patient_identifier_type_id', 'required'),
+            array('name, rrule, start_time, end_time, patient_identifier_type_id, pathway_type_id', 'required'),
             array('name', 'length', 'max' => 100),
             array('description', 'length', 'max' => 1000),
-            array('start_time, end_time', 'type', 'type'=>'time', 'timeFormat'=>'hh:mm:ss', 'except' => 'sortDisplayOrder'),
+            array('start_time, end_time', 'type', 'type' => 'time', 'timeFormat' => 'hh:mm:ss', 'except' => 'sortDisplayOrder'),
             array('active_from, active_until', 'OEDateValidator'),
             array(
                 'active_from',
@@ -153,6 +163,7 @@ class WorklistDefinition extends BaseActiveRecordVersioned
             ),
             'display_contexts' => array(self::HAS_MANY, 'WorklistDefinitionDisplayContext', 'worklist_definition_id'),
             'patient_identifier_type' => array(self::BELONGS_TO, 'PatientIdentifierType', 'patient_identifier_type_id'),
+            'pathway_type' => array(self::BELONGS_TO, 'PathwayType', 'pathway_type_id'),
         );
     }
 
@@ -294,6 +305,8 @@ class WorklistDefinition extends BaseActiveRecordVersioned
                 },
             ));
         }
+
+        return "N/A";
     }
 
     /**

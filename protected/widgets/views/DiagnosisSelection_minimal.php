@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 ?>
+<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', true, -1); ?>"></script>
 <?php $class_field = "{$class}_{$field}"; ?>
 
 <?php if (!$nowrapper) {?>
@@ -86,62 +87,18 @@
             <?php }?>
             <div class="cols-<?php echo $layoutColumns['field'];?> column end">
     <?php }?>
-            <div class="autocomplete-row" id="div_<?php echo "{$class}_{$field}_autocomplete_row"?>">
-                <?php
-                $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                        'name' => "{$class}[$field]",
-                        'id' => "{$class_field}_0",
-                        'value' => '',
-                        'source' => "js:function(request, response) {
-							$.ajax({
-								'url': '".Yii::app()->createUrl('/disorder/autocomplete')."',
-								'type':'GET',
-								'data':{'term': request.term, 'code': '$code'},
-								'success':function(data) {
-									var result = [];
-
-									for (var i = 0; i < data.length; i++) {
-										var ok = true;
-										$('#selected_diagnoses').children('input').map(function() {
-											if ($(this).val() == data[i]['id']) {
-												ok = false;
-											}
-										});
-										if (ok) {
-											result.push(data[i]);
-										}
-									}
-
-									response(result);
-								}
-							});
-						}",
-                        'options' => array(
-                                'minLength' => '3',
-                                'select' => "js:function(event, ui) {
-
-									if ($('#DiagnosisSelection_disorder_id_secondary_to').is(':visible')) {
-										var primary_selected = $('#{$class_field}').children('option:selected');
-										if (primary_selected.val() != 'NONE') {
-											".($callback ? $callback.'(primary_selected.val(), primary_selected.text());' : '').'
-										}
-									}
-									'.($callback ? $callback.'(ui.item.id, ui.item.value);' : '')."
-									$('#{$class_field}_0').val('');
-									$('#{$class_field}').children('option').map(function() {
-										if ($(this).val() == ui.item.id) {
-											$(this).remove();
-										}
-									});
-									return false;
-								}",
-                        ),
-                        'htmlOptions' => array(
-                                'placeholder' => $placeholder,
-                                'class' => "cols-12",
-                        ),
-                ));
-                ?>
+                <div class="autocomplete-row" id="div_<?php echo "{$class}_{$field}_autocomplete_row"?>">
+                    <?php
+                        $this->widget('application.widgets.AutoCompleteSearch',
+                            [
+                                'field_name' => "{$class}[$field]",
+                                'htmlOptions' =>
+                                    [
+                                        'placeholder' => $placeholder,
+                                    ],
+                                'layoutColumns' => ['field' => 12]
+                            ]);
+                        ?>
             </div>
     <?php if (!$nowrapper) {?>
             </div>
@@ -241,4 +198,37 @@
             }
         });
     <?php }?>
+</script>
+
+<script type="text/javascript">
+    OpenEyes.UI.AutoCompleteSearch.init({
+        input: $(`[id="${'<?= "{$class}[$field]" ?>'}"]`),
+        url: '/disorder/autocomplete',
+        params: {
+            'code': function () {return "<?= $code ?>"},
+        },
+        maxHeight: '200px',
+        onSelect: function() {
+            let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+            let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+            const callback = '<?= $callback ?>';
+
+            if ($('#DiagnosisSelection_disorder_id_secondary_to').is(':visible')) {
+                var primary_selected = $('#classField').children('option:selected');
+                if (primary_selected.val() != 'NONE') {
+                    if (callback)
+                        <?= $callback?>(primary_selected.val(), primary_selected.text());
+                }
+            }
+            if (callback)
+                <?= $callback?>(response.id, response.value);
+            $(`[id="${'<?= "{$class}[$field]" ?>'}"]`).val('');
+            $('#<?= $class_field ?>').children('option').map(function() {
+                if ($(this).val() == response.id) {
+                    $(this).remove();
+                }
+            });
+        }
+    });
 </script>

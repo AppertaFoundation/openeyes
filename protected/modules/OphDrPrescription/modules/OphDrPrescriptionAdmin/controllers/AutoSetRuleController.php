@@ -55,7 +55,7 @@ class AutoSetRuleController extends BaseAdminController
 
         $data_provider->pagination = $pagination;
 
-        $command = new PopulateAutoMedicationSetsCommand('PopulateAutoMedicationSets', new CConsoleCommandRunner());
+        $command = new \PopulateAutoMedicationSetsCommand('PopulateAutoMedicationSets', new CConsoleCommandRunner());
         $command_is_running = $command->actionCheckRunning();
 
         $this->render('/AutoSetRule/index', [
@@ -195,11 +195,12 @@ class AutoSetRuleController extends BaseAdminController
         $criteria = new \CDbCriteria();
 
         if (isset($filters['set_id']) && $filters['set_id']) {
-            $criteria->together = true;
             $criteria->with = ['medication', 'medicationSet'];
-
-            $criteria->addCondition('medication_set_id = :set_id');
+            $criteria->together = true;
+            $criteria->addCondition('medicationSet.id = :set_id');
             $criteria->params[':set_id'] = $filters['set_id'];
+            $criteria->order = 'medicationSet.id';
+            $criteria->limit = 20;
         }
 
         if (isset($filters['query']) && $filters['query']) {
@@ -212,6 +213,17 @@ class AutoSetRuleController extends BaseAdminController
 
         $unique_med = [];
 
+        $pagination = new CPagination($data_provider->totalItemCount);
+        $pagination->pageSize = 20;
+        $pagination->applyLimit($criteria);
+
+        $data_provider->pagination = $pagination;
+
+        ob_start();
+        $this->widget('LinkPager', ['pages' => $pagination]);
+        $pagination = ob_get_clean();
+        $data['pagination'] = $pagination;
+
         foreach ($data_provider->getData() as $set_item) {
             $item = $set_item->attributes;
             if (!in_array($item['medication_id'],$unique_med)){
@@ -222,25 +234,10 @@ class AutoSetRuleController extends BaseAdminController
                 $item['medication_id'] = $set_item->medication ? $set_item->medication->id : null;
 
                 $data['items'][] = $item;
-                array_push($unique_med,$item['medication_id']);
+                array_push($unique_med, $item['medication_id']);
             }
         }
-
-        $item_num = count($data['items']);
-
-        $pagination = new \CPagination($item_num ?? $data_provider->totalItemCount);
-        $pagination->pageSize = 20;
-
-        $data_provider->pagination = $pagination;
-
-        ob_start();
-        $this->widget('LinkPager', ['pages' => $pagination]);
-        $pagination = ob_get_clean();
-        $data['pagination'] = $pagination;
-
-        header('Content-type: application/json');
         echo CJSON::encode($data);
-        \Yii::app()->end();
     }
 
     /**
@@ -251,6 +248,7 @@ class AutoSetRuleController extends BaseAdminController
      */
     public function actionEdit($id = null)
     {
+        $limit = 20;
         $error = [];
         $asset_manager = \Yii::app()->getAssetManager();
         $base_assets_path = \Yii::getPathOfAlias('application.modules.OphDrPrescription.modules.OphDrPrescriptionAdmin.assets.js');
@@ -301,7 +299,7 @@ class AutoSetRuleController extends BaseAdminController
         $criteria->addCondition('medicationSet.id = :set_id');
         $criteria->params[':set_id'] = $set->id;
         $criteria->order = 'medicationSet.id';
-        $criteria->limit = 20;
+        $criteria->limit = $limit;
 
         if (isset($filters['query']) && $filters['query']) {
             $criteria->addSearchCondition('preferred_term', $filters['query']);
@@ -310,6 +308,8 @@ class AutoSetRuleController extends BaseAdminController
         $data_provider = new CActiveDataProvider('MedicationSetAutoRuleMedication', [
             'criteria' => $criteria,
         ]);
+
+        $item_count = $data_provider->totalItemCount;
 
         if (!empty($set->medicationSetAutoRuleMedications)) {
             $unique_med = [];
@@ -321,12 +321,13 @@ class AutoSetRuleController extends BaseAdminController
             }
 
             $set->medicationSetAutoRuleMedications = array_values($unique_med);
-            $item_num = count($set->medicationSetAutoRuleMedications);
-            $data_provider->setData($set->medicationSetAutoRuleMedications);
+            // show only first 20
+            $data_provider->setData(array_slice($set->medicationSetAutoRuleMedications, 0, $limit));
+            $data_provider->setTotalItemCount($item_count);
         }
 
-        $pagination = new CPagination($item_num ?? $data_provider->totalItemCount);
-        $pagination->pageSize = 20;
+        $pagination = new CPagination($item_count);
+        $pagination->pageSize = $limit;
         $pagination->applyLimit($criteria);
 
         $data_provider->pagination = $pagination;
@@ -345,7 +346,7 @@ class AutoSetRuleController extends BaseAdminController
 
     public function actionCheckRebuildIsRunning()
     {
-        $command = new PopulateAutoMedicationSetsCommand('PopulateAutoMedicationSets', new CConsoleCommandRunner());
+        $command = new \PopulateAutoMedicationSetsCommand('PopulateAutoMedicationSets', new CConsoleCommandRunner());
         echo $command->actionCheckRunning();
     }
 

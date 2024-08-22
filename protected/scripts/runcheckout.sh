@@ -15,6 +15,9 @@ if [ "$DIR" != "/tmp" ]; then
     exit 1
 fi
 
+# Set git to use ssh rather than git+ssh (this is needed for the git ls-remote command to work)
+export GIT_SSH_COMMAND="ssh"
+
 # Process commandline parameters
 SCRIPTDIR="" # will be passed in from oe-checkout.sh
 WROOT=""     # will be passed in from oe-checkout.sh
@@ -66,9 +69,17 @@ set -- "${PARAMS[@]}" # restore positional parameters
 
 ## Read in stored git config and modules config
 source "$SCRIPTDIR"/git.conf 2>/dev/null
+
 # if a custom config has been supplied (e.g, by a docker config) then use it, else use the default
 [ -f "/config/modules.conf" ] && MODULES_CONF="/config/modules.conf" || MODULES_CONF="$SCRIPTDIR/modules.conf"
 source "$MODULES_CONF"
+
+# Ensure that openeyes and eyedraw modules are included (the easiest way to do this is delete if they already exist, then add)
+delete=(openeyes)
+modules=("${modules[@]/$delete/}") # removes openeyes from modules list
+delete=(eyedraw)
+modules=("${modules[@]/$delete/}") # removes eyedraw from modules list
+modules=(openeyes eyedraw "${modules[@]}")
 
 # Set the modules path
 MODULEROOT=$WROOT/protected/modules
@@ -107,6 +118,11 @@ while [[ $# -gt 0 ]]; do
     --master | --m | -m)
         defaultbranch=master
         ## will use master baranches when the named branch does not exist for a module
+        ;;
+    --default-branch)
+        defaultbranch=$2
+        shift
+        shift
         ;;
     --merge) #merge an upstream branch after checkout
         mergebranch=$2
@@ -210,6 +226,11 @@ if [ $showhelp = 1 ]; then
     echo "  --develop "
     echo "           |-d   : If specified branch is not found, fallback to develop branch"
     echo "                   - default woud fallback to master"
+    echo "  --master "
+    echo "           |-m   : If specified branch is not found, fallback to master branch"
+    echo " --default-branch : Specify a default branch to fallback to if the specified branch"
+    echo "                   does not exist. Default is develop for live and test, master for"
+    echo "                   all other modes"
     echo "  --no-summary   : Do not display a summary of the checked-out modules after "
     echo "                   completion"
     echo "  --depth <int>  : Only clone/fetch to the given depth"

@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "element_procedurelist".
  *
@@ -32,6 +34,8 @@
  */
 class Element_OphTrOperationnote_Surgeon extends Element_OpNote
 {
+    use HasFactory;
+
     public $service;
     public $surgeonlist;
 
@@ -80,7 +84,7 @@ class Element_OphTrOperationnote_Surgeon extends Element_OpNote
         return array(
             'surgeon' => array(self::BELONGS_TO, 'User', 'surgeon_id'),
             'assistant' => array(self::BELONGS_TO, 'User', 'assistant_id'),
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='".get_class($this)."'"),
+            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
             'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
             'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
@@ -137,6 +141,17 @@ class Element_OphTrOperationnote_Surgeon extends Element_OpNote
         if ($user->is_surgeon) {
             $this->surgeon_id = $user->id;
         }
+    }
+
+    public function getDefaultFormOptions(array $context): array
+    {
+        $fields = array();
+        $user = Yii::app()->session['user'];
+
+        if ($user->is_surgeon) {
+            $fields['surgeon_id'] = $user->id;
+        }
+        return $fields;
     }
 
     /**

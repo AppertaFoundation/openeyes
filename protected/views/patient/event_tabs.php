@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,33 +16,57 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php $this->beginWidget('CondenseHtmlWidget') ?>
 
-<?php if ($this->event) : ?>
-    <?php echo $this->event->getEventIcon('medium'); ?>
-<?php endif; ?>
+<?php
+if ($this->event_subtype) {
+    echo $this->event_subtype->getEventIcon('medium');
+} elseif ($this->event) {
+    echo $this->event->getEventIcon('medium');
+}
+?>
 <?php foreach ($this->event_tabs as $tab) {
     $class = $tab['class'] ?? null;
     $label = $tab['label'] ?? null;
     $active = isset($tab['active']) && $tab['active'] ? 'selected' : null;
     $href = $tab['href'] ?? '#';
-    if (isset($tab['type']) && $tab['type']){ ?>
-    <div class="button header-tab <?=$active?>">
+    $icon_class = $tab['icon-class'] ?? null;
+    $hidden = $tab['hidden'] ?? false;
+
+    if (isset($icon_class)) {
+        $label = "<i class='oe-i small pad-r $icon_class'></i>" . $label;
+    }
+
+    $data_test = 'button-event-header-tab-' . str_replace(' ', '-', strtolower($label));
+    if (isset($tab['type']) && $tab['type']) { ?>
+    <div class="button header-tab <?=$active?>" <?= $hidden ? "style='display: none'" : ""?>>
         <<?=$tab['type']?> class="<?=$class?>"><?=$label?></<?=$tab['type']?>>
     </div>
     <?php } else {?>
-    <a href="<?=$href?>" class="button header-tab <?=$class?> <?=$active?>">
+    <a href="<?=$href?>" class="button header-tab <?=$class?> <?=$active?>" <?= $hidden ? "style='display: none'" : ""?> data-test="<?= $data_test ?>">
         <?=$label?>
     </a>
     <?php } ?>
-<?php } ?>
-
-<?php if (in_array($this->action->id, ['create', 'update', 'step']) && $this->show_index_search) : ?>
-    <button class="button header-tab icon" name="exam-search" id="js-search-in-event">
-        <i class="oe-i search"></i>
+<?php }
+if (in_array($this->action->id, ['create', 'update', 'step'])) {
+    if ($this->template) { ?>
+        <button id="js-template-prefill-popup-open" type="button" href="#">
+        <i class="oe-i starline small pad-r"></i>
+        <?= $this->template->name ?>
     </button>
-<?php endif; ?>
-
-<?php $this->endWidget() ?>
+    <?php } elseif ($this->event->template_id && isset($this->event->template)) { ?>
+    <button id="js-template-prefill-popup-open" type="button" href="#">
+        <i class="oe-i starline small pad-r"></i>
+        <?= $this->event->template->name ?>
+    </button>
+    <?php }
+    if ($this->show_index_search) { ?>
+        <button class="button header-tab icon" name="exam-search" id="js-search-in-event">
+            <i class="oe-i search"></i>
+        </button>
+    <?php }
+}
+$this->endWidget() ?>

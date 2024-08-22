@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2019
  * This file is part of OpenEyes.
@@ -79,17 +80,14 @@ $dispense_condition_options = array(
         <?php
         $css_class = 'cols-4 inline';
         if ($item->dose === null || is_numeric($item->dose) || $item->dose === '') {
-            $css_class .= " input-validate numbers-only";
-            if ($item->dose_unit_term === 'mg') {
-                $css_class .= ' decimal';
-            }
+            $css_class .= " input-validate numbers-only decimal";
         }
         ?>
 
         <?= \CHtml::textField(
             'Element_OphDrPrescription_Details[items][' . $key . '][dose]',
             $item->dose,
-            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => $css_class, 'data-test' => 'drug-dose')
         )
 ?>
         <?php if ($item->dose_unit_term) { ?>
@@ -103,7 +101,7 @@ $dispense_condition_options = array(
                 \CHtml::listData($unit_options, 'description', 'description'),
                 [
                     'empty' => '-Unit-',
-                    'class' => 'cols-7',
+                    'class' => 'cols-7'
                 ]
             );
         } ?>
@@ -120,7 +118,7 @@ $dispense_condition_options = array(
                 'id',
                 'term'
             ),
-            array('empty' => '-- Select --', 'class' => 'drugRoute cols-11')
+            array('empty' => '-- Select --', 'class' => 'drugRoute cols-11', 'data-test' => 'drug-route')
         ); ?>
     </td>
 
@@ -132,7 +130,7 @@ $dispense_condition_options = array(
                     'Element_OphDrPrescription_Details[items][' . $key . '][laterality]',
                     $item->laterality,
                     CHtml::listData($options, 'id', 'name'),
-                    array('empty' => '-- Select --')
+                    array('empty' => '-- Select --', 'data-test' => 'route-option')
                 );
             } else {
                 echo '-';
@@ -145,7 +143,7 @@ $dispense_condition_options = array(
             'Element_OphDrPrescription_Details[items][' . $key . '][frequency_id]',
             $item->frequency_id,
             CHtml::listData(MedicationFrequency::model()->activeOrPk([$item->frequency_id])->findAll(array('order' => 'display_order')), 'id', 'term'),
-            array('empty' => '-- Select --', 'class' => 'cols-11')
+            array('empty' => '-- Select --', 'class' => 'cols-11', 'data-test' => 'drug-frequency')
         ); ?>
     </td>
     <td class="prescriptionItemDurationId">
@@ -153,7 +151,7 @@ $dispense_condition_options = array(
             'Element_OphDrPrescription_Details[items][' . $key . '][duration_id]',
             $item->duration_id,
             CHtml::listData(MedicationDuration::model()->activeOrPk([$item->duration_id])->findAll(array('order' => 'display_order')), 'id', 'name'),
-            array('empty' => '-- Select --', 'class' => 'cols-11')
+            array('empty' => '-- Select --', 'class' => 'cols-11', 'data-test' => 'drug-duration')
         ) ?>
     </td>
     <td>
@@ -165,7 +163,7 @@ $dispense_condition_options = array(
                 'id',
                 'name'
             ),
-            array('class' => 'dispenseCondition cols-11', 'empty' => 'Select', 'options' => $dispense_condition_options)
+            array('class' => 'dispenseCondition cols-11', 'empty' => 'Select', 'data-test' => 'drug-dispense-condition', 'options' => $dispense_condition_options)
         ) ?>
 
     </td>
@@ -177,7 +175,7 @@ $dispense_condition_options = array(
             'Element_OphDrPrescription_Details[items][' . $key . '][dispense_location_id]',
             $item->dispense_location_id,
             CHtml::listData($locations, 'id', 'name'),
-            array('class' => 'dispenseLocation cols-11', 'style' => $style)
+            array('class' => 'dispenseLocation cols-11', 'data-test' => 'drug-dispense-location', 'style' => $style)
         );
         ?>
     </td>
@@ -204,16 +202,13 @@ $dispense_condition_options = array(
 
             $css_class = 'cols-11';
             if ($taper->dose === null || is_numeric($taper->dose) || $item->dose === '') {
-                $css_class .= " input-validate numbers-only";
-                if ($item->dose_unit_term === 'mg') {
-                    $css_class .= ' decimal';
-                }
+                $css_class .= " input-validate numbers-only decimal";
             }
 
             echo \CHtml::textField(
                 'Element_OphDrPrescription_Details[items][' . $key . '][taper][' . $count . '][dose]',
                 $taper->dose,
-                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => $css_class)
+                array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => $css_class)
             ) ?>
         </td>
         <td></td>

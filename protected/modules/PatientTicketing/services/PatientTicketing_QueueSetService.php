@@ -19,6 +19,8 @@
 namespace OEModule\PatientTicketing\services;
 
 use OEModule\PatientTicketing\models;
+use OEModule\PatientTicketing\models\QueueSet;
+use ReferenceData;
 use Yii;
 
 class PatientTicketing_QueueSetService  extends \services\ModelService
@@ -89,13 +91,18 @@ class PatientTicketing_QueueSetService  extends \services\ModelService
      *
      * @return array
      */
-    public function getQueueSetsForCategory(PatientTicketing_QueueSetCategory $qscr)
+    public function getQueueSetsForCategory(PatientTicketing_QueueSetCategory $qscr, bool $filter_institutions = true)
     {
         $class = self::$primary_model;
         $criteria = new \CDbCriteria();
-        $criteria->addColumnCondition(array('category_id' => $qscr->getId()));
-        $res = array();
-        foreach ($class::model()->with('permissioned_users')->findAll($criteria) as $qs) {
+        $criteria->addColumnCondition(['category_id' => $qscr->getId()]);
+
+        if ($filter_institutions) {
+            $criteria->addColumnCondition(['institutions.id' => Yii::app()->session['selected_institution_id']]);
+        }
+
+        $res = [];
+        foreach ($class::model()->with('permissioned_users', 'institutions')->findAll($criteria) as $qs) {
             $res[] = $this->modelToResource($qs);
         }
 
@@ -246,10 +253,14 @@ class PatientTicketing_QueueSetService  extends \services\ModelService
      *
      * @return array
      */
-    public function getQueueSetsForFirm(\Firm $firm = null)
+    public function getQueueSetsForFirm(\Firm $firm = null, \Institution $institution = null): array
     {
-        $res = array();
-        foreach (models\QueueSet::model()->findAll() as $qs) {
+        $res = [];
+        $queue_sets = $institution
+            ? QueueSet::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, null, $institution)
+            : QueueSet::model()->findAll();
+
+        foreach ($queue_sets as $qs) {
             $res[] = $this->modelToResource($qs);
         }
 

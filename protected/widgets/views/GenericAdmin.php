@@ -17,6 +17,17 @@
  */
 ?>
 
+<?php if($errors):?>
+    <div class="alert-box warning">
+        <p>Please fix the following input errors:</p>
+        <ul>
+            <?php foreach(array_unique($errors) as $error):?>
+            <li><?=$error;?></li>
+            <?php endforeach;?>
+        </ul>
+    </div>
+<?php endif;?>
+
 <div class='<?=$div_wrapper_class?>'>
 <?php if (!$get_row) {
     if ($filter_fields) { ?>
@@ -44,9 +55,9 @@
                 <tr>
                     <?php if ($display_order) { ?>
                         <th>Order</th>
-                        <th><?= CHtml::checkBox("select-all")?></th>
-                        <?php
-                    }
+                    <?php } ?>
+                    <th><?= CHtml::checkBox("select-all")?></th>
+                    <?php
                     if (!$label_extra_field) : ?>
                         <th><?= $model::model()->getAttributeLabel($label_field) ?></th>
                     <?php endif;?>
@@ -81,6 +92,7 @@
 <?php foreach ($items as $i => $row) {
     $this->render('_generic_admin_row', array('i' => $i, 'row' => $row, 'label_field' => $label_field, 'extra_fields' => $extra_fields, 'model' => $model, 'display_order' => $display_order, 'label_extra_field' => $label_extra_field, 'input_class' => $input_class));
 }
+
 
 if (!$get_row && $filters_ready) {
     if (!$this->new_row_url) {
@@ -118,8 +130,9 @@ if (!$get_row && $filters_ready) {
                                 $structured_levels[] = ['value' => $level, 'label' => ucfirst($level_prefix)];
                             }
 
+                            $first_prefix = $model::model()->getModelSuffixForLevel($supported_levels[0]);
                             echo \CHtml::submitButton(
-                                'Add selected to current '.$level_prefix,
+                                'Add selected to current ' . $first_prefix,
                                 [
                                     'name' => 'admin-map-add',
                                     'id' => 'et_admin-map-add',
@@ -127,7 +140,7 @@ if (!$get_row && $filters_ready) {
                                     'formaction' => '/admin/addMapping',
                                 ]);
                             echo \CHtml::submitButton(
-                                'Remove selected from current '.$level_prefix,
+                                'Remove selected from current ' . $first_prefix,
                                 [
                                     'name' => 'admin-map-remove',
                                     'id' => 'et_admin-map-remove',

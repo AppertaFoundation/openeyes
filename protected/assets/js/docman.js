@@ -102,6 +102,7 @@ var docman = (function() {
         addRemoveHandler: function(){
             $('#docman_block').on("click", '.remove_recipient', function(event)
             {
+                $('body').find(".oe-tooltip").remove();
                 event.target.closest('tr').remove();
             });
         },
@@ -410,7 +411,7 @@ var docman = (function() {
                     }
                     $('#docman_recipient_' + rowindex).val('');
                     $('#dm_table .docman_loader').hide();
-                    autosize.update($('.autosize'));
+                    autosize();
                 }
             });
         },

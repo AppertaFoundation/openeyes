@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
 /**
@@ -43,7 +45,7 @@
         <?= $form->error($address, 'address1') ?>
   </td>
   <td>
-        <?= $form->textField($address, 'address1', array('size' => 15, 'placeholder' => 'Address 1', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+        <?= $form->textField($address, 'address1', array('size' => 15, 'placeholder' => 'Address 1', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
   </td>
 </tr>
 
@@ -54,7 +56,7 @@
         <?= $form->error($address, 'address2') ?>
   </td>
   <td>
-        <?= $form->textField($address, 'address2', array('size' => 15, 'placeholder' => 'Address 2', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+        <?= $form->textField($address, 'address2', array('size' => 15, 'placeholder' => 'Address 2', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
 
   </td>
 </tr>
@@ -65,7 +67,7 @@
         <?= $form->error($address, 'city') ?>
   </td>
   <td>
-        <?= $form->textField($address, 'city', array('size' => 15, 'placeholder' => 'City', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+        <?= $form->textField($address, 'city', array('size' => 15, 'placeholder' => 'City', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
   </td>
 </tr>
 
@@ -76,18 +78,18 @@
         <?= $form->error($address, 'postcode') ?>
   </td>
   <td>
-        <?= $form->textField($address, 'postcode', array('size' => 15, 'class' => 'postcode', 'placeholder' => 'Postcode', 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+        <?= $form->textField($address, 'postcode', array('size' => 15, 'class' => 'postcode', 'placeholder' => 'Postcode', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
   </td>
 </tr>
 
 <tr>
   <td>
-        <?= $form->labelEx($address, Yii::app()->params['county_label']) ?>
+        <?= $form->labelEx($address, 'county') ?>
     <br/>
-        <?= $form->error($address, Yii::app()->params['county_label']) ?>
+        <?= $form->error($address, 'county') ?>
   </td>
   <td>
-        <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'), 'autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+        <?= $form->textField($address, 'county', array('size' => 15, 'placeholder' => $address->getAttributeLabel('county'), 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
 
   </td>
 </tr>
@@ -99,11 +101,8 @@
         <?= $form->error($address, 'country_id') ?>
   </td>
   <td>
-        <?= $form->dropDownList($address, 'country_id', $countries, (in_array(Yii::app()->params['default_country'], $countries))  && Yii::app()->controller->action->id !== 'update'?
-            array('options' => array(array_search(Yii::app()->params['default_country'], $countries)=>array('selected'=>true)),
-                'placeholder' => 'Country') : array('empty' => '-- select --'))  ?>
+        <?= $form->dropDownList($address, 'country_id', $countries, (in_array(Yii::app()->params['default_country'], $countries))  && Yii::app()->controller->action->id !== 'update' ?
+            array('options' => array(array_search(Yii::app()->params['default_country'], $countries) => array('selected' => true)),
+                'placeholder' => 'Country') : array('empty' => '-- select --', 'data-test' => 'country'))  ?>
   </td>
 </tr>
-
-
-

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $logo_helper = new LogoHelper();
 ?>
 <header class="print-header">
@@ -34,24 +36,24 @@ $logo_helper = new LogoHelper();
             $add_y_pad = SettingMetadata::model()->getSetting('correspondence_to_address_y_padding');
             $x_padding = '';
 
-            for($y=0;$y< $add_x_pad;$y++){
+            for ($y = 0; $y < $add_x_pad; $y++) {
                 $x_padding .= '&nbsp;';
             }
 
-            for($y=0;$y< $add_y_pad;$y++){?>
+            for ($y = 0; $y < $add_y_pad; $y++) {?>
                 <div class="spacer"></div>
             <?php }
-            echo $x_padding. 'To:';?>            
+            echo $x_padding;?>            
             <br/>
             <div class="address-to"
                 <?= // OE-11074 This inline css is to solve the word-wrapping issue for Australia Clients
                     SettingMetadata::model()->getSetting('default_country') === 'Australia' ? "style='white-space: nowrap'" : null;
                 ?>>
-                <?php echo $x_padding.str_replace("\n", '<br/>'. $x_padding, CHtml::encode($toAddress)) ?>
+                <?php echo $x_padding . str_replace("\n", '<br/>' . $x_padding, CHtml::encode($toAddress)) ?>
             </div>
         </div>
 
-        <div class="address-from change-font large-font">
+        <div class="address-from change-font large-font text-r cols-5">
             <?php if ($element->site) { ?>
                 <h5 <?= // OE-11074 This inline css is to solve the word-wrapping issue for Australia Clients
                     SettingMetadata::model()->getSetting('default_country') === 'Australia' ? "style='white-space: nowrap'" : null;

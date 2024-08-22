@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2013
  * This file is part of OpenEyes.
@@ -41,7 +42,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
         'total_duration'
     ];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         date_default_timezone_set('UTC');
     }
@@ -56,13 +57,13 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
     protected function assertOrderedAssocArrayEqual($expected, $res)
     {
         $this->assertEquals($expected, $res);
-        $this->assertEquals(array_keys($expected), array_keys($res), 'Response key order does not match expected'.print_r($res, true));
+        $this->assertEquals(array_keys($expected), array_keys($res), 'Response key order does not match expected' . print_r($res, true));
     }
 
     protected function getMalePatient($is_stub = true)
     {
         if ($is_stub) {
-            $p = ComponentStubGenerator::generate('Patient', array('gender' => 'M'));
+            $p = ComponentStubGenerator::generate('Patient', array('gender' => 'M', 'id' => 1));
             $p->method('isChild')->willReturn(false);
 
             return $p;
@@ -73,7 +74,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
 
     protected function getFemalePatient()
     {
-        $p = ComponentStubGenerator::generate('Patient', array('gender' => 'F'));
+        $p = ComponentStubGenerator::generate('Patient', array('gender' => 'F', 'id' => 1));
         $p->method('isChild')->willReturn(false);
 
         return $p;
@@ -81,7 +82,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
 
     protected function getBoyPatient()
     {
-        $p = ComponentStubGenerator::generate('Patient', array('gender' => 'M'));
+        $p = ComponentStubGenerator::generate('Patient', array('gender' => 'M', 'id' => 1));
         $p->method('isChild')->willReturn(true);
 
         return $p;
@@ -89,7 +90,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
 
     protected function getGirlPatient()
     {
-        $p = ComponentStubGenerator::generate('Patient', array('gender' => 'F'));
+        $p = ComponentStubGenerator::generate('Patient', array('gender' => 'F', 'id' => 1));
         $p->method('isChild')->willReturn(true);
 
         return $p;
@@ -123,6 +124,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
             array(
                 'id' => 1,
                 'theatre' => $theatre,
+                'theatre_id' => $theatre->id,
                 'date' => $dt,
             )
         );
@@ -210,7 +212,7 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
     {
         $theatre = ComponentStubGenerator::generate(
             'OphTrOperationbooking_Operation_Theatre',
-            array('site_id' => 2)
+            ['id' => 1, 'site_id' => 2]
         );
         $session = $this->getSessionForTheatre($theatre);
 
@@ -378,9 +380,6 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
         Yii::app()->params['urgent_booking_notify_hours'] = $urgent;
     }
 
-    /**
-     * @expectedException     Exception
-     */
     public function testScheduleLocksRttNotInFuture()
     {
         $referral = $this->referrals('referral1');
@@ -435,9 +434,9 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
         $booking->session->method('operationBookable')->willReturn(true);
         $booking->session->method('save')->willReturn(true);
 
-        $res = $op->schedule($booking, '', '', '', false, null, $schedule_op);
+        $this->expectException(\Exception::class);
 
-        $this->assertEquals($this->rtt('rtt1')->id, $op->rtt_id);
+        $op->schedule($booking, '', '', '', false, null, $schedule_op);
     }
 
     public function testScheduleLocksRtt()
@@ -500,6 +499,8 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
 
     public function testReferralValidatorMustBeCalled()
     {
+        // Skipping this [OE-13545] as the validator is only run on insert
+        $this->markTestSkipped('The referral model is no longer used');
         $op = $this->getOperationForPatient($this->patients('patient1'), array('validateReferral'));
         $op->referral_id = 1;
         $op->expects($this->once())
@@ -647,6 +648,9 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
                 'activeRTT' => $active_rtt,
             )
         );
+        $referral->method('getActiveRTT')
+            ->willReturn($active_rtt);
+
         $test->referral = $referral;
 
         $this->assertSame($active_rtt[0], $test->getRTT());
@@ -664,6 +668,9 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
                 'activeRTT' => $active_rtt,
             )
         );
+        $referral->method('getActiveRTT')
+            ->willReturn($active_rtt);
+
         $test->referral = $referral;
 
         $this->assertNull($test->getRTT());
@@ -769,15 +776,15 @@ class Element_OphTrOperationbooking_OperationTest extends ActiveRecordTestCase
         $calculated = $test->calculateEROD($this->firms($firm_key));
 
         if ($expected_erod_session_key) {
-            $this->assertNotNull($calculated, $description.' should return an EROD');
+            $this->assertNotNull($calculated, $description . ' should return an EROD');
             $this->assertInstanceOf(\OphTrOperationbooking_Operation_EROD::class, $calculated, $description . ' not returning EROD');
             $this->assertEquals(
                 $this->sessions($expected_erod_session_key)->id,
                 $calculated->session_id,
-                $description.' - incorrect session picked for EROD'
+                $description . ' - incorrect session picked for EROD'
             );
         } else {
-            $this->assertNull($calculated, $description.' should not have an EROD');
+            $this->assertNull($calculated, $description . ' should not have an EROD');
         }
     }
 

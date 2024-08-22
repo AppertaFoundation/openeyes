@@ -2,7 +2,7 @@
     <?php
         $today = \Helper::convertDate2NHS(date('Y-m-d'), ' ');
         $dates = array_map(function ($appt) {
-            return date('Y-m-d', strtotime($appt->when));
+            return date('Y-m-d', strtotime($appt->worklist->start));
         }, $available_appointments);
         $has_appointment_today = array_search(date('Y-m-d'), $dates) !== false;
     ?>
@@ -27,16 +27,18 @@
                 >
                 <span class="highlighter good">
                     Today
-                    <span class="fade">
+                    <span class="fade nowrap">
                         <small>at</small> <?=date('H:i');?>
                     </span>Unbooked Appointment
                 </span>
             </label>
             <?php } ?>
             <?php foreach ($available_appointments as $appt) {
-                $appt_date = \Helper::convertMySQL2NHS($appt->when, ' ');
-                $valid_appt_date = \Helper::convertMySQL2NHS($appt->when, ' ');
-                $time = date('H:i', strtotime($appt->when));
+                $raw_appt_date = $appt->when ? : $appt->worklist->start;
+
+                $appt_date = \Helper::convertMySQL2NHS($raw_appt_date, ' ');
+                $valid_appt_date = \Helper::convertMySQL2NHS($raw_appt_date, ' ');
+                $time = $appt->when ? date('H:i', strtotime($raw_appt_date)) : 'Anytime';
                 $for_today = false;
                 if ($appt_date === $today) {
                     $for_today = true;
@@ -59,7 +61,7 @@
                 >
                 <span class="<?=intval($appt->id) === intval($assigned_appt) ? 'highlighter good' : '';?>">
                     <?= $appt_date;?>
-                    <span class="fade">
+                    <span class="fade nowrap">
                         <small>at</small> <?=$time;?>
                     </span><?=$appt->worklist->name;?>
                 </span>

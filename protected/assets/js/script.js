@@ -15,15 +15,17 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 let prepopulationData;
+let loginOverlayTemplate;
 
 $(document).ready(function () {
-	if (window.location.pathname !== '/site/login') {
-		$(document.body).append(createLoginOverlay());
+  if(window.location.pathname !== '/site/login') {
+      loginOverlayTemplate = createLoginOverlay();
+    $(document.body).append(loginOverlayTemplate);
 
 		let loginOverlay = $('#js-overlay');
 		loginOverlay.hide();
 
-		checkLoginOverlay();
+		queueLoginOverlay();
 	}
 
 	var openeyes = new OpenEyes.UI.NavBtnPopup('logo', $('#js-openeyes-btn'), $('#js-openeyes-info')).useWrapperEvents($('.openeyes-brand'));
@@ -177,35 +179,22 @@ $(document).ready(function () {
 		});
 	}());
 
-	(function expandElementList() {
-		// check for view elementss
-		if ($('.element-data').length == 0) return;
+    OpenEyes.UI.DOM.addEventListener(document, 'click', '.js-listview-expand-btn', function () {
+        const $iconBtn = $(this);
+        const listId = $iconBtn.data('list');
+        const $quick = $(`#js-listview-${listId}-pro`);
+        const $full = $(`#js-listview-${listId}-full`);
 
-		$('.js-listview-expand-btn').each(function () {
-			// id= js-listview-[data-list]-full | quick
-			let listid = $(this).data('list');
-			let listview = new ListView($(this),
-				$('#js-listview-' + listid + '-pro'),
-				$('#js-listview-' + listid + '-full'));
-		});
+        if ($iconBtn.hasClass('expand')) {
+            $quick.hide();
+            $full.show();
+        } else {
+            $quick.show();
+            $full.hide();
+        }
 
-		function ListView($iconBtn, $quick, $full) {
-			let quick = $quick.css('display') !== 'none';
-
-			$iconBtn.click(function () {
-				$(this).toggleClass('collapse expand');
-				quick = !quick;
-
-				if (quick) {
-					$quick.show();
-					$full.hide();
-				} else {
-					$quick.hide();
-					$full.show();
-				}
-			});
-		}
-	})();
+        $iconBtn.toggleClass('collapse expand');
+    });
 
 	/**
 	 * Tab hover
@@ -366,52 +355,78 @@ $(document).ready(function () {
 			$('#notification-full').toggle();
 		}
 	}());
+
+	autosize();
 });
 
 function showLoginOverlay() {
 	let loginOverlay = $('#js-overlay');
 
-	if (!loginOverlay.length) {
-		$(document.body).append(createLoginOverlay());
+    if (!loginOverlay.length)
+    {
+        $(document.body).append(loginOverlayTemplate);
 
 		loginOverlay = $('#js-overlay');
 		loginOverlay.hide();
 	}
 
-	//Do not show login overlay if we are already on the login screen
-	if (window.location.pathname !== '/site/login' && !loginOverlay.is(':visible')) {
-		$('#js-login-error').hide();
-		loginOverlay.show();
-	}
-}
+    //Do not show login overlay if we are already on the login screen
+    if(window.location.pathname !== '/site/login' && !loginOverlay.is(':visible')) {
+        $('#js-login-error').hide();
+        loginOverlay.find('#js-password').val('');
+        loginOverlay.show();
+        $('.js-sign-in-different-account').on('click' , function (event) {
+            event.preventDefault();
+            event.stopPropagation();
 
-function checkLoginOverlay() {
-	let authenticated = pollUserAuthenticated();
+            let formDialog = new OpenEyes.UI.Dialog.Confirm({
+                title: "Warning",
+                content: "Any unsaved work for the previous user login will be lost. Are you sure you want to sign-in with a different user or location",
+                okButton: 'Proceed'
+            });
 
-	if (authenticated) {
-		queueLoginOverlay();
-	}
-	else {
-		showLoginOverlay();
-	}
+            formDialog.openOnTop();
+            // suppress default ok behaviour
+            formDialog.content.off('click', '.ok');
+            // manage form submission and response
+            formDialog.content.on('click', '.ok', function () {
+                window.location.href =  document.location.origin + '/site/login';
+            }.bind(this));
+        });
+    }
 }
 
 function queueLoginOverlay() {
 	$.ajax({
-		url: '/User/getSecondsUntilSessionExpire',
-		async: false,
+		url: '/User/getSessionExpireTimestamp',
+		async: true,
 		data: {
 			"YII_CSRF_TOKEN": YII_CSRF_TOKEN,
 			"extend_session": false,
 		},
 		success: function (resp) {
-			let secondsUntilExpiry = resp + 10;
-			setTimeout(checkLoginOverlay, secondsUntilExpiry * 1000);
+			let current_unix_timestamp = Math.floor((new Date()).getTime() / 1000);
+
+			//Add a delay to ensure the session has actually expired before we allow the user to log in again
+			let delay = 5;
+
+			if(resp === false) {
+				resp = current_unix_timestamp;
+			}
+
+			let secondsUntilExpiry = resp - current_unix_timestamp + delay;
+			setTimeout(showLoginOverlay, secondsUntilExpiry * 1000);
 		},
 		error: function (resp) {
-			new OpenEyes.UI.Dialog.Alert({
-				content: "Unable to poll user session expiry.\n\nPlease contact support for assistance."
-			}).open();
+			//If we get a forbidden, assume the user is logged out;
+			// show the overlay and ask the user to log in
+			if (resp.status === 403) {
+				showLoginOverlay();
+			} else {
+				new OpenEyes.UI.Dialog.Alert({
+					content: "Unable to poll user session expiry.\n\nPlease contact support for assistance."
+				}).open();
+			}
 		}
 	});
 }
@@ -481,27 +496,27 @@ function createLoginOverlay() {
     errorDiv.classList.add('error');
     loginDiv.append(errorDiv);
 
+    let detailsDiv = document.createElement('div');
+    detailsDiv.classList.add('login-details');
+    loginDiv.append(detailsDiv);
+
+    let detailsList = document.createElement('ul');
+    detailsList.classList.add('row-list');
+    detailsDiv.append(detailsList);
+
+    let institutionListItem = document.createElement('li');
+    institutionListItem.id = 'js-institution';
+    institutionListItem.classList.add('login-institution');
+    institutionListItem.innerText = prepopulationData['institution']['name'];
+    detailsList.append(institutionListItem);
+
+    let siteListItem = document.createElement('li');
+    siteListItem.id = 'js-site';
+    siteListItem.classList.add('login-site');
+    siteListItem.innerText = prepopulationData['site']['name'];
+    detailsList.append(siteListItem);
+
     if (auth_source === 'BASIC' || auth_source === 'LDAP') {
-        let detailsDiv = document.createElement('div');
-        detailsDiv.classList.add('login-details');
-        loginDiv.append(detailsDiv);
-
-        let detailsList = document.createElement('ul');
-        detailsList.classList.add('row-list');
-        detailsDiv.append(detailsList);
-
-        let institutionListItem = document.createElement('li');
-        institutionListItem.id = 'js-institution';
-        institutionListItem.classList.add('login-institution');
-        institutionListItem.innerText = prepopulationData['institution']['name'];
-        detailsList.append(institutionListItem);
-
-        let siteListItem = document.createElement('li');
-        siteListItem.id = 'js-site';
-        siteListItem.classList.add('login-site');
-        siteListItem.innerText = prepopulationData['site']['name'];
-        detailsList.append(siteListItem);
-
         let userDiv = document.createElement('div');
         userDiv.classList.add('user');
         loginDiv.append(userDiv);
@@ -510,8 +525,9 @@ function createLoginOverlay() {
         usernameField.id = 'js-username';
         usernameField.type = 'text';
         usernameField.placeholder = 'Username';
-        if('username' in prepopulationData) {
-            usernameField.text = prepopulationData['username'];
+        if ("username" in prepopulationData) {
+            usernameField.setAttribute('disabled', 'disabled');
+            usernameField.setAttribute("value", prepopulationData['username']);
         }
         userDiv.append(usernameField);
 
@@ -548,8 +564,8 @@ function createLoginOverlay() {
 
         let returnButton = document.createElement('a');
         returnButton.classList.add('button');
-        returnButton.innerText = 'Or exit to homepage';
-        returnButton.href = document.location.origin + '/site/login';
+        returnButton.classList.add('js-sign-in-different-account');
+        returnButton.innerText = 'Sign in with a different account or location';
 
         //Event handler fires before default behaviour of the element is triggered
         //The following causes the link change target to logout action and then fire the redirect if the user has a valid session
@@ -598,17 +614,21 @@ function redirectToSSOWithOverlay() {
         async: false,
         success: function (resp) {
             if (resp) {
-                window.open(resp, '_blank');
-                // The user has been redirected to SSO Portal so check every 15 seconds to see if user has authenticated
+                let current_window = window.self;
+                let login_window = window.open(resp, '_blank');
+                // The user has been redirected to SSO Portal so check every 10 seconds to see if user has authenticated
                 // This is to avoid data from previous session from being lost due to SSO sign-in
                 let testAuthenticated = setInterval(function () {
                     if (pollUserAuthenticated()) {
-                        // The user has authenticated, remove the login overlay
+                        // The user has authenticated, close the login window and get back to ongoing session
+                        login_window.close();
+                        current_window.focus();
+                        // Remove the login overlay
                         loginOverlay.hide();
                         clearInterval(testAuthenticated);
                         queueLoginOverlay();
                     }
-                }, 15000);
+                }, 10000);
                 // Clear interval and show error if the user is not authenticated in 10 minutes after redirect
                 setTimeout(function () {
                     clearInterval(testAuthenticated);
@@ -653,6 +673,7 @@ function loginWithOverlay() {
         success: function(resp) {
             if(resp === 'Login success'){
                 loginOverlay.hide();
+                loginOverlay.find('#js-password').val('');
                 queueLoginOverlay();
             } else if (resp === 'Username different') {
                 errorBox.text('Username is different from previous session. Please exit to homepage to start a new session');
@@ -782,6 +803,17 @@ function arrayIndex(needle, haystack) {
 	return false;
 }
 
+function addLineBreakToString(value) {
+	if (typeof value !== 'string') {
+		throw new TypeError('addLineBreakToString requires a string argument');
+	}
+	let outputString = value.trimEnd();
+	if (outputString) {
+		outputString += '\n';
+	}
+	return outputString;
+}
+
 function formatStringToEndWithCommaAndWhitespace(value) {
 	if (typeof value !== 'string') {
 		throw new TypeError('formatStringToEndWithWhiteSpace requires a string argument');
@@ -880,4 +912,61 @@ function showToolTip(element) {
 	}
 
 	$(".oe-tooltip").css({ "top": top + "px" });
+}
+
+function eSignDevicePopup() {
+	const dlg = new OpenEyes.UI.Dialog({
+		title: "e-Sign - link to device",
+		url: "/site/esignDevicePopup",
+	});
+	dlg.open();
+}
+
+/**
+ * Resize an element based on the height of its content.
+ */
+function setHeightToContent(element) {
+    if (element.clientHeight > 0) {
+        // Set the initial height to 5px to ensure the text area shrinks when content is removed.
+        element.style.height = `5px`;
+        element.style.height = `${element.scrollHeight}px`;
+        // handle minimum height - specified by rows
+        if (element.hasAttribute('rows')) {
+            const lineHeight = parseFloat(getComputedStyle(element).lineHeight);
+            const rows = parseInt(element.getAttribute('rows'), 10);
+
+            const minHeight = rows * lineHeight;
+            element.style.height = `${Math.max(minHeight, element.scrollHeight)}px`;
+        }
+    }
+}
+
+/**
+ * Automatically resize any textareas with the autosize class. Including dynamic resizing during typing.
+ */
+function autosize() {
+	// select all textarea elements with classes that we want to autosize
+	const textareas = document.querySelectorAll('textarea.autosize, textarea.js-comment-field, textarea.js-input-comments');
+
+	textareas.forEach(textarea => {
+		setHeightToContent(textarea);
+	});
+
+	// add an event listener for all the textareas
+	document.addEventListener('input', event => {
+		const target = event.target;
+		const targetIsInList = Array.from(textareas).includes(target);
+
+		if (targetIsInList) {
+			setHeightToContent(target);
+		}
+	});
+
+	function ready(fn) {
+		if (document.readyState !== 'loading') {
+			fn();
+		} else {
+			document.addEventListener('DOMContentLoaded', fn);
+		}
+	}
 }

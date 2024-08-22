@@ -63,12 +63,12 @@ class ProtectedFileController extends BaseController
 
         $image_size = getimagesize($filepath);
         $mime = isset($image_size['mime']) ? $image_size['mime'] : null;
-        if ($mime && $mime == 'image/jpeg') {
+        if ($mime && ($mime === 'image/jpeg' || $mime === 'image/png')) {
             if ($rotate) {
-                $original = imagecreatefromjpeg($filepath);
+                $original = $this->getImageFrom($filepath, $mime);
                 $rotated = imagerotate($original, $rotate, imageColorAllocateAlpha($original, 255, 255, 255, 127));
                 ob_start();
-                imagejpeg($rotated);
+                $this->dumpImageAs($rotated, $mime);
                 $size = ob_get_length();
                 header("Content-length: " . $size);
                 ob_flush();
@@ -107,5 +107,31 @@ class ProtectedFileController extends BaseController
             echo '<p>Imported '.$file->uid.' - '.$file->name.'</p>';
         }
         echo '<p>Done!</p>';
+    }
+
+    private function getImageFrom($filepath, $mime)
+    {
+        switch ($mime) {
+            case 'image/jpeg':
+                return imagecreatefromjpeg($filepath);
+            case 'image/png':
+                return imagecreatefrompng($filepath);
+            default:
+                throw new Exception('Invalid mime type of ' . $mime . ' for ' . $filepath);
+        }
+    }
+
+    private function dumpImageAs($image, $mime)
+    {
+        switch ($mime) {
+            case 'image/jpeg':
+                imagejpeg($image);
+                break;
+            case 'image/png':
+                imagepng($image);
+                break;
+            default:
+                throw new Exception('Invalid mime type of ' . $mime . ' for creating an image');
+        }
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "medication_form".
  *
@@ -18,13 +20,14 @@
  * @property string $created_date
  *
  * The followings are the available model relations:
- * @property EventMedicationUse[] $eventMedicationUses
  * @property User $lastModifiedUser
  * @property User $createdUser
  * @property MedicationSetItem[] $medicationSetItems
  */
 class MedicationForm extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */
@@ -58,9 +61,8 @@ class MedicationForm extends BaseActiveRecordVersioned
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'eventMedicationUses' => array(self::HAS_MANY, EventMedicationUse::class, 'form_id'),
-            'lastModifiedUser' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'createdUser' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+            'lastModifiedUser' => array(self::BELONGS_TO, User::class, 'last_modified_user_id'),
+            'createdUser' => array(self::BELONGS_TO, User::class, 'created_user_id'),
             'medicationSetItems' => array(self::HAS_MANY, MedicationSetItem::class, 'default_form_id'),
         );
     }
@@ -104,18 +106,18 @@ class MedicationForm extends BaseActiveRecordVersioned
 
         $criteria=new CDbCriteria;
 
-        $criteria->compare('id',$this->id);
-        $criteria->compare('term',$this->term,true);
-        $criteria->compare('code',$this->code,true);
-        $criteria->compare('unit_term',$this->unit_term,true);
-        $criteria->compare('default_dose_unit_term',$this->default_dose_unit_term,true);
-        $criteria->compare('source_type',$this->source_type,true);
-        $criteria->compare('source_subtype',$this->source_subtype,true);
-        $criteria->compare('deleted_date',$this->deleted_date,true);
-        $criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-        $criteria->compare('last_modified_date',$this->last_modified_date,true);
-        $criteria->compare('created_user_id',$this->created_user_id,true);
-        $criteria->compare('created_date',$this->created_date,true);
+        $criteria->compare('id', $this->id);
+        $criteria->compare('term', $this->term, true);
+        $criteria->compare('code', $this->code, true);
+        $criteria->compare('unit_term', $this->unit_term, true);
+        $criteria->compare('default_dose_unit_term', $this->default_dose_unit_term, true);
+        $criteria->compare('source_type', $this->source_type, true);
+        $criteria->compare('source_subtype', $this->source_subtype, true);
+        $criteria->compare('deleted_date', $this->deleted_date, true);
+        $criteria->compare('last_modified_user_id', $this->last_modified_user_id, true);
+        $criteria->compare('last_modified_date', $this->last_modified_date, true);
+        $criteria->compare('created_user_id', $this->created_user_id, true);
+        $criteria->compare('created_date', $this->created_date, true);
 
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
@@ -128,7 +130,7 @@ class MedicationForm extends BaseActiveRecordVersioned
      * @param string $className active record class name.
      * @return MedicationForm the static model class
      */
-    public static function model($className=__CLASS__)
+    public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }

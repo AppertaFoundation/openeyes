@@ -16,6 +16,7 @@
 
 namespace OEModule\OphCiExamination\tests\traits;
 
+
 use OEModule\OphCiExamination\models\NinePositions;
 use OEModule\OphCiExamination\models\NinePositions_AlignmentForGaze;
 use OEModule\OphCiExamination\models\NinePositions_HorizontalEDeviation;
@@ -157,5 +158,4 @@ trait InteractsWithNinePositions
 
         return $data;
     }
-
 }

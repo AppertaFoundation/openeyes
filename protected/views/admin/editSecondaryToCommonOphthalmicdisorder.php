@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2018
  * This file is part of OpenEyes.
@@ -11,7 +12,10 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var AdminController $this
  */
+
 ?>
 
 <div class="cols-5">
@@ -27,15 +31,36 @@
         <table class="standard">
             <tbody>
             <tr class="col-gap">
-                <td>Parent</td>
+                <td>&nbsp;<br/><?=\CHtml::dropDownList(
+                        'institution_id',
+                        $current_institution_id,
+                        Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
+                        ['empty' => 'All Institutions']
+                    ) ?>
+                </td>
                 <td>
+                    <small>Subspeciality</small><br/>
+                    <?=\CHtml::dropDownList(
+                        'subspecialty_id',
+                        $subspecialty_id,
+                        CHtml::listData($subspecialty, 'id', 'name')
+                    ); ?>
+                </td>
+                <td>
+                    <small>Parent</small><br/>
                     <?=\CHtml::dropDownList(
                         'parent_id',
-                        (isset($_GET['parent_id']) ? $_GET['parent_id'] : null),
+                        $parent_id,
                         CHtml::listData(
-                            CommonOphthalmicDisorder::model()->findAll(),
+                            $parents,
                             'id',
-                            function($item){return $item->disorder->term . ' (' . $item->subspecialty->name . ')';}//'disorder.term'
+                            static function ($item) {
+                                if ($item->disorder !== null) {
+                                    return $item->disorder->term . ' (' . $item->subspecialty->name . ')';
+                                } else {
+                                    return $item->finding->name . ' (' . $item->subspecialty->name . ')';
+                                }
+                            }
                         )
                     ); ?>
                 </td>
@@ -44,7 +69,7 @@
         </table>
     </form>
 
-    <form method="POST" action="/admin/editSecondaryToCommonOphthalmicDisorder?parent_id=<?=$parent_id;?>">
+    <form method="POST" action="/admin/editSecondaryToCommonOphthalmicDisorder?institution_id=<?= $current_institution_id; ?>&subspecialty_id=<?= $subspecialty_id; ?>&parent_id=<?= $parent_id; ?>">
         <input type="hidden" class="no-clear"
                name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken?>" />
         <?php
@@ -63,7 +88,7 @@
                 'header' => 'Disorder',
                 'name' => 'disorder.term',
                 'type' => 'raw',
-                'htmlOptions'=>array('width'=>'200px'),
+                'htmlOptions' => array('width' => '200px'),
                 'value' => function ($data, $row) {
                     $term = null;
                     if ($data->disorder) {
@@ -95,7 +120,7 @@
                     $remove_a = CHtml::tag(
                         'a',
                         array('href' => 'javascript:void(0)', 'class' => 'finding-rename'),
-                        Chtml::tag(
+                        CHtml::tag(
                             'i',
                             [
                                 'class' => 'oe-i remove-circle small',
@@ -108,8 +133,8 @@
 
                     $name_span = CHtml::tag('span', array('class' => 'finding-name name'), $finding_data['name']);
                     $rename_span = CHtml::tag('span', array(
-                        'class'=>"finding-display display",
-                        'style'=>'display: ' . ($finding_data['finding_id'] ? 'inline' : 'none') . ';'
+                        'class' => "finding-display display",
+                        'style' => 'display: ' . ($finding_data['finding_id'] ? 'inline' : 'none') . ';'
                     ), $remove_a . ' ' . $name_span);
 
                     $input = CHtml::textField(
@@ -117,7 +142,7 @@
                         $finding_data['name'],
                         [
                             'class' => 'finding-search-autocomplete finding-search-inputfield ui-autocomplete-input',
-                            'style' => 'display: '. ($finding_data['finding_id'] ? 'none' : 'inline') .';',
+                            'style' => 'display: ' . ($finding_data['finding_id'] ? 'none' : 'inline') . ';',
                             'autocomplete' => 'off',
                         ]
                     );
@@ -139,18 +164,28 @@
                 }
             ),
             array(
-                'header'=>'Actions',
+                'header' => 'Institution',
                 'type' => 'raw',
-                'value' => function ($data) {
-                    return '<a href="javascript:void(0)" class="delete button large">delete</a>';
+                'htmlOptions' => array('width' => '300px'),
+                'value' => function ($data, $row) {
+                    if ($this->checkAccess('admin')) {
+                        $institutions = CHtml::listData(Institution::model()->getTenanted(), 'id', 'name');
+                        return CHtml::activeDropDownList($data, "[$row]institution_id", $institutions, ['empty' => 'All Institutions']);
+                    } else {
+                        if ($data->institution_id) {
+                            $institution = Institution::model()->findByPk($data->institution_id);
+                            return $institution->name;
+                        } else {
+                            return 'All institutions';
+                        }
+                    }
                 }
             ),
             array(
-                'header' => 'Assigned to current institution',
+                'header' => 'Actions',
                 'type' => 'raw',
-                'name' => 'assigned_insitution',
-                'value' => function($data, $row) {
-                    return CHtml::checkBox("assigned_institution[$row]", $data->hasMapping(ReferenceData::LEVEL_INSTITUTION, $data->getIdForLevel(ReferenceData::LEVEL_INSTITUTION)));
+                'value' => function ($data) {
+                    return '<a href="javascript:void(0)" class="delete button large">delete</a>';
                 }
             ),
         );
@@ -160,7 +195,7 @@
             'itemsCssClass' => 'generic-admin standard sortable',
             'template' => '{items}',
             "emptyTagName" => 'span',
-            'rowHtmlOptionsExpression'=>'array("data-row"=>$row)',
+            'rowHtmlOptionsExpression' => 'array("data-row"=>$row)',
             'enableSorting' => false,
             'columns' => $columns
         ));
@@ -185,7 +220,7 @@
             'code': '',
             'singleTemplate' :
             "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='oe-i remove-circle small' aria-hidden='true' title='Change diagnosis'></i></a> " +
-            "<span class='diagnosis-name'></span></span>" +
+            "<span class='diagnosis-name' data-test='diagnosis-name'></span></span>" +
             "<select class='commonly-used-diagnosis cols-full' style='display:none'></select>" +
             "{{{input_field}}}" +
             "<input type='hidden' name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>"
@@ -196,6 +231,14 @@
     }
 
     $(document).ready(function(){
+        $('#institution_id').on('change', function () {
+            $(this).closest('form').submit();
+        });
+
+        $('#subspecialty_id').on('change', function () {
+            $(this).closest('form').submit();
+        });
+
         $('#parent_id').on('change', function(){
             $(this).closest('form').submit();
         });
@@ -207,9 +250,12 @@
 
         $('#add_new').on('click', function(){
             var $tr =  $('table.generic-admin tbody tr');
+            let institution_id = $('#institution_id').val()
             var output = Mustache.render($('#common_ophthalmic_disorder_template').text(),{
                 "row_count": OpenEyes.Util.getNextDataKey($tr, 'row'),
                 'even_odd': $tr.length % 2 ? 'odd' : 'even',
+                'institution_id': institution_id,
+                'institution_name': $('#institution_id option[value=' + institution_id + ']').text(),
                 'order_value': function() {
                     let raw_value = $('table.generic-admin tbody tr:last-child ').find('input[name^="display_order"]').val();
                     if(raw_value === undefined) {
@@ -297,7 +343,7 @@
         <td width="200px">
             <span class="medication-display" style="display:none">
                 <a href="javascript:void(0)" class="diagnosis-rename"><i class="oe-i remove-circle small" aria-hidden="true" title="Change diagnosis"></i></a>
-                <span class="diagnosis-name"></span>
+                <span class="diagnosis-name" data-test="diagnosis-name"></span>
             </span>
             <input class="diagnoses-search-autocomplete diagnoses-search-inputfield ui-autocomplete-input"
                    data-saved-diagnoses="" type="text" autocomplete="off">
@@ -318,7 +364,12 @@
             <input class="finding-id" type="hidden" value="" name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][finding_id]" id="SecondaryToCommonOphthalmicDisorder_{{row_count}}_finding_id">
         </td>
         <td>
-            <input name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][alternate_disorder_label]" id="SecondaryToCommonOphthalmicDisorder_{{row_count}}_alternate_disorder_label" type="text" value="">
+            <input name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][letter_macro_text]" id="SecondaryToCommonOphthalmicDisorder_{{row_count}}_letter_macro_text" type="text" value="">
+        </td>
+        <td>
+            <input type="hidden" name="SecondaryToCommonOphthalmicDisorder[{{row_count}}][institution_id]"
+                   id="SecondaryToCommonOphthalmicDisorder_{{row_count}}_institution_id" value="{{institution_id}}">
+            {{institution_name}}
         </td>
         <td>
             <a href="javascript:void(0)" class="delete button large">delete</a>

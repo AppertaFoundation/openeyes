@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2020
  * This file is part of OpenEyes.
@@ -12,6 +13,7 @@
  * @copyright Copyright (C) 2020, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="oe-full-header">
@@ -46,7 +48,15 @@
         <?php $this->renderPartial('//base/_messages'); ?>
 
         <!--<div class="alert-box info"><strong><span id="result_count">99</span> Results</strong></div>-->
-        <div id="theatreList" class="theatre-diary-list"></div>
+        <div id="theatreList" class="theatre-diary-list" data-autoload="<?= $autoload ? 'true' : 'false' ?>">
+            <?php if (!$autoload) { ?>
+                <div id="theatre-search-no-autoload">
+                    <div class="cols-12 column">
+                        <div class="alert-box"><strong>Please make your selection from the filter options to begin searching.</strong></div>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
         <div class="printable" id="printable"></div>
         <div id="iframeprintholder" style="display: none;"></div>
 
@@ -56,7 +66,7 @@
 
 <?php
 $assetManager = Yii::app()->getAssetManager();
-$widgetPath = $assetManager->publish('protected/widgets/js');
+$widgetPath = $assetManager->getPublishedPathOfAlias('application.widgets.js');
 Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
 ?>
 
@@ -76,4 +86,3 @@ Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMu
         }
     }
 </style>
-

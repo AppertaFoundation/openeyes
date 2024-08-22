@@ -3,6 +3,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\models;
 
+
 use OEModule\OphCiExamination\models\CorrectionType;
 use OEModule\OphCiExamination\models\StereoAcuity_Entry;
 use OEModule\OphCiExamination\models\StereoAcuity_Method;
@@ -180,12 +181,12 @@ class StereoAcuity_EntryTest extends \ModelTestCase
      * @test
      * @dataProvider letter_string_provider
      */
-    public function check_to_string_for_letter($attrs, $expected){
+    public function check_to_string_for_letter($attrs, $expected)
+    {
 
         $instance = $this->getElementInstance();
         $instance->setAttributes($attrs);
         $this->assertEquals($expected, (string)$instance); // explicit type casting may not be nesc, but added for readability
-
     }
 
     /** @test */
@@ -223,6 +224,5 @@ class StereoAcuity_EntryTest extends \ModelTestCase
         $instance->result = $result;
 
         $this->assertEquals($expected, $instance->display_result);
-
     }
 }

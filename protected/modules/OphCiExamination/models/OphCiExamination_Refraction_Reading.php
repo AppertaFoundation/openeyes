@@ -171,4 +171,10 @@ class OphCiExamination_Refraction_Reading extends \BaseActiveRecordVersioned
         $prefix = $this->$attribute >= 0 ? "+" : "";
         return sprintf("{$prefix}%.2f", $this->$attribute);
     }
+
+    public function __clone()
+    {
+        $this->unsetAttributes(['id', 'element_id']);
+        $this->setIsNewRecord(true);
+    }
 }

@@ -156,8 +156,8 @@ class FamilyHistoryParameter extends CaseSearchParameter implements DBProviderIn
         }
 
         $baseQuery = "
-SELECT DISTINCT p.id 
-FROM patient p 
+SELECT DISTINCT p.id
+FROM patient p
 JOIN patient_family_history fh
   ON fh.patient_id = p.id
 WHERE 1=1 {$query_side} {$query_relative} {$query_condition}";

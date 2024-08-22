@@ -1,5 +1,7 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "trial_patient_status".
  *
@@ -20,6 +22,8 @@
  */
 class TrialPatientStatus extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * The status when the patient has been just added to a Trial, but hasn't been accepted or rejected yet
      */

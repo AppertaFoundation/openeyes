@@ -1,4 +1,11 @@
 <?php
+
+use OEModule\OphDrPGDPSD\models\{
+    OphDrPGDPSD_Assignment,
+    OphDrPGDPSD_PGDPSD,
+    OphDrPGDPSD_PGDPSDMeds
+};
+
 /**
 * @covers OphDrPGDPSD_PGDPSD
 * @covers OphDrPGDPSD_PGDPSDMeds
@@ -6,7 +13,9 @@
 * @covers OphDrPGDPSD_AssignedTeam
 * @covers OphDrPGDPSD_Assignment
 * @covers OphDrPGDPSD_AssignmentMeds
-* @covers OphDrPGDPSD_AssignmentComment
+* @covers OphDrPGDPSD_Assignment_Comment
+*
+* @group pgdpsd
  */
 class OphDrPGDPSD_AssignmentTest extends \ActiveRecordTestCase
 {
@@ -156,10 +165,31 @@ class OphDrPGDPSD_AssignmentTest extends \ActiveRecordTestCase
             }
         }
         $assignment->cacheMeds($meds);
-        if ($comment) {
-            $assignment->saveComment($comment);
-        }
+        $assignment->saveComment($comment);
         $res = $assignment->save();
         $this->assertEquals($res, $can_save);
+    }
+
+    /** @test */
+    public function deactivated_teams_are_not_authorised_by_psds()
+    {
+        $test_user = User::factory()->create();
+
+        $team = Team::factory()->withUsers([$test_user])->create();
+
+        $psd = OphDrPGDPSD_PGDPSD::factory()->psd()->forTeams([$team])->create();
+        $medication = OphDrPGDPSD_PGDPSDMeds::factory()->forPGDPSD($psd)->create();
+
+        $assignment = OphDrPGDPSD_Assignment::factory()
+                    ->forPGDPSD($psd)
+                    ->create();
+
+        // While the team is active, the user should be authorised
+        $this->assertTrue($assignment->checkAuth($test_user));
+
+        $team->active = false;
+        $team->save(false);
+
+        $this->assertFalse($assignment->checkAuth($test_user));
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="element-fields full-width">
@@ -22,6 +24,9 @@
     <?php echo $form->radioButtons(
         $element,
         'selected_option',
-        'OphTrOperationnote_VteAssessmentOption'
+        'OphTrOperationnote_VteAssessmentOption',
+        array(
+            'prefilled_value' => $template_data['selected_option'] ?? ''
+        )
     ); ?>
 </div>

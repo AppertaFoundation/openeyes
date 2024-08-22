@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,17 +15,18 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php
     $is_editable_address = isset($is_editable_address) ? $is_editable_address : true;
-    echo CHtml::hiddenField('DocumentTarget['.$row_index.'][attributes][contact_id]', $contact_id); ?>
+    echo CHtml::hiddenField('DocumentTarget[' . $row_index . '][attributes][contact_id]', $contact_id); ?>
 <div>
     <textarea class="increase-text cols-full autosize" placeholder="Address" rows="1" cols="10" style="width: 100%; max-height: 100%;" <?php echo !$is_editable_address ? 'readonly' : ''; ?> name="DocumentTarget[<?php echo $row_index;?>][attributes][address]" id="Document_Target_Address_<?php echo $row_index;?>" data-rowindex="<?php echo $row_index ?>"><?php echo $address; ?></textarea>
 </div>
-<?php if ( Yii::app()->params['send_email_immediately'] === 'on' || Yii::app()->params['send_email_delayed'] === 'on' ) : ?>
+<?php if (SettingMetadata::model()->getSetting('send_email_immediately') === 'on' || SettingMetadata::model()->getSetting('send_email_delayed') === 'on') : ?>
         <?php
         $isEmailDisplayable = false;
-        if ( (isset($email) && $email !== '') ) {
+        if ((isset($email) && $email !== '')) {
             $isEmailDisplayable = true;
         }
         if (isset($_POST['DocumentTarget'][$row_index]['DocumentOutput'])) {
@@ -37,11 +39,11 @@
                 }
             }
         }
-        if ( $contact_type === 'GP' && $can_send_electronically) {
+        if ($contact_type === 'GP' && $can_send_electronically) {
             $isEmailDisplayable = false;
         }
 
-        if ( $contact_type === 'INTERNALREFERRAL') {
+        if ($contact_type === 'INTERNALREFERRAL') {
             $isEmailDisplayable = false;
         }
         ?>

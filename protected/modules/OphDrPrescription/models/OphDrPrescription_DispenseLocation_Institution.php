@@ -1,5 +1,6 @@
 <?php
 
+use OE\factories\models\traits\HasFactory;
 
 /**
  * Class OphDrPrescription_DispenseLocation_Institution
@@ -7,6 +8,8 @@
  */
 class OphDrPrescription_DispenseLocation_Institution extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     /**
      * @return string the associated database table name
      */

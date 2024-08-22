@@ -57,7 +57,6 @@ abstract class BaseMedicationWidget extends BaseEventElementWidget
                 $element->do_not_save_entries = (bool)$data['do_not_save_entries'];
         }
         */
-
         if (!is_a($element, static::$elementClass)) {
             throw new CException('invalid element class ' . get_class($element) . ' for ' . static::class);
         }
@@ -90,6 +89,7 @@ abstract class BaseMedicationWidget extends BaseEventElementWidget
 
         $entries = array();
         $to_prescription = array();
+        $no_entries_prescribed = true;
 
         if (array_key_exists('entries', $data)) {
             foreach ($data['entries'] as $i => $entry_data) {
@@ -122,17 +122,20 @@ abstract class BaseMedicationWidget extends BaseEventElementWidget
                 if (is_a($entry, MedicationManagementEntry::class)) {
                     if (array_key_exists('prescribe', $entry_data)) {
                         $entry->prescribe = $entry_data['prescribe'];
+                        $no_entries_prescribed = false;
                     } else {
                         $entry->prescribe = 0;
                     }
                 }
 
                 if (isset($entry_data['start_date']) && $entry_data['start_date'] !== '') {
+                    $entry_data['start_date'] = Helper::convertNHS2MySQL($entry_data['start_date']);
                     list($start_year, $start_month, $start_day) = array_pad(explode('-', $entry_data['start_date']), 3, null);
                     $entry->start_date = Helper::padFuzzyDate($start_year, $start_month, $start_day);
                 }
 
                 if (isset($entry_data['end_date']) && $entry_data['end_date'] !== '') {
+                    $entry_data['end_date'] = Helper::convertNHS2MySQL($entry_data['end_date']);
                     list($end_year, $end_month, $end_day) = array_pad(explode('-', $entry_data['end_date']), 3, null);
                     $entry->end_date = Helper::padFuzzyDate($end_year, $end_month, $end_day);
                 } else {
@@ -178,6 +181,34 @@ abstract class BaseMedicationWidget extends BaseEventElementWidget
             $element->entries = array();
         }
 
+        if (array_key_exists("save_draft_prescription", $data)) {
+            $element->save_draft_prescription = $data['save_draft_prescription'] === "1";
+        }
+
+        if (is_a($element, 'OEModule\OphCiExamination\models\MedicationManagement')) {
+            $element->no_entries_prescribed = $no_entries_prescribed;
+        }
+
+        $rels = $element->relations();
+        if (array_key_exists("signatures", $data)) {
+            $models = [];
+            $signature_class = $rels["signatures"][1];
+
+            foreach ($data["signatures"] as $signature_data) {
+                if ((int)$signature_data["id"] > 0) {
+                    $model = $signature_class::model()->findByPk($signature_data["id"]);
+                } else {
+                    $model = new $signature_class();
+                }
+
+                $model->setAttributes($signature_data);
+                $model->proof = $signature_data["proof"];
+                $model->setDataFromProof();
+                array_push($models, $model);
+            }
+
+            $element->signatures = $models;
+        }
     }
 
     /**

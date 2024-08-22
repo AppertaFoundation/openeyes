@@ -1,22 +1,5 @@
 <?php
 
-/**
- * OpenEyes.
- *
- *
- * Copyright OpenEyes Foundation, 2017
- *
- * This file is part of OpenEyes.
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
- * You should have received a copy of the GNU Affero General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
- *
- * @link http://www.openeyes.org.uk
- *
- * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright 2017, OpenEyes Foundation
- * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
- */
 class OEMigration extends CDbMigration
 {
     private $migrationPath;
@@ -381,17 +364,27 @@ class OEMigration extends CDbMigration
 
         $row = array(
             'name' => $name,
-            'class_name' => isset($params['class_name']) ? $params['class_name'] : "Element_{$event_type}_" . str_replace(' ',
-                    '', $name),
+            'class_name' => $params['class_name'] ?? "Element_{$event_type}_" . str_replace(
+                ' ',
+                '',
+                $name
+            ),
             'event_type_id' => $event_type_id,
             'display_order' => isset($params['display_order']) ? $params['display_order'] : 1,
             'default' => isset($params['default']) ? $params['default'] : 0,
             'required' => isset($params['required']) ? $params['required'] : 0,
+            'group_title' => isset($params['group_title']) ? $params['group_title'] : '',
         );
 
         if (isset($params['group_name'])) {
             $row['element_group_id'] = $this->getIdOfElementGroupByName($params['group_name'], $event_type_id);
+
+            if (!isset($params['group_title'])) {
+                $row['group_title'] = $params['group_name'];
+            }
         }
+
+
 
         $this->insert('element_type', $row);
 
@@ -407,12 +400,61 @@ class OEMigration extends CDbMigration
     {
         $event_type_id = $this->getIdOfEventTypeByClassName($event_type);
         $element_type_id = $this->getIdOfElementTypeByClassName($element_type_class, $event_type_id);
-        $this->delete('ophciexamination_element_set_item', 'element_type_id = :element_type_id',
-            [':element_type_id' => $element_type_id]);
-        $this->delete('element_type', 'id = :id',
-            [':id' => $element_type_id]);
+        $this->delete(
+            'ophciexamination_element_set_item',
+            'element_type_id = :element_type_id',
+            [':element_type_id' => $element_type_id]
+        );
+        $this->delete(
+            'element_type',
+            'id = :id',
+            [':id' => $element_type_id]
+        );
     }
 
+
+    /**
+     * Update the class name field for an element type for the specified event type.
+     * If a use_event_type_as_module_name is true the event type name will be used to specifiy the namespace the element should be in.
+     * This function will look for the element type with the existing class with a LIKE clause so there is not need to prefix that argument with a namespace.
+     *
+     * This should be run inside safeUp/safeDown or a transaction.
+     *
+     * @param string $existing_name
+     * @param string $new_name
+     * @param string|int $event_type_id
+     * @param bool $use_event_type_as_module_name
+     * @return void
+     * @throws Exception
+     */
+    protected function updateElementTypeClassName(string $existing_name, string $new_name, $event_type, bool $use_event_type_as_module_name)
+    {
+        $event_type_id = $this->getIdOfEventTypeByClassName($event_type);
+        $prefix = '';
+
+        if ($use_event_type_as_module_name) {
+            $prefix = 'OEModule\\' . $event_type . '\\models\\';
+        }
+
+        $existing_count = $this->getDbConnection()->createCommand()
+                        ->select('COUNT(id)')
+                        ->from('element_type')
+                        ->where('class_name LIKE CONCAT("%", :existing_name) AND event_type_id = :event_type', [':existing_name' => $existing_name, ':event_type' => $event_type_id])
+                        ->queryScalar();
+
+        if ($existing_count > 1) {
+            throw new \Exception('Element class ' . $existing_name . ' for event type id ' . $event_type_id . ' has duplicates');
+        } else if ($existing_count < 1) {
+            throw new \Exception('Element class ' . $existing_name . ' for event type id ' . $event_type_id . ' does not exist');
+        }
+
+        $this->update(
+            'element_type',
+            ['class_name' => $prefix . $new_name],
+            'class_name LIKE CONCAT("%", :existing_name) AND event_type_id = :event_type',
+            [':existing_name' => $existing_name, ':event_type' => $event_type_id]
+        );
+    }
 
     /**
      * @description used within subclasses to find out the element_type id based on Class Name
@@ -479,7 +521,17 @@ class OEMigration extends CDbMigration
             'event_type_id' => $event_type_id,
         );
 
-        $this->insert('element_group', $row);
+        $exists = !empty($this->dbConnection->createCommand("SELECT id
+                                                            FROM element_group
+                                                            WHERE `name` = :group_name
+                                                                AND event_type_id = :event_type_id")->queryScalar([':group_name' => $name, ':event_type_id' => $event_type_id]));
+        // If the element group already exists then just update the display_order
+        // Else insert the new row
+        if ($exists) {
+            $this->update('element_group', $row, '`name` = :group_name AND event_type_id = :event_type_id', [':group_name' => $name, ':event_type_id' => $event_type_id]);
+        } else {
+            $this->insert('element_group', $row);
+        }
 
         return $this->dbConnection->lastInsertID;
     }
@@ -494,10 +546,12 @@ class OEMigration extends CDbMigration
         $event_type_id = $this->getIdOfEventTypeByClassName($event_type);
         $this->delete(
             'element_group',
-            'name = :name AND event_type_id = :event_type_id', [
-            ':name' => $name,
-            ':event_type_id' => $event_type_id
-        ]);
+            'name = :name AND event_type_id = :event_type_id',
+            [
+                ':name' => $name,
+                ':event_type_id' => $event_type_id
+            ]
+        );
     }
 
     /**
@@ -636,7 +690,7 @@ class OEMigration extends CDbMigration
 
             $this->migrationEcho(
                 'Added element type, element_type_class: ' . $element_type_class . ' element type properties: '
-                . var_export($element_type_data, true) . ' event_type_id: ' . $event_type_id . " \n"
+                    . var_export($element_type_data, true) . ' event_type_id: ' . $event_type_id . " \n"
             );
 
             // Insert element type id into element type array
@@ -681,7 +735,7 @@ class OEMigration extends CDbMigration
             $this->delete($tableName, $fieldsList, $fieldsValArrayMap);
             $this->migrationEcho(
                 "\nDeleted  in table : $tableName. Fields : "
-                . $fieldsList . ' value: ' . var_export($fieldsValArrayMap, true) . "\n"
+                    . $fieldsList . ' value: ' . var_export($fieldsValArrayMap, true) . "\n"
             );
         }
     }
@@ -775,6 +829,25 @@ class OEMigration extends CDbMigration
         return -1;
     }
 
+    public function insertIfNotExist($table, $attributes = [])
+    {
+        $command = Yii::app()->db->createCommand()
+            ->select('id')
+            ->from($table);
+
+        $command->where("1=1");
+        foreach ($attributes as $attr => $val) {
+            $command->andWhere("{$attr} = :{$attr}", [":$attr" => $val]);
+        }
+
+        $is_exist = $command->queryRow();
+        if (!$is_exist) {
+            $this->insert($table, $attributes);
+        } else {
+            echo "\n    > SKIP insert into $table ... value already exist\n";
+        }
+    }
+
     /**
      * @description - return csvFiles array of files that will be imported
      *
@@ -835,11 +908,15 @@ class OEMigration extends CDbMigration
 
         $default_code = $code;
 
-        if ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code',
-            array(':code' => strtolower($code)))->queryRow()) {
+        if ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where(
+            'code = :code',
+            array(':code' => strtolower($code))
+        )->queryRow()) {
             $n = '00';
-            while ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where('code = :code',
-                array(':code' => 'z' . $n))->queryRow()) {
+            while ($this->dbConnection->createCommand()->select('*')->from('patient_shortcode')->where(
+                'code = :code',
+                array(':code' => 'z' . $n)
+            )->queryRow()) {
                 $n = str_pad((int)$n + 1, 2, '0', STR_PAD_LEFT);
             }
             $code = "z$n";
@@ -847,8 +924,10 @@ class OEMigration extends CDbMigration
             echo "Warning: attempt to register duplicate shortcode '$default_code', replaced with 'z$n'\n";
         }
 
-        if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('id = :id',
-            array(':id' => $event_type_id))->queryScalar()) {
+        if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where(
+            'id = :id',
+            array(':id' => $event_type_id)
+        )->queryScalar()) {
             $event_type_id = null;
         }
 
@@ -906,19 +985,19 @@ class OEMigration extends CDbMigration
         $this->update('event_type', array('rbac_operation_suffix' => $rbac_operation_suffix), "id = $event_type_id");
     }
 
-    public function addRole($role_name)
+    public function addRole($role_name, $description = null, $bizrule = null, $data = null)
     {
-        $this->insert('authitem', array('name' => $role_name, 'type' => 2));
+        $this->insert('authitem', array('name' => $role_name, 'type' => 2, 'description' => $description, 'bizrule' => $bizrule, 'data' => $data));
     }
 
-    public function addTask($task_name)
+    public function addTask($task_name, $description = null, $bizrule = null, $data = null)
     {
-        $this->insert('authitem', array('name' => $task_name, 'type' => 1));
+        $this->insert('authitem', array('name' => $task_name, 'type' => 1, 'description' => $description, 'bizrule' => $bizrule, 'data' => $data));
     }
 
-    public function addOperation($oprn_name)
+    public function addOperation($oprn_name, $description = null, $bizrule = null, $data = null)
     {
-        $this->insert('authitem', array('name' => $oprn_name, 'type' => 0));
+        $this->insert('authitem', array('name' => $oprn_name, 'type' => 0, 'description' => $description, 'bizrule' => $bizrule, 'data' => $data));
     }
 
     public function addTaskToRole($task_name, $role_name)
@@ -980,14 +1059,20 @@ class OEMigration extends CDbMigration
 
     public function removeOperationFromTask($oprn_name, $task_name)
     {
-        $this->delete('authitemchild', 'parent = :task_name and child = :oprn_name',
-            array(":task_name" => $task_name, ':oprn_name' => $oprn_name));
+        $this->delete(
+            'authitemchild',
+            'parent = :task_name and child = :oprn_name',
+            array(":task_name" => $task_name, ':oprn_name' => $oprn_name)
+        );
     }
 
     public function removeTaskFromRole($task_name, $role_name)
     {
-        $this->delete('authitemchild', 'parent = :role_name and child = :task_name',
-            array(":role_name" => $role_name, ':task_name' => $task_name));
+        $this->delete(
+            'authitemchild',
+            'parent = :role_name and child = :task_name',
+            array(":role_name" => $role_name, ':task_name' => $task_name)
+        );
     }
 
     public function removeRole($role_name)
@@ -1030,6 +1115,64 @@ class OEMigration extends CDbMigration
     }
 
     /**
+     * Checks if a named column exists on a named table
+     * @param $table_name Name of he table to check for the column on
+     * @param $column_name Name of the column to check for
+     * @return bool true if the column exists
+     */
+    protected function verifyColumnExists($table_name, $column_name)
+    {
+        $cols = $this->dbConnection->createCommand("SHOW COLUMNS FROM `" . $table_name . "` LIKE '" . $column_name . "'")->queryScalar();
+        return !empty($cols);
+    }
+
+    /**
+     * Checks if a named foreign keys exists on a named table
+     * @param $table_name Name of he table to check the FK on
+     * @param $key_name Name of the FK contraint to check for
+     * @return bool true if the FK exists
+     */
+    protected function verifyForeignKeyExists($table_name, $key_name)
+    {
+        $fk_exists = $this->dbConnection->createCommand('   SELECT count(*)
+                                                            FROM information_schema.table_constraints
+                                                            WHERE table_schema = DATABASE()
+                                                                AND table_name = :table_name
+                                                                AND constraint_name = :key_name
+                                                                AND constraint_type = "FOREIGN KEY"')->queryScalar([':table_name' => $table_name, ':key_name' => $key_name]);
+
+        return !empty($fk_exists);
+    }
+
+    /**
+     * Checks if a named table exisst in the schema
+     * @param $table_name Name of he table to check for
+     * @return bool true if the table exists
+     */
+    protected function verifyTableExists($table_name)
+    {
+        return $this->dbConnection->schema->getTable($table_name) !== null;
+    }
+
+    /**
+     * Will return true if an index (of any type) exists for the given table with the given name
+     *
+     * @param [string] $table_name The table to search indexes on
+     * @param [sting] $index_name The index name to test for
+     * @return void
+     */
+    protected function verifyIndexExists($table_name, $index_name)
+    {
+        $index_exists = $this->dbConnection->createCommand('   SELECT count(*)
+                                                            FROM information_schema.table_constraints
+                                                            WHERE table_schema = DATABASE()
+                                                                AND table_name = :table_name
+                                                                AND constraint_name = :key_name')->queryScalar([':table_name' => $table_name, ':key_name' => $index_name]);
+
+        return !empty($index_exists);
+    }
+
+    /**
      * @param $table_name
      * @param bool $warn
      * @return bool
@@ -1045,11 +1188,6 @@ class OEMigration extends CDbMigration
             );
         }
         return false;
-    }
-
-    protected function verifyTableExists($table_name)
-    {
-        return $this->dbConnection->schema->getTable($table_name) !== null;
     }
 
     /**
@@ -1087,5 +1225,198 @@ class OEMigration extends CDbMigration
         if ($versioned && $this->verifyTableVersioned($current_name)) {
             $this->renameTable($current_name . '_version', $new_name . '_version');
         }
+    }
+
+    /**
+     * Gets the settings field type id by name
+     *
+     * @param $field_type
+     * @return int
+     * @throws CException
+     */
+    protected function getSettingFieldIdByName(string $name)
+    {
+        return $this->dbConnection->createCommand()
+            ->select('id')
+            ->from('setting_field_type')
+            ->where('name = :name', [':name' => $name])
+            ->queryScalar();
+    }
+
+    protected function isColumnExist(string $table, string $column): bool
+    {
+        return isset($this->dbConnection->schema->getTable($table, true)->columns[$column]);
+    }
+
+    public function createOrReplaceView($view_name, $select)
+    {
+        $this->dbConnection->createCommand('create or replace view ' . $view_name . ' as ' . $select)->execute();
+    }
+
+    public function dropView($view_name)
+    {
+        $this->dbConnection->createCommand('drop view ' . $view_name)->execute();
+    }
+
+    /**
+     * Deletes a given system setting from all the different setting_* tables
+     *
+     * @param [type] $setting_key
+     * @return void
+     */
+    public function deleteSetting($setting_key)
+    {
+        $setting_tables = [
+            'user',
+            'firm',
+            'specialty',
+            'subspecialty',
+            'site',
+            'internal_referral',
+            'institution',
+            'installation',
+            'metadata'
+        ];
+
+        // Loop through the various setting tables and delete the setting from all of them
+        foreach ($setting_tables as $table) {
+            $this->delete('setting_' . $table, '`key` = :key', [':key' => $setting_key]);
+        }
+    }
+
+    /**
+     * Creates a new system setting entry in setting_metadata
+     *
+     * @param [string] $setting_key The string that identifies this setting
+     * @param [string] $name A human readable name for the setting (a brief descriptive title)
+     * @param [string] $description A full text description of the setting purpose and usage
+     * @param [string] $group_name Which group the setting should sit under in the settings page. E.g., Core, Examination, Operation Note, Correspondence, System, etc.
+     * @param [string] $field_type_name Which type of setting is this (Checkbox, Dropdown list, Radio buttons, Text field, Textarea, HTML)
+     * @param [string] $data Depending on the fields type, this can be used to define the available options
+     * @param [string] $default_value Default value for this setting, if no overrides are given in any of the other setting tables
+     * @param [string] $lowest_level The minimum level at which this setting can be applied (INSTALLATION or INSTITUTION)
+     * @return void
+     */
+    public function addSetting(string $setting_key, string $name, string $description, string $group_name, string $field_type_name, string $data, $default_value, string $lowest_level = 'INSTALLATION')
+    {
+        $group_id = $this->dbConnection->createCommand("SELECT id FROM setting_group WHERE `name` = :group_name")->queryScalar([':group_name' => $group_name]);
+
+        if (empty($group_id)) {
+            throw new CException("Unknown group, please check your spelling");
+        }
+
+        // deal with some common typos for field types:
+        $field_type_name = strtolower($field_type_name) == 'text field' ? 'Text Field' : $field_type_name;
+        $field_type_name = strtolower($field_type_name) == 'textfield' ? 'Text Field' : $field_type_name;
+        $field_type_name = strtolower($field_type_name) == 'text' ? 'Text Field' : $field_type_name;
+        $field_type_name = strtolower($field_type_name) == 'radio buttons' ? 'Radio buttons' : $field_type_name;
+        $field_type_name = strtolower($field_type_name) == 'textarea' ? 'Textarea' : $field_type_name;
+        $field_type_name = strtolower($field_type_name) == 'text area' ? 'Textarea' : $field_type_name;
+
+
+        $field_type_id = $this->dbConnection->createCommand('SELECT id FROM setting_field_type WHERE name = :field_type_name')->queryScalar([':field_type_name' => $field_type_name]);
+        if (empty($field_type_id)) {
+            throw new CException("Unknown field type, please check your spelling");
+        }
+
+        $this->insert('setting_metadata', array(
+            'element_type_id' => null,
+            'display_order' => 0,
+            'key' => $setting_key,
+            'name' => $name,
+            'field_type_id' => $field_type_id,
+            'data' => $data,
+            'default_value' => $default_value,
+            'group_id' => $group_id,
+            'description' => $description,
+            'lowest_setting_level' => strtoupper($lowest_level),
+        ));
+    }
+
+    /**
+     * Add a new item to the search index
+     *
+     * @param string $event_name e.g, Examination
+     * @param string $parent_name If the item is not at a top level, add the name of the parent item it should appear below. Use the name from the search inex. E.g, Anterior Segment
+     * @param string $primary_term The main serach term the item should be known by
+     * @param string $secondary_term_list A comma separated list of alternative terms to search by
+     * @param string $open_element_class_name If selecting the result should open an element, specify the elemant's class here
+     * @param string $goto_id If selecting the result should jump the user to a place in the page, add the HTML id here
+     * @param string $goto_tag label | legend - more info required on exactly what this does!
+     * @param string $goto_text Highliht some specific text within the id/tag
+     * @param string $img_url An image to use as an icon for this result
+     * @param string $goto_subcontainer_class function unknown at this point!
+     * @param string $goto_doodle_class_name If clicking on the result should add a particular doodle to a canvas, then specify the doodle's class name here
+     * @param string $goto_property If clicking the result should highlight a specific doodle property, then add the property name here
+     * @param string $warning_note Any help text to show alongside the result
+     * @return void
+     */
+    public function addToSearchIndex(
+        string $event_class,
+        string $parent_name = null,
+        string $primary_term,
+        string $secondary_term_list = null,
+        string $open_element_class_name = null,
+        string $goto_id = null,
+        string $goto_tag = null,
+        string $goto_text = null,
+        string $img_url = null,
+        string $goto_subcontainer_class = null,
+        string $goto_doodle_class_name = null,
+        string $goto_property = null,
+        string $warning_note = null
+    ) {
+        // Search index
+        $event_type_id = $this->dbConnection->createCommand("SELECT id FROM event_type WHERE `class_name` = :event_class")->queryScalar([':event_class' => $event_class]);     
+        $parent_id = $this->dbConnection->createCommand("SELECT id FROM index_search WHERE primary_term = :parent_term")->queryScalar([ ':parent_term' => $parent_name ]);
+
+        $this->execute(
+            "INSERT INTO index_search (
+                event_type_id,
+                parent,
+                primary_term,
+                secondary_term_list,
+                open_element_class_name,
+                goto_id,
+                goto_tag,
+                goto_text,
+                img_url,
+                goto_subcontainer_class,
+                goto_doodle_class_name,
+                goto_property,
+                warning_note
+            )
+            VALUES(
+                :event_type_id,
+                :parent_id,
+                :primary_term,
+                :secondary_term_list,
+                :open_element_class_name,
+                :goto_id,
+                :goto_tag,
+                :goto_text,
+                :img_url,
+                :goto_subcontainer_class,
+                :goto_doodle_class_name,
+                :goto_property,
+                :warning_note
+            );
+            ",
+            [
+                ':event_type_id'            => $event_type_id,
+                ':parent_id'                => $parent_id,
+                ':primary_term'             => $primary_term,
+                ':secondary_term_list'      => $secondary_term_list,
+                ':open_element_class_name'  => $open_element_class_name,
+                ':goto_id'                  => $goto_id,
+                ':goto_tag'                 => $goto_tag,
+                ':goto_text'                => $goto_text,
+                ':img_url'                  => $img_url,
+                ':goto_subcontainer_class'  => $goto_subcontainer_class,
+                ':goto_doodle_class_name'   => $goto_doodle_class_name,
+                ':goto_property'            => $goto_property,
+                ':warning_note'             => $warning_note
+            ]
+        );
     }
 }

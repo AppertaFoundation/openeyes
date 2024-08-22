@@ -61,7 +61,7 @@ if (is_array($ordered_episodes)) { ?>
             }
         }
 
-        $subspecialties = Subspecialty::model()->findAllByAttributes(
+        $subspecialties = Subspecialty::model()->cache(1000)->findAllByAttributes(
             [
             'name' => [
               'Cataract',
@@ -82,7 +82,7 @@ if (is_array($ordered_episodes)) { ?>
                        'subspecialty_id' => $subspecialty->id,
                        'patient_id' => $this->patient->id
                        ]
-                   ) ?>" >
+                         ) ?>" >
                   <?= $subspecialty->ref_spec ?>
                 </a>
             </li>

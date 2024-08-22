@@ -18,6 +18,8 @@
 
 namespace OEModule\OphCiExamination\models;
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciexamination_cxl_cl_removed".
  *
@@ -29,8 +31,10 @@ namespace OEModule\OphCiExamination\models;
  *
  * The followings are the available model relations:
  */
-class OphCiExamination_CXL_Cl_Removed extends \SplitEventTypeElement
+class OphCiExamination_CXL_CL_Removed extends \SplitEventTypeElement
 {
+    use HasFactory;
+
     public $service;
 
     /**

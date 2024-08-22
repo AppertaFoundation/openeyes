@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,35 +16,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 Yii::app()->clientScript->registerScriptFile("{$this->assetPath}/js/mmc.js");
 
-$layoutColumns = $form->layoutColumns;
-$form->layoutColumns = array('label' => 3, 'field' => 3);
 ?>
-<!--
-<div class="element-fields full-width">
-    <?php $form->dropDownList(
-        $element,
-        'application_type_id',
-        'OphTrOperationnote_Antimetabolite_Application_Type',
-        array('empty' => '-- Select --')
-    ); ?>
-    <?php $form->dropDownList($element, 'concentration_id', 'OphTrOperationnote_Mmc_Concentration'); ?>
-  <div id="ophtroperationnote-mmc-sponge" class="ophtroperationnote-mmc-application hidden">
-        <?php $form->dropDownList($element, 'duration', array_combine(range(1, 5), range(1, 5))); ?>
-        <?php $form->dropDownList($element, 'number', array_combine(range(1, 5), range(1, 5))); ?>
-        <?php $form->checkBox($element, 'washed'); ?>
-  </div>
-  <div id="ophtroperationnote-mmc-injection" class="ophtroperationnote-mmc-application hidden">
-    <div class="data-group">
-      <div class="<?= $form->columns() ?>"><label><?= CHtml::encode($element->getAttributeLabel('dose')) ?></label>
-      </div>
-      <div id="ophtroperationnote-mmc-dose" class="data-value <?= $form->columns('field', true) ?>"></div>
-    </div>
-  </div>
-</div>
--->
-<?php $form->layoutColumns = $layoutColumns; ?>
 
 <div class="element-fields full-width">
   <div class="cols-7 flex-layout flex-top col-gap">
@@ -59,7 +35,7 @@ $form->layoutColumns = array('label' => 3, 'field' => 3);
                     $element,
                     'application_type_id',
                     'OphTrOperationnote_Antimetabolite_Application_Type',
-                    array('nowrapper' => true, 'empty' => '-- Select --')
+                    array('nowrapper' => true, 'empty' => '-- Select --', 'data-prefilled-value' => $template_data['application_type_id'] ?? '')
                 ); ?>
           </td>
         </tr>
@@ -72,7 +48,7 @@ $form->layoutColumns = array('label' => 3, 'field' => 3);
                     $element,
                     'concentration_id',
                     'OphTrOperationnote_Mmc_Concentration',
-                    array('nowrapper' => true)
+                    array('nowrapper' => true, 'data-prefilled-value' => $template_data['concentration_id'] ?? '')
                 ); ?>
           </td>
         </tr>
@@ -92,7 +68,7 @@ $form->layoutColumns = array('label' => 3, 'field' => 3);
                     $element,
                     'duration',
                     array_combine(range(1, 5), range(1, 5)),
-                    array('nowrapper' => true)
+                    array('nowrapper' => true, 'data-prefilled-value' => $template_data['duration'] ?? '')
                 ); ?>
         </tr>
         <tr>
@@ -104,13 +80,13 @@ $form->layoutColumns = array('label' => 3, 'field' => 3);
                     $element,
                     'number',
                     array_combine(range(1, 5), range(1, 5)),
-                    array('nowrapper' => true)
+                    array('nowrapper' => true, 'data-prefilled-value' => $template_data['number'] ?? '')
                 ); ?>
           </td>
         </tr>
         <tr>
           <td colspan="2">
-                <?php $form->checkBox($element, 'washed', array('nowrapper' => true)); ?>
+                <?php $form->checkBox($element, 'washed', array('nowrapper' => true, 'data-prefilled-value' => array_key_exists('washed', $template_data) && $template_data['washed'] === '1' ? 'true' : '')); ?>
           </td>
         </tr>
         </tbody>
@@ -130,7 +106,7 @@ $form->layoutColumns = array('label' => 3, 'field' => 3);
                     $element,
                     'volume_id',
                     'OphTrOperationnote_Mmc_Volume',
-                    array('nowrapper' => true)
+                    array('nowrapper' => true, 'data-prefilled-value' => $template_data['volume_id'] ?? '')
                 ); ?>
         </tr>
         <tr>

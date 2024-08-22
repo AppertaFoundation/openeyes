@@ -1,10 +1,11 @@
 <?php
+
 /**
  * Class VAVariableTest
  * @covers AgeVariable
  * @covers CaseSearchVariable
  */
-class AgeVariableTest extends CDbTestCase
+class AgeVariableTest extends OEDbTestCase
 {
     protected AgeVariable $variable;
 
@@ -12,18 +13,18 @@ class AgeVariableTest extends CDbTestCase
         'patients' => Patient::class,
     );
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         Yii::app()->getModule('OECaseSearch');
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->variable = new AgeVariable([1, 2, 3]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->variable);

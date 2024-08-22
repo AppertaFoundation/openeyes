@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,23 +16,24 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <?php if (!$nowrapper) :?>
     <div id="div_<?= CHtml::modelName($element)?>_<?= $field?>"
        class="data-group flex-layout"
-       style="<?=($hidden) ? 'display: none':''?>" >
+       style="<?=($hidden) ? 'display: none' : ''?>" >
       <?php if (!$no_label) : ?>
         <div class="cols-<?= $layoutColumns['label'] ?> column">
           <label for="<?= CHtml::modelName($element) . "_$field" ?>">
               <?= (isset($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($htmlOptions['label'])) . ':' : ($label ? CHtml::encode($element->getAttributeLabel($field)) . ':' : '')); ?>
           </label>
         </div>
-        <?php endif; ?>
+      <?php endif; ?>
         <div class="cols-<?php echo $layoutColumns['field']?> column">
 <?php endif;
 $attr = array(
-    'id' => (isset($htmlOptions['name']) ? $htmlOptions['name'] : CHtml::modelName($element).'_'.$field),
-    'name' => (isset($htmlOptions['name']) ? $htmlOptions['name'] : CHtml::modelName($element).'['.$field.']'),
+    'id' => (isset($htmlOptions['name']) ? $htmlOptions['name'] : CHtml::modelName($element) . '_' . $field),
+    'name' => (isset($htmlOptions['name']) ? $htmlOptions['name'] : CHtml::modelName($element) . '[' . $field . ']'),
     'placeholder' => @$htmlOptions['placeholder'],
 );
 if ($rows) {
@@ -41,7 +43,7 @@ if ($cols) {
     $attr['cols'] = $cols;
 }
 ?>
-<textarea class="<?= isset($htmlOptions['class']) ? $htmlOptions['class'] : 'cols-full column'?>"
+<textarea class="<?= isset($htmlOptions['class']) ? $htmlOptions['class'] : 'cols-full column autosize'?>"
     <?= CHtml::renderAttributes(array_merge($htmlOptions, $attr));?>
 ><?=\CHtml::encode($value)?>
 </textarea>

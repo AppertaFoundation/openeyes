@@ -24,7 +24,7 @@ class AuthRules
      *
      * @return bool
      */
-    public function canEditEpisode(Episode $episode)
+    public function canEditEpisode($data, Episode $episode)
     {
         if ($episode->change_tracker) {
             // firm/subspecialty  is irrelevant for change tracking episodes.
@@ -38,13 +38,13 @@ class AuthRules
     }
 
     /**
-     * @param Firm      $firm
-     * @param Episode   $episode
-     * @param EventType $event_type
-     *
+     * @param Firm|null $firm
+     * @param Episode|null $episode
+     * @param EventType|null $event_type
+     * @param bool $has_pgdpsd_assignments
      * @return bool
      */
-    public function canCreateEvent(Firm $firm = null, Episode $episode = null, EventType $event_type = null)
+    public function canCreateEvent($data, Firm $firm = null, Episode $episode = null, EventType $event_type = null, bool $has_pgdpsd_assignments = false)
     {
         if ($event_type) {
             if ($event_type->disabled) {
@@ -60,10 +60,14 @@ class AuthRules
                 $oprn = "OprnCreate" . $event_type->rbac_operation_suffix;
                 if (!Yii::app()->user->checkAccess($oprn)) return false;
             }
+
+            if ($event_type->class_name === 'OphDrPGDPSD' && !Yii::app()->user->checkAccess('OprnCreateDA') && !$has_pgdpsd_assignments) {
+                return false;
+            }
         }
 
         if ($episode) {
-            return $this->canEditEpisode($episode);
+            return $this->canEditEpisode(null, $episode);
         }
 
         return true;
@@ -75,7 +79,7 @@ class AuthRules
      *
      * @return bool
      */
-    public function canEditEvent(Event $event)
+    public function canEditEvent($data, Event $event)
     {
         if ($event->delete_pending) {
             return false;
@@ -96,12 +100,12 @@ class AuthRules
     }
 
     /**
-     * @param User  $user
+     * @param OEWebUser|User $user
      * @param Event $event
      *
      * @return bool
      */
-    public function canDeleteEvent(User $user, Event $event)
+    public function canDeleteEvent($data, $user, Event $event)
     {
         if (!(Yii::app()->user->checkAccess('admin'))) {
             return false;
@@ -122,7 +126,7 @@ class AuthRules
      *
      * @return bool
      */
-    public function canRequestEventDeletion(Event $event)
+    public function canRequestEventDeletion($data, Event $event)
     {
         if ($event->delete_pending) {
             return false;
@@ -138,6 +142,16 @@ class AuthRules
         return true;
     }
 
+    public function hasTeamAssignment($assigned_team_ids, $requested_team_id)
+    {
+        return in_array($requested_team_id, $assigned_team_ids);
+    }
+
+    public function canShowAllUsersInTeamUserAdder($data)
+    {
+        return Yii::app()->user->checkAccess('admin');
+    }
+
     /**
      * Common check for all rules that involve editing/deleting events.
      *
@@ -147,7 +161,7 @@ class AuthRules
      */
     private function canModifyEvent(Event $event)
     {
-        return $this->canEditEpisode($event->episode);
+        return $this->canEditEpisode(null, $event->episode);
     }
 
     /**
@@ -159,7 +173,7 @@ class AuthRules
      */
     private function isEventUnlocked(Event $event)
     {
-        if (Yii::app()->params['event_lock_disable'] || Yii::app()->user->checkAccess('admin')) {
+        if (SettingMetadata::model()->getSetting('event_lock_disable') || Yii::app()->user->checkAccess('admin')) {
             return true;
         }
 
@@ -173,7 +187,7 @@ class AuthRules
             return true;
         } else {
             return date('Ymd') < date('Ymd',
-                    strtotime($event->created_date) + (86400 * (Yii::app()->params['event_lock_days'] + 1)));
+                    strtotime($event->created_date) + (86400 * (SettingMetadata::model()->getSetting('event_lock_days') + 1)));
         }
     }
 }

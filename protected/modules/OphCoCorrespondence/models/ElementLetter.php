@@ -66,17 +66,6 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
     public $macro = null;
 
     /**
-     * Returns the static model of the specified AR class.
-     *
-     * @param string $className
-     * @return ElementLetter the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
-
-    /**
      * @return string the associated database table name
      */
     public function tableName()
@@ -91,25 +80,26 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
     {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
-        return array(
-            array(
+        return [
+            [
                 'event_id, site_id, print, address, use_nickname, date, introduction, cc, re, body, footer, draft, direct_line, fax, clinic_date,' .
                 'print_all, is_signed_off, to_subspecialty_id, to_firm_id, is_urgent, is_same_condition',
                 'safe'
-            ),
-            array('to_location_id', 'internalReferralToLocationIdValidator'),
-            array('to_subspecialty_id', 'internalReferralServiceValidator'),
-            array('is_same_condition', 'internalReferralConditionValidator'),
-            array('letter_type_id', 'letterTypeValidator'),
-            array('date, introduction, body, footer', 'requiredIfNotDraft'),
-            array('use_nickname , site_id', 'required'),
-            array('date', 'OEDateValidator'),
-            array('clinic_date', 'OEDateValidatorNotFuture'),
+            ],
+            ['to_location_id', 'internalReferralToLocationIdValidator'],
+            ['to_subspecialty_id', 'internalReferralServiceValidator'],
+            ['to_firm_id', 'internalReferralFirmValidator'],
+            ['is_same_condition', 'internalReferralConditionValidator'],
+            ['letter_type_id', 'letterTypeValidator'],
+            ['date, introduction, body', 'requiredIfNotDraft'],
+            ['use_nickname , site_id', 'required'],
+            ['date', 'OEDateValidator'],
+            ['clinic_date', 'OEDateValidatorNotFuture'],
             //array('is_signed_off', 'isSignedOffValidator'), // they do not want this at the moment - waiting for the demo/feedback
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type_id, to_location_id', 'safe', 'on' => 'search'),
-        );
+            ['id, event_id, site_id, use_nickname, date, introduction, re, body, footer, draft, direct_line, letter_type_id, to_location_id', 'safe', 'on' => 'search'],
+        ];
     }
 
     /**
@@ -119,21 +109,21 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
     {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
-        return array(
-            'element_type' => array(self::HAS_ONE, 'ElementType', 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"),
-            'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-            'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-            'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-            'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-            'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
-            'enclosures' => array(self::HAS_MANY, 'LetterEnclosure', 'element_letter_id', 'order' => 'display_order'),
-            'document_instance' => array(self::HAS_MANY, 'DocumentInstance', array( 'correspondence_event_id' => 'event_id')),
-            'letterType' => array(self::BELONGS_TO, 'LetterType', 'letter_type_id'),
-            'toSubspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'to_subspecialty_id'),
-            'toLocation' => array(self::BELONGS_TO, 'OphCoCorrespondence_InternalReferral_ToLocation', 'to_location_id'),
-            'toFirm' => array(self::BELONGS_TO, 'Firm', 'to_firm_id'),
+        return [
+            'element_type' => [self::HAS_ONE, ElementType::class, 'id', 'on' => "element_type.class_name='" . get_class($this) . "'"],
+            'eventType' => [self::BELONGS_TO, EventType::class, 'event_type_id'],
+            'event' => [self::BELONGS_TO, Event::class, 'event_id'],
+            'user' => [self::BELONGS_TO, User::class, 'created_user_id'],
+            'usermodified' => [self::BELONGS_TO, User::class, 'last_modified_user_id'],
+            'site' => [self::BELONGS_TO, Site::class, 'site_id'],
+            'enclosures' => [self::HAS_MANY, LetterEnclosure::class, 'element_letter_id', 'order' => 'display_order'],
+            'document_instance' => [self::HAS_MANY, DocumentInstance::class, ['correspondence_event_id' => 'event_id']],
+            'letterType' => [self::BELONGS_TO, LetterType::class, 'letter_type_id'],
+            'toSubspecialty' => [self::BELONGS_TO, Subspecialty::class, 'to_subspecialty_id'],
+            'toLocation' => [self::BELONGS_TO, OphCoCorrespondence_InternalReferral_ToLocation::class, 'to_location_id'],
+            'toFirm' => [self::BELONGS_TO, Firm::class, 'to_firm_id'],
 
-        );
+        ];
     }
 
     /**
@@ -141,7 +131,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
      */
     public function attributeLabels()
     {
-        return array(
+        return [
             'use_nickname' => 'Use Nickname',
             'date' => 'Date',
             'introduction' => 'Salutation',
@@ -154,11 +144,11 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             'is_signed_off' => 'Approved by a clinician',
             'to_subspecialty_id' => 'To Service',
             'to_firm_id' => 'To Consultant',
-            'is_urgent' => 'Urgent',
+            'is_urgent' => 'Mark as Urgent',
             'is_same_condition' => '',
             'site_id' => 'Site',
             'letter_type_id' => 'Letter Type',
-        );
+        ];
     }
 
     public function internalReferralServiceValidator($attribute, $params)
@@ -172,6 +162,21 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             }
         }
     }
+
+    public function internalReferralFirmValidator($attribute, $params)
+    {
+        if (strtolower(\SettingMetadata::model()->getSetting('correspondence_make_context_mandatory_for_internal_referrals')) === 'off') {
+            return;
+        }
+        $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
+        if ($letter_type->id !== $this->letter_type_id) {
+            return;
+        }
+        if (!$this->to_firm_id && $this->draft === '0') {
+            $this->addError($attribute, $this->getAttributeLabel($attribute) . ": Please select a context.");
+        }
+    }
+
     public function internalReferralConditionValidator($attribute, $params)
     {
         $letter_type = LetterType::model()->findByAttributes(array('name' => 'Internal Referral', 'is_active' => 1));
@@ -208,9 +213,9 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
         $criteria->compare('id', $this->id, true);
         $criteria->compare('event_id', $this->event_id, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new CActiveDataProvider(get_class($this), [
             'criteria' => $criteria,
-        ));
+        ]);
     }
 
     public function beforeValidate()
@@ -336,7 +341,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 $header->DocumentDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $this->event->event_date)->format('Y-m-d\TH:i:s');
                 if ($this->event->worklist_patient_id) {
                     $wl_patient = WorklistPatient::model()->findByPk($this->event->worklist_patient_id);
-                    $header->EventDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $wl_patient->when)->format('Y-m-d\TH:i:s');
+                    $header->EventDateTime = DateTime::createFromFormat('Y-m-d H:i:s', $wl_patient->patient->getLatestExaminationEvent()->event_date)->format('Y-m-d\TH:i:s');
                 }
                 $header->MIMEtype = 'application/pdf';
                 $header->VersionNumber = '1';
@@ -353,7 +358,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 }
 
                 $attr_list = array(
-                    'Author' => $user->getNameAndInstitutionUsername($institution->id, false),
+                    'Author' => $user->getNameAndInstitutionUsername($institution->id, true, '', ', '),
                     'DocumentType' => $document_type, // New field.
                     'DocumentSubType' => $document_subtype,
                     'DocumentTypeCode' => $document_type_code,
@@ -361,7 +366,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     'DocumentCategoryCode' => $document_category_code,
                     'DocumentSubCategoryCode' => $document_category_code . '02',
                     'ExternalSupersessionId' => "313|$this->letter_type_id|{$this->event->episode->patient->getHos()}|$this->event_id",
-                    'Consultant' => $this->event->episode->firm->getConsultantNameAndUsername($institution->id, false),
+                    'Consultant' => $this->event->episode->firm->getConsultantNameAndUsername($institution->id, true, '', ', '),
                     'ConsultantCode' => $this->event->episode->firm->consultant ? $this->event->episode->firm->consultant->getFormattedRegistrationCode() : '',
                     'Organisation' => $institution->name,
                     'OrganisationCode' => $institution->remote_id,
@@ -394,12 +399,15 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                     if ($identifier_instance->patientIdentifierType->usage_type === 'GLOBAL') {
                         $identifier->Domain = 'NHS';
                     } else {
-                        $identifier->Domain = $identifier_instance->patientIdentifierType->institution->pas_key;
+                        $identifier->Domain = isset($identifier_instance->patientIdentifierType->patientIdentifierCodes) ? $identifier_instance->patientIdentifierType->patientIdentifierCodes[0]->code : $identifier_instance->patientIdentifierType->institution->pas_key;
                     }
 
-                    $identifier->Value = $identifier_instance->value;
+                    $identifier->Value = str_replace("(*)", "", $identifier_instance->value); // Removing (*) from identifiers
                     $identifiers[] = $identifier;
                 }
+
+                // Be careful here, if fields are disappearing in the final xml, then check the
+                // following fields align up with the clients expecations (case-sensitive)
 
                 $demographics->SubjectIdentifier = $identifiers;
                 $demographics->FamilyName = $this->event->episode->patient->last_name;
@@ -410,7 +418,7 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 $demographics->AddressLine2 = $this->event->episode->patient->contact->address->address2;
                 $demographics->AddressLine3 = $this->event->episode->patient->contact->address->city;
                 $demographics->AddressLine4 = $this->event->episode->patient->contact->address->county;
-                $demographics->PostCode = $this->event->episode->patient->contact->address->postcode;
+                $demographics->Postcode = $this->event->episode->patient->contact->address->postcode;
 
                 $header->SubjectDemographicsAsRecorded = $demographics;
 
@@ -550,11 +558,11 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             }
         }
 
-        $pcassocitates = PatientContactAssociate::model()->findAllByAttributes(array('patient_id' => $patient->id));
-        if (isset($pcassocitates) && (Yii::app()->params['institution_code'] === 'CERA' || Yii::app()->params['use_contact_practice_associate_model'] == true)) {
-            foreach ($pcassocitates as $pcassocitate) {
-                $gp = $pcassocitate->gp;
-                $cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id' => $gp->id));
+        if (Yii::app()->params['institution_code'] === 'CERA' || Yii::app()->params['use_contact_practice_associate_model'] == true) {
+            $patient_contact_associates = PatientContactAssociate::model()->findAllByAttributes(array('patient_id' => $patient->id));
+            foreach ($patient_contact_associates as $associate) {
+                $gp = $associate->gp;
+                $cpa = ContactPracticeAssociate::model()->findByAttributes(array('gp_id' => $gp->id, 'practice_id' => $associate->practice_id));
                 if (isset($cpa->practice) && !empty($cpa->practice->getAddressLines())) {
                     $options['ContactPracticeAssociate' . $cpa->id] = $gp->contact->fullname . ' (' . ((isset($gp->contact->label)) ? $gp->contact->label->name : \SettingMetadata::model()->getSetting('gp_label')) . ')';
                 }
@@ -588,18 +596,18 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             throw new \Exception('Patient not found.');
         }
         $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-            Yii::app()->params['display_primary_number_usage_code'],
+            SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
             $patient->id,
             $institution_id,
             $site_id
         );
         $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient(
-            Yii::app()->params['display_secondary_number_usage_code'],
+            SettingMetadata::model()->getSetting('display_secondary_number_usage_code'),
             $patient->id,
             $institution_id,
             $site_id
         );
-        $re = $patient->first_name . ' ' . $patient->last_name;
+        $re = 'Re: ' . $patient->first_name . ' ' . $patient->last_name;
 
         foreach (array('address1', 'address2', 'city', 'postcode') as $field) {
             if ($patient->contact->address && $patient->contact->address->{$field}) {
@@ -624,7 +632,10 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
             if (!$patient) {
                 // determine if there are any circumstances where this is necessary. Almost certainly very redundant
-                if (!$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))->findByPk(@$_GET['patient_id'])) {
+                if (
+                    !$patient = Patient::model()->with(array('contact' => array('with' => array('address'))))
+                    ->findByPk(@$_GET['patient_id'])
+                ) {
                     throw new Exception('Patient not found: ' . @$_GET['patient_id']);
                 }
             }
@@ -636,25 +647,46 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             $this->re = $this->calculateRe($patient);
 
             $user = Yii::app()->session['user'];
-            $firm = Firm::model()->with('serviceSubspecialtyAssignment')->findByPk(Yii::app()->session['selected_firm_id']);
+            $firm = Firm::model()
+                ->with('serviceSubspecialtyAssignment')
+                ->findByPk(Yii::app()->session['selected_firm_id']);
 
             $contact = $user->contact;
-            if ($contact) {
-                // if no correspondence_sign_off_user_id set in the user's profile than the sign is blank
-                $this->footer = $user->signOffUser ? $api->getFooterText($user->signOffUser) : '';
+
+            // Footer will be built after signatures are recorded
+            $this->footer = "";
+
+            // If the event is being created from a worklist step, assign the default macro if one has been specified.
+            if (isset(Yii::app()->session['active_step_state_data']['macro_id'])) {
+                $this->macro = LetterMacro::model()
+                    ->findByPk(Yii::app()->session['active_step_state_data']['macro_id']);
             }
 
             // Look for a macro based on the episode_status
             $episode = $patient->getEpisodeForCurrentSubspecialty();
-            if ($episode) {
-                $this->macro = LetterMacro::model()->with('firms')->find('firms_firms.firm_id=? and episode_status_id=?', array($firm->id, $episode->episode_status_id));
+            if ($episode && !$this->macro) {
+                $this->macro = LetterMacro::model()
+                    ->with('firms')
+                    ->find(
+                        'firms_firms.firm_id=? and episode_status_id=?',
+                        array($firm->id, $episode->episode_status_id)
+                    );
                 if (!$this->macro && $firm->service_subspecialty_assignment_id) {
                     $subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-                    $this->macro = LetterMacro::model()->with('subspecialties')->find('subspecialties_subspecialties.subspecialty_id=? and episode_status_id=?', array($subspecialty_id, $episode->episode_status_id));
+                    $this->macro = LetterMacro::model()
+                        ->with('subspecialties')
+                        ->find(
+                            'subspecialties_subspecialties.subspecialty_id=? and episode_status_id=?',
+                            array($subspecialty_id, $episode->episode_status_id)
+                        );
                     if (!$this->macro) {
                         $this->macro = LetterMacro::model()->with('sites', 'institutions')->find([
                             'condition' => '(institutions_institutions.institution_id=? OR sites_sites.site_id=?) AND episode_status_id=?',
-                            'params' => array(Yii::app()->session['selected_institution_id'], Yii::app()->session['selected_site_id'], $episode->episode_status_id)]);
+                            'params' => array(
+                                Yii::app()->session['selected_institution_id'],
+                                Yii::app()->session['selected_site_id'],
+                                $episode->episode_status_id
+                            )]);
                     }
                 }
             }
@@ -685,6 +717,17 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             if ($dl = FirmSiteSecretary::model()->find('firm_id=? and site_id=?', array(Yii::app()->session['selected_firm_id'], $this->site_id))) {
                 $this->direct_line = $dl->direct_line;
                 $this->fax = $dl->fax;
+            }
+
+            if (Yii::app()->user) {
+                $user = User::model()->findByPk(Yii::app()->user->getId());
+                /** @var User $user */
+                if ($user) {
+                    if ($signOffUser = $user->signOffUser) {
+                        $signature_text = $api->getFooterText($signOffUser, $episode->firm);
+                        $this->footer = $signOffUser->correspondence_sign_off_text . "{e-signature}" . ($signature_text ? "\n" . nl2br($signature_text) : '');
+                    }
+                }
             }
         }
     }
@@ -769,17 +812,18 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
         $criteria = new CDbCriteria();
         $criteria->with = ['institutions', 'sites', 'firms', 'subspecialties'];
-        $criteria->condition = '(firms_firms.firm_id = :firm_id OR sites_sites.site_id = :site_id  OR institutions_institutions.institution_id = :institution_id';
+        $criteria->condition = '((firms_firms.firm_id = :firm_id OR firms_firms.firm_id IS NULL) AND (sites_sites.site_id = :site_id OR sites_sites.site_id IS NULL)' .
+                             ' AND (institutions_institutions.institution_id = :institution_id OR institutions_institutions.institution_id IS NULL)';
         $criteria->params = [':firm_id' => $firm->id, ':site_id' => Yii::app()->session['selected_site_id'], ':institution_id' => Yii::app()->session['selected_institution_id']];
         if ($firm->service_subspecialty_assignment_id) {
-            $criteria->condition .= ' OR subspecialties_subspecialties.subspecialty_id = :subspecialty_id';
+            $criteria->condition .= ' AND (subspecialties_subspecialties.subspecialty_id = :subspecialty_id OR subspecialties_subspecialties.subspecialty_id IS NULL)';
             $criteria->params[':subspecialty_id'] = $firm->serviceSubspecialtyAssignment->subspecialty_id;
         }
         // Ensure that only installation-level macros
         // and macros applicable only to the current institution are returned.
         $criteria->condition .= ')';/* AND (institution_id IS NULL OR institution_id = :institution_id)';
         $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];*/
-        $criteria->order = 'display_order asc';
+        $criteria->order = 'display_order asc, sites_sites.site_id asc, subspecialties_subspecialties.subspecialty_id asc, firms_firms.firm_id asc, t.name asc';
 
         foreach (LetterMacro::model()->findAll($criteria) as $macro) {
             if (!in_array($macro->name, $macro_names, false)) {
@@ -792,15 +836,12 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
     public function beforeSave()
     {
-
-        if (in_array(Yii::app()->getController()->getAction()->id, array('create', 'update'))) {
-            if (isset($_POST['saveprint'])) {
-                Yii::app()->request->cookies['savePrint'] = new CHttpCookie('savePrint', $this->event_id, [
-                    'expire' => strtotime('+30 seconds')
-                ]);
-                $this->print = 1;
-                $this->print_all = 1;
-            }
+        if ($this->isSavingForPrint()) {
+            Yii::app()->request->cookies['savePrint'] = new CHttpCookie('savePrint', $this->event_id, [
+                'expire' => strtotime('+30 seconds')
+            ]);
+            $this->print = 1;
+            $this->print_all = 1;
         }
 
         foreach (array('address', 'introduction', 're', 'body', 'footer', 'cc') as $field) {
@@ -946,7 +987,6 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
     public function renderBody()
     {
-
         // Earlier CHtml (wrapper of HTML purifier) was used to purify the text but
         // the functionality was quite limited in a sense that it was not possible to customise
         // the whitelist element list. So, it is replaced with HTML purifer.
@@ -1028,7 +1068,31 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
     public function renderFooter()
     {
-        return str_replace("\n", '<br/>', CHtml::encode($this->footer));
+        $footer = "<div class=\"flex\">";
+        if ($esign_element = $this->event->getElementByClass(Element_OphCoCorrespondence_Esign::class)) {
+            /** @var Element_OphCoCorrespondence_Esign $esign_element*/
+            $signatures = $esign_element->orderedSignatures;
+            if ($primary_signature = array_shift($signatures)) {
+                if (strpos($this->footer, "{e-signature}") !== false) {
+                    if (strpos($primary_signature->getPrintout(), "Consultant:") === false && strpos($this->footer, "Consultant:") !== false) {
+                        $footer .= "<div>" . nl2br(trim(explode("{e-signature}", $this->footer)[0])) . "<br/>" . $primary_signature->getPrintout() . "<br/>Consultant:" . nl2br(trim(explode("Consultant:", $this->footer)[1])) . "</div>";
+                    } else {
+                        $footer .= "<div>" . nl2br(trim(explode("{e-signature}", $this->footer)[0])) . "<br/>" . $primary_signature->getPrintout() . "</div>";
+                    }
+                } else {
+                    $footer .= "<div>" . nl2br(trim($this->footer)) . "<br/>" . $primary_signature->getPrintout() . "</div>";
+                }
+            }
+            if ($secondary_signature = array_shift($signatures)) {
+                $sign_off_text = $secondary_signature->signedUser->correspondence_sign_off_text;
+                $footer .= "<div>" . nl2br(trim($sign_off_text)) . "<br/>" . $secondary_signature->getPrintout() . "</div>";
+            }
+        } else {
+            $footer .= "<div>" . nl2br(trim($this->footer)) . "</div>";
+        }
+
+        $footer .= "</div>";
+        return $footer;
     }
 
     /**
@@ -1159,9 +1223,12 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
             foreach ($this->document_instance as $instance) {
                 foreach ($instance->document_target as $target) {
                     if ($target->ToCc === 'To') {
-                        if (($newlines_setting = (int) SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
-                            $addressPart = explode("\n", $target->address);
-                            $address = '';
+                        $addressPart = explode("\n", $target->address);
+                        $address = '';
+                        if ((string)SettingMetadata::model()->getSetting('correspondence_address_force_city_state_postcode_on_same_line') === "on") {
+                            $firstAddress = array_slice($addressPart, 0, 3);
+                            $address .= implode("\n", array_map('trim', $firstAddress));
+                        } elseif (($newlines_setting = (int) SettingMetadata::model()->getSetting('correspondence_address_max_lines')) >= 0) {
                             foreach ($addressPart as $index => $part) {
                                 $part = trim($part);
                                 if ($index == 0) {
@@ -1172,10 +1239,11 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                                     $address = $address . " " . $part;
                                 }
                             }
-                            return $target->contact_name . "\n" . $address;
                         } else {
-                            return $target->contact_name . "\n" . $target->address;
+                            $address = $target->address;
                         }
+
+                        return $target->contact_name . "\n" . $address;
                     }
                 }
             }
@@ -1333,12 +1401,13 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
 
     public function attachAssociatedEvent()
     {
-        if (Yii::app()->getController()->getAction()->id === 'create' || Yii::app()->getController()->getAction()->id === 'update') {
+        if ($this->inACreateOrUpdateRequest()) {
             EventAssociatedContent::model()->deleteAll(
                 '`parent_event_id` = :parent_event_id',
                 array(':parent_event_id' => $this->event->id)
             );
         }
+
         if (isset($_POST['attachments_event_id'])) {
             $attachments_last_event_id = Yii::app()->request->getPost('attachments_event_id');
             $attachments_system_hidden = Yii::app()->request->getPost('attachments_system_hidden');
@@ -1384,5 +1453,40 @@ class ElementLetter extends BaseEventTypeElement implements Exportable
                 }
             }
         }
+    }
+
+    /**
+     * @param User $user
+     * @param Firm $firm
+     * @return void
+     * Set Correspondence footer text
+     */
+    public function setFooterTextFrom(\User $user, \Firm $firm)
+    {
+        if ($signOffUser = $user->signOffUser) {
+            $api = Yii::app()->moduleAPI->get('OphCoCorrespondence');
+            $signature_text = $api->getFooterText($signOffUser, $firm);
+            $this->footer = $signOffUser->correspondence_sign_off_text . "{e-signature}" . ($signature_text ? "\n" . nl2br($signature_text) : '');
+        }
+    }
+
+    protected function inACreateOrUpdateRequest(): bool
+    {
+        $controller = Yii::app()->getController();
+        if (!$controller) {
+            return false;
+        }
+
+        $action = $controller->getAction();
+        return $action && in_array($action->id, array('create', 'update'));
+    }
+
+    protected function isSavingForPrint(): bool
+    {
+        if (!$this->inACreateOrUpdateRequest()) {
+            return false;
+        }
+
+        return Yii::app()->request->getPost('saveprint', null) !== null;
     }
 }

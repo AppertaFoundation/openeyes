@@ -16,6 +16,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\models;
 
+
 use OEModule\OphCiExamination\models\NinePositions_HorizontalEDeviation;
 use OEModule\OphCiExamination\models\NinePositions_HorizontalXDeviation;
 use OEModule\OphCiExamination\models\NinePositions_AlignmentForGaze;
@@ -307,4 +308,18 @@ class NinePositions_AlignmentForGazeTest extends \ModelTestCase
 
         $this->assertEquals($attrs['vertical_angle'] . $deviation->abbreviation, $instance->display_vertical);
     }
+
+    /** @test */
+    public function clone_should_unset_id_and_reading_id_attributes()
+    {
+        $instance = $this->getElementInstance();
+        $instance->id = 123;
+        $instance->reading_id = 456;
+
+        $clone = clone $instance;
+
+        $this->assertNull($clone->id);
+        $this->assertNull($clone->reading_id);
+    }
+
 }

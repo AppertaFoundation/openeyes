@@ -22,7 +22,7 @@
                         $pid->value,
                         Yii::app()->controller->createUrl('patient/view', array('id' => $patient->id)),
                         array('target' => '_blank')
-                    ); ?></td>
+                        ); ?></td>
                     <td>
                                 <?php echo CHtml::link(
                                     $patient->getFullName(),
@@ -32,9 +32,9 @@
                     </td>
                     <td></td>
                 </tr>
-                <?php endif; ?>
-                <?php endforeach; ?>
-                <?php endforeach; ?>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endforeach; ?>
 
                 </tr>
                 </tbody>

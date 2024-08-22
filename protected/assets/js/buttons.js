@@ -49,7 +49,7 @@ function preventClickOnDisabledButton() {
 
 function disableButtons(selector) {
 
-	var $selector = $(selector || $('button,.button').not('.cancel'));
+	var $selector = $(selector || $('button,.button').not('.cancel').not('.js-ignore-disable-buttons'));
 
     $selector
 	.addClass('inactive')

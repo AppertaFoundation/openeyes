@@ -19,7 +19,6 @@
 <?php
 $form_id = 'messaging-create';
 $this->beginContent('//patient/event_container', array('no_face'=>true , 'form_id' => $form_id));
-$this->event_actions[] = EventAction::button('Send message', 'save', array('level' => 'save'), array('form' => $form_id));
 ?>
 
 <?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(

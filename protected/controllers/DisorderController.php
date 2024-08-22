@@ -284,118 +284,9 @@ class DisorderController extends BaseController
         $firm = \Firm::model()->findByPk($firm_id);
         if ($firm) {
             return \CommonOphthalmicDisorder::getListByGroupWithSecondaryTo($firm);
+        } else {
+            return null;
         }
-    }
-
-    public function actionEditCommonOphthalmicDisorderGroups()
-    {
-        $this->genericAdmin(
-            'Common Ophthalmic Disorder Groups',
-            'CommonOphthalmicDisorderGroup',
-            ['div_wrapper_class' => 'cols-5']
-        );
-    }
-
-    public function actionEditCommonOphthalmicDisorder()
-    {
-        $models = CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION);
-        $data = array_map(function ($model) {
-            return $model->getAttributes(array("id", "name"));
-        }, $models);
-        $this->jsVars['common_ophthalmic_disorder_group_options'] = $data;
-
-        $errors = array();
-        $subspecialties = Subspecialty::model()->findAll(array('order'=>'name'));
-        $subspecialty_id = Yii::app()->request->getParam('subspecialty_id');
-        if (!$subspecialty_id) {
-            $subspecialty_id = (isset($subspecialties[0]) && isset($subspecialties[0]->id)) ? $subspecialties[0]->id : null;
-        }
-
-        if (Yii::app()->request->isPostRequest) {
-            $transaction = Yii::app()->db->beginTransaction();
-
-            $display_orders = Yii::app()->request->getParam('display_order', array());
-            $disorders = Yii::app()->request->getParam('CommonOphthalmicDisorder', array());
-
-            $ids = array();
-            foreach ($disorders as $key => $disorder) {
-                $common_ophtalmic_disorder = CommonOphthalmicDisorder::model()->findByPk($disorder['id']);
-                if (!$common_ophtalmic_disorder) {
-                    $common_ophtalmic_disorder = new CommonOphthalmicDisorder;
-                    $disorder['id'] = null;
-                }
-
-                $common_ophtalmic_disorder->attributes = $disorder;
-                $common_ophtalmic_disorder->display_order = $display_orders[$key];
-
-                //$_GET['subspecialty_id'] must be present, we do not use the default value 1
-                $common_ophtalmic_disorder->subspecialty_id = isset($_GET['subspecialty_id']) ? $_GET['subspecialty_id'] : null;
-
-                if (!$common_ophtalmic_disorder->save()) {
-                    $errors[] = $common_ophtalmic_disorder->getErrors();
-                }
-
-                $ids[$common_ophtalmic_disorder->id] = $common_ophtalmic_disorder->id;
-            }
-
-            if (empty($errors)) {
-                //Delete items
-                $criteria = new CDbCriteria();
-
-                if ($ids) {
-                    $criteria->addNotInCondition('id', array_map(function ($id) {
-                        return $id;
-                    }, $ids));
-                }
-
-                $criteria->compare('subspecialty_id', $subspecialty_id);
-
-                $to_delete = CommonOphthalmicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
-                foreach ($to_delete as $item) {
-                    if (!$item->delete()) {
-                        throw new Exception("Unable to delete CommonOphthalmicDisorder:{$item->primaryKey}");
-                    }
-                    Audit::add('admin', 'delete', $item->primaryKey, null, array(
-                        'module' => (is_object($this->module)) ? $this->module->id : 'core',
-                        'model' => CommonOphthalmicDisorder::getShortModelName(),
-                    ));
-                }
-
-                $transaction->commit();
-
-                Yii::app()->user->setFlash('success', 'List updated.');
-            } else {
-                foreach ($errors as $error) {
-                    foreach ($error as $attribute => $error_array) {
-                        $display_errors = '<strong>'.$common_ophtalmic_disorder->getAttributeLabel($attribute) . ':</strong> ' . implode(', ', $error_array);
-                        Yii::app()->user->setFlash('warning.failure-' . $attribute, $display_errors);
-                    }
-                }
-
-                $transaction->rollback();
-            }
-            $this->redirect(Yii::app()->request->url);
-        }
-
-        // end of handling the POST
-
-
-        $generic_admin = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.widgets.js') . '/GenericAdmin.js', true);
-        Yii::app()->getClientScript()->registerScriptFile($generic_admin);
-
-        Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->createUrl('js/OpenEyes.UI.DiagnosesSearch.js'), ClientScript::POS_END);
-
-        $criteria = new CDbCriteria();
-        $criteria->compare('subspecialty_id', $subspecialty_id);
-
-        $this->render('editcommonophthalmicdisorder', array(
-            'dataProvider' => new CActiveDataProvider('CommonOphthalmicDisorder', array(
-                'criteria' => $criteria,
-                'pagination' => false,
-            )),
-            'subspecialty_id' => $subspecialty_id,
-            'subspecialty' => $subspecialties,
-        ));
     }
 
     public function actionEditSecondaryToCommonOphthalmicDisorder()
@@ -442,7 +333,7 @@ class DisorderController extends BaseController
 
                 $criteria->compare('parent_id', $parent_id);
 
-                $to_delete = SecondaryToCommonOphthalmicDisorder::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION, $criteria);
+                $to_delete = SecondaryToCommonOphthalmicDisorder::model()->findAllAtLevels(ReferenceData::LEVEL_ALL, $criteria);
 
                 foreach ($to_delete as $item) {
                     if (!$item->delete()) {

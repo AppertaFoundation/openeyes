@@ -22,8 +22,8 @@
         );
         ?>
     <input type="text"
-        autocomplete="<?php echo Yii::app()->params['html_autocomplete'] ?>"
-        name="search" id="js-team-search" placeholder="Search Teams..."
+        autocomplete="<?php echo SettingMetadata::model()->getSetting('html_autocomplete') ?>"
+        name="search" id="js-team-search" placeholder="Search Teams..." data-test="search-team-name" 
         value="<?php echo !empty($search) ? strip_tags($search) : ''; ?>"/>
     <?php $this->endWidget() ?>
 </div>
@@ -50,7 +50,7 @@
                     <td><input type="checkbox"
                                 name="Team[]"
                                 value="<?php echo $team->id ?>"/></td>
-                    <td><?=$team->name ?></td>
+                    <td data-test="list-team-name"><?=$team->name ?></td>
                     <td><?=$team->contact ? $team->contact->email : ''; ?></td>
                     <td><?=$team->institution ? $team->institution->name : ''; ?></td>
                     <td><i class="oe-i <?=($team->active ? 'tick' : 'remove');?> small"></i></td>

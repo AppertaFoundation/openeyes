@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <tr>
@@ -21,13 +23,13 @@
     <td>
         <?= $form->hiddenField($model, 'id')?>
         <?= $form->hiddenField($model, 'xpath_id')?>
-        <?=\CHtml::activeTextField($model, 'input', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
+        <?=\CHtml::activeTextField($model, 'input', ['autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')]);?>
     </td>
 
 </tr>
 <tr>
     <td><?=$model->getAttributeLabel('output');?></td>
     <td>
-        <?=\CHtml::activeTextField($model, 'output', ['autocomplete' => Yii::app()->params['html_autocomplete']]);?>
+        <?=\CHtml::activeTextField($model, 'output', ['autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')]);?>
     </td>
 </tr>

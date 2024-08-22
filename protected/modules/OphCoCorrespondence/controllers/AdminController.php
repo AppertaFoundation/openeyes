@@ -1,9 +1,7 @@
 <?php
+
 /**
- * OpenEyes.
- *
- * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2013
+ * (C) Copyright Apperta Foundation 2022
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for more details.
@@ -12,9 +10,10 @@
  * @link http://www.openeyes.org.uk
  *
  * @author OpenEyes <info@openeyes.org.uk>
- * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @copyright Copyright (C) 2022, Apperta Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 class AdminController extends \ModuleAdminController
 {
     public $group = 'Correspondence';
@@ -45,10 +44,15 @@ class AdminController extends \ModuleAdminController
         $assetManager->registerScriptFile('/js/oeadmin/OpenEyes.admin.js');
         $assetManager->registerScriptFile('/js/oeadmin/list.js');
 
+        $institution_id = $this->request->getParam('institution_id')
+                            ? $this->request->getParam('institution_id')
+                            : Institution::model()->getCurrent()->id;
+
         $this->render('letter_macros', array(
             'macros' => $macros,
             'unique_names' => $unique_names,
             'episode_statuses' => $this->getUniqueEpisodeStatuses($macros),
+            'default_institution_id' => $institution_id
         ));
     }
 
@@ -163,15 +167,13 @@ class AdminController extends \ModuleAdminController
         $criteria = new CDbCriteria();
 
         $criteria->with = ['institutions', 'sites', 'firms', 'subspecialties'];
-        if (@$_GET['institution_id']) {
-            $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
-            $criteria->params['::institution_id'] = $_GET['institution_id'];
-        }
+        $selected_institution = $_GET['institution_id'] ?? Institution::model()->getCurrent()->id;
+        $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
+        $criteria->params[':institution_id'] = $selected_institution;
 
         if (@$_GET['site_id']) {
-            $criteria->addCondition('sites_sites.site_id = :site_id OR institutions_institutions.institution_id = :institution_id');
+            $criteria->addCondition('sites_sites.site_id = :site_id');
             $criteria->params[':site_id'] = $_GET['site_id'];
-            $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
         }
 
         if (@$_GET['subspecialty_id']) {
@@ -180,9 +182,8 @@ class AdminController extends \ModuleAdminController
         }
 
         if (@$_GET['firm_id']) {
-            $criteria->addCondition('firms_firms.firm_id = :firm_id OR institutions_institutions.institution_id = :institution_id');
+            $criteria->addCondition('firms_firms.firm_id = :firm_id');
             $criteria->params[':firm_id'] = $_GET['firm_id'];
-            $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
         }
 
         if ($filter_name_and_episode_status) {
@@ -203,9 +204,6 @@ class AdminController extends \ModuleAdminController
             return LetterMacro::model()->findAll($criteria);
         }
 
-        $criteria->with = ['institutions'];
-        $criteria->addCondition('institutions_institutions.institution_id = :institution_id');
-        $criteria->params = [':institution_id' => Yii::app()->session['selected_institution_id']];
         return LetterMacro::model()->findAll($criteria);
     }
 
@@ -215,18 +213,26 @@ class AdminController extends \ModuleAdminController
      */
     public function actionAddMacro()
     {
-        $macro = new LetterMacro();
+        // if no institution id parameter passed, or an invalid one, default to current institution
+        $institution = Institution::model()->findByAttributes(['id' => $this->request->getParam('institution_id')])
+                                    ?? Institution::model()->getCurrent();
 
+        $macro = new LetterMacro();
         $errors = $this->processPOST('create', $macro);
 
         $init_method = new OphcorrespondenceInitMethod();
 
-        $this->render('_macro', array(
-            'macro' => $macro,
-            'init_method' => $init_method,
-            'associated_content' => array(),
-            'errors' => $errors,
-        ));
+        $this->render('_macro', [
+                                'macro' => $macro,
+                                'init_method' => $init_method,
+                                'associated_content' => array(),
+                                'errors' => $errors,
+                                'institution' => $institution,
+                                'site_options' => Site::model()->getListForInstitutionById($institution['id']),
+                                'default_sites' => null,
+                                'firm_options' => Firm::model()->getListWithSpecialties($institution['id'], true),
+                                'default_firms' => null
+                            ]);
     }
 
     public function actionEditMacro($id)
@@ -238,18 +244,41 @@ class AdminController extends \ModuleAdminController
         $init_method = new OphcorrespondenceInitMethod();
 
         $criteria = new \CDbCriteria();
-        $criteria->addCondition('macro_id = '.$id);
+        $criteria->addCondition('macro_id = ' . $id);
         $criteria->order = 'display_order asc';
         $associated_content_saved = MacroInitAssociatedContent::model()->findAll($criteria);
 
         $errors = $this->processPOST('update', $macro);
 
-        $this->render('_macro', array(
-            'macro' => $macro,
-            'init_method' => $init_method,
-            'associated_content' => $associated_content_saved,
-            'errors' => $errors,
-        ));
+        // Get institutions
+        // Only one institution is allowed so if there is more than one then select just the first.
+        $institution = count($macro->institutions) > 0 ? $macro->institutions[0] : [Institution::model()->getCurrent()];
+
+        // Get sites
+        $siteOptions = [];
+        foreach ($macro->sites as $siteOption) {
+            $siteOptions[$siteOption['id']] = $siteOption['name'];
+        }
+        $siteOptions = $siteOptions + Site::model()->getListForInstitutionById($institution['id']);
+
+        // Get firms
+        $firmOptions = [];
+        foreach ($macro->firms as $firmOption) {
+            $firmOptions[$firmOption['id']] = $firmOption['name'];
+        }
+        $firmOptions = $firmOptions + Firm::model()->getListWithSpecialties($institution['id'], true);
+
+        $this->render('_macro', [
+                                'macro' => $macro,
+                                'init_method' => $init_method,
+                                'associated_content' => $associated_content_saved,
+                                'errors' => $errors,
+                                'institution' => $institution,
+                                'site_options' => $siteOptions,
+                                'default_sites' => null,
+                                'firm_options' => $firmOptions,
+                                'default_firms' => null
+                            ]);
     }
 
 
@@ -261,10 +290,16 @@ class AdminController extends \ModuleAdminController
             $macro->attributes = $post;
 
             if (!$macro->validate()) {
+                foreach ($macro->levels as $level => $referenceAttribute) {
+                    if ($referenceAttribute && !is_array($referenceAttribute)) {
+                        $referenceAttribute = [$referenceAttribute];
+                    }
+                    $macro->$level = $referenceAttribute;
+                }
                 $errors = $macro->errors;
             } else {
                 if (!$macro->save()) {
-                    throw new Exception('Unable to save macro: '.print_r($macro->errors, true));
+                    throw new Exception('Unable to save macro: ' . print_r($macro->errors, true));
                 }
 
                 Audit::add('admin', $mode, $macro->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'LetterMacro'));
@@ -282,17 +317,40 @@ class AdminController extends \ModuleAdminController
         if (!isset($_POST['id'])) {
             return null;
         }
-        //Make all the macro ids null that is equal to the macro id
-        // that is being deleted in the document instance data table
-        DocumentInstanceData::model()->updateAll(['macro_id' => null], 'macro_id IN (' . implode($_POST['id']) . ')');
 
-        $criteria = new CDbCriteria();
-        $criteria->addInCondition('id', @$_POST['id']);
-        if (LetterMacro::model()->deleteAll($criteria)) {
-            echo '1';
-        } else {
-            echo '0';
+        $transaction = Yii::app()->db->beginTransaction();
+        $result = true;
+
+        try {
+            //Make all the macro ids null that is equal to the macro id
+            // that is being deleted in the document instance data table
+            DocumentInstanceData::model()->updateAll(['macro_id' => null], 'macro_id IN (' . implode($_POST['id']) . ')');
+
+            $criteria = new CDbCriteria();
+            $criteria->addInCondition('id', $_POST['id']);
+
+            $instances = LetterMacro::model()->findAll($criteria);
+
+            foreach ($instances as $instance) {
+                // Remove mappings for each letter macro to ensure its deletion
+                $result = $result && $instance->deleteMappings(ReferenceData::LEVEL_INSTITUTION);
+                $result = $result && $instance->deleteMappings(ReferenceData::LEVEL_SITE);
+                $result = $result && $instance->deleteMappings(ReferenceData::LEVEL_SUBSPECIALTY);
+                $result = $result && $instance->deleteMappings(ReferenceData::LEVEL_FIRM);
+
+                $result = $result && $instance->delete();
+            }
+        } catch (Exception $e) {
+            $result = false;
         }
+
+        if ($result) {
+            $transaction->commit();
+        } else {
+            $transaction->rollback();
+        }
+
+        echo $result ? '1' : '0';
     }
 
     /**
@@ -361,7 +419,7 @@ class AdminController extends \ModuleAdminController
                     $errorList[] = $siteSecretary->getErrors();
                 } else {
                     if (!$siteSecretary->save()) {
-                        throw new CHttpException(500, 'Unable to save Site Secretary: '.$siteSecretary->site->name);
+                        throw new CHttpException(500, 'Unable to save Site Secretary: ' . $siteSecretary->site->name);
                     }
                 }
                 //Add to array so updated version can be rendered
@@ -411,7 +469,7 @@ class AdminController extends \ModuleAdminController
             }
             $firmId = $siteSecretary->firm_id;
             $siteSecretary->delete();
-            $this->redirect('/OphCoCorrespondence/admin/addSiteSecretary/'.$firmId);
+            $this->redirect('/OphCoCorrespondence/admin/addSiteSecretary/' . $firmId);
         }
         throw new CHttpException(400, 'Invalid method for delete');
     }
@@ -422,12 +480,12 @@ class AdminController extends \ModuleAdminController
     public function actionGetInitMethodDataById()
     {
 
-        if (Yii::app()->request->isAjaxRequest ) {
+        if (Yii::app()->request->isAjaxRequest) {
             if (!isset($_POST['id'])) {
                 throw new CHttpException(400, 'No ID provided');
             }
             if (!$method = OphcorrespondenceInitMethod::model()->findByPk($_POST['id'])) {
-                throw new Exception("Method not found: ".$_POST['id']);
+                throw new Exception("Method not found: " . $_POST['id']);
             }
 
             $result = array(
@@ -464,7 +522,7 @@ class AdminController extends \ModuleAdminController
                 }
 
                 if (!$senderEmailAddresses->save()) {
-                    throw new Exception('Unable to save Sender Email Address: '.print_r($senderEmailAddresses->errors, true));
+                    throw new Exception('Unable to save Sender Email Address: ' . print_r($senderEmailAddresses->errors, true));
                 }
 
                 Audit::add('admin', 'create', $senderEmailAddresses->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'SenderEmailAddresses'));
@@ -504,7 +562,7 @@ class AdminController extends \ModuleAdminController
                 }
 
                 if (!$senderEmailAddresses->save()) {
-                    throw new Exception('Unable to save Sender Email Address: '.print_r($senderEmailAddresses->errors, true));
+                    throw new Exception('Unable to save Sender Email Address: ' . print_r($senderEmailAddresses->errors, true));
                 }
 
                 Audit::add('admin', 'create', $senderEmailAddresses->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'SenderEmailAddresses'));
@@ -536,7 +594,7 @@ class AdminController extends \ModuleAdminController
                 $errors = $template->errors;
             } else {
                 if (!$template->save()) {
-                    throw new Exception('Unable to save Email template: '.print_r($template->errors, true));
+                    throw new Exception('Unable to save Email template: ' . print_r($template->errors, true));
                 }
 
                 Audit::add('admin', 'create', $template->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'EmailTemplate'));
@@ -567,7 +625,7 @@ class AdminController extends \ModuleAdminController
                 $errors = $template->errors;
             } else {
                 if (!$template->save()) {
-                    throw new Exception('Unable to save Email template: '.print_r($template->errors, true));
+                    throw new Exception('Unable to save Email template: ' . print_r($template->errors, true));
                 }
 
                 Audit::add('admin', 'create', $template->id, null, array('module' => 'OphCoCorrespondence', 'model' => 'EmailTemplate'));

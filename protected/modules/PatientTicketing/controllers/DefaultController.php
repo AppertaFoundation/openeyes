@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -29,7 +30,8 @@ class DefaultController extends \BaseModuleController
 {
     public $layout = '//layouts/main';
     public $renderPatientPanel = false;
-    protected $page_size = 20;
+    public bool $fixedHotlist = false;
+    protected $page_size = 25;
     public static $QUEUESETCATEGORY_SERVICE = 'PatientTicketing_QueueSetCategory';
     public static $QUEUESET_SERVICE = 'PatientTicketing_QueueSet';
     public static $TICKET_SERVICE = 'PatientTicketing_Ticket';
@@ -91,15 +93,24 @@ class DefaultController extends \BaseModuleController
         );
     }
 
-    protected function buildTicketFilterCriteria($filter_options, services\PatientTicketing_QueueSet $queueset)
+    protected function buildTicketFilterCriteria($filter_options, services\PatientTicketing_QueueSet $queueset, $sort_by = null, $sort_by_order = null)
     {
         $patient_filter = null;
         // build criteria
         $criteria = new \CDbCriteria();
+        $params = array();
         $qs_svc = Yii::app()->service->getService(self::$QUEUESET_SERVICE);
+        $criteria->with = [
+            'event',
+            'event.firm.serviceSubspecialtyAssignment' => ['alias' => 'event_subspecialty'],
+            'patient.contact',
+            'priority'
+        ];
+        $criteria->together = true;
 
         // TODO: we probably don't want to have such a gnarly approach to this, we might want to denormalise so that we are able to do eager loading
         // That being said, we might get away with setting together false on the with to do this filtering (multiple query eager loading).
+        //current queue assignment
         $criteria->join = 'JOIN ' . models\TicketQueueAssignment::model()->tableName() . ' cqa ON cqa.ticket_id = t.id and cqa.id = (SELECT id from ' . models\TicketQueueAssignment::model()->tableName() . ' qa2 WHERE qa2.ticket_id = t.id order by qa2.created_date desc limit 1)';
 
         // build queue id list
@@ -116,10 +127,12 @@ class DefaultController extends \BaseModuleController
             }
         } else {
             if ($qs_svc->isQueueSetPermissionedForUser($queueset, Yii::app()->user->id)) {
-                foreach ($qs_svc->getQueueSetQueues(
-                    $queueset,
-                    @$filter_options['closed-tickets'] ? true : false
-                ) as $queue) {
+                foreach (
+                    $qs_svc->getQueueSetQueues(
+                        $queueset,
+                        @$filter_options['closed-tickets'] ? true : false
+                    ) as $queue
+                ) {
                     $queue_ids[] = $queue->id;
                 }
             }
@@ -141,17 +154,74 @@ class DefaultController extends \BaseModuleController
         if (count($queue_ids)) {
             $criteria->addInCondition('cqa.queue_id', $queue_ids);
         }
+        //the context and subspecialty filter use the event context and subspecialty where the ticket was created
         if (@$filter_options['firm-id']) {
-            $criteria->addColumnCondition(array('cqa.assignment_firm_id' => $filter_options['firm-id']));
+            $criteria->addCondition("event.firm_id=:firm_id");
+            $params[':firm_id'] = $filter_options['firm-id'];
         } elseif (@$filter_options['subspecialty-id']) {
-            $criteria->join .= 'JOIN ' . \Firm::model()->tableName() . ' f ON f.id = cqa.assignment_firm_id JOIN ' . \ServiceSubspecialtyAssignment::model()->tableName() . ' ssa ON ssa.id = f.service_subspecialty_assignment_id';
-            $criteria->addColumnCondition(array('ssa.subspecialty_id' => $filter_options['subspecialty-id']));
+            $criteria->addCondition("event_subspecialty.subspecialty_id=:subspecialty_id");
+            $params[':subspecialty_id'] = $filter_options['subspecialty-id'];
         }
         if (isset($filter_options['patient-ids'])) {
             $criteria->addInCondition('patient_id', $filter_options['patient-ids']);
         }
+        if (isset($filter_options['date-from']) && $filter_options['date-from']) {
+            $date_from = new \DateTime($filter_options['date-from']);
+            $date_from->setTime(0, 0, 0);
+            $date_from_timestamp = $date_from->getTimestamp();
+            $criteria->addCondition('UNIX_TIMESTAMP(DATE(t.created_date)) >= :date_from_timestamp');
+            $params[':date_from_timestamp'] = $date_from_timestamp;
+        }
+        if (isset($filter_options['date-to']) && $filter_options['date-to']) {
+            $date_to = new \DateTime($filter_options['date-to']);
+            $date_to->setTime(23, 59, 59);
+            $date_to_timestamp = $date_to->getTimestamp();
+            $criteria->addCondition('UNIX_TIMESTAMP(DATE(t.created_date)) <= :date_to_timestamp');
+            $params[':date_to_timestamp'] = $date_to_timestamp;
+        }
 
-        $criteria->order = 't.created_date asc';
+        if (isset($filter_options['site-id']) && is_numeric($filter_options['site-id'])) {
+            $criteria->addCondition('event.site_id = :site_id');
+            $params[':site_id'] = $filter_options['site-id'];
+        }
+
+        $sort_by_order = (strtolower($sort_by_order) === 'desc') ? 'DESC' : '';
+
+        switch ($sort_by) {
+            case 'list':
+                // I wasn't able to get this done using relations and conditions...
+                // ->order = "current_queue.name ASC/DESC" does not bring the required(latest) queue_id from the assignment table
+                $join = <<<SQLJOIN
+                        JOIN patientticketing_ticketqueue_assignment ptta ON ptta.id =
+                        (
+                            SELECT id
+                            FROM patientticketing_ticketqueue_assignment
+                            WHERE patientticketing_ticketqueue_assignment.ticket_id = t.id
+                            ORDER BY patientticketing_ticketqueue_assignment.assignment_date DESC
+                            LIMIT 1
+                        )
+
+                        JOIN patientticketing_queue q ON q.id = ptta.ticket_id
+                SQLJOIN;
+
+                $criteria->join .= new \CDbExpression($join);
+                $criteria->order = "q.name $sort_by_order";
+
+                break;
+            case 'patient':
+                $criteria->order = "contact.last_name {$sort_by_order}";
+                break;
+            case 'priority':
+                $criteria->order = "priority.display_order {$sort_by_order}";
+                break;
+            case 'date':
+            default:
+                $criteria->order = "t.created_date {$sort_by_order}";
+        }
+
+        if (count($params)) {
+            $criteria->params = array_merge($params, $criteria->params);
+        }
 
         return $criteria;
     }
@@ -195,10 +265,10 @@ class DefaultController extends \BaseModuleController
         $criteria->distinct = true;
 
         $criteria->join .= ' JOIN patientticketing_ticket ticket ON ticket.patient_id = t.id';
-        $criteria->join .= ' JOIN patientticketing_ticketqueue_assignment cqa ON cqa.ticket_id = ticket.id AND cqa.id = 
-                                                            (	SELECT id 
+        $criteria->join .= ' JOIN patientticketing_ticketqueue_assignment cqa ON cqa.ticket_id = ticket.id AND cqa.id =
+                                                            (	SELECT id
                                                                 FROM patientticketing_ticketqueue_assignment qa2
-                                                                WHERE qa2.ticket_id = ticket.id 
+                                                                WHERE qa2.ticket_id = ticket.id
                                                                 ORDER BY qa2.created_date DESC LIMIT 1
                                                             )';
 
@@ -219,8 +289,12 @@ class DefaultController extends \BaseModuleController
                 ];
             }
 
-            $primary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(Yii::app()->params['display_primary_number_usage_code'],
-                $patient->id, \Institution::model()->getCurrent()->id, Yii::app()->session['selected_site_id']);
+            $primary_identifier = \PatientIdentifierHelper::getIdentifierForPatient(
+                \SettingMetadata::model()->getSetting('display_primary_number_usage_code'),
+                $patient->id,
+                \Institution::model()->getCurrent()->id,
+                Yii::app()->session['selected_site_id']
+            );
 
             $result[] = array(
                 'id' => $patient->id,
@@ -241,56 +315,6 @@ class DefaultController extends \BaseModuleController
 
         echo CJavaScript::jsonEncode($result);
         Yii::app()->end();
-    }
-
-    /**
-     * @param $a
-     * @param $b
-     * @return int
-     */
-    private function sortBy_list($a, $b): int
-    {
-        return strnatcmp($a->current_queue->name, $b->current_queue->name);
-    }
-
-    /**
-     * @param $a
-     * @param $b
-     * @return int
-     */
-    private function sortBy_patient($a, $b): int
-    {
-        return strnatcmp($a->patient->last_name, $b->patient->last_name);
-    }
-
-    /**
-     * @param $a
-     * @param $b
-     * @return int
-     */
-    private function sortBy_priority($a, $b): int
-    {
-        return strnatcmp($a->priority->display_order, $b->priority->display_order);
-    }
-
-    /**
-     * @param $a
-     * @param $b
-     * @return int
-     */
-    private function sortBy_date($a, $b): int
-    {
-        return strnatcmp($a->created_date, $b->created_date);
-    }
-
-    /**
-     * @param $a
-     * @param $b
-     * @return int
-     */
-    private function sortBy_context($a, $b): int
-    {
-        return strnatcmp($a->getTicketFirm(), $b->getTicketFirm());
     }
 
     /**
@@ -352,7 +376,7 @@ class DefaultController extends \BaseModuleController
 
             if ($queueset) {
                 // build the filter
-                $filter_keys = array('queue-ids', 'priority-ids', 'subspecialty-id', 'firm-id', 'my-tickets', 'closed-tickets', 'patient-ids');
+                $filter_keys = array('queue-ids', 'priority-ids', 'subspecialty-id', 'firm-id', 'my-tickets', 'closed-tickets', 'patient-ids', 'date-from', 'date-to', 'site-id');
                 $filter_options = array();
 
                 foreach ($filter_keys as $k) {
@@ -377,8 +401,11 @@ class DefaultController extends \BaseModuleController
                         }
                     }
 
-                    $redir = array_merge(['/PatientTicketing/default'], $filter_options,
-                        ['cat_id' => $category->getID(), 'queueset_id' => $qs_id]);
+                    $redir = array_merge(
+                        ['/PatientTicketing/default'],
+                        $filter_options,
+                        ['cat_id' => $category->getID(), 'queueset_id' => $qs_id]
+                    );
                     $this->redirect($redir);
                 }
 
@@ -386,7 +413,9 @@ class DefaultController extends \BaseModuleController
 
                 $filter_options['category-id'] = $category->getID();
 
-                $criteria = $this->buildTicketFilterCriteria($filter_options, $queueset);
+                $sort_by = Yii::app()->getRequest()->getParam('sort_by');
+                $sort_by_order = Yii::app()->getRequest()->getParam('sort_by_order', '');
+                $criteria = $this->buildTicketFilterCriteria($filter_options, $queueset, $sort_by, $sort_by_order);
 
                 $count = models\Ticket::model()->count($criteria);
                 $pagination = new \CPagination($count);
@@ -395,14 +424,6 @@ class DefaultController extends \BaseModuleController
 
                 // get tickets that match criteria
                 $tickets = models\Ticket::model()->findAll($criteria);
-                $sort_by = Yii::app()->getRequest()->getParam('sort_by', '');
-                $sort_by_order = Yii::app()->getRequest()->getParam('sort_by_order', '');
-                if ($sort_by != '' && method_exists($this, 'sortBy_' . $sort_by)) {
-                    uasort($tickets, [$this, 'sortBy_' . $sort_by]);
-                    if ($sort_by_order == "DESC") {
-                        $tickets = array_reverse($tickets);
-                    }
-                }
                 \Audit::add('queueset', 'view', $queueset->getId());
             }
         }
@@ -458,6 +479,9 @@ class DefaultController extends \BaseModuleController
             AutoSaveTicket::saveFormData($ticket->patient_id, $ticket->current_queue->id, ['to_queue_id' => $q->id]);
         }
 
+        $template_vars['episode_id'] = \Yii::app()->request->getParam('episode_id');
+
+
         $this->renderPartial('form_queueassign', $template_vars, false, false);
     }
 
@@ -506,7 +530,10 @@ class DefaultController extends \BaseModuleController
         $transaction = Yii::app()->db->beginTransaction();
 
         try {
-            if ($to_queue->addTicket($ticket, Yii::app()->user, $this->firm, $data)) {
+            if (isset($this->event)) {
+                $ticket->event = $this->event;
+            }
+            if ($to_queue->addTicket($ticket, Yii::app()->user->id, $this->firm, $data)) {
                 if ($ticket->assignee) {
                     $ticket->assignee_user_id = null;
                     $ticket->assignee_date = null;
@@ -872,6 +899,6 @@ class DefaultController extends \BaseModuleController
             throw new \Exception('Unable to remove ticket queue assignment: ' . print_r($last_assignment->errors, true));
         }
 
-        echo '1';
+        $this->renderJSON(['success' => true]);
     }
 }

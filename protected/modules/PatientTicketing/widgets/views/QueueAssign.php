@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -23,6 +24,7 @@
  * @var $form_fields array(array('id' => string, 'required' => boolean, 'choices' => array(), 'label' => string, 'type' => string))
  * @var boolean $auto_save
  * @var array $form_data
+ * @var int|null $episode_id
  */
 if ($queue) { ?>
   <table class="cols-full">
@@ -35,8 +37,14 @@ if ($queue) { ?>
                   'data_width' => $this->data_width,
                   'form_name' => $fld['form_name'],
                   'form_data' => $form_data,
+                  'queue' => $queue,
+                  'episode_id' => $episode_id,
+                  'label' => $fld['label'] ?? '',
+                  'assignment_field' => $fld,
+                  'is_template' => $this->is_template
                 ));
             } else { ?>
+            <tbody>
             <tr>
                     <?php if (@$fld['choices']) { ?>
                 <td>
@@ -47,7 +55,7 @@ if ($queue) { ?>
                               $fld['form_name'],
                               @$form_data[$fld['form_name']],
                               $fld['choices'],
-                              ['empty' => ($fld['required']) ? 'Select' : 'None', 'class'=>'cols-full']
+                              ['empty' => ($fld['required']) ? 'Select' : 'None', 'class' => 'cols-full']
                           ) ?>
                       </td>
                     <?php } else { ?>
@@ -59,7 +67,7 @@ if ($queue) { ?>
                               <label for="<?= $fld['form_name'] ?>"><?= $fld['label'] ?>:</label>
                               <textarea id="<?= $fld['form_name'] ?>"
                                         name="<?= $fld['form_name'] ?>"
-                                        class="cols-full"
+                                        class="cols-full autosize"
                                         placeholder="Patient Notes"
                                         rows="5"><?= trim($notes) ?></textarea>
                           </div>
@@ -67,6 +75,7 @@ if ($queue) { ?>
                     <?php } ?>
 
             </tr>
+            </tbody>
             <?php } ?>
         <?php } ?>
 
@@ -92,7 +101,7 @@ if ($queue) { ?>
             >
                 <?= $et->name ?>
             </a>
-            <?php } ?>
+          <?php } ?>
 
           <?php if ($print_letter_event) { ?>
             <a href="<?= Yii::app()->createURL('site/index') ?><?= $print_letter_event->eventType->class_name ?>/default/doPrintAndView/<?= $print_letter_event->id ?>?all=1"
@@ -101,7 +110,7 @@ if ($queue) { ?>
             >
               Print Letter
             </a>
-            <?php } ?>
+          <?php } ?>
       </div>
         <?php echo @$extra_view_data['buttons']; ?>
     </div>

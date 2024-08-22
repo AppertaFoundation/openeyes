@@ -5,6 +5,7 @@
 tags
 # rely on static build images to ensure dependency consistency
 composer.lock
+/signature_files/
 /puppet/cache/
 /.vagrant
 /.buildpath
@@ -60,8 +61,12 @@ protected/modules/*
 # Include core modules
 !/protected/modules/Admin/
 !/protected/modules/Api/
+!/protected/modules/BreakGlass/
+!/protected/modules/CSDClient/
+!/protected/modules/CypressHelper/
 !/protected/modules/Genetics/
 !/protected/modules/OECaseSearch/
+!/protected/modules/OESysEvent/
 !/protected/modules/OETrial/
 !/protected/modules/OphCiDidNotAttend/
 !/protected/modules/OphCiExamination/
@@ -90,9 +95,11 @@ protected/modules/*
 !/protected/modules/PASAPI/
 !/protected/modules/PatientTicketing/
 !/protected/modules/OphDrPGDPSD/
+!/protected/modules/Mirth/
 
 # Tests
 /jm_behat_report.html
+/protected/tests/.phpunit.result.cache
 
 # Temporary, until we've sorted out vagrant for installing test dependencies
 /bin
@@ -104,8 +111,30 @@ build/logs
 protected/widgets/views/IndexSearch_Examination.php
 protected/scripts/sample_db.sql
 protected/scripts/sample_db.zip
+protected/extensions/yii2-debug
+
+# Never tracker docker-compose overrides or .env's
+/docker-compose.override.yml
+/.env
+
+# Never track php-cs-fixer stuff
+/.php-cs-fixer.*
+
+# Allow local git ignores for dynamic changes we do not want to commit or track
+.local_gitignore
 **/0-a-restore.sql
 buildinfo.txt
 .devcontainer/.env
 
 .history
+
+# Cypress artifacts
+cypress/videos/**
+cypress/screenshots/**
+cypress/downloads/**
+**/.phpunit.result.cache
+db.session.sql
+
+# ignore nxblu in v6.7.x
+protected/assets/NxBlu
+protected/assets/nxblu

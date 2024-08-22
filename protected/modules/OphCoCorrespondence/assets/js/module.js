@@ -167,7 +167,7 @@ function setRecipientToInternalReferral() {
 
     $('#DocumentTarget_0_attributes_contact_type').val('INTERNALREFERRAL');
 
-    $('#dm_table tr:first-child td:last-child').html('Change the letter type <br> to amend this recipient').css({ 'font-size': '11px' });
+    $('#dm_table tr:first-child td:last-child').html('<i class="oe-i info js-has-tooltip" data-tooltip-content="Change the letter type <br> to amend this recipient"></i>').css({ 'font-size': '11px' });
 
     if (!$('#yDocumentTarget_0_attributes_contact_type').length) {
         var $input = $('<input>', {
@@ -209,39 +209,41 @@ function resetRecipientFromInternalReferral() {
 
 }
 
-function updateConsultantDropdown(subspecialty_id) {
+function setConsultantDropdown(data) {
+    var options = [];
+
+    //remove old options
+    $('#ElementLetter_to_firm_id option:gt(0)').remove();
+
+    //create js array from obj to sort
+    for (item in data) {
+        options.push([item, data[item]]);
+    }
+
+    options.sort(function(a, b) {
+        if (a[1] > b[1]) return -1;
+        else if (a[1] < b[1]) return 1;
+        else return 0;
+    });
+    options.reverse();
+
+    //append new option to the dropdown
+    $.each(options, function(key, value) {
+        $('#ElementLetter_to_firm_id').append($("<option></option>")
+                                              .attr("value", value[0]).text(value[1]));
+    });
+}
+
+function updateConsultantDropdown(site_id, subspecialty_id) {
     $.ajax({
-        url: baseUrl + "/" + moduleName + "/Default/getConsultantsBySubspecialty",
-        data: { "subspecialty_id": subspecialty_id },
+        url: baseUrl + "/" + moduleName + "/Default/getConsultantsBySiteAndSubspecialty",
+        data: { "site_id": site_id, "subspecialty_id": subspecialty_id, "check_service_firms_filter_setting": true },
         dataType: "json",
         beforeSend: function() {
             $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
             $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
         },
-        success: function(data) {
-            var options = [];
-
-            //remove old options
-            $('#ElementLetter_to_firm_id option:gt(0)').remove();
-
-            //create js array from obj to sort
-            for (item in data) {
-                options.push([item, data[item]]);
-            }
-
-            options.sort(function(a, b) {
-                if (a[1] > b[1]) return -1;
-                else if (a[1] < b[1]) return 1;
-                else return 0;
-            });
-            options.reverse();
-
-            //append new option to the dropdown
-            $.each(options, function(key, value) {
-                $('#ElementLetter_to_firm_id').append($("<option></option>")
-                    .attr("value", value[0]).text(value[1]));
-            });
-        },
+        success: setConsultantDropdown,
         complete: function() {
             $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
             $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
@@ -322,7 +324,7 @@ function getInternalReferralOutputType() {
 
 $(document).ready(function() {
     $('#ElementLetter_to_subspecialty_id').on('change', function() {
-        updateConsultantDropdown($(this).val());
+        updateConsultantDropdown($('#ElementLetter_to_location_id').val(), $(this).val());
         updateSalutation("Dear " + $(this).find('option:selected').text() + ' service,');
         // Setting the firm_id to '' as on changing the subspecialty the first option i.e. None gets selected.
         $('#ElementLetter_to_firm_id').val('');
@@ -372,30 +374,41 @@ $(document).ready(function() {
     });
 
     $('#ElementLetter_to_location_id').on('change', function() {
+        if ($('#ElementLetter_to_location_id').val() !== '') {
+            $.ajax({
+                url: baseUrl + "/" + moduleName + "/Default/getSiteInfo",
+                data: { to_location_id: $('#ElementLetter_to_location_id').val(), subspecialty_id: $('#ElementLetter_to_subspecialty_id').val(), check_service_firms_filter_setting: true },
+                dataType: "json",
+                beforeSend: function() {
 
-        $.ajax({
-            url: baseUrl + "/" + moduleName + "/Default/getSiteInfo",
-            data: { to_location_id: $('#ElementLetter_to_location_id').val() },
-            dataType: "json",
-            beforeSend: function() {
+                    // empty the value of the address textarea because if the ajax slow the user may save a wrong address
+                    $('#Document_Target_Address_0').val('');
+                    $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
+                    $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
 
-                // empty the value of the address textarea because if the ajax slow the user may save a wrong address
-                $('#Document_Target_Address_0').val('');
-                $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', true);
-                $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', true);
-            },
-            success: function(data) {
-                $('#Document_Target_Address_0').val(data.correspondence_name);
-            },
-            complete: function() {
-                $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
-                $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
-            }
-        });
+                    $('#ElementLetter_to_firm_id').children('option[value!=""]').remove();
+                    $('#ElementLetter_to_firm_id').attr('disabled', true);
+                },
+                success: function(data) {
+                    $('#Document_Target_Address_0').val(data.site.correspondence_name);
+                    setConsultantDropdown(data.firms);
+                },
+                complete: function() {
+                    $('button#et_saveprint, button#et_saveprint_footer').prop('disabled', false);
+                    $('button#et_savedraft, button#et_savedraft_footer').prop('disabled', false);
 
+                    $('#ElementLetter_to_firm_id').attr('disabled', false);
+                }
+            });
+        } else {
+            $('#Document_Target_Address_0').val('');
+
+            $('#ElementLetter_to_firm_id').children('option[value!=""]').remove();
+            $('#ElementLetter_to_firm_id').attr('disabled', true);
+        }
     });
 
-
+    $('#ElementLetter_to_firm_id').attr('disabled', $('#ElementLetter_to_location_id').val() === '');
 });
 
 /** End of Internal Referral **/
@@ -409,15 +422,13 @@ $(document).ready(function() {
     //         togglePrintDisabled(this.checked);
     //     });
 
-    $(this).delegate('#ElementLetter_site_id', 'change', function() {
-        if (correspondence_directlines) {
-            $('#ElementLetter_direct_line').val(correspondence_directlines[$('#ElementLetter_site_id').val()]);
-        }
-
-        if (correspondence_fax_numbers) {
-            $('#ElementLetter_fax').val(correspondence_fax_numbers[$('#ElementLetter_site_id').val()]);
-        }
-    });
+    let site_element = document.getElementById('ElementLetter_site_id');
+    if (site_element) {
+        site_element.addEventListener('change', function (e) {
+            updateLineAndFax(site_element);
+        });
+        updateLineAndFax(site_element);
+    }
 
     $('#et_save, #et_save_footer').click(function(e) {
         $('#' + event_form).submit();
@@ -625,7 +636,7 @@ $(document).ready(function() {
                 }
             });
         } else {
-            OphCoCorrespondence_do_print(false);
+            OphCoCorrespondence_do_print(false,true);
             e.preventDefault();
         }
     });
@@ -764,6 +775,22 @@ $(document).ready(function() {
     });
 });
 
+function updateLineAndFax(site_element){
+    let direct_line_element = document.getElementById('ElementLetter_direct_line');
+    if (correspondence_directlines[site_element.value]) {
+        direct_line_element.value = correspondence_directlines[site_element.value];
+    } else {
+        direct_line_element.value = '';
+    }
+
+    let fax_numbers_element = document.getElementById('ElementLetter_fax');
+    if (correspondence_directlines[site_element.value]) {
+        fax_numbers_element.value = correspondence_fax_numbers[site_element.value];
+    } else {
+        fax_numbers_element.value = '';
+    }
+}
+
 function savePDFprint(module, event_id, $content, $data_id, title) {
     if (typeof title == 'undefined') {
         title = '';
@@ -797,7 +824,7 @@ function updateReData(recipient, is_Cc) {
         element_letter_re.value = default_re;
     }
 
-    autosize.update(element_letter_re);
+    autosize(element_letter_re);
 }
 
 function correspondence_load_data(data) {
@@ -853,12 +880,11 @@ function inArray(needle, haystack) {
     return false;
 }
 
-function OphCoCorrespondence_do_print(all) {
-
+function OphCoCorrespondence_do_print(all,only_print_the_to) {
     var data = {};
-    if (all) {
-        data['all'] = 1;
-    }
+
+    data['all'] = all || false;
+    data['only_print_the_to'] = only_print_the_to || false;
 
     if ($('#OphCoCorrespondence_print_checked').length && $('#OphCoCorrespondence_print_checked').val() == 1) {
         data['OphCoCorrespondence_print_checked'] = 1;

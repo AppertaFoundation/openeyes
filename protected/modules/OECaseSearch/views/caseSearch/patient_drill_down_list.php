@@ -107,8 +107,7 @@ foreach ($patients->getData() as $i => $SearchPatient) {
     $assetManager = Yii::app()->getAssetManager();
     $assetPath = $assetManager->publish(Yii::getPathOfAlias('application.assets'), true, -1);
     Yii::app()->clientScript->registerScriptFile($assetPath . '/js/toggle-section.js');
-    $widgetPath = $assetManager->publish('protected/widgets/js');
-    Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
+    Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->getPublishedPathOfAlias('application.widgets.js') . '/PatientPanelPopupMulti.js');
 ?>
 
 <script type="text/javascript">

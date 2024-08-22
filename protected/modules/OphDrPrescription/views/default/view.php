@@ -32,21 +32,23 @@ if (!$elementEditable) {
     });
 }
 if (($Element->draft) && (!$elementEditable) && $editAccess) {
-    $this->event_actions[] = EventAction::button(
-        'Save as final',
-        'save',
-        array('level' => 'secondary'),
-        array(
-            'id' => 'et_save_final',
-            'class' => 'button small',
-            'type' => 'button',
-            'data-element' => $Element->id
-        )
-    );
+    if (!$Element->isSignedByMedication()) {
+        $this->event_actions[] = EventAction::button(
+            'Save as final',
+            'save',
+            array('level' => 'secondary'),
+            array(
+                'id' => 'et_save_final',
+                'class' => 'button small',
+                'type' => 'button',
+                'data-element' => $Element->id
+            )
+        );
+    }
 }
 
 if ($this->checkPrintAccess()) {
-    if (!$Element->draft || $editAccess) {
+    if (!$Element->draft && $this->checkAccess('OprnPrintPrescription')) {
         foreach ($Element->items as $item) {
             // If at least one prescription item has 'Print to FP10' selected as the dispense condition, display the Print FP10 button.
             if ($item->dispense_condition->id === $form_option->id && $settings->getSetting('enable_prescription_overprint') === 'on') {
@@ -54,8 +56,6 @@ if ($this->checkPrintAccess()) {
                 break;
             }
         }
-    }
-    if (!$Element->draft || $editAccess) {
         $this->event_actions[] = EventAction::printButton();
     }
 }

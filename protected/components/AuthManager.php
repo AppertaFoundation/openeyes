@@ -22,6 +22,8 @@ class AuthManager extends CDbAuthManager
     private $rulesets = array();
     private $user_assignments = array();
 
+    public const ADMIN_ROLE_NAME = "admin";
+
     /**
      * AuthManager constructor.
      */
@@ -75,7 +77,10 @@ class AuthManager extends CDbAuthManager
 
         unset($params['userId']);
 
-        return call_user_func_array(array($ruleSet, $rule), array_merge((array) $data, $params));
+        // Always pass the data as the first parameter for a uniform calling convention.
+        array_unshift($params, $data);
+
+        return call_user_func_array(array($ruleSet, $rule), $params);
     }
 
     /**
@@ -103,5 +108,88 @@ class AuthManager extends CDbAuthManager
         }
 
         return $this->user_assignments[$user_id];
+    }
+
+    /**
+     * setOrUpdateAssignment
+     *
+     * To get around the fact that the AuthManager assign function only inserts rows of auth items
+     * instead inserting or updating, we have this function.
+     *
+     * This is useful mainly for updating data in existing auth item entries.
+     *
+     * If there is an existing row, the bizRule value will need to match other an exception will be thrown.
+     *
+     *  @param $itemName string
+     *  @param $usedId mixed
+     *  @param $bizRule string|null
+     *  @param $data mixed
+     *  @return CAuthAssignment
+     */
+    public function setOrUpdateAssignment(string $itemName, $userId, ?string $bizRule = null, $data = null): CAuthAssignment
+    {
+        $auth = $this->getAuthAssignment($itemName, $userId);
+
+        if (!$auth) {
+            return $this->assign($itemName, $userId, $bizRule, $data);
+        }
+
+        if ($auth->bizRule !== $bizRule) {
+            throw new Exception('The supplied bizRule "' . $bizRule . '" does not match the existing bizRule "' . $auth->bizRule . '"');
+        }
+
+        $auth->setData($data);
+
+        return $auth;
+    }
+
+    /**
+     * hasRole
+     * 
+     * Utility to return bool if user has specified role.
+     * 
+     * @param $user_id int
+     * @param $target_role string
+     * 
+     * @return bool
+     */
+    public function hasRole($user_id, $target_role): bool
+    {
+        if(!$user_id) {
+            throw new InvalidArgumentException('Cannot check if user has role of "' . $target_role . '" when no user supplied.');
+        }
+        if(!$target_role) {
+            throw new InvalidArgumentException('Cannot check if user has role when no target role supplied.');
+        }
+
+        foreach ($this->getRoles($user_id) as $role) {
+            if ($target_role === $role->name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * getAssignableRoles
+     * 
+     * Returns array of roles specified user can allocate
+     * 
+     * @param $user_id int
+     * 
+     * @return CAuthItem[]
+     */
+    public function getAssignableRoles($user_id) {
+        $allRoles = $this->getRoles();
+        
+        if ($this->hasRole($user_id, self::ADMIN_ROLE_NAME)) {
+            return $allRoles;
+        } else {
+            // only admin users can assign new admins
+            return array_filter($allRoles, function ($role) {
+                return $role->name !== self::ADMIN_ROLE_NAME;
+            });
+        }
     }
 }

@@ -5,7 +5,8 @@
 $dataProvider->getPagination()->setPageSize(30);
 
 $dataProvided = $dataProvider->getData();
-$this->pageTitle = 'Practitioners';
+$gplabel = \SettingMetadata::model()->getSetting('general_practitioner_label');
+$this->pageTitle = $gplabel . 's';
 $items_per_page = $dataProvider->getPagination()->getPageSize();
 $page_num = $dataProvider->getPagination()->getCurrentPage();
 $from = ($page_num * $items_per_page) + 1;
@@ -14,7 +15,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
 <div class="oe-home oe-allow-for-fixing-hotlist">
     <div class="oe-full-header flex-layout">
         <div class="title wordcaps">
-            <b>Practitioner</b>
+            <b><?= $gplabel ?></b>
         </div>
     </div>
 
@@ -41,7 +42,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
             </div>
             <?php if (Yii::app()->user->checkAccess('TaskCreateGp')) : ?>
                 <div class="cols-4 column end">
-                        <p><?php echo CHtml::link('Create Practitioner', $this->createUrl('/gp/create')); ?></p>
+                        <p><?php echo CHtml::link('Create ' . $gplabel, $this->createUrl('/gp/create')); ?></p>
                     </div>
                 </div>
             <?php endif; ?>
@@ -52,6 +53,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
             <tr>
                 <th>Name</th>
                 <th>Telephone</th>
+                <th>Code</th>
                 <th>Role</th>
                 <th>Active</th>
             </tr>
@@ -61,6 +63,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 <tr id="r<?php echo $gp->id; ?>" class="clickable">
                     <td><?php echo CHtml::encode($gp->getCorrespondenceName()); ?></td>
                     <td><?php echo CHtml::encode($gp->contact->primary_phone); ?></td>
+                    <td><?php echo CHtml::encode($gp->nat_id ? $gp->nat_id : ''); ?></td>
                     <td><?php echo CHtml::encode(isset($gp->contact->label) ? $gp->contact->label->name : '') ?></td>
                     <td><i id = 'activeStatus' class="oe-i <?= ($gp->getActiveStatus($gp->id) ? 'tick' : 'remove');?> small"></i></td>
                 </tr>
@@ -90,7 +93,7 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
                 <div class="row">
                     <div class="large-12 column end">
                         <div class="box generic">
-                            <p><?php echo CHtml::link('Create Practitioner', $this->createUrl('/gp/create')); ?></p>
+                            <p><?php echo CHtml::link('Add', $this->createUrl('/gp/create'), ['class' => 'button small addUser']); ?></p>
                         </div>
                     </div>
                 </div>
@@ -105,4 +108,3 @@ $to = min(($page_num + 1) * $items_per_page, $dataProvider->totalItemCount);
         return false;
     });
 </script>
-

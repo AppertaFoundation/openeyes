@@ -1,4 +1,5 @@
 <?php
+
 /**
  * (C) OpenEyes Foundation, 2020
  * This file is part of OpenEyes.
@@ -12,9 +13,10 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
-<div class="cols-5">
+<div class="cols-full">
     <div class="row divider">
         <h2><?= $patient_identifier_type->isNewRecord ? 'Add' : 'Edit' ?> Patient Identifier Type</h2>
     </div>
@@ -37,7 +39,7 @@
     <table class="standard cols-full">
         <colgroup>
             <col class="cols-3">
-            <col class="cols-5">
+            <col class="cols-full">
         </colgroup>
 
         <tbody>
@@ -50,7 +52,7 @@
                         $field,
                         [
                             'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete']
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                         ]
                     ); ?>
                 </td>
@@ -67,7 +69,7 @@
                     ); ?>
                 </td>
             </tr>
-        <?php foreach (['validate_regex','value_display_prefix', 'value_display_suffix', 'pad', 'spacing_rule'] as $field) { ?>
+        <?php foreach (['validate_regex','value_display_prefix', 'value_display_suffix', 'pad', 'spacing_rule', 'validation_example'] as $field) { ?>
             <tr>
                 <td><?php echo $patient_identifier_type->getAttributeLabel($field); ?></td>
                 <td>
@@ -76,7 +78,7 @@
                         $field,
                         [
                             'class' => 'cols-full',
-                            'autocomplete' => Yii::app()->params['html_autocomplete']
+                            'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')
                         ]
                     ); ?>
                 </td>
@@ -112,8 +114,8 @@
                         $pas_api = $patient_identifier_type->pas_api;
                         $pas_api_json =  $pas_api ? (is_array($pas_api) ? json_encode($pas_api) : $pas_api ) : '';
                         echo \CHtml::textArea('PatientIdentifierType[pas_api]', $pas_api_json, [
-                            'class' => 'cols-full',
-                            'rows' => 18
+                            'class' => 'cols-full autosize',
+                            'rows' => 10
                         ]);
                         ?>
                 <button id="json-beautify" type="button" class="btn">Beautify JSON</button>
@@ -170,14 +172,13 @@
     }
 
     function beautifyJSON() {
-        const value = document.getElementById('PatientIdentifierType_pas_api').value;
+        const ta = document.getElementById("PatientIdentifierType_pas_api");
+        const value = ta.value;
 
         if (value) {
             // using JSON.stringify pretty print capability:
             var str = JSON.stringify(JSON.parse(value), null, 4);
-
-            // display pretty printed object in text area:
-            document.getElementById('PatientIdentifierType_pas_api').value = str;
+            ta.value = str;
         }
     }
 
@@ -208,11 +209,10 @@
             const json_string = '{"enabled":false,"class":"DefaultPas","search_params":["hos_num","nhs_num","first_name","last_name","maiden_name"],"allowed_params":[],"url":"http://localhost","curl_timeout":10,"proxy":false,"cache_time":300}';
             new OpenEyes.UI.Dialog({
                 title: 'PAS Config template',
-                content: $('<textarea>', {value: JSON.stringify(JSON.parse(json_string), null, 4), "class":"cols-full", rows:18}),
+                content: $('<textarea>', {value: JSON.stringify(JSON.parse(json_string), null, 4), "class":"cols-full autosize"}),
                 dialogClass: 'js-pas-config-template',
             }).open();
-        });
-
-
+            autosize();
+        });        
     });
 </script>

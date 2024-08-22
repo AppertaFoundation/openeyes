@@ -16,6 +16,11 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+namespace OEModule\OphCiPhasing\models;
+
+use BaseActiveRecordVersioned;
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "ophciphasing_reading".
  *
@@ -27,18 +32,10 @@
  */
 class OphCiPhasing_Reading extends BaseActiveRecordVersioned
 {
+    use HasFactory;
+
     const RIGHT = 0;
     const LEFT = 1;
-
-    /**
-     * Returns the static model of the specified AR class.
-     *
-     * @return OphCiPhasing_Reading the static model class
-     */
-    public static function model($className = __CLASS__)
-    {
-        return parent::model($className);
-    }
 
     /**
      * @return string the associated database table name
@@ -67,7 +64,7 @@ class OphCiPhasing_Reading extends BaseActiveRecordVersioned
     public function relations()
     {
         return array(
-                'element' => array(self::BELONGS_TO, 'Element_OphCiPhasing_IntraocularPressure', 'element_id'),
+            'element' => array(self::BELONGS_TO, Element_OphCiPhasing_IntraocularPressure::class, 'element_id'),
         );
     }
 
@@ -92,10 +89,10 @@ class OphCiPhasing_Reading extends BaseActiveRecordVersioned
      */
     public function search()
     {
-        $criteria = new CDbCriteria();
+        $criteria = new \CDbCriteria();
         $criteria->compare('id', $this->id, true);
 
-        return new CActiveDataProvider(get_class($this), array(
+        return new \CActiveDataProvider(get_class($this), array(
                 'criteria' => $criteria,
         ));
     }
@@ -111,7 +108,7 @@ class OphCiPhasing_Reading extends BaseActiveRecordVersioned
                 return 'left';
         }
 
-                throw new Exception("Invalid side.");
+        throw new \Exception("Invalid side.");
     }
 
     public function getValue()

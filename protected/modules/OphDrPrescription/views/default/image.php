@@ -25,4 +25,4 @@ $form_format = $settings->getSetting('prescription_form_format');
 <?php $this->beginContent('//patient/event_content_image', ['Element' => $Element]); ?>
 <?php $this->renderOpenElements($this->action->id, null, ['form_setting' => $form_format]); ?>
 <?php $this->renderOptionalElements($this->action->id); ?>
-<?php $this->endContent(); ?>
+<?php $this->endContent();

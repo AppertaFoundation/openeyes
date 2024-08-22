@@ -45,7 +45,7 @@
         <?php $this->renderPartial('//base/_header'); ?>
 
         <div class="oe-full-header flex-layout">
-            <div class="title wordcaps"><b>Admin: </b>
+            <div class="title wordcaps" data-test="admin-title"><b>Admin: </b>
             <?php
                 $admin = new AdminSidebar();
                 $admin->init();

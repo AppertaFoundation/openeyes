@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 $modulePath = Yii::app()->assetManager->publish(Yii::getPathOfAlias('application.modules.OphCoCorrespondence.assets'), true);
 Yii::app()->clientScript->registerScriptFile($modulePath . '/js/siteSecretary.js');
 ?>
@@ -59,10 +61,10 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                     <?=\CHtml::activeDropDownList($siteSecretary, "[$id]site_id", CHtml::listData(Site::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -')) ?>
                 </td>
                 <td>
-                    <?=\CHtml::activeTextField($siteSecretary, "[$id]direct_line", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                    <?=\CHtml::activeTextField($siteSecretary, "[$id]direct_line", array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
                 </td>
                 <td>
-                    <?=\CHtml::activeTextField($siteSecretary, "[$id]fax", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?>
+                    <?=\CHtml::activeTextField($siteSecretary, "[$id]fax", array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?>
                 </td>
                 <td>
                     <button type="submit" form="deleteSecretaryForm" name="id" class="small"
@@ -85,8 +87,8 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
                 <?=\CHtml::activeHiddenField($newSiteSecretary, "[new]id"); ?>
                 <?=\CHtml::activeDropDownList($newSiteSecretary, "[new]site_id", CHtml::listData(Site::model()->findAll(array('order' => 'name')), 'id', 'name'), array('empty' => '- None -')) ?>
             </td>
-            <td><?=\CHtml::activeTextField($newSiteSecretary, "[new]direct_line", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?></td>
-            <td><?=\CHtml::activeTextField($newSiteSecretary, "[new]fax", array('autocomplete' => Yii::app()->params['html_autocomplete'])) ?></td>
+            <td><?=\CHtml::activeTextField($newSiteSecretary, "[new]direct_line", array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?></td>
+            <td><?=\CHtml::activeTextField($newSiteSecretary, "[new]fax", array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))) ?></td>
             <td><button class="addButton small">Add</button></td>
         </tr>
 

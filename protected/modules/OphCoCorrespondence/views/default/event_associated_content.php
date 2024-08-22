@@ -1,8 +1,8 @@
-    <?php
-    if (empty($patient)) {
-        $patient = $this->patient;
-    }
-    ?>
+<?php
+if (empty($patient)) {
+    $patient = $this->patient;
+}
+?>
     
     <header class="element-header"><h3 class="element-title">Attachments</h3></header>
     <div class="element-fields full-width flex-layout">
@@ -42,16 +42,18 @@
                     }
 
                     $event = json_decode($api->{$method}($patient));
-                    $event_id = $event->id;
+                    $event_id = $event->id ?? null;
 
-                    $attachments[$event_id] = [
+                    if (isset($event_id)) {
+                        $attachments[$event_id] = [
                         'event_id' => $event_id,
                         'display_title' => $val->display_title,
                         'protected_file_id' => $val->init_protected_file_id,
                         'is_system_hidden' => $val->is_system_hidden,
                         'is_print_appended' => $val->is_print_appended,
                         'short_code' => $val->short_code,
-                    ];
+                        ];
+                    }
                 }
             }
 
@@ -77,8 +79,10 @@
             }
 
             if (isset($_POST['attachments_event_id'])) {
-                if (count($_POST['attachments_event_id']) != count($_POST['attachments_display_title']) ||
-                    count($_POST['attachments_event_id']) != count($_POST['file_id'])) {
+                if (
+                    count($_POST['attachments_event_id']) != count($_POST['attachments_display_title']) ||
+                    count($_POST['attachments_event_id']) != count($_POST['file_id'])
+                ) {
                     throw new Exception("Incorrectly formed attachment data in POST");
                 }
 

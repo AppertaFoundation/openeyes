@@ -1,6 +1,5 @@
 <?php
 
-use OEModule\PASAPI\models\PasApiAssignment;
 class ContextController extends BaseAdminController
 {
     // public $defaultAction = 'firms';
@@ -12,6 +11,7 @@ class ContextController extends BaseAdminController
         $search = [];
         $search['query'] = \Yii::app()->request->getQuery('query');
         $search['active'] = \Yii::app()->request->getQuery('active');
+        $search['institution_id'] = \Yii::app()->request->getQuery('institution_id');
         if (isset($search['query'])) {
             if (is_numeric($search['query'])) {
                 $criteria->addCondition('id = :id');
@@ -33,15 +33,36 @@ class ContextController extends BaseAdminController
             $criteria->addCondition('active = 1');
         }
 
+        $current_institution = Yii::app()->session->getSelectedInstitution();
+
         if (!$this->checkAccess('admin')) {
-            $criteria->addCondition('institution_id = :institution_id');
-            $criteria->params[':institution_id'] = Yii::app()->session['selected_institution_id'];
+            $search['institution_id'] = isset($current_institution) ? $current_institution->id : null;
         }
 
+        $reference_level = $search['institution_id'] ? ReferenceData::LEVEL_INSTITUTION : ReferenceData::LEVEL_INSTALLATION;
+
+        // eliminate uncessary DB query if search institution is the same as current institution
+        if (isset($current_institution) && $current_institution->id == $search['institution_id']) {
+            $institution = $current_institution;
+        } else {
+            if (isset($search['institution_id'])) {
+                $institution = Institution::model()->findByPk($search['institution_id']);
+            } else {
+                $institution = null;
+            }
+        }
+
+        $pagination_criteria = Firm::model()->getCriteriaForLevels($reference_level, $criteria, $institution);
+        $pagination = $this->initPagination(
+            Firm::model(),
+            $pagination_criteria
+        );
+
         $this->render('index', array(
-            'pagination' => $this->initPagination(Firm::model(), $criteria),
-            'firms' => Firm::model()->findAll($criteria),
-            'search' => $search
+            'pagination' => $pagination,
+            'firms' => Firm::model()->findAllAtLevels($reference_level, $pagination_criteria, $institution),
+            'search' => $search,
+            'pagination_criteria' => $pagination_criteria
         ));
     }
 
@@ -56,7 +77,7 @@ class ContextController extends BaseAdminController
             $firm->attributes = $_POST['Firm'];
 
             if (!$this->checkAccess('admin')) {
-                $firm->institution_id = Yii::app()->session('selected_institution_id');
+                $firm->institution_id = Yii::app()->session['selected_institution_id'];
             }
 
             if (!$firm->validate()) {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -59,7 +61,7 @@ if (@$_POST[CHtml::modelName($element)]) {
         <?php echo $form->textField(
             $element,
             $side . '_crt',
-            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true),
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'nowrapper' => true),
             null,
             array()
         ) ?>
@@ -82,7 +84,7 @@ if (@$_POST[CHtml::modelName($element)]) {
         echo $form->textField(
             $element,
             $side . '_sft',
-            array('autocomplete' => Yii::app()->params['html_autocomplete'], 'nowrapper' => true),
+            array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'nowrapper' => true),
             null,
             array()
         ) ?>

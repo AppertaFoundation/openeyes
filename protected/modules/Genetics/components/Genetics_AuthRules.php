@@ -1,12 +1,11 @@
 <?php
 
-
 class Genetics_AuthRules
 {
     /**
      * @return bool
      */
-    public function canViewStudy()
+    public function canViewStudy($data)
     {
         //everyone can view the list
         if (!Yii::app()->request->getQuery('id')) {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -24,15 +25,30 @@
 <div class="oe-full-content subgrid oe-nod-export">
     <nav class="oe-full-side-panel">
 
-        <h3>Select Date range for NOD</h3>
-
         <div class="search-filters theatre-diaries">
             <form method="post" action="/NodExport/Generate" id="nod-export-filter" class="clearfix">
-                <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
+                <input type="hidden" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>" />
                 <div class="cols-12 column">
                     <div class="panel">
                         <div class="data-group">
-
+                            <h3>Select the type of NOD Audit</h3>
+                            <div class="cols-10 column">
+                                <div class="search-filters-extra audit-filters clearfix flex-layout">
+                                    <table class="standard">
+                                        <tbody>
+                                            <label class="highlight inline">
+                                                <?= \CHtml::checkBox('nod_choice[cataract]') ?>
+                                                Cataract
+                                            </label>
+                                            <label class="highlight inline">
+                                                <?= \CHtml::checkBox('nod_choice[amd]') ?>
+                                                AMD
+                                            </label>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <h3>Select Date range for NOD Audit</h3>
                             <div class="cols-10 column">
                                 <div class="search-filters-extra audit-filters clearfix flex-layout">
                                     <?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
@@ -42,10 +58,10 @@
                                             'showAnim' => 'fold',
                                             'dateFormat' => Helper::NHS_DATE_FORMAT_JS,
                                         ),
-                                                                  'value' => Yii::app()->request->getParam('date_from'),
-                                                                  'htmlOptions' => array(
-                                                                  'placeholder' => 'From',
-                                                                  'class' => 'cols-5',
+                                        'value' => Yii::app()->request->getParam('date_from'),
+                                        'htmlOptions' => array(
+                                            'placeholder' => 'From',
+                                            'class' => 'cols-5',
                                         ),
                                     )) ?>
 
@@ -68,9 +84,7 @@
                             </div>
                             <h4>Or, leave dates blank to collect data for all time.</h4>
                             <div class="row ">
-                                <img class="loader hidden"
-                                     src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif'); ?>"
-                                     alt="loading..." style="margin-right:10px"/>
+                                <img class="loader hidden" src="<?php echo Yii::app()->assetManager->createUrl('img/ajax-loader.gif'); ?>" alt="loading..." style="margin-right:10px" />
                                 <button type="submit" class="green hint cols-full">Generate NOD (.zip)</button>
                             </div>
                         </div>

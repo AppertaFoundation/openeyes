@@ -1,8 +1,8 @@
 alias oec="$SCRIPTDIR/oe-checkout.sh"
-__git_complete oec _git_checkout
+__git_complete oec _git_checkout 2>/dev/null
 alias oemig="$SCRIPTDIR/oe-migrate.sh"
 alias oereset="$SCRIPTDIR/oe-reset.sh"
-__git_complete oereset _git_checkout
+__git_complete oereset _git_checkout 2>/dev/null
 alias oeu="$SCRIPTDIR/oe-update.sh"
 alias oefix="$SCRIPTDIR/oe-fix.sh"
 alias oewhich="$SCRIPTDIR/oe-which.sh"
@@ -16,8 +16,11 @@ alias oe-update="oeu"
 alias oe-fix="oefix"
 alias oe-which="oewhich"
 alias oe-unit-tests="oeunittests"
+alias oe-unit-sample="oeunittests --group=sample-data"
 alias oetests="oebehattests && oeunittests"
 alias oet="oetests"
+alias oecommit="oe-unit-sample && git commit"
+alias oepush="oe-unit-sample && git push"
 
 alias cdoe="cd $WROOT"
 alias cded="cd $WROOT/protected/modules/eyedraw"
@@ -38,3 +41,6 @@ alias oeviewmigratelogs="more $WROOT/protected/runtime/migrate.log"
 alias oe-reloadaliases="$SCRIPTDIR/set-profile.sh --no-envs && source /etc/profile.d/oe-shortcuts.sh"
 
 alias behat="$WROOT/vendor/behat/behat/bin/behat"
+
+alias clearapc="curl http://localhost/apc_clear.php"
+alias flushapc=clearapc

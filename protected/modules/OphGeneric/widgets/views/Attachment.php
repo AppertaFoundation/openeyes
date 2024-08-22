@@ -13,15 +13,17 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var Attachment $this
  */
 ?>
 <?php $api = Yii::app()->moduleAPI->get('OphGeneric'); ?>
 
 <div class="attachment" data-is-examination="<?= $this->is_examination ?>">
-    <?php if ($this->element) :
+    <?php
+    if ($this->element) :
         echo \CHtml::activeHiddenField($this->element, "id");
     endif; ?>
-
 
     <!-- BOTH sides -->
     <?php if (isset($this->event_attachments['BOTH'])) { ?>
@@ -55,7 +57,7 @@
         <div class="element-fields element-eyes">
             <?php foreach (array('left' => 'right', 'right' => 'left') as $page_side => $eye_side) : ?>
                 <div class="js-element-eye <?= $eye_side ?>-eye column <?= $page_side ?> side"
-                     data-side="<?= $eye_side ?>">
+                    data-side="<?= $eye_side ?>">
 
                     <?php $attachment_exists = isset($this->event_attachments[strtoupper($eye_side)]); ?>
                     <div class="flex-layout flex-center">

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 require_once './vendor/setasign/fpdi/src/PdfParser/PdfParser.php';
 
 use Xthiago\PDFVersionConverter\Guesser\RegexGuesser;
@@ -43,6 +45,8 @@ class DefaultController extends BaseEventTypeController
     public function init()
     {
         $this->allowed_file_types = Yii::app()->params['OphCoDocument']['allowed_file_types'];
+        // NOTE: the php ini setting `post_max_size` must be set to a value greater than `upload_max_filesize` to allow for overheads.
+        // Failure to do this will mean that the post is rejected before the file finishes uploading
         $this->max_document_size = Helper::return_bytes(ini_get('upload_max_filesize'));
         $this->jsVars['max_document_name_length'] = $this->max_document_name_length;
         $this->max_content_length = Helper::return_bytes(ini_get('upload_max_filesize'));
@@ -166,7 +170,7 @@ class DefaultController extends BaseEventTypeController
     /**
      * @param $tmp_name
      * @param $original_name
-     * @return int|boolean
+     * @return array
      */
     private function uploadFile($tmp_name, $original_name)
     {
@@ -182,9 +186,9 @@ class DefaultController extends BaseEventTypeController
 
         if ($p_file->save()) {
             unlink($tmp_name);
-            return $p_file->id;
+            return [$p_file->id, []];
         } else {
-            $errors = $p_file->getErrors();
+            return [0, $p_file->getErrors()];
         }
     }
 
@@ -193,6 +197,13 @@ class DefaultController extends BaseEventTypeController
         $doc_ids = \Yii::app()->request->getPost('doc_ids', []);
         foreach ($doc_ids as $doc_id) {
             try {
+                // check to see if document is from a template
+                $template_doc = OphCoDocument_Sub_Types::model()->find("document_id = ?", [$doc_id]);
+                if ($template_doc) {
+                    OELog::log("Document from template skip delete");
+                    continue;
+                }
+
                 $doc = ProtectedFile::model()->findByPk($doc_id);
                 if ($doc && file_exists($doc->getFilePath() . '/' . $doc->uid)) {
                     $doc->delete();
@@ -213,14 +224,14 @@ class DefaultController extends BaseEventTypeController
         $return_data = null;
         if (isset($_POST['subTypeId'], $_POST['uploadMode'])) {
             $subTypeId = $_POST['subTypeId'];
-            $documentId = OphCoDocument_Sub_Types::model()->findByPk($subTypeId)->document_id;
+            $documentId = OphCoDocument_Sub_Types::model()->findByPk($subTypeId)->document_id ?? null;
             if ($documentId) {
                 if (!$file = ProtectedFile::model()->findByPk($documentId)) {
                     throw new CHttpException(404, 'File not found');
                 }
 
                 if (!file_exists($file->getPath())) {
-                    throw new CException('File not found on filesystem: '.$file->getPath());
+                    throw new CException('File not found on filesystem: ' . $file->getPath());
                 }
                 if ($_POST['uploadMode'] === 'single') {
                     $return_data['document'] = ['single'];
@@ -239,19 +250,6 @@ class DefaultController extends BaseEventTypeController
     }
 
     /**
-     * @return string
-     */
-    public function getHeaderBackgroundImage()
-    {
-        if ($this->sub_type) {
-            if (in_array($this->sub_type->name, array('OCT', 'Photograph'))) {
-                $asset_path = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $this->event->eventType->class_name . '.assets'), true) . '/';
-                return $asset_path . 'img/medium' . $this->sub_type->name . '.png';
-            }
-        }
-    }
-
-    /**
      *
      */
     public function actionFileUpload()
@@ -262,13 +260,23 @@ class DefaultController extends BaseEventTypeController
                 if (isset($file["name"][$file_key]) && strlen($file["name"][$file_key]) > 0) {
                     $handler = $this->documentErrorHandler($_FILES, $file_key);
                     if ($handler == null) {
-                        $return_data[$file_key] = $this->uploadFile($file["tmp_name"][$file_key], $file["name"][$file_key]);
+                        [$protected_file_id, $errors] = $this->uploadFile($file["tmp_name"][$file_key], $file["name"][$file_key]);
+
+                        if (!empty($errors)) {
+                            $return_data = [
+                                's' => 0,
+                                'msg' => implode($errors),
+                                'index' => $file_key
+                            ];
+                        } else {
+                            $return_data[$file_key] = $protected_file_id;
+                        }
                     } else {
-                        $return_data = array(
+                        $return_data = [
                             's' => 0,
                             'msg' => $handler,
                             'index' => $file_key
-                        );
+                        ];
                     }
                 }
             }
@@ -299,8 +307,8 @@ class DefaultController extends BaseEventTypeController
      */
     public function generateFileField($element, $index, $side)
     {
-        if ($element->{$index."_id"} > 0) {
-            $this->renderPartial('form_'.$this->getTemplateForMimeType($element->{$index}->mimetype), array('element'=>$element, 'index'=>$index, 'side'=>$side));
+        if ($element->{$index . "_id"} > 0) {
+            $this->renderPartial('form_' . $this->getTemplateForMimeType($element->{$index}->mimetype), array('element' => $element, 'index' => $index, 'side' => $side));
         }
     }
 
@@ -314,7 +322,7 @@ class DefaultController extends BaseEventTypeController
 
         $imgdir = $this->event->getImageDirectory();
         if (!file_exists($imgdir)) {
-            mkdir($imgdir, 0775, true);
+            mkdir($imgdir, 0774, true);
         }
 
         if ($this->eventContainsImagesOnly()) {
@@ -434,7 +442,7 @@ class DefaultController extends BaseEventTypeController
             $imgdir = $this->event->imageDirectory;
             $pdf_path = $imgdir . '/event_print.pdf';
             if (!file_exists($imgdir)) {
-                mkdir($imgdir, 0775, true);
+                mkdir($imgdir, 0774, true);
             }
             $this->pdf_output->Output("F", $pdf_path);
 
@@ -511,6 +519,13 @@ class DefaultController extends BaseEventTypeController
             /* @var Element_OphCoDocument_Document $element */
             $element = Element_OphCoDocument_Document::model()->findByAttributes(array('event_id' => $this->event->id));
             /* @var ProtectedFile $document */
+
+            // Create an image of whole event if there is no file (only comments)
+            if (!$element->left_document && !$element->right_document && !$element->single_document) {
+                parent::actionCreateImage($id);
+                return;
+            }
+
             foreach (
                 [
                     Eye::LEFT => $element->left_document,
@@ -640,7 +655,6 @@ class DefaultController extends BaseEventTypeController
      */
     protected function setComplexAttributes_Element_OphCoDocument_Document($element, $data, $index)
     {
-        $model_name = \CHtml::modelName($element);
         if ($data['upload_mode'] === 'single') {
             if (!empty($data['ProtectedFile']['single_file_content']) && $data['single_file_canvas_modified'] === '1') {
                 $name = ProtectedFile::model()->findByPk($element->single_document_id)->name;
@@ -650,6 +664,11 @@ class DefaultController extends BaseEventTypeController
                 if ($count === '0') {
                     ProtectedFile::model()->deleteAll('id = :id', array(':id' => $data['Element_OphCoDocument_Document']['single_document_id']));
                 }
+            } elseif (!empty($data['single_document_rotate'])) {
+                $file = ProtectedFile::model()->findByPk($element->single_document_id);
+
+                $file->rotate = (int)$data['single_document_rotate'];
+                $file->save();
             }
         } else {
             if (!empty($data['ProtectedFile']['right_file_content']) && $data['right_file_canvas_modified'] === '1') {
@@ -660,6 +679,11 @@ class DefaultController extends BaseEventTypeController
                 if ($count === '0') {
                     ProtectedFile::model()->deleteAll('id = :id', array(':id' => $data['Element_OphCoDocument_Document']['right_document_id']));
                 }
+            } elseif (!empty($data['right_document_rotate'])) {
+                $file = ProtectedFile::model()->findByPk($element->right_document_id);
+
+                $file->rotate = (int)$data['right_document_rotate'];
+                $file->save();
             }
 
             if (!empty($data['ProtectedFile']['left_file_content']) && $data['left_file_canvas_modified'] === '1') {
@@ -670,6 +694,11 @@ class DefaultController extends BaseEventTypeController
                 if ($count === '0') {
                     ProtectedFile::model()->deleteAll('id = :id', array(':id' => $data['Element_OphCoDocument_Document']['left_document_id']));
                 }
+            } elseif (!empty($data['left_document_rotate'])) {
+                $file = ProtectedFile::model()->findByPk($element->left_document_id);
+
+                $file->rotate = (int)$data['left_document_rotate'];
+                $file->save();
             }
         }
     }
@@ -677,8 +706,8 @@ class DefaultController extends BaseEventTypeController
     protected function saveComplexAttributes_Element_OphCoDocument_Document($element, $data, $index)
     {
         foreach (['single_document', 'left_document', 'right_document'] as $document) {
-            $document_id = $document.'_id';
-            $rotate = $document.'_rotate';
+            $document_id = $document . '_id';
+            $rotate = $document . '_rotate';
             $protected = ProtectedFile::model()->findByPk($element->{$document_id});
             $rotate_value = \Yii::app()->request->getParam($rotate);
             if ($protected && !is_null($rotate_value)) {

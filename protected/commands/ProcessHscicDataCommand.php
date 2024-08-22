@@ -65,7 +65,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
     private $pcu;
     private $countryId;
     private $cbtId;
-    const SCENARIO = 'hscic_import';
+    public const SCENARIO = 'hscic_import';
 
     /**
      * Base URL for file retrieval (pre-pended to URLs in the file config below
@@ -83,20 +83,24 @@ class ProcessHscicDataCommand extends CConsoleCommand
     private static $file_config_england = array(
         'full' => array(
             'gp' => array(
-                    'url' => 'egpcur',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
-             ),
+                'url' => 'egpcur',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+            ),
             'practice' => array(
-                    'url' => 'epraccur',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+                'url' => 'epraccur',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
             ),
             'ccg' => array(
-                    'url' => 'eccg',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
+                'url' => 'eccg',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
             ),
             'ccgAssignment' => array(
-                    'url' => 'epcmem',
-                    'fields' => array('practice_code', 'ccg_code'),
+                'url' => 'epcmem',
+                'fields' => array('practice_code', 'ccg_code'),
+            ),
+            'optom' => array(
+                'url' => 'eoptsite',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
             ),
         ),
         'monthly' => array(
@@ -121,12 +125,16 @@ class ProcessHscicDataCommand extends CConsoleCommand
     private static $file_config_scotland = array(
         'full' => array(
             'gp' => array(
-                    'url' => 'scotgp',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
-             ),
+                'url' => 'scotgp',
+                'fields' => array('code', 'first_name', 'last_name', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+            ),
             'practice' => array(
-                    'url' => 'scotprac',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+                'url' => 'scotprac',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+            ),
+            'optom' => array(
+                'url' => 'eoptsite',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
             ),
         ),
     );
@@ -139,12 +147,16 @@ class ProcessHscicDataCommand extends CConsoleCommand
     private static $file_config_ni = array(
         'full' => array(
             'gp' => array(
-                    'url' => 'ngpcur',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
-             ),
+                'url' => 'ngpcur',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+            ),
             'practice' => array(
-                    'url' => 'npraccur',
-                    'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+                'url' => 'npraccur',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode', '', '', 'status', '', '', '', '', 'phone'),
+            ),
+            'optom' => array(
+                'url' => 'eoptsite',
+                'fields' => array('code', 'name', '', '', 'addr1', 'addr2', 'addr3', 'addr4', 'addr5', 'postcode'),
             ),
         ),
     );
@@ -178,7 +190,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
         $curlproxy = Yii::app()->params['curl_proxy'];
         if (!empty($curlproxy)) {
             $urlParts = parse_url($curlproxy);
-            $proxyURL = $urlParts['scheme'] . "://" . $urlParts['host'] . (!empty($urlParts['path']) ? "/" . $urlParts['path'] : "" );
+            $proxyURL = $urlParts['scheme'] . "://" . $urlParts['host'] . (!empty($urlParts['path']) ? "/" . $urlParts['path'] : "");
             $proxyPort = $urlParts['port'] + 0;
             curl_setopt($curl, CURLOPT_PROXY, $proxyURL);
             curl_setopt($curl, CURLOPT_PROXYPORT, $proxyPort);
@@ -208,17 +220,20 @@ class ProcessHscicDataCommand extends CConsoleCommand
             case "scotland":
                 $services_path = "/services/organisation-data-service/data-downloads/home-countries";
                 $other_path = null;
+                $misc_path = '/services/organisation-data-service/data-downloads/miscellaneous';
                 $file_config = static::$file_config_scotland;
                 break;
             case "ni":
                 $services_path = "/services/organisation-data-service/data-downloads/home-countries";
                 $other_path = null;
+                $misc_path = '/services/organisation-data-service/data-downloads/miscellaneous';
                 $file_config = static::$file_config_ni;
                 break;
             case "england":
             default:
                 $services_path = "/services/organisation-data-service/data-downloads/gp-and-gp-practice-related-data";
                 $other_path = '/services/organisation-data-service/data-downloads/other-nhs-organisations';
+                $misc_path = '/services/organisation-data-service/data-downloads/miscellaneous';
                 $file_config = static::$file_config_england;
                 break;
         }
@@ -267,7 +282,30 @@ class ProcessHscicDataCommand extends CConsoleCommand
             $output2 = null;
         }
 
-        $this->files = $this->mapFileConfig($file_config, $output . $output2);
+        if ($misc_path) {
+            echo "Downloading from: " . static::$base_url . $misc_path . "\n";
+            $curl = curl_init(static::$base_url . $misc_path);
+            $this->setCurlOpts($curl);
+            $output3 = curl_exec($curl);
+
+            if (curl_errno($curl)) {
+                $error_message = 'Curl error: ' . curl_errno($curl);
+            } else {
+                $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                if ($status != 200) {
+                    $error_message = 'Bad Status Code: ' . $status;
+                }
+            }
+            curl_close($curl);
+
+            if ($error_message) {
+                throw new Exception($error_message, static::$DOWNLOAD_FAILED);
+            }
+        } else {
+            $output3 = null;
+        }
+
+        $this->files = $this->mapFileConfig($file_config, $output . $output2 . $output3);
     }
 
     /**
@@ -281,7 +319,7 @@ class ProcessHscicDataCommand extends CConsoleCommand
             if (is_array($v)) {
                 $struct[$k] = $this->mapFileConfig($v, $output);
             } else {
-                switch ((string) $k) {
+                switch ((string)$k) {
                     case 'url':
                         if (preg_match('~href="(.*?/' . $v . '\.zip)"~', $output, $match)) {
                             echo "Found match for $v: $match[1]\n";
@@ -317,42 +355,43 @@ class ProcessHscicDataCommand extends CConsoleCommand
     }
 
     /**
-     * Help.
+     * @return void
      */
     public function getHelp()
     {
         echo <<<EOH
 
-        
+
 HSCIC data downloader and importer
-        
+
 The command downloads (from HSCIC website) and processes zipped CSV files
 http://systems.hscic.gov.uk/data/ods/datadownloads/gppractice
 
 USAGE
   yiic.php processhscicdata [action] [parameter]
-        
+
 Following actions are available:
 
  - download     [--type --interval] : downloads a specific file based on the given type (e.g.: GP) and interval (e.g.: full)
-        
- - downloadall                      : downloads all the full files, GP, Practice, CCG, CCG Assignment
-        
+
+ - downloadall                      : downloads all the full files, GP, Optom, Practice, CCG, CCG Assignment
+
  - import       [--type --interval] : Importing a specific file based on the given type and iterval
- 
- - importall                        : imports all the full files, GP, Practice, CCG, CCG Assignment
-        
+
+ - importall                        : imports all the full files, GP, Optom, Practice, CCG, CCG Assignment
+
  - checkremovedfromfile  [--type]   : Checking if a database row no longer exists in the file, and if it's the case, we set the status inactive
                                       Supported types : GP and Practice
 
 Available intervals by type :
     gp              : full|quarterly|monthly
+    optom           : full
     practice        : full
     ccg             : full
     ccgAssignment   : full
-        
+
 Following parameters are available:
-        
+
  - force  : Force import for the give file, even if it was already processed before
  - audit  : Do not generate audit message (can be useful for the first run, we do not need 78000 'GP imported' audit message)
             Usage: --audit=false
@@ -365,9 +404,12 @@ EXAMPLES
  * yiic.php processhscicdata download --type=practice --interval=full
    Downloads the full Practice file
 
+ * yiic.php processhscicdata download --type=optom --interval=full
+   Downloads the full Optom file
+
  * yiic.php processhscicdata download --type=gp --interval=monthly
    Downloads the monthly Gp file
-     
+
  * yiic.php processhscicdata import --type=gp --interval=full --force
    Importing the full GP file, forcing it as it was already processed
 
@@ -380,11 +422,47 @@ EXAMPLES
 EOH;
     }
 
+
+    /**
+     * Downloads data file from url and imports it.
+     *
+     * @param string $url Url to the data file
+     * @param string $type gp|optom|Practice|Ccg|CcgAssignment
+     * @param string $region scotland|england|ni
+     * @param string $interval full|monthly|quarterly
+     */
+
+    public function actionDownloadAndImportFromUrl($url, $type, $region, $interval = 'full')
+    {
+        $pathParts = pathinfo($this->getFileFromUrl($url));
+        $permanentFile = $this->path . '/' . $pathParts['filename'] . '/' . $pathParts['basename'];
+        $permanentDirectory = $this->path . '/' . $pathParts['filename'];
+
+        if (!file_exists($permanentDirectory)) {
+            mkdir($permanentDirectory, 0777, true);
+        }
+        $this->download($url, $permanentFile);
+        switch ($region) {
+            case "scotland":
+                $this->files = static::$file_config_scotland;
+                break;
+            case "ni":
+                $this->files = static::$file_config_ni;
+                break;
+            case "england":
+                $this->files = static::$file_config_england;
+                break;
+            default:
+                throw new Exception("Can't find file config for region: $region", static::$UNKNOWN_ERROR);
+        }
+        $this->processCSV($type, $interval, $this->files[$interval][$type]['fields'], $permanentFile);
+    }
+
     /**
      * imports a specific file based on the given type and interval
      * eg.: ProcessHscicData import --type=Gp --interval=monthly.
      *
-     * @param string $type     gp|Practice|Ccg|CcgAssignment
+     * @param string $type gp|optom|Practice|Ccg|CcgAssignment
      * @param string $interval full|monthly|quarterly
      */
     public function actionImport($type, $interval = 'full', $region = 'england')
@@ -420,7 +498,7 @@ EOH;
     }
 
     /**
-     * Imports all the full files listed in $this->files['full'], Gp, Practice, CCG, CCG Assignment.
+     * Imports all the full files listed in $this->files['full'], Gp, Optom, Practice, CCG, CCG Assignment.
      */
     public function actionImportall($region = 'england')
     {
@@ -440,7 +518,7 @@ EOH;
      * Checks if the newly downloaded file is already processed or not
      * by comparing to the previously downloaded one.
      *
-     * @param type $tempFile      freshly downloaded in the /tmp directory
+     * @param type $tempFile freshly downloaded in the /tmp directory
      * @param type $permanentFile already processed one {$permanentFile}/{$permanentFile}.zip
      *
      * @return bool true if no already processed file found or the new file differ from the previous one in md5 hash
@@ -467,6 +545,7 @@ EOH;
 
     /**
      * Opens the zip file and gets the CSV file pointer and returns it.
+     * Using this function for some reasons causes the stream to be closed
      *
      * @param string $file path and filename
      *
@@ -545,9 +624,9 @@ EOH;
     /**
      * Processing the given file.
      *
-     * @param string $type     like 'Gp'
+     * @param string $type like 'Gp'
      * @param string $interval full|monthly|quarterly
-     * @param array  $file     (based on self::files['full']['Gp'])
+     * @param array $file (based on self::files['full']['Gp'])
      */
     private function processFile($type, $interval, $file)
     {
@@ -573,15 +652,31 @@ EOH;
     /**
      * Gets the zip file, extracts the CSV file (from the zip) and processes it.
      *
-     * @param string $type     like 'Gp'
+     * @param string $type like 'Gp'
      * @param string $interval full|monthly|quarterly
-     * @param array  $fields
-     * @param string $file     the zip file
+     * @param array $fields
+     * @param string $file the zip file
      */
     private function processCSV($type, $interval, $fields, $file)
     {
         $lineCount = $this->getLineCountFromZip($file);
-        $fileHandler = $this->getFilePointer($file);
+
+        $pathInfo = pathinfo($file);
+        $zip = new ZipArchive();
+        $res = $zip->open($file);
+
+        if ($res !== true) {
+            throw new Exception("Failed to open zip file '{$file}': " . $res, static::$UNEXPECTED_FILE_PROBLEM);
+        }
+
+        $fileName = preg_replace('/\d+/', '', str_replace('.zip', '.csv', $pathInfo['basename']));
+
+        //Stream needs to be opened at the same function where it's otherwise it will cause an error
+        $stream = $zip->getStream($fileName);
+
+        if (!$stream) {
+            throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'", static::$UNEXPECTED_FILE_PROBLEM);
+        }
 
         $this->pcu = new PostCodeUtility();
         $this->countryId = Country::model()->findByAttributes(array('code' => 'GB'))->id;
@@ -593,7 +688,7 @@ EOH;
         echo 'Progress :          ';
 
         $i = 1;
-        while (($row = fgetcsv($fileHandler))) {
+        while (($row = fgetcsv($stream))) {
             $percent = round((($i / $lineCount) * 100), 1);
 
             echo "\033[7D"; // 7 char back
@@ -637,16 +732,15 @@ EOH;
         if (!($gp = Gp::model()->findbyAttributes(array('nat_id' => $data['code'])))) {
             $gp = new Gp();
             $gp->nat_id = $data['code'];
-            $gp->obj_prof = $data['code'];
         }
 
-        $isNewRecord = $gp->isNewRecord;
+        $is_new_record = $gp->isNewRecord;
 
         $gp->is_active = $data['status'] == 'A' || $data['status'] == 'P' ? '1' : '0';
 
         if ($gp->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . \SettingMetadata::model()->getSetting('gp_label'));
+                Audit::add('ProcessHscicDataCommand', ($is_new_record ? 'Insert' : 'Update') . \SettingMetadata::model()->getSetting('gp_label'));
             }
         }
 
@@ -654,6 +748,8 @@ EOH;
         $contact->primary_phone = $data['phone'];
 
         /*
+         * First checks if first name and surname are defined seperately. If not uses regex to get them from fullname.
+         *
          * Regexp
          * the first part match a word (any number of char, no whithespace)
          * than (after the first word) can follow any number of whitepace
@@ -663,7 +759,11 @@ EOH;
          *
          * Examples (egpam.zip): WELLINGS D, DONOGHUE CA, COLLOMBON MPM
          */
-        if (preg_match("/^([\S]+)\s+([A-Z]{1,4})$/i", trim($data['name']), $m)) {
+        if (isset($data['first_name']) && isset($data['last_name'])) {
+            $contact->title = 'Dr';
+            $contact->first_name = $data['first_name'];
+            $contact->last_name = $data['last_name'];
+        } elseif (preg_match("/^([\S]+)\s+([A-Z]{1,4})$/i", trim($data['name']), $m)) {
             $contact->title = 'Dr';
             $contact->first_name = $m[2];
             $contact->last_name = $this->tidy($m[1]);
@@ -671,12 +771,14 @@ EOH;
             $contact->last_name = $data['name'];
         }
 
-        $isNewRecord = $contact->isNewRecord;
+        $contact->contact_label_id = \ContactLabel::model()->find('name=:name', array(':name' => 'General Practitioner'))->id;
+
+        $is_new_record = $contact->isNewRecord;
         // setup the scenario to skip some of the validation to ensure all the data is imported
         $contact->setScenario(self::SCENARIO);
         if ($contact->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' ' . \SettingMetadata::model()->getSetting('gp_label') . '-Contact');
+                Audit::add('ProcessHscicDataCommand', ($is_new_record ? 'Insert' : 'Update') . ' ' . \SettingMetadata::model()->getSetting('gp_label') . '-Contact');
             }
         }
 
@@ -697,15 +799,64 @@ EOH;
         $address->postcode = $data['postcode'];
         $address->country_id = $this->countryId;
 
-        $isNewRecord = $address->isNewRecord;
+        $is_new_record = $address->isNewRecord;
 
         if ($address->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' ' . \SettingMetadata::model()->getSetting('gp_label') . '-Address');
+                Audit::add('ProcessHscicDataCommand', ($is_new_record ? 'Insert' : 'Update') . ' ' . \SettingMetadata::model()->getSetting('gp_label') . '-Address');
             }
         }
 
         $gp = null;
+    }
+
+    /**
+     * Imports the 'Optom' CSV file.
+     *
+     * @param array $data
+     */
+    private function importOptom($data)
+    {
+        $contact = \Contact::model()->findbyAttributes(array('national_code' => $data['code'])) ?? new \Contact();
+        $contact_label_id = \ContactLabel::model()->findbyAttributes(array('name' => 'Optometrist'))->id ?? \ContactLabel::model()->findbyAttributes(array('name' => 'Optician'))->id;
+
+        $is_new_record = $contact->isNewRecord;
+
+        $contact->national_code = $data['code'];
+        $contact->first_name = $data['name'];
+        $contact->contact_label_id = $contact_label_id;
+
+        // setup the scenario to skip some of the validation to ensure all the data is imported
+        $contact->setScenario(self::SCENARIO);
+        if ($contact->saveOnlyIfDirty()->save()) {
+            if ($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($is_new_record ? 'Insert' : 'Update') . ' Optom-Contact');
+            }
+        }
+
+        if (!($address = $contact->address)) {
+            $address = new Address();
+            $address->contact_id = $contact->id;
+        }
+        $is_new_record = $address->isNewRecord;
+        $this->importAddress(
+            $address,
+            array(
+                'addr1' => $data['addr1'],
+                'addr2' => $data['addr2'],
+                'addr3' => $data['addr3'],
+                'addr4' => $data['addr4'],
+                'addr5' => $data['addr5']
+            )
+        );
+        $address->postcode = $data['postcode'];
+        $address->country_id = $this->countryId;
+
+        if ($address->saveOnlyIfDirty()->save()) {
+            if ($this->audit !== 'false') {
+                Audit::add('ProcessHscicDataCommand', ($is_new_record ? 'Insert' : 'Update') . ' Optom-Address');
+            }
+        }
     }
 
     /**
@@ -720,7 +871,7 @@ EOH;
             $practice = new Practice();
             $practice->code = $data['code'];
         }
-        $isNewRecord = $practice->isNewRecord;
+        $is_new_record = $practice->isNewRecord;
 
         $practice->is_active = $data['status'] == 'A' || $data['status'] == 'P' ? '1' : '0';
 
@@ -728,31 +879,27 @@ EOH;
 
         if ($practice->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice');
+                Audit::add('ProcessHscicDataCommand', ($is_new_record ? 'Insert' : 'Update') . ' Practice');
             }
-        } else {
-            // save has not been carried out, either mode was not dirty or save() failed
         }
 
         $contact = $practice->contact;
         $contact->primary_phone = $practice->phone;
 
-        $isNewRecord = $contact->isNewRecord;
+        $is_new_record = $contact->isNewRecord;
         // setup the scenario to skip some of the validation to ensure all the data is imported
         $contact->setScenario(self::SCENARIO);
         if ($contact->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Contact');
+                Audit::add('ProcessHscicDataCommand', ($is_new_record ? 'Insert' : 'Update') . ' Practice-Contact');
             }
-        } else {
-            // save has not been carried out, either mode was not dirty or save() failed
         }
 
         if (!($address = $contact->address)) {
             $address = new Address();
             $address->contact_id = $contact->id;
         }
-        $isNewRecord = $address->isNewRecord;
+        $is_new_record = $address->isNewRecord;
         $this->importAddress(
             $address,
             array(
@@ -769,10 +916,8 @@ EOH;
 
         if ($address->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' Practice-Address');
+                Audit::add('ProcessHscicDataCommand', ($is_new_record ? 'Insert' : 'Update') . ' Practice-Address');
             }
-        } else {
-            // save has not been carried out, either mode was not dirty or save() failed
         }
     }
 
@@ -788,15 +933,13 @@ EOH;
             $ccg->code = $data['code'];
             $ccg->commissioning_body_type_id = $this->cbtId;
         }
-        $isNewRecord = $ccg->isNewRecord;
+        $is_new_record = $ccg->isNewRecord;
         $ccg->name = $data['name'];
 
         if ($ccg->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG');
+                Audit::add('ProcessHscicDataCommand', ($is_new_record ? 'Insert' : 'Update') . ' CCG');
             }
-        } else {
-            // save has not been carried out, either mode was not dirty or save() failed
         }
 
         $contact = $ccg->contact;
@@ -804,7 +947,7 @@ EOH;
             $address = new Address();
             $address->contact_id = $contact->id;
         }
-        $isNewRecord = $address->isNewRecord;
+        $is_new_record = $address->isNewRecord;
         $this->importAddress(
             $address,
             array(
@@ -820,10 +963,8 @@ EOH;
 
         if ($address->saveOnlyIfDirty()->save()) {
             if ($this->audit !== 'false') {
-                Audit::add('ProcessHscicDataCommand', ($isNewRecord ? 'Insert' : 'Update') . ' CCG-Address');
+                Audit::add('ProcessHscicDataCommand', ($is_new_record ? 'Insert' : 'Update') . ' CCG-Address');
             }
-        } else {
-            // save has not been carried out, either mode was not dirty or save() failed
         }
     }
 
@@ -874,7 +1015,7 @@ EOH;
      * Imports the Address.
      *
      * @param Address $address
-     * @param array   $lines
+     * @param array $lines
      */
     private function importAddress(Address $address, array $lines)
     {
@@ -1014,24 +1155,39 @@ EOH;
      * Fill temp table for CheckRemovedFromFile() method.
      *
      * @param string $type GP
-     * @param type   $file
+     * @param type $file
      */
     private function fillTempTable($type, $file)
     {
         $dbTable = $this->getTableNameByType($type);
 
-        $fileHandler = $this->getFilePointer($this->tempPath . '/' . $file);
+        $pathInfo = pathinfo($file);
+
+        $zip = new ZipArchive();
+        $res = $zip->open($file);
+
+        if ($res !== true) {
+            throw new Exception("Failed to open zip file '{$file}': " . $res, static::$UNEXPECTED_FILE_PROBLEM);
+        }
+
+        $fileName = preg_replace('/\d+/', '', str_replace('.zip', '.csv', $pathInfo['basename']));
+
+        $stream = $zip->getStream($fileName);
+
+        if (!$stream) {
+            throw new Exception("Failed to extract '{$fileName}' from zip file at '{$file}'", static::$UNEXPECTED_FILE_PROBLEM);
+        }
+
 
         echo 'Inserting rows into temp table... ';
 
         $i = 0;
         $insertBulkData = array();
-        while (($row = fgetcsv($fileHandler))) {
+        while (($row = fgetcsv($stream))) {
             $data = array_combine(array_pad($this->files['full'][$type]['fields'], count($row), ''), $row);
 
             if ($dbTable == 'gp') {
                 $insertData = array(
-                    'obj_prof' => $data['code'],
                     'nat_id' => $data['code'],
                 );
             } else {
@@ -1100,7 +1256,7 @@ EOH;
     /**
      * Allows to download a specified file based on the type and interval.
      *
-     * @param string $type     like 'Gp'
+     * @param string $type like 'Gp'
      * @param string $interval like 'monthly'
      */
     public function actionDownload($type, $interval = 'full', $region = 'england')
@@ -1123,7 +1279,7 @@ EOH;
     }
 
     /**
-     * Downloads all the full files listed in $this->files['full'] , Gp, Practice, CCG, CCG Assignment
+     * Downloads all the full files listed in $this->files['full'] , Gp, Optom, Practice, CCG, CCG Assignment
      * can be useful on the first run.
      */
     public function actionDownloadall($region = 'england')

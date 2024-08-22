@@ -37,8 +37,8 @@ $controllerID = (isset($this->controller->id) ? $this->controller->id : $this->i
 $deceased = $this->patient->isDeceased();
 $institution = Institution::model()->getCurrent();
 
-$display_primary_number_usage_code = Yii::app()->params['display_primary_number_usage_code'];
-$display_secondary_number_usage_code = Yii::app()->params['display_secondary_number_usage_code'];
+$display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
+$display_secondary_number_usage_code = SettingMetadata::model()->getSetting('display_secondary_number_usage_code');
 $primary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_primary_number_usage_code, $this->patient->id, $institution->id, $this->selected_site_id);
 $secondary_identifier = PatientIdentifierHelper::getIdentifierForPatient($display_secondary_number_usage_code, $this->patient->id, $institution->id, $this->selected_site_id);
 ?>
@@ -48,7 +48,7 @@ if ($summary) {
     $this->render('application.widgets.views.PatientPanelSummary', array('deceased' => $deceased,'trialContext' => $trialContext,'navIconsUrl' => $navIconsUrl));
 
     $assetManager = Yii::app()->getAssetManager();
-    $widgetPath = $assetManager->publish('protected/widgets/js', true);
+    $widgetPath = $assetManager->getPublishedPathOfAlias('application.widgets.js');
     Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopup.js');
 } else { ?>
     <td>
@@ -76,18 +76,18 @@ if ($summary) {
                 <i class="oe-i patient medium pad patient-management js-management-btn" id="js-management-btn"></i>
                 <i class="oe-i eye medium pad patient-quicklook js-quicklook-btn" id="js-quicklook-btn"></i>
         <?php }?>
-
+            <?php $has_trial_user_role = Yii::app()->user->checkAccess('Trial User'); ?>
             <?php if ($this->patient->isEditable() && !$this->patient->isDeleted()) : ?>
               <a href="<?php echo $this->controller->createUrl('/patient/update/', array('id' => $this->patient->id, 'prevUrl' => Yii::app()->request->url)); ?>" >
                   <i class="patient-local-edit js-patient-local-edit-btn oe-i medium pad pencil cc_pointer"
-                    <?php if (Yii::app()->moduleAPI->get('OETrial') && count($this->patient->trials)) {
+                    <?php if (Yii::app()->moduleAPI->get('OETrial') && $has_trial_user_role) {
                         echo 'style ="top: 35px; right: 0px"';
                     }?>
                   ></i>
               </a>
             <?php endif; ?>
-            <?php if ((Yii::app()->moduleAPI->get('OETrial')) && (count($this->patient->trials) !== 0)) { ?>
-                <i class="oe-i trials medium pad patient-trials js-trials-btn" id="js-trials-btn"></i>
+            <?php if ((Yii::app()->moduleAPI->get('OETrial')) && $has_trial_user_role) { ?>
+                <i class="oe-i trials medium pad patient-extra js-trials-btn" id="js-trials-btn"></i>
             <?php } ?>
         <div class="patient-details">
             <?php if ($trialContext) {
@@ -98,7 +98,7 @@ if ($summary) {
     </td>
     <?php
       $assetManager = Yii::app()->getAssetManager();
-      $widgetPath = $assetManager->publish('protected/widgets/js');
+      $widgetPath = $assetManager->getPublishedPathOfAlias('application.widgets.js');
       Yii::app()->clientScript->registerScriptFile($widgetPath . '/PatientPanelPopupMulti.js');
     ?>
 <?php } ?>

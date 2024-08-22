@@ -82,11 +82,10 @@ class CaseSearchController extends BaseModuleController
             $this->trialContext = Trial::model()->findByPk($trial_id);
         }
 
-        $criteria = new CDbCriteria();
         $valid = $this->populateParams(true);
 
-        // Only run this next statement if not an advanced search super user.
-        if (!$this->checkAccess('TaskCaseSearchSuperUser')) {
+        // Only run this next statement if not an advanced search super user and a POST request has been submitted.
+        if (!$this->checkAccess('TaskCaseSearchSuperUser') && Yii::app()->request->isPostRequest) {
             $this->parameters[] = $this->buildParameterInstance(
                 999,
                 InstitutionParameter::class,
@@ -110,7 +109,7 @@ class CaseSearchController extends BaseModuleController
             if (count($ids) === 0) {
                 Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. Returned no results', null, array('module' => 'OECaseSearch'));
             } else {
-                Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. Returned '. count($ids) . ' results', null, array('module' => 'OECaseSearch'));
+                Audit::add('case-search', 'search-results', implode(' AND ', $auditValues) . '. Returned ' . count($ids) . ' results', null, array('module' => 'OECaseSearch'));
             }
 
             // Only copy to the $_SESSION array if it isn't already there - Shallow copy is done at the start if it is already set.
@@ -120,59 +119,16 @@ class CaseSearchController extends BaseModuleController
             $_SESSION['last_search_params'] = $this->parameters;
             $pagination['currentPage'] = 0;
         }
-        // If there are no IDs found, pass -1 as the value (as this will not match with anything).
-        $criteria->compare('t.id', empty($ids) ? -1 : $ids);
-        $criteria->with = 'contact';
-        $criteria->compare('t.deleted', 0);
-
-        // A data provider is used here to allow faster search times.
-        // Results are iterated through using the data provider's pagination functionality and the
-        // CListView widget's pager.
-        $patientData = new CActiveDataProvider('Patient', array(
-            'criteria' => $criteria,
-            'totalItemCount' => count($ids),
-            'pagination' => $pagination,
-            'sort' => array(
-                'attributes' => array(
-                    'last_name' => array(
-                        'asc' => 'last_name',
-                        'desc' => 'last_name DESC',
-                        'label' => 'Surname',
-                    ),
-                    'first_name' => array(
-                        'asc' => 'first_name',
-                        'desc' => 'first_name DESC',
-                        'label' => 'First name',
-                    ),
-                    'age' => array(
-                        'asc' => 'TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE()))',
-                        'desc' => 'TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) DESC',
-                        'label' => 'Age',
-                    ),
-                    'gender' => array(
-                        'asc' => 'gender',
-                        'desc' => 'gender DESC',
-                        'label' => 'Sex',
-                    ),
-                    /*
-                    // reserve for OE-12343 re-implementation
-                    'hos_num'=> array(
-                        'asc' => 'hos_num*1',
-                        'desc' => 'hos_num*1 DESC',
-                        'label' => \SettingMetadata::model()->getSetting('hos_num_label'),
-                    ),
-                    'nhs_num' => array(
-                        'asc' => 'nhs_num',
-                        'desc' => 'nhs_num DESC',
-                        'label' => \SettingMetadata::model()->getSetting('nhs_num_label'),
-                    ),
-                    */
-                ),
-                'defaultOrder' => array(
-                    'last_name' => CSort::SORT_ASC,
-                ),
-            ),
-        ));
+        // Only run this next statement if not an advanced search super user.
+        if (!$this->checkAccess('TaskCaseSearchSuperUser') && !Yii::app()->request->isPostRequest) {
+            $this->parameters[] = $this->buildParameterInstance(
+                999,
+                InstitutionParameter::class,
+                '=',
+                '{institution}',
+                false
+            );
+        }
 
         $all_searches = SavedSearch::model()->findAllByUserOrInstitution(
             Yii::app()->user->id,
@@ -214,6 +170,8 @@ class CaseSearchController extends BaseModuleController
                 }
             }
         }
+
+        $patientData = $this->getPatientDataProvider($pagination, $ids);
 
         if (Yii::app()->request->isAjaxRequest) {
             $this->renderPartial('patient_drill_down_list', array(
@@ -307,8 +265,7 @@ class CaseSearchController extends BaseModuleController
         string $operation,
         $value,
         $isSaved = true
-    ): CaseSearchParameter
-    {
+    ): CaseSearchParameter {
         /**
          * @var $parameter CaseSearchParameter
          */
@@ -503,55 +460,8 @@ class CaseSearchController extends BaseModuleController
         $pagination = array(
             'pageSize' => 10,
         );
-        $criteria = new CDbCriteria();
-        $criteria->compare('t.id', explode(',', $patient_ids));
-        $criteria->with = 'contact';
-        $criteria->compare('t.deleted', 0);
-        $patients = new CActiveDataProvider('Patient', array(
-            'criteria' => $criteria,
-            'totalItemCount' => count(explode(',', $patient_ids)),
-            'pagination' => $pagination,
-            'sort' => array(
-                'attributes' => array(
-                    'last_name' => array(
-                        'asc' => 'last_name',
-                        'desc' => 'last_name DESC',
-                        'label' => 'Surname',
-                    ),
-                    'first_name' => array(
-                        'asc' => 'first_name',
-                        'desc' => 'first_name DESC',
-                        'label' => 'First name',
-                    ),
-                    'age' => array(
-                        'asc' => 'TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE()))',
-                        'desc' => 'TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) DESC',
-                        'label' => 'Age',
-                    ),
-                    'gender' => array(
-                        'asc' => 'gender',
-                        'desc' => 'gender DESC',
-                        'label' => 'Gender',
-                    ),
-                    /*
-                    // reserve for OE-12343 re-implementation
-                    'hos_num' => array(
-                        'asc' => 'hos_num',
-                        'desc' => 'hos_num DESC',
-                        'label' => \SettingMetadata::model()->getSetting('hos_num_label'),
-                    ),
-                    'nhs_num' => array(
-                        'asc' => 'nhs_num',
-                        'desc' => 'nhs_num DESC',
-                        'label' => \SettingMetadata::model()->getSetting('nhs_num_label'),
-                    ),
-                    */
-                ),
-                'defaultOrder' => array(
-                    'last_name' => CSort::SORT_ASC,
-                ),
-            ),
-        ));
+
+        $patients = $this->getPatientDataProvider($pagination, explode(',', $patient_ids));
 
         if (Yii::app()->request->isAjaxRequest) {
             $this->renderPartial('patient_drill_down_list', array(
@@ -626,9 +536,11 @@ class CaseSearchController extends BaseModuleController
             Yii::app()->assetManager->registerScriptFile('js/OpenEyes.UI.Dialog.js');
         }
 
-        if (!Yii::app()->clientScript->isScriptFileRegistered(
-            $assetPath . '/js/OpenEyes.UI.Dialog.LoadSavedSearch.js'
-        )) {
+        if (
+            !Yii::app()->clientScript->isScriptFileRegistered(
+                $assetPath . '/js/OpenEyes.UI.Dialog.LoadSavedSearch.js'
+            )
+        ) {
             Yii::app()->assetManager->registerScriptFile(
                 'js/OpenEyes.UI.Dialog.LoadSavedSearch.js',
                 'application.modules.OECaseSearch.assets',
@@ -636,9 +548,11 @@ class CaseSearchController extends BaseModuleController
             );
         }
 
-        if (!Yii::app()->clientScript->isScriptFileRegistered(
-            $assetPath . '/js/OpenEyes.UI.Dialog.SaveSearch.js'
-        )) {
+        if (
+            !Yii::app()->clientScript->isScriptFileRegistered(
+                $assetPath . '/js/OpenEyes.UI.Dialog.SaveSearch.js'
+            )
+        ) {
             Yii::app()->assetManager->registerScriptFile(
                 'js/OpenEyes.UI.Dialog.SaveSearch.js',
                 'application.modules.OECaseSearch.assets',
@@ -671,14 +585,81 @@ class CaseSearchController extends BaseModuleController
         if (isset($patientID)) {
             $patient = Patient::model()->findByPk($patientID);
             if (!empty($patient)) {
-                Audit::add('case-search', 'viewed-summary-popups', 'Summary popup '.  $summaryId . ' for patient ' . $patientID . ' has been viewed', false, array(
+                Audit::add('case-search', 'viewed-summary-popups', 'Summary popup ' .  $summaryId . ' for patient ' . $patientID . ' has been viewed', false, array(
                     'module' => 'OECaseSearch', 'patient_id' => $patientID
-                ) );
+                ));
                 return true;
             } else {
                 throw new CHttpException(404, 'Unable to find patient');
             }
         }
         throw new CHttpException(404, 'Unable to find patient - no patientID');
+    }
+
+    /**
+     * Compose patient search criteria, and then process through data provider
+     *
+     * @param mixed $pagination
+     * @param mixed $ids
+     * @return CActiveDataProvider
+     */
+    private function getPatientDataProvider($pagination, $ids): CActiveDataProvider
+    {
+        $criteria = new CDbCriteria();
+        // If there are no IDs found, pass -1 as the value (as this will not match with anything).
+        $criteria->compare('t.id', empty($ids) ? -1 : $ids);
+
+        $criteria->with = ['contact', 'localIdentifiers.patientIdentifierType'];
+        $criteria->together = true;
+        $criteria->compare('t.deleted', 0);
+        $institution = Institution::model()->getCurrent();
+        $criteria->compare('patientIdentifierType.institution_id', $institution->id);
+        $selected_site_id = Yii::app()->session['selected_site_id'];
+        $display_primary_number_usage_code = SettingMetadata::model()->getSetting('display_primary_number_usage_code');
+
+        $primary_identifier_type_prompt = PatientIdentifierHelper::getIdentifierDefaultPromptForInstitution($display_primary_number_usage_code, $institution->id, $selected_site_id);
+
+        // A data provider is used here to allow faster search times.
+        // Results are iterated through using the data provider's pagination functionality and the
+        // CListView widget's pager.
+        return new CActiveDataProvider('Patient', array(
+            'criteria' => $criteria,
+            'totalItemCount' => count($ids),
+            'pagination' => $pagination,
+            'sort' => array(
+                'attributes' => array(
+                    'last_name' => array(
+                        'asc' => 'last_name',
+                        'desc' => 'last_name DESC',
+                        'label' => 'Surname',
+                    ),
+                    'first_name' => array(
+                        'asc' => 'first_name',
+                        'desc' => 'first_name DESC',
+                        'label' => 'First name',
+                    ),
+                    'age' => array(
+                        'asc' => 'TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE()))',
+                        'desc' => 'TIMESTAMPDIFF(YEAR, dob, IFNULL(date_of_death, CURDATE())) DESC',
+                        'label' => 'Age',
+                    ),
+                    'gender' => array(
+                        'asc' => 'gender',
+                        'desc' => 'gender DESC',
+                        'label' => 'Sex',
+                    ),
+                    // patient_identifier_not_deleted is the alias of PatientIdentifier
+                    // defined in defaultScope
+                    'patient_identifier_not_deleted.value' => array(
+                        'asc' => 'patient_identifier_not_deleted.value',
+                        'desc' => "patient_identifier_not_deleted.value DESC",
+                        'label' => $primary_identifier_type_prompt
+                    )
+                ),
+                'defaultOrder' => array(
+                    'last_name' => CSort::SORT_ASC,
+                ),
+            ),
+        ));
     }
 }

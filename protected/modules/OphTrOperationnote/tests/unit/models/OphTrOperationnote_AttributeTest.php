@@ -15,8 +15,14 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+/**
+ * @group sample-data
+ */
 class OphTrOperationnote_AttributeTest extends ActiveRecordTestCase
 {
+    use WithTransactions;
+
     public function getModel()
     {
         return OphTrOperationnote_Attribute::model();
@@ -65,8 +71,6 @@ class OphTrOperationnote_AttributeTest extends ActiveRecordTestCase
 
     public function testBeforeDelete()
     {
-        $trans = Yii::app()->db->beginTransaction();
-
         $record = $this->getTestRecord();
         $record->save();
         $opt1 = new OphTrOperationnote_AttributeOption();
@@ -77,8 +81,6 @@ class OphTrOperationnote_AttributeTest extends ActiveRecordTestCase
 
         $record->delete();
         $this->assertEquals(0, Yii::app()->db->createCommand('select count(*) from ophtroperationnote_attribute_option where attribute_id = ?')->queryScalar(array($r_id)));
-
-        $trans->rollback();
     }
 
     /**
@@ -87,8 +89,6 @@ class OphTrOperationnote_AttributeTest extends ActiveRecordTestCase
 
     public function testBeforeValidate()
     {
-        $trans = Yii::app()->db->beginTransaction();
-
         $record1 = $this->getTestRecord();
         $record1->save();
 
@@ -96,9 +96,7 @@ class OphTrOperationnote_AttributeTest extends ActiveRecordTestCase
         $record2->save(true);
 
         $this->assertEquals($record2->display_order, $record1->display_order + 1);
-        $this->assertInternalType("int", $record2->is_multiselect);
-
-        $trans->rollback();
+        $this->assertIsInt($record2->is_multiselect);
     }
 
     /**
@@ -107,7 +105,6 @@ class OphTrOperationnote_AttributeTest extends ActiveRecordTestCase
 
     public function testAfterFind()
     {
-        $trans = Yii::app()->db->beginTransaction();
 
         $record = $this->getTestRecord();
         $record->save();
@@ -117,8 +114,6 @@ class OphTrOperationnote_AttributeTest extends ActiveRecordTestCase
         unset($record);
 
         $record = OphTrOperationnote_Attribute::model()->findByPk($r_id);
-        $this->assertInternalType("bool", $record->is_multiselect);
-
-        $trans->rollback();
+        $this->assertIsBool($record->is_multiselect);
     }
 }

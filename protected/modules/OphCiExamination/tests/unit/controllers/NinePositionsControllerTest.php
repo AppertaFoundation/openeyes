@@ -32,13 +32,22 @@ class NinePositionsControllerTest extends BaseControllerTest
 {
     use InteractsWithEventTypeElements;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         // stub out components that will cause failures
         \Yii::app()->setComponent('assetManager', $this->getMockAssetManager());
         \Yii::app()->setComponent('request', $this->getMockRequest());
         $this->mockSession();
+    }
+
+    public function tearDown(): void
+    {
+        \Yii::app()->setComponent('assetManager', null);
+        \Yii::app()->setComponent('request', null);
+        $_GET = [];
+
+        parent::tearDown();
     }
 
     /** @test */

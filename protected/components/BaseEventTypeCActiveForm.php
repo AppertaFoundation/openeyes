@@ -3,7 +3,7 @@
 /**
  * OpenEyes.
  *
- * 
+ *
  * Copyright OpenEyes Foundation, 2017
  *
  * This file is part of OpenEyes.
@@ -26,7 +26,7 @@ class BaseEventTypeCActiveForm extends FormLayout
 
         return parent::widget($className, $properties, $captureOutput);
     }
-    
+
     public function comment($element_name, $value, $htmlOptions = array(), $hidden = false, $layoutColumns = array())
     {
         $this->widget('application.widgets.Comment', array(
@@ -233,6 +233,25 @@ class BaseEventTypeCActiveForm extends FormLayout
     public function datePicker($element, $field, $options = array(), $htmlOptions = array(), $layoutColumns = array())
     {
         $this->widget('application.widgets.DatePicker', array(
+            'element' => $element,
+            'name' => CHtml::modelName($element) . "[$field]",
+            'field' => $field,
+            'options' => $options,
+            'htmlOptions' => $htmlOptions,
+            'layoutColumns' => $layoutColumns,
+        ));
+    }
+
+    /**
+     * @param       $element
+     * @param       $field
+     * @param array $options
+     * @param array $htmlOptions
+     * @param array $layoutColumns
+     */
+    public function datePickerNative($element, $field, $options = array(), $htmlOptions = array(), $layoutColumns = array())
+    {
+        $this->widget('application.widgets.DatePickerNative', array(
             'element' => $element,
             'name' => CHtml::modelName($element) . "[$field]",
             'field' => $field,

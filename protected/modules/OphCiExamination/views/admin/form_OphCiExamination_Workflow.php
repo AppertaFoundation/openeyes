@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,11 +16,36 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
+$institution_list_options = ['class' => 'cols-full'];
+
+if ($model->canChangeInstitution()) {
+    if ($this->checkAccess('admin')) {
+        $institution_list_data = Institution::model()->getTenantedList(false);
+        $institution_list_options['empty'] = '- All institutions -';
+    } else {
+        $institution_list_data = Institution::model()->getTenantedList(true);
+    }
+} else {
+    // See the documentation for OphCiExamination_Workflow::canChangeInstitution for the reasons for the following.
+    if ($model->institution) {
+        $institution_list_data = [$model->institution->id => $model->institution->name];
+    } else {
+        $institution_list_data = [];
+        $institution_list_options['empty'] = '- All institutions -';
+    }
+}
 ?>
 
 <div class="row divider">
     <h2><?php echo $title ?></h2>
 </div>
+
+<?php if ($model->hasErrors()) { ?>
+<div class="alert-box error">
+    <?= $form->errorSummary($model) ?>
+</div>
+<?php } ?>
 
 <table class="standard cols-full">
     <tbody>
@@ -28,9 +54,10 @@
             <?= $form->dropDownList(
                 $model,
                 'institution_id',
-                Institution::model()->getTenantedList(true),
-                ['class' => 'cols-full'],
-            ) ?>
+                $institution_list_data,
+                $institution_list_options,
+                )
+?>
         </td>
     </tr>
     <tr>
@@ -39,7 +66,7 @@
             <?php echo $form->textField(
                 $model,
                 'name',
-                ['class' => 'cols-full', 'autocomplete' => Yii::app()->params['html_autocomplete']]
+                ['class' => 'cols-full', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete')]
             ) ?>
         </td>
     </tr>

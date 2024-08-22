@@ -8,11 +8,11 @@
             $links['Institutions'] = '/profile/institutions';
             $links[Firm::contextLabel() . 's'] = '/profile/firms';
             $links['Pincode'] = '/profile/pincode';
-            $links['User settings'] = '/profile/usersettings';
         }
         if (Yii::app()->params['profile_user_can_change_password']) {
             $links['Change password'] = '/profile/password';
         }
+        $links['Pre-fill templates'] = '/profile/manageeventtemplates';
         foreach (array_merge($links, array(
             'Signature' => '/profile/signature',
         )) as $title => $uri) {?>

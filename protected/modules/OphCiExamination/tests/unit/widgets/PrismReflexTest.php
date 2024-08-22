@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\widgets;
 
+
 use OEModule\OphCiExamination\controllers\DefaultController;
 use OEModule\OphCiExamination\models\PrismReflex as DioptrePrismElement;
 use OEModule\OphCiExamination\models\PrismReflex_Entry;
@@ -52,7 +53,7 @@ class PrismReflexTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains('id="OEModule_OphCiExamination_models_PrismReflex_form"', $result);
+        $this->assertStringContainsString('id="OEModule_OphCiExamination_models_PrismReflex_form"', $result);
     }
 
     /** @test */
@@ -86,7 +87,7 @@ class PrismReflexTest extends \OEDbTestCase
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
         for ($i = 0; $i < count($element->entries); $i++) {
-            $this->assertContains("data-key=\"$i\"", $result);
+            $this->assertStringContainsString("data-key=\"$i\"", $result);
         }
     }
 
@@ -118,11 +119,11 @@ class PrismReflexTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains((string) $entry->prismdioptre, $result);
-        $this->assertContains((string) $entry->prismbase, $result);
-        $this->assertContains((string) $entry->finding, $result);
-        $this->assertContains((string) $entry->correctiontype, $result);
-        $this->assertContains($entry->display_with_head_posture, $result);
-        $this->assertContains(\OELinebreakReplacer::replace(\CHtml::encode($element->comments)), $result);
+        $this->assertStringContainsString((string) $entry->prismdioptre, $result);
+        $this->assertStringContainsString((string) $entry->prismbase, $result);
+        $this->assertStringContainsString((string) $entry->finding, $result);
+        $this->assertStringContainsString((string) $entry->correctiontype, $result);
+        $this->assertStringContainsString($entry->display_with_head_posture, $result);
+        $this->assertStringContainsString(\OELinebreakReplacer::replace(\CHtml::encode($element->comments)), $result);
     }
 }

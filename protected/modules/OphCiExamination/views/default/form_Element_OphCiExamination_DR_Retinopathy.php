@@ -25,7 +25,7 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
         }
         ?>
         <?= $form->hiddenField($element, $eye_side.'_overall_grade') ?>
-        <div class="js-element-eye <?= $eye_side ?>-eye <?= $page_side ?> column" data-side="<?= $eye_side ?>">
+        <div class="js-element-eye <?= $eye_side ?>-eye <?= $page_side ?> column" data-side="<?= $eye_side ?>" data-test="dr-retinopathy-side">
             <div class="active-form" style="<?= $element->hasEye($eye_side) ? '' : 'display: none;' ?>">
                 <div class="remove-side">
                     <i class="oe-i remove-circle small"></i>
@@ -54,7 +54,7 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
                         </tbody>
                     </table>
                     <div class="add-data-actions flex-item-bottom">
-                        <button class="button hint green js-add-select-search" id="add-to-dr-retinopathy-<?= $eye_side ?>">
+                        <button class="button hint green js-add-select-search" id="add-to-dr-retinopathy-<?= $eye_side ?>" data-test="add-to-dr-retinopathy-<?= $eye_side ?>-btn">
                             <i class="oe-i plus pro-theme"></i>
                         </button>
                     </div>
@@ -71,9 +71,9 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
                 openButton: $("#add-to-dr-retinopathy-<?= $eye_side ?>"),
                 itemSets: [
                     new OpenEyes.UI.AdderDialog.ItemSet([
-                        {label: '<?= $r0_retinopathy_feature->name ?>', 'id': <?= $r0_retinopathy_feature->id ?>},
-                        {label: 'DR'}
-                    ], {'multiSelect': false, 'id': 'add-to-retinopathy-dr', 'header': 'DR'}),
+                        {label: '<?= $r0_retinopathy_feature->name ?>', 'id': "<?= $r0_retinopathy_feature->id ?>-<?= $eye_side ?>"},
+                        {label: 'DR', 'id': 'dr-option-<?= $eye_side ?>'}
+                    ], {'multiSelect': false, 'id': 'add-to-retinopathy-dr-<?= $eye_side ?>', 'header': 'DR'}),
                     new OpenEyes.UI.AdderDialog.ItemSet(
                         <?= CJSON::encode(array_map(
                             static function ($feature) {
@@ -84,7 +84,7 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
                             },
                             $r1_retinopathy_features
                         ))?>,
-                        {'multiSelect': true, 'id': 'add-to-retinopathy-r1',  'header': 'R1'}
+                        {'multiSelect': true, 'id': 'add-to-retinopathy-r1-<?= $eye_side ?>', 'hideByDefault': true, 'header': 'R1'}
                     ),
                     new OpenEyes.UI.AdderDialog.ItemSet(
                         [
@@ -94,7 +94,7 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
                             {label: '4 MA', 'id': '4'},
                             {label: '5+ MA', 'id': '5+'}
                         ],
-                        {'multiSelect': false, 'id': 'add-to-retinopathy-ma', 'hideByDefault': true, 'header': '(MA)'}
+                        {'multiSelect': false, 'id': 'add-to-retinopathy-ma-<?= $eye_side ?>', 'hideByDefault': true, 'header': '(MA)'}
                     ),
                     new OpenEyes.UI.AdderDialog.ItemSet(
                         <?= CJSON::encode(array_map(
@@ -106,7 +106,7 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
                             },
                             $r2_retinopathy_features
                         ))?>,
-                        {'multiSelect': true, 'id': 'add-to-retinopathy-r2', 'header': 'R2'}
+                        {'multiSelect': true, 'id': 'add-to-retinopathy-r2-<?= $eye_side ?>', 'hideByDefault': true, 'header': 'R2'}
                     ),
                     new OpenEyes.UI.AdderDialog.ItemSet(
                         <?= CJSON::encode(array_map(
@@ -118,7 +118,7 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
                             },
                             $r3s_retinopathy_features
                         ))?>,
-                        {'multiSelect': true, 'id': 'add-to-retinopathy-r3s', 'header': 'R3 Stable'}
+                        {'multiSelect': true, 'id': 'add-to-retinopathy-r3s-<?= $eye_side ?>', 'hideByDefault': true, 'header': 'R3 Stable'}
                     ),
                     new OpenEyes.UI.AdderDialog.ItemSet(
                         <?= CJSON::encode(array_map(
@@ -130,7 +130,7 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
                             },
                             $r3a_retinopathy_features
                         ))?>,
-                        {'multiSelect': true, 'id': 'add-to-retinopathy-r3a', 'header': 'R3 Active'}
+                        {'multiSelect': true, 'id': 'add-to-retinopathy-r3a-<?= $eye_side ?>', 'hideByDefault': true, 'header': 'R3 Active'}
                     ),
                 ],
                 liClass: 'auto-width',
@@ -144,9 +144,18 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
                     );
                 },
                 onOpen: function (adderDialog) {
-                    if ($(adderDialog).find('ul[data-id = "add-to-retinopathy-dr"] .selected').data('label') === 'No DR') {
+                    if ($(adderDialog).find('ul[data-id = "add-to-retinopathy-dr-<?= $eye_side ?>"] .selected').data('label') === 'No DR') {
                         // 'No DR' has been selected, so hide all the columns except for the first one when dialog is opened
-                        adderDialog.toggleColumnById(['add-to-retinopathy-r1', 'add-to-retinopathy-ma', 'add-to-retinopathy-r2', 'add-to-retinopathy-r3s', 'add-to-retinopathy-r3a'], false);
+                        adderDialog.toggleColumnById(
+                            [
+                                'add-to-retinopathy-r1-<?= $eye_side ?>',
+                                'add-to-retinopathy-ma-<?= $eye_side ?>',
+                                'add-to-retinopathy-r2-<?= $eye_side ?>',
+                                'add-to-retinopathy-r3s-<?= $eye_side ?>',
+                                'add-to-retinopathy-r3a-<?= $eye_side ?>'
+                            ],
+                            false
+                        );
                     }
                 },
                 onSelect: function() {
@@ -157,9 +166,9 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
                         $($adderDialog).find('th:not(:first)').show();
                         $($adderDialog).find('ul:not(:first)').closest('td').show();
                         // If MA option has not been selected, hide the MA column
-                        if ($($adderDialog).find('ul[data-id = "add-to-retinopathy-ma"]').children('.selected').length === 0) {
-                            $($adderDialog).find('th[data-id = "add-to-retinopathy-ma"]').hide();
-                            $($adderDialog).find('ul[data-id = "add-to-retinopathy-ma"]').closest('td').hide();
+                        if ($($adderDialog).find('ul[data-id = "add-to-retinopathy-ma-<?= $eye_side ?>"]').children('.selected').length === 0) {
+                            $($adderDialog).find('th[data-id = "add-to-retinopathy-ma-<?= $eye_side ?>"]').hide();
+                            $($adderDialog).find('ul[data-id = "add-to-retinopathy-ma-<?= $eye_side ?>"]').closest('td').hide();
                         }
                     } else if ($(this).data("label") === 'No DR' && $(this).attr("class") !== 'selected') {
                         // 'No DR' selected, so hide all the other options
@@ -168,12 +177,12 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
                     } else if ($(this).data("label") === 'MA') {
                         if ($(this).attr("class") !== 'selected') {
                             // Selected, so show the MA column
-                            $($adderDialog).find('th[data-id = "add-to-retinopathy-ma"]').show();
-                            $($adderDialog).find('ul[data-id = "add-to-retinopathy-ma"]').closest('td').show();
+                            $($adderDialog).find('th[data-id = "add-to-retinopathy-ma-<?= $eye_side ?>"]').show();
+                            $($adderDialog).find('ul[data-id = "add-to-retinopathy-ma-<?= $eye_side ?>"]').closest('td').show();
                         } else {
                             // Deselected, so hide the MA column
-                            $($adderDialog).find('th[data-id = "add-to-retinopathy-ma"]').hide();
-                            $($adderDialog).find('ul[data-id = "add-to-retinopathy-ma"]').closest('td').hide();
+                            $($adderDialog).find('th[data-id = "add-to-retinopathy-ma-<?= $eye_side ?>"]').hide();
+                            $($adderDialog).find('ul[data-id = "add-to-retinopathy-ma-<?= $eye_side ?>"]').closest('td').hide();
                         }
                     }
                 }
@@ -187,7 +196,7 @@ $r3a_retinopathy_features = OphCiExamination_DRGrading_Feature::model()->findAll
         </script>
     <?php }?>
     <script type="text/template" class="entry-template hidden">
-        <tr>
+        <tr data-test="dr-rentinopathy-row">
             <td>
                 {{grade}}
             </td>

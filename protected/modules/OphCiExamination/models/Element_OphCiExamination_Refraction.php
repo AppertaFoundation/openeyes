@@ -39,6 +39,7 @@ class Element_OphCiExamination_Refraction extends \BaseEventTypeElement implemen
 {
     use traits\CustomOrdering;
     use HasSidedData;
+    use \LoadFromExistingWithRelation;
 
     protected $auto_update_relations = true;
     protected $auto_validate_relations = true;
@@ -123,6 +124,14 @@ class Element_OphCiExamination_Refraction extends \BaseEventTypeElement implemen
                 OphCiExamination_Refraction_Reading::class,
                 'element_id',
                 'on' => 'left_priority_reading.eye_id = ' . SidedData::LEFT,
+                'with' => ['type'],
+                'order' => '-type.priority desc limit 1'
+            ],
+            'both_priority_reading' => [
+                self::HAS_ONE,
+                OphCiExamination_Refraction_Reading::class,
+                'element_id',
+                'on' => 'both_priority_reading.eye_id = ' . SidedData::BOTH,
                 'with' => ['type'],
                 'order' => '-type.priority desc limit 1'
             ]

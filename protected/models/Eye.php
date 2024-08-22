@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OE\factories\models\traits\HasFactory;
+
 /**
  * This is the model class for table "eye".
  *
@@ -27,14 +29,17 @@
  */
 class Eye extends BaseActiveRecord
 {
+    use HasFactory;
+
     const LEFT = 1;
     const RIGHT = 2;
     const BOTH = 3;
 
-    public static function getIdFromName($side) {
-        return strtolower($side) === "left" ? EYE::LEFT : (
-                strtolower($side) === "right" ? EYE::RIGHT : (
-                strtolower($side) === "both" ? EYE::BOTH : null
+    public static function getIdFromName($side)
+    {
+        return strtolower($side) === "left" ? self::LEFT : (
+                strtolower($side) === "right" ? self::RIGHT : (
+                strtolower($side) === "both" ? self::BOTH : null
             )
         );
     }
@@ -74,7 +79,7 @@ class Eye extends BaseActiveRecord
 
     public function defaultScope()
     {
-        return array('order' => $this->getTableAlias(true, false).'.display_order');
+        return array('order' => $this->getTableAlias(true, false) . '.display_order');
     }
 
     /**

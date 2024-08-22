@@ -11,6 +11,8 @@
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
+ *
+ * @var AdminController $this
  */
 ?>
 
@@ -20,17 +22,24 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
     echo '<div class="flash- alert-box with-icon warning' . $key . '">' . $message . "</div>\n";
 }
 ?>
-
+<script type="text/javascript" src="<?= Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.widgets.js') . '/AutoCompleteSearch.js', true, -1); ?>"></script>
 <form method="get">
-    <table class="cols-4">
+    <table class="cols-7">
         <colgroup>
-            <col class="cols-1">
+            <col class="cols-3">
             <col class="cols-4">
         </colgroup>
         <tbody>
         <tr class="col-gap">
-            <td>Subspecialty</td>
+            <td>&nbsp;<br/><?=\CHtml::dropDownList(
+                'institution_id',
+                $current_institution_id,
+                Institution::model()->getTenantedList(!Yii::app()->user->checkAccess('admin')),
+                ['empty' => 'All Institutions']
+            ) ?>
+            </td>
             <td>
+                <small>Subspeciality</small><br/>
                 <?=\CHtml::dropDownList(
                     'subspecialty_id',
                     $subspecialty_id,
@@ -42,7 +51,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
     </table>
 </form>
 
-<form method="POST" action="/admin/editcommonophthalmicdisorder?subspecialty_id=<?= $subspecialty_id; ?>">
+<form method="POST" action="/admin/editcommonophthalmicdisorder?institution_id=<?= $current_institution_id; ?>&subspecialty_id=<?= $subspecialty_id; ?>">
     <input type="hidden" class="no-clear" name="YII_CSRF_TOKEN" value="<?php echo Yii::app()->request->csrfToken ?>"/>
     <?php
     $columns = array(
@@ -60,7 +69,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'header' => 'Disorder',
             'name' => 'disorder.term',
             'type' => 'raw',
-            'htmlOptions' => array('width' => '200px'),
+            'htmlOptions' => array('width' => '200px', 'data-test' => 'disorder-term'),
             'value' => function ($data, $row) {
                 $term = null;
                 if ($data->disorder) {
@@ -80,8 +89,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'header' => 'Group',
             'name' => 'group.name',
             'type' => 'raw',
-            'value' => function ($data, $row) {
-                $options = CHtml::listData(CommonOphthalmicDisorderGroup::model()->findAllAtLevel(ReferenceData::LEVEL_INSTITUTION), 'id', 'name');
+            'value' => function ($data, $row) use ($group_models) {
+                $options = CHtml::listData($group_models, 'id', 'name');
                 return CHtml::activeDropDownList($data, "[$row]group_id", $options, array('empty' => '-- select --'));
             }
         ),
@@ -99,7 +108,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                 $remove_a = CHtml::tag(
                     'a',
                     array('href' => 'javascript:void(0)', 'class' => 'finding-rename'),
-                    Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change finding"), null)
+                    CHtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change finding"), null)
                 );
 
                 $name_span = CHtml::tag('span', array('class' => 'finding-name name'), $finding_data['name']);
@@ -118,7 +127,15 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                     'class' => 'finding-id'
                 ));
 
-                return $rename_span . $input . $hidden_finding_input;
+                $autocomplete_ul = CHtml::tag('ul', array(
+                    'class' => 'oe-autocomplete hidden',
+                ));
+
+                $div = CHtml::tag('div', array(
+                    'style' => 'position: relative;'
+                ), $rename_span . ' ' . $input . ' ' . $hidden_finding_input . ' ' . $autocomplete_ul);
+
+                return $div;
             }
         ),
         array(
@@ -135,7 +152,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                 $remove_a = CHtml::tag(
                     'a',
                     array('href' => 'javascript:void(0)', 'class' => 'alternate-disorder-rename'),
-                    Chtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change disorder"), null)
+                    CHtml::tag('i', array('class' => 'oe-i remove-circle small', 'aria-hidden' => "true", 'title' => "Change disorder"), null)
                 );
 
                 $name_span = CHtml::tag('span', array('class' => 'alternate-disorder-name name'), $alternate_disorder_data['name']);
@@ -157,7 +174,15 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                     array('class' => 'alternate-disorder-id')
                 );
 
-                return $rename_span . $input . $hidden_alternate_disorder_input;
+                $autocomplete_ul = CHtml::tag('ul', array(
+                    'class' => 'oe-autocomplete hidden',
+                ));
+
+                $div = CHtml::tag('div', array(
+                    'style' => 'position: relative;'
+                ), $rename_span . ' ' . $input . ' ' . $hidden_alternate_disorder_input . ' ' . $autocomplete_ul);
+
+                return $div;
             }
         ),
         array(
@@ -165,6 +190,24 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'type' => 'raw',
             'value' => function ($data, $row) {
                 return CHtml::activeTextField($data, "[$row]alternate_disorder_label");
+            }
+        ),
+        array(
+            'header' => 'Institution',
+            'type' => 'raw',
+            'name' => 'institution.name',
+            'value' => function ($data, $row) {
+                if ($this->checkAccess('admin')) {
+                    $institutions = CHtml::listData(Institution::model()->getTenanted(), 'id', 'name');
+                    return CHtml::dropDownList("CommonOphthalmicDisorder[$row]institution_id", $data->institution_id, $institutions, ['empty' => 'All Institutions']);
+                } else {
+                    if ($data->institution_id) {
+                        $institution = Institution::model()->findByPk($data->institution_id);
+                        return $institution->name;
+                    } else {
+                        return 'All institutions';
+                    }
+                }
             }
         ),
         array(
@@ -176,14 +219,6 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
                 } else {
                     return '<span data-tooltip-content="This entry is a parent of a Secondary Common Ophtalmic Disorder" class="oe-i info small js-has-tooltip"></span>';
                 }
-            }
-        ),
-        array(
-            'header' => 'Assigned to current institution',
-            'type' => 'raw',
-            'name' => 'assigned_insitution',
-            'value' => function($data, $row) {
-                return CHtml::checkBox("assigned_institution[$row]", $data->hasMapping(ReferenceData::LEVEL_INSTITUTION, $data->getIdForLevel(ReferenceData::LEVEL_INSTITUTION)));
             }
         ),
     );
@@ -219,7 +254,8 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'CommonOphthalmicDisorder[ROW_IDENTIFIER][group_id]' : '',
             'CommonOphthalmicDisorder[ROW_IDENTIFIER][finding_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_finding_id.finding-id',
             'CommonOphthalmicDisorder[ROW_IDENTIFIER][alternate_disorder_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_alternate_disorder_id.alternate-disorder-id',
-            'CommonOphthalmicDisorder[ROW_IDENTIFIER][alternate_disorder_label]' : ''
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][alternate_disorder_label]' : '',
+            'CommonOphthalmicDisorder[ROW_IDENTIFIER][institution_id]' : '#CommonOphthalmicDisorder_ROW_IDENTIFIER_institution_id',
         }
     };
     let GenericFormJSONConverter = new OpenEyes.GenericFormJSONConverter(formStructure);
@@ -232,11 +268,37 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             'renderCommonlyUsedDiagnoses': false,
             'code': '',
             'singleTemplate':
+                "<div style='position: relative'>" +
                 "<span class='medication-display' style='display:none'>" + "<a href='javascript:void(0)' class='diagnosis-rename'><i class='oe-i remove-circle small' aria-hidden='true' title='Change diagnosis'></i></a> " +
                 "<span class='diagnosis-name'></span></span>" +
                 "<select class='commonly-used-diagnosis cols-full' style='display:none'></select>" +
                 "{{{input_field}}}" +
-                "<input type='hidden' id='{{field_prefix}}_" + $row.data('row') + "_disorder_id_actual' name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>"
+                "<input type='hidden' id='{{field_prefix}}_" + $row.data('row') + "_disorder_id_actual' name='{{field_prefix}}[" + $row.data('row') + "][disorder_id]' class='savedDiagnosis' value=''>" +
+                "<ul class='oe-autocomplete'></ul>" +
+                "</div>"
+        });
+
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $row.find('.diagnoses-search-autocomplete'),
+            url: '/disorder/autocomplete',
+            params: {
+                code: function () {
+                    return '';
+                }
+            },
+            maxHeight: '200px',
+            onSelect: function(){
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
+
+                input.val(response.label);
+                input.hide();
+                input.siblings('.savedDiagnosis').val(response.id);
+                input.siblings('.medication-display').show();
+                input.siblings('.medication-display').find('.diagnosis-name').text(response.label);
+                //clear input
+                $(this).val("");
+            }
         });
 
         // Init finding, unfortunately we cannot use DiagnosesSearchController for this
@@ -281,17 +343,27 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             $(this).closest('form').submit();
         });
 
+        $('#institution_id').on('change', function () {
+            $(this).closest('form').submit();
+        });
+
         $table.find('tbody tr').each(function () {
             initialiseRow($(this));
         });
 
         $('#add_new').on('click', function () {
             let $tr = $('table.generic-admin tbody tr');
+            const $last_order_input = document.querySelector('table.generic-admin tbody tr:last-child input[name^="display_order"]');
+            const order_value = $last_order_input ? +$last_order_input.value + 1 : 0;
+            let institution_id = $('#institution_id').val()
+
             let output = Mustache.render($('#common_ophthalmic_disorder_template').text(), {
                 "row_count": OpenEyes.Util.getNextDataKey($tr, 'row'),
                 "group_options": common_ophthalmic_disorder_group_options,
                 'even_odd': $tr.length % 2 ? 'odd' : 'even',
-                'order_value': parseInt($('table.generic-admin tbody tr:last-child ').find('input[name^="display_order"]').val()) + 1
+                'order_value': order_value,
+                'institution_id': institution_id,
+                'institution_name': $('#institution_id option[value=' + institution_id + ']').text()
             });
 
             $('table.generic-admin tbody').append(output);
@@ -320,46 +392,28 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
 
         // Autocomplete
 
-        $inputField.autocomplete({
-            minLength: 2,
-            delay: 700,
-            source: function (request, response) {
-                $.ajax({
-                    'url': '/autocomplete/search',
-                    'type': 'GET',
-                    'data': {
-                        'term': request.term,
-                        'model': selector === 'finding' ? 'Finding' : 'Disorder', //yes, I know, this is awful
-                        'field': selector === 'finding' ? 'name' : 'term',
-                    },
-                    'beforeSend': function () {
-                    },
-                    'success': function (data) {
-                        response(data);
-                    }
-                });
+        OpenEyes.UI.AutoCompleteSearch.init({
+            input: $inputField,
+            url: '/autocomplete/search',
+            params: {
+                code: function () {
+                    return '';
+                },
+                'model': function () {return (selector === 'finding') ? 'Finding' : 'Disorder'},
+                'field': function () {return (selector === 'finding') ? 'name' : 'term'}
             },
-            search: function () {
-                $inputField.addClass('inset-loader');
-            },
-            select: function (event, ui) {
-                //controller.addDiagnosis(null, ui.item);
-                $row.find('.' + selector + '-name').text(ui.item.label);
-                $row.find('.' + selector + '-id').val(ui.item.id);
+            maxHeight: '200px',
+            onSelect: function(){
+                let response = OpenEyes.UI.AutoCompleteSearch.getResponse();
+                let input = OpenEyes.UI.AutoCompleteSearch.getInput();
 
-                $row.find('.' + selector + '-search-inputfield').hide();
-                $row.find('.' + selector + '-display').show();
-
-
+                input.val(response.label);
+                input.hide();
+                input.siblings(`.${selector}-id`).val(response.id);
+                input.siblings(`.${selector}-display`).show();
+                input.siblings(`.${selector}-display`).find(`.${selector}-name`).text(response.label);
                 //clear input
                 $(this).val("");
-                return false;
-            },
-            response: function (event, ui) {
-                $inputField.removeClass('inset-loader');
-            },
-            open: function () {
-                $(this).autocomplete('widget').zIndex(100);
             }
         });
     }
@@ -387,6 +441,7 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
             <input type="hidden" name="CommonOphthalmicDisorder[{{row_count}}][disorder_id]" class="savedDiagnosis"
                    value="">
+            <ul class="oe-autocomplete"></ul>
         </td>
         <td>
             <select name="CommonOphthalmicDisorder[{{row_count}}][group_id]"
@@ -398,39 +453,50 @@ foreach (Yii::app()->user->getFlashes() as $key => $message) {
             </select>
         </td>
         <td>
-            <span class="finding-display display" style="display: none;">
-                <a href="javascript:void(0)" class="finding-rename">
-                    <i class="oe-i remove-circle small" aria-hidden="true" title="Change finding"></i>
-                </a>
-                <span class="finding-name name"></span>
-            </span>
-            <input class="finding-search-autocomplete finding-search-inputfield ui-autocomplete-input"
-                   style="display: block;" autocomplete="off" type="text" value=""
-                   name="CommonOphthalmicDisorder[{{row_count}}][finding_id]"
-                   id="CommonOphthalmicDisorder_{{row_count}}_finding_id">
-            <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
-            <input class="finding-id" type="hidden" value="" name="CommonOphthalmicDisorder[{{row_count}}][finding_id]"
-                   id="CommonOphthalmicDisorder_{{row_count}}_finding_id">
+            <div style="position: relative">
+                <span class="finding-display display" style="display: none;">
+                    <a href="javascript:void(0)" class="finding-rename">
+                        <i class="oe-i remove-circle small" aria-hidden="true" title="Change finding"></i>
+                    </a>
+                    <span class="finding-name name"></span>
+                </span>
+                <input class="finding-search-autocomplete finding-search-inputfield ui-autocomplete-input"
+                       style="display: block;" autocomplete="off" type="text" value=""
+                       name="CommonOphthalmicDisorder[{{row_count}}][finding_id]"
+                       id="CommonOphthalmicDisorder_{{row_count}}_finding_id">
+                <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+                <input class="finding-id" type="hidden" value="" name="CommonOphthalmicDisorder[{{row_count}}][finding_id]"
+                       id="CommonOphthalmicDisorder_{{row_count}}_finding_id">
+                <ul class="oe-autocomplete"></ul>
+            </div>
         </td>
         <td>
-            <span class="alternate-disorder-display display" style="display: none;">
-                <a href="javascript:void(0)" class="alternate-disorder-rename"><i class="oe-i remove-circle small"
-                                                                                  aria-hidden="true"
-                                                                                  title="Change disorder"></i></a>
-                <span class="alternate-disorder-name name"></span>
-            </span>
-            <input class="alternate-disorder-search-autocomplete alternate-disorder-search-inputfield ui-autocomplete-input"
-                   style="display: inline;" autocomplete="off" type="text"
-                   name="CommonOphthalmicDisorder[{{row_count}}][alternate_disorder_id]"
-                   id="CommonOphthalmicDisorder_{{row_count}}_alternate_disorder_id">
-            <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
-            <input class="alternate-disorder-id" type="hidden"
-                   name="CommonOphthalmicDisorder[{{row_count}}][alternate_disorder_id]"
-                   id="CommonOphthalmicDisorder_{{row_count}}_alternate_disorder_id">
+            <div style="position: relative">
+                <span class="alternate-disorder-display display" style="display: none;">
+                    <a href="javascript:void(0)" class="alternate-disorder-rename"><i class="oe-i remove-circle small"
+                                                                                      aria-hidden="true"
+                                                                                      title="Change disorder"></i></a>
+                    <span class="alternate-disorder-name name"></span>
+                </span>
+                <input class="alternate-disorder-search-autocomplete alternate-disorder-search-inputfield ui-autocomplete-input"
+                       style="display: inline;" autocomplete="off" type="text"
+                       name="CommonOphthalmicDisorder[{{row_count}}][alternate_disorder_id]"
+                       id="CommonOphthalmicDisorder_{{row_count}}_alternate_disorder_id">
+                <span role="status" aria-live="polite" class="ui-helper-hidden-accessible"></span>
+                <input class="alternate-disorder-id" type="hidden"
+                       name="CommonOphthalmicDisorder[{{row_count}}][alternate_disorder_id]"
+                       id="CommonOphthalmicDisorder_{{row_count}}_alternate_disorder_id">
+                <ul class="oe-autocomplete"></ul>
+            </div>
         </td>
         <td>
             <input name="CommonOphthalmicDisorder[{{row_count}}][alternate_disorder_label]"
                    id="CommonOphthalmicDisorder_{{row_count}}_alternate_disorder_label" type="text" value="">
+        </td>
+        <td>
+            <input type="hidden" name="CommonOphthalmicDisorder[{{row_count}}][institution_id]"
+                   id="CommonOphthalmicDisorder_{{row_count}}_institution_id" value="{{institution_id}}">
+            {{institution_name}}
         </td>
         <td>
             <button type="button"><a href="javascript:void(0)" class="delete">delete</a></button>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 <div class="eyedraw-fields">
   <div class="data-group">
@@ -61,7 +63,7 @@
             <?=\CHtml::activeTextField(
                 $element,
                 $side . '_diameter',
-                array('autocomplete' => Yii::app()->params['html_autocomplete'], 'class' => 'diameter')
+                array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'), 'class' => 'diameter')
             ) ?>
       </div>
       <div class="cols-9 column">
@@ -89,9 +91,9 @@
   </div>
   <div class="data-group">
         <?=\CHtml::activeTextArea($element, $side . '_description', array(
-          'autocomplete' => Yii::app()->params['html_autocomplete'],
           'rows' => 1,
           'placeholder' => $element->getAttributeLabel($side . '_description'),
+          'class' => 'autosize',
       )) ?>
   </div>
 </div>

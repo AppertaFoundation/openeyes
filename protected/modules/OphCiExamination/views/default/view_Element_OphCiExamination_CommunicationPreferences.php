@@ -39,6 +39,22 @@
                 <span class="data-value large-text"><?= $element->agrees_to_insecure_email_correspondence ? 'Yes' : 'No' ?></span>
             </td>
         </tr>
+        <tr>
+            <td>
+                <span class="data-label fade"><?= $element->getAttributeLabel('language_id') ?></span>
+            </td>
+            <td>
+                <span class="data-value large-text" data-test="language-value"><?= (!is_null($element->language_id)) ? ((int) $element->language_id === 0 ? 'Other' : $element->language->name) : 'Unknown' ?></span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="data-label fade"><?= $element->getAttributeLabel('interpreter_required_id') ?></span>
+            </td>
+            <td>
+                <span class="data-value large-text" data-test="interpreter-value"><?= (!is_null($element->interpreter_required_id)) ? ((int) $element->interpreter_required_id === 0 ? 'Other' : $element->interpreter_required->name) : 'N/A' ?></span>
+            </td>
+        </tr>
         </tbody>
     </table>
 </div>

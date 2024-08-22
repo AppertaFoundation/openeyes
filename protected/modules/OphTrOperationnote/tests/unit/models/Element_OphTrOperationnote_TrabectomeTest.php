@@ -15,13 +15,13 @@ class Element_OphTrOperationnote_TrabectomeTest extends ActiveRecordTestCase
         'patient' => Patient::class,
     );
     private Element_OphTrOperationnote_Trabectome $model;
-    public function setUp()
+    public function setUp(): void
     {
         $this->model = new Element_OphTrOperationnote_Trabectome();
         parent::setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         parent::tearDown();
         unset($this->model);

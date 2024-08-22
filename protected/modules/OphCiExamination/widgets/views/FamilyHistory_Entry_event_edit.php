@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -44,7 +46,7 @@ if (!isset($values)) {
         <?=\CHtml::textField(
             $field_prefix . '[other_relative]',
             ( $values['other_condition'] ? $values['other_relative'] : ''),
-            array('class' => 'other_relative_text other-type-input', 'autocomplete' => Yii::app()->params['html_autocomplete'])
+            array('class' => 'other_relative_text other-type-input', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))
         )?>
     </div>
   </td>
@@ -58,8 +60,8 @@ if (!isset($values)) {
     <div class="other_condition_wrapper" style="display: none">
         <?=\CHtml::textField(
             $field_prefix . '[other_condition]',
-            ( $values['other_condition'] ? $values['other_condition']: ''),
-            array('class'=>'other_condition_text', 'autocomplete' => Yii::app()->params['html_autocomplete'])
+            ( $values['other_condition'] ? $values['other_condition'] : ''),
+            array('class' => 'other_condition_text', 'autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))
         )?>
     </div>
   </td>
@@ -76,7 +78,7 @@ if (!isset($values)) {
             <?=\CHtml::textField(
                 $field_prefix . '[comments]',
                 $values['comments'],
-                array('autocomplete' => Yii::app()->params['html_autocomplete'])
+                array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))
             ) ?>
                 <i class="oe-i remove-circle small-icon pad-left js-remove-add-comments"></i>
                 </span>

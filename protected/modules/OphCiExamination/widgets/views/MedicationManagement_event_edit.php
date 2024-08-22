@@ -16,6 +16,7 @@
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
 
+use OEModule\OphCiExamination\controllers\DefaultController as ExamController;
 use OEModule\OphCiExamination\models\MedicationManagement;
 use OEModule\OphCiExamination\models\MedicationManagementEntry;
 use OEModule\OphCiExamination\models\OphCiExaminationAllergy;
@@ -48,11 +49,12 @@ $laterality_options = Chtml::listData($element->getLateralityOptions(), 'id', 'n
 $unit_options = CHtml::listData(MedicationAttribute::model()->find("name='UNIT_OF_MEASURE'")->medicationAttributeOptions, 'description', 'description');
 
 $element_errors = $element->getErrors();
-$read_only = $element->event ? date('Y-m-d', strtotime($element->event->event_date)) != date('Y-m-d') : false;
+$read_only = $element->event && !empty(ExamController::getMedicationManagementEditable($element->event->getPatient()->id, date('d M Y', strtotime($element->event->event_date)))['errorMessages']);
+
 $entries_from_previous_event = array_filter($element->entries, function ($entry) {
     return is_null($entry->id);
 });
-if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) && !$element->id) {
+if ((!Yii::app()->request->isPostRequest && empty(Yii::app()->request->getParam('draft_id'))) && !empty($entries_from_previous_event) && !$element->id) {
     $element->entries = array_filter($element->entries, function ($e) {
         if (!$e->isStopped()) {
             if (is_null($e->latest_med_use_id)) {
@@ -72,6 +74,12 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
 
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryMedications.js') ?>"></script>
 <script type="text/javascript" src="<?= $this->getJsPublishedPath('HistoryRisks.js') ?>"></script>
+<?php
+$assetManager = \Yii::app()->getAssetManager();
+$asset_folder = $assetManager->publish('protected/widgets/js', true);
+echo '<script type="text/javascript" src="' . $asset_folder . '/EsignWidget.js"></script>';
+echo '<script type="text/javascript" src="' . $asset_folder . '/EsignElementWidget.js"></script>';
+?>
 <?php if ($read_only) {
     Yii::app()->user->setFlash('alert.read_only', 'Medication Management cannot be edited for past events');
 } ?>
@@ -159,14 +167,34 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             </tbody>
         </table>
     </div>
+
+    <div id="MedicationManegement_Signature_row">
+        <hr class="divider">
+        <div class="data-group">
+        <?php
+            $row = 0;
+        foreach ($element->getSignatures() as $signature) {
+            $this->widget(
+                static::getWidgetClassByType($signature->type),
+                [
+                    "row_id" => $row++,
+                    "element" => $element,
+                    "signature" => $signature,
+                ]
+            );
+        }
+        ?>
+        </div>
+    </div>
+
     <div class="flex-layout flex-right">
         <div class="add-data-actions flex-item-bottom" id="medication-management-popup">
             <?php if (!\Yii::app()->user->checkAccess('Prescribe')) { ?>
-            <button id="mm-add-pgd-btn" class="button hint green <?=$read_only ? 'disabled' : ''?>" type="button">Add PGD Set</button>
+                <button id="mm-add-pgd-btn" class="button hint green <?=$read_only ? 'disabled' : ''?>" type="button">Add PGD Set</button>
             <?php } ?>
-            <button id="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) {
+            <button id="mm-add-standard-set-btn" data-test="mm-add-standard-set-btn" class="button hint green <?php if ($read_only) {
                 ?>disabled<?php
-                                                                          } ?>" type="button">Add standard set</button>
+                                                                                                              } ?>" type="button">Add standard set</button>
             <button class="button hint green js-add-select-search <?php if ($read_only) {
                 ?>disabled<?php
                                                                   } ?>" id="mm-add-medication-btn" type="button">
@@ -174,6 +202,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             </button>
         </div>
     </div>
+
     <div class="oe-popup-wrap" id="js-save-mm-event" style="z-index:100; display: none">
         <div class="oe-popup">
             <div class="title">
@@ -290,11 +319,17 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             }
         });
 
+        let prescription_modified = false;
+
+        // Keep track of eye laterality separately because it uses widget of its own
+        $('.js-entry-table').find('.js-laterality').on('change', function() {
+            prescription_modified = true;
+        });
+
         $('#mm-handler-1').on('handle', function() {
             if (!prescription_is_final) {
                 return;
             }
-            let prescription_modified = false;
 
             //check if old prescribed medications have been modified
             prescribed_medications.forEach(function(medication) {
@@ -418,18 +453,25 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             initRowsFromHistoryElement: function() {
 
                 let copyFields = <?= !$this->isPostedEntries() && $this->element->getIsNewRecord() ? 'true' : 'false' ?>;
-                let has_errors = <?= CJavaScript::encode(Yii::app()->request->isPostRequest) ?>; // if is Post Request then it means validation screen
+                let has_errors = <?= CJavaScript::encode(!empty($this->element->errors)) ?>;
                 let medication_history_bound_keys = [];
                 let medication_management_bound_keys = [];
 
 
                 $.each(window.HMController.$table.children("tbody").children("tr.js-first-row").not('.originally-stopped'), function(i, historyMedicationRow) {
                     let medication_history_bound_key = $(historyMedicationRow).find('.js-bound-key').val();
+
+                    if (medication_history_bound_key === '') {
+                        medication_history_bound_key = undefined;
+                    }
+
                     let rowNeedsCopying = true;
                     let $medicationManagementRow;
-                    if (medication_history_bound_key && medication_history_bound_key !== '' && !medication_history_bound_keys.includes(medication_history_bound_key)) {
+
+                    if (medication_history_bound_key && !medication_history_bound_keys.includes(medication_history_bound_key)) {
                         medication_history_bound_keys.push(medication_history_bound_key);
                     }
+                    
                     medication_management_bound_keys = [];
 
                     $.each(window.MMController.$table.children("tbody").children("tr.js-first-row"), function(index, medicationManagementRow) {
@@ -455,7 +497,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
                             }
                         }
 
-                        if (medication_history_bound_key && medication_management_bound_key === medication_history_bound_key) {
+                        if (medication_history_bound_key === medication_management_bound_key) {
                             window.HMController.bindEntries($(historyMedicationRow), $(medicationManagementRow), false);
                             window.MMController.disableRemoveButton($(medicationManagementRow));
                             rowNeedsCopying = false;
@@ -524,7 +566,7 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
             /** @var Firm $firm */
             $firm = $firm_id ? Firm::model()->findByPk($firm_id) : null;
             $subspecialty_id = $firm->getSubspecialtyID();
-            $common_systemic = Medication::model()->listCommonSystemicMedications(true, $subspecialty_id, $site_id, true);
+            $common_systemic = Medication::model()->listCommonSystemicMedications($subspecialty_id, true, $site_id, true);
             foreach ($common_systemic as &$medication) {
                 $medication['prepended_markup'] = $this->widget('MedicationInfoBox', array('medication_id' => $medication['id']), true);
             }
@@ -614,5 +656,16 @@ if (!Yii::app()->request->isPostRequest && !empty($entries_from_previous_event) 
         if (elementHasRisks && !$('.' + OE_MODEL_PREFIX + 'HistoryRisks').length) {
             $('#episodes-and-events').data('patient-sidebar').addElementByTypeClass(OE_MODEL_PREFIX + 'HistoryRisks', undefined);
         }
+    });
+</script>
+
+<script type="text/javascript">
+    $(function(){
+        new OpenEyes.UI.EsignElementWidget(
+            $(".<?= \CHtml::modelName($element) ?>"),
+            {
+                mode : "<?= $this->mode === $this::$EVENT_VIEW_MODE ? 'view' : 'edit' ?>"
+            }
+        );
     });
 </script>

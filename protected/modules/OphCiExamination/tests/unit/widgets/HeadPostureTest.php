@@ -15,6 +15,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\widgets;
 
+
 use OEModule\OphCiExamination\controllers\DefaultController;
 use OEModule\OphCiExamination\models\HeadPosture as HeadPostureElement;
 use OEModule\OphCiExamination\tests\unit\widgets\traits\CreatesWidgets;
@@ -48,7 +49,7 @@ class HeadPostureTest extends \OEDbTestCase
 
         // some very basic checks to verify no issues exist for basic rendering
         $this->assertNotEmpty($result);
-        $this->assertContains('id="OEModule_OphCiExamination_models_HeadPosture_form"', $result);
+        $this->assertStringContainsString('id="OEModule_OphCiExamination_models_HeadPosture_form"', $result);
     }
 
     /** @test */
@@ -67,9 +68,9 @@ class HeadPostureTest extends \OEDbTestCase
         $result = $this->getWidgetRender($widget);
         $this->assertNotEmpty($result);
 
-        $this->assertContains($element->display_tilt, $result);
-        $this->assertContains($element->display_turn, $result);
-        $this->assertContains($element->display_chin, $result);
-        $this->assertContains($element->comments, $result);
+        $this->assertStringContainsString($element->display_tilt, $result);
+        $this->assertStringContainsString($element->display_turn, $result);
+        $this->assertStringContainsString($element->display_chin, $result);
+        $this->assertStringContainsString($element->comments, $result);
     }
 }

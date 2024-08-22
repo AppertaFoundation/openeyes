@@ -14,14 +14,19 @@
         Biometry
     </button>
 <?php endif; ?>
-<?php if ($this->isRefreshable() && !$biometry) :?>
+<?php if (!$consent && $this->getWhiteboard()->consent) : ?>
+    <button class="pro-theme large js-consent-form" formaction="/OphTrOperationbooking/whiteboard/consentForm/<?= $booking_id?>">
+        Consent
+    </button>
+<?php endif; ?>
+<?php if ($this->isRefreshable() && !$biometry && !$consent) :?>
     <button class="pro-theme"
             formaction="/OphTrOperationbooking/whiteboard/reload/<?=$this->getWhiteboard()->event_id?>">
         <span class="icon-text">Refresh</span>
         <i class="oe-i rotate-left pro-theme medium pad-left"></i>
     </button>
 <?php endif; ?>
-<?php if (!$biometry) : ?>
+<?php if (!$biometry && !$consent) : ?>
     <button class="pro-theme red" id="exit-button">
         <span class="icon-text">Exit</span>
         <i class="oe-i remove-circle pro-theme medium pad-left"></i>

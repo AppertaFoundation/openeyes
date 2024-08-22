@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -34,7 +36,7 @@ foreach ($attributes as $attribute) {
     $items = array();
 
     foreach ($attribute->options as $option) {
-        $items[] = ['label' => (string)$option->value.", "];
+        $items[] = ['label' => (string)$option->value . ", "];
     }
 
     $itemSets[] = ['items' => $items ,
@@ -42,6 +44,8 @@ foreach ($attributes as $attribute) {
         'multiSelect' => $attribute->is_multiselect
     ];
 }
+
+$template_data = !empty($template_data[$element->templateIndex]) ? $template_data[$element->templateIndex] : $template_data;
 ?>
 
 <section
@@ -66,30 +70,40 @@ foreach ($attributes as $attribute) {
       <div class="alert-box alert">This element is missing and needs to be completed</div>
     <?php } ?>
 
+    <div class="element-actions">
+        <!-- order is important for layout because of Flex -->
+        <!-- remove MUST be last element -->
+        <span class="disabled" title="To delete this element, you must remove the procedure from the Procedures element">
+                      <i class="oe-i trash-blue disabled"></i>
+        </span>
+    </div>
 
-  <div class="element-fields full-width flex-layout" id="div_Element_OphTrOperationnote_GenericProcedure_comments">
+  <div class="element-fields full-width flex-layout" id="OphTrOperationnote_GenericProcedure_comments">
+    <div class="data-group cols-11">
 
-    <table class="cols-11">
-      <colgroup>
-        <col class="cols-4">
-      </colgroup>
-      <tbody>
-      <tr>
-        <td>
-          <label for="<?php echo get_class($element) . '_comments_' . $numHash; ?>">
-            Comments:
-          </label>
-        </td>
-        <td>
-            <?=\CHtml::textArea(
-                get_class($element) . '[' . $element->proc_id . '][comments]',
-                $element->comments,
-                array('rows' => 4, 'class' => 'cols-full autosize', 'id' => get_class($element) . '_comments_' . $numHash)
-            ) ?>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+      <div>
+        <div id="div_Element_OphTrOperationnote_GenericProcedure_comments" class="data-group flex-layout" style="">
+            
+        <div class="cols-2 column">
+              <label for="Element_OphTrOperationnote_GenericProcedure_comments">
+                  Comments:          </label>
+        </div>
+        <div class="cols-full column">
+          <?= \CHtml::textArea(
+              get_class($element) . '[' . $element->proc_id . '][comments]',
+              $element->comments,
+              array(
+                'cols' => 30,
+                'class' => 'cols-full autosize',
+                'id' => get_class($element) . '_comments_' . $numHash,
+                'data-prefilled-value' => $template_data['comments'] ?? '',
+                'data-test' => 'generic-procedure-comments'
+              )
+          ) ?>
+        </div>
+      </div>
+      </div>
+    </div>
 
         <?php if (!empty($attributes)) : ?>
       <div class="add-data-actions flex-item-bottom">
@@ -117,7 +131,7 @@ foreach ($attributes as $attribute) {
             liClass: 'restrict-width',
             onReturn: function (adderDialog, selectedItems) {
                 inputText.val(formatStringToEndWithCommaAndWhitespace(inputText.val()) + concatenateArrayItemLabels(selectedItems));
-                autosize.update(inputText);
+                autosize(inputText);
                 inputText.trigger('oninput');
                 return true;
             }

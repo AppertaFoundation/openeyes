@@ -1,7 +1,0 @@
-id,nick_name,primary_phone,title,first_name,last_name,qualifications,last_modified_user_id,last_modified_date,created_user_id,created_date,contact_label_id
-1,,,Root,Enoch,,"admin qualification",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",
-2,,,Example,User,,"user qualification",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",
-3,,,Mr,Enoch,Root,"admin qualification",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",3
-4,,,Mr,User,Example,"user qualification",1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",3
-5,,,,,,,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",
-6,,,,,,,1,"1900-01-01 00:00:00",1,"1900-01-01 00:00:00",

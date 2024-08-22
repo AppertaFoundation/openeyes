@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -87,11 +88,24 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, iol_type_id, iol_power, eyedraw, report, complication_notes, eyedraw2, report2, predicted_refraction, pcr_risk, phaco_cde , comments', 'safe'),
+            array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, iol_type_id, iol_power, eyedraw, report, complication_notes, eyedraw2, report2, predicted_refraction, pcr_risk, phaco_cde , comments, eye, operative_devices', 'safe'),
             array('incision_site_id, length, meridian, incision_type_id, iol_position_id, eyedraw, report, eyedraw2', 'required'),
-            array('length', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9](\.[0-9]{0,2})$/', 'message' => 'Length must be 0 - 9.99 in increments of 0.01'),
-            array('meridian', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9]{1,3}(\.[0-9])?$/', 'min' => 000, 'max' => 360, 'message' => 'Meridian must be 000.5 - 360.0 degrees'),
-            array('phaco_cde', 'numerical' , 'integerOnly' => false, 'message'=>'Phaco CDE need to be a numeric value'),
+            array(
+                'length',
+                'numerical',
+                'integerOnly' => false,
+                'numberPattern' => '/^[0-9](\.[0-9]{0,2})$/', 'message' => 'Length must be 0 - 9.99 in increments of 0.01'
+            ),
+            array(
+                'meridian',
+                'numerical',
+                'integerOnly' => false,
+                'numberPattern' => '/^[0-9]{1,3}(\.[0-9])?$/',
+                'min' => 000,
+                'max' => 360,
+                'message' => 'Meridian must be 000.5 - 360.0 degrees'
+            ),
+            array('phaco_cde', 'numerical' , 'integerOnly' => false, 'message' => 'Phaco CDE need to be a numeric value'),
             array('phaco_cde', 'default', 'setOnEmpty' => true, 'value' => null),
             array('pcr_risk', 'default', 'setOnEmpty' => true, 'value' => null),
 
@@ -159,9 +173,12 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
             if (Yii::app()->request->getPost('Element_OphTrOperationnote_Cataract')['iol_position_id'] != $none_position->id) {
                 $value = $this->iol_power;
                 if (!preg_match('/^\-?[0-9]{1,2}(\.[0-9]{1,2})?$/', $value)) {
-                    $message = $this->addError('iol_power', 'IOL power must be a number with an optional two decimal places between -10.00 and 40.00');
-                } elseif ($value < -10 || $value > 40) {
-                    $message = $this->addError('iol_power', 'IOL Power must be between -10 to 40');
+                    $message = $this->addError(
+                        'iol_power',
+                        'IOL power must be a number with an optional two decimal places between -30.00 and +40.00'
+                    );
+                } elseif ($value < -30 || $value > 40) {
+                    $message = $this->addError('iol_power', 'IOL Power must be between -30 to +40');
                 }
             }
         }
@@ -256,6 +273,10 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
             $this->predicted_refraction = null;
             $this->iol_position_id = $position_none->id;
         }
+        // due to intermittent front-end issues with report2 values, we default report2 to the contents of report
+        if (empty($this->report2)) {
+            $this->report2 = $this->report;
+        }
         return parent::beforeSave();
     }
 
@@ -296,7 +317,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
                 $ca->cataract_id = $this->id;
                 $ca->complication_id = $c_id;
                 if (!$ca->save()) {
-                    throw new Exception('Unable to save complication assignment: '.print_r($ca->getErrors(), true));
+                    throw new Exception('Unable to save complication assignment: ' . print_r($ca->getErrors(), true));
                 }
             } else {
                 unset($curr_by_id[$c_id]);
@@ -305,7 +326,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
 
         foreach ($curr_by_id as $ca) {
             if (!$ca->delete()) {
-                throw new Exception('Unable to delete complication assignment: '.print_r($ca->getErrors(), true));
+                throw new Exception('Unable to delete complication assignment: ' . print_r($ca->getErrors(), true));
             }
         }
     }
@@ -335,7 +356,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
                     $oda->operative_device_id = $od_id;
 
                     if (!$oda->save()) {
-                        throw new Exception('Unable to save operative device assignment: '.print_r($oda->getErrors(), true));
+                        throw new Exception('Unable to save operative device assignment: ' . print_r($oda->getErrors(), true));
                     }
                 } else {
                     unset($curr_by_id[$od_id]);
@@ -346,7 +367,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
         if (is_array($curr_by_id)) {
             foreach ($curr_by_id as $oda) {
                 if (!$oda->delete()) {
-                    throw new Exception('Unable to delete operative device assignment: '.print_r($oda->getErrors(), true));
+                    throw new Exception('Unable to delete operative device assignment: ' . print_r($oda->getErrors(), true));
                 }
             }
         }
@@ -423,7 +444,10 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
     {
         if ($this->isNewRecord) {
             $element_type = ElementType::model()->find('class_name = :class_name', array(':class_name' => get_class($this)));
-            $incision_length = SettingUser::model()->find('user_id = :user_id AND element_type_id = :element_type_id AND `key` = :key', array(':user_id' => Yii::app()->user->id, ':element_type_id' => $element_type->id, ':key' => 'incision_length'));
+            $incision_length = SettingUser::model()->find(
+                'user_id = :user_id AND element_type_id = :element_type_id AND `key` = :key',
+                array(':user_id' => Yii::app()->user->id, ':element_type_id' => $element_type->id, ':key' => 'incision_length')
+            );
 
             if ($incision_length) {
                 $this->length = $incision_length->value;
@@ -448,7 +472,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
      */
     public function validateComplications()
     {
-        $complications_none = OphTrOperationnote_CataractComplications::model()->findByAttributes(array('name'=>'None'));
+        $complications_none = OphTrOperationnote_CataractComplications::model()->findByAttributes(array('name' => 'None'));
         $noneId = $complications_none->id;
 
         $complications = Yii::app()->request->getPost('OphTrOperationnote_CataractComplications');
@@ -491,7 +515,7 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
 
     private function getNoneIolPosition()
     {
-            $position_none = OphTrOperationnote_IOLPosition::model()->findByAttributes(array('name'=>'None'));
+        $position_none = OphTrOperationnote_IOLPosition::model()->findByAttributes(array('name' => 'None'));
         if ($position_none) {
             return $position_none;
         } else {
@@ -523,6 +547,26 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
         $processor->addElementEyedrawDoodles($this, 'eyedraw', static::$procedure_doodles);
     }
 
+    public function getDefaultFormOptions(array $context): array
+    {
+        $fields = array();
+        if ($context['patient'] === null) {
+            throw new \CException('patient object required for setting ' . get_class($this) . ' default options');
+        }
+        if ((int)$this->getEye()->id === 1) {
+            $fields['meridian'] = 0;
+        }
+        $fields = array_merge($fields, parent::getDefaultFormOptions($context));
+
+        $processor = new \EDProcessor();
+        $fields = array_merge($fields, $processor->getElementEyedrawDoodles($context['patient'], $this, $this->getEye()->id, 'eyedraw'));
+        // current way of handling the default doodles to add to the eyedraw for the procedure
+        // this will hopefully be replaced when we have the ability to store preferences for users
+        // as to their default doodle set for the cataract procedure.
+        $fields['eyedraw'] = $processor->buildElementEyedrawDoodles($fields['eyedraw'], static::$procedure_doodles);
+        return $fields;
+    }
+
     /**
      * Performs the shredding of Eyedraw data for the patient record
      *
@@ -535,8 +579,91 @@ class Element_OphTrOperationnote_Cataract extends Element_OnDemandEye
         parent::afterSave();
     }
 
+    public function getPrefillableAttributeSet()
+    {
+        $attributes = [
+            'comments',
+            'eyedraw',
+            'eyedraw2',
+            'incision_site_id',
+            'incision_type_id',
+            'iol_position_id',
+            'length',
+            'meridian',
+            'report',
+            'report2',
+            'operative_devices' => 'id'
+        ];
+
+        if (SettingMetadata::model()->checkSetting('allow_complications_in_pre_fill_templates', 'on')) {
+            $attributes['complications'] = 'id';
+            $attributes[] = 'complication_notes';
+        }
+
+        return $attributes;
+    }
+
+    public function getPrefillablePriorities()
+    {
+        $attributes = $this->getPrefilledAttributeNames();
+        $priorities = array_fill_keys($attributes, \EventTemplate::PRIORITY_TEMPLATE);
+
+        $priorities['eyedraw'] = function ($patient_json, $new_json, $priority) {
+            if ($priority !== \EventTemplate::PRIORITY_TEMPLATE) {
+                $temp = $patient_json;
+
+                $patient_json = $new_json;
+                $new_json = $temp;
+
+                $processor = new \EDProcessor();
+
+                return $processor->applyNewElementEyedrawData($this->elementType->id, $patient_json, $new_json);
+            } else {
+                return $new_json;
+            }
+        };
+
+        return $priorities;
+    }
+
     public function getContainer_form_view()
     {
         return false;
+    }
+
+    protected function applyComplexData($data, $index): void
+    {
+        $complications = array();
+        if (isset($data['OphTrOperationnote_CataractComplications']) && is_array($data['OphTrOperationnote_CataractComplications'])) {
+            foreach ($data['OphTrOperationnote_CataractComplications'] as $c_id) {
+                $complications[] = OphTrOperationnote_CataractComplications::model()->findByPk($c_id);
+            }
+        } elseif (isset($data[$this->elementType->class_name]['complications']) && is_array($data[$this->elementType->class_name]['complications'])) {
+            foreach ($data[$this->elementType->class_name]['complications'] as $c_id) {
+                $complications[] = OphTrOperationnote_CataractComplications::model()->findByPk($c_id);
+            }
+        }
+
+        if (isset($data['Element_OphTrOperationnote_ProcedureList']['eye_id'])) {
+            $this->setEye(Eye::model()->findByPk($data['Element_OphTrOperationnote_ProcedureList']['eye_id']));
+        }
+
+        $this->complications = $complications;
+
+        $devices = array();
+        if (isset($data['OphTrOperationnote_CataractOperativeDevices']) && is_array($data['OphTrOperationnote_CataractOperativeDevices'])) {
+            foreach ($data['OphTrOperationnote_CataractOperativeDevices'] as $oa_id) {
+                $devices[] = OphTrOperationnote_CataractOperativeDevice::model()->findByPk($oa_id);
+            }
+        } elseif (isset($data[$this->elementType->class_name]['operative_devices']) && is_array($data[$this->elementType->class_name]['operative_devices'])) {
+            foreach ($data[$this->elementType->class_name]['operative_devices'] as $device) {
+                if (is_object($device)) {
+                    $devices[] = $device;
+                } else {
+                    $devices[] = OperativeDevice::model()->findByPk($device);
+                }
+            }
+        }
+        $this->operative_devices = $devices;
     }
 }

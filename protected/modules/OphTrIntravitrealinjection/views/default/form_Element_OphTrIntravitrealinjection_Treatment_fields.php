@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes.
  *
@@ -15,6 +16,7 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <?php
@@ -239,14 +241,15 @@ foreach ($skin_drugs as $drug) {
                 <?php $tooltip_info = "";
                 foreach ($drugs as $drug) {
                     if (count($drug_history[$drug->id])) {
-                        $tooltip_info = $tooltip_info.'<b>Previous ' . $drug->name . ' treatments</b><br />';
+                        $tooltip_info = $tooltip_info . '<b>Previous ' . $drug->name . ' treatments</b><br />';
                         foreach ($drug_history[$drug->id] as $previous) {
                             $tooltip_info = $tooltip_info . Helper::convertDate2NHS($previous['date']) . ' (' . $previous[$side . '_number'] . ')<br />';
                         }
                     }
                 }
-                if ($tooltip_info == "")
-                $tooltip_info = "The patient has no drug history";?>
+                if ($tooltip_info == "") {
+                    $tooltip_info = "The patient has no drug history";
+                }?>
                 <i class="oe-i info small-icon js-has-tooltip"
                    data-tooltip-content="<?php echo $tooltip_info; ?>">
                  </i>
@@ -341,7 +344,7 @@ foreach ($skin_drugs as $drug) {
             echo CHtml::textField(
                 get_class($element) . '[' . $side . '_injection_time]',
                 $val,
-                array('autocomplete' => Yii::app()->params['html_autocomplete'])
+                array('autocomplete' => SettingMetadata::model()->getSetting('html_autocomplete'))
             );
             ?>
       </td>
@@ -416,6 +419,3 @@ foreach ($skin_drugs as $drug) {
     </tbody>
   </table>
 </div>
-
-
-

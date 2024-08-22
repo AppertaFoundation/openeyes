@@ -16,6 +16,7 @@
 
 namespace OEModule\OphCiExamination\tests\unit\controllers;
 
+
 use OEModule\OphCiExamination\models\Element_OphCiExamination_NearVisualAcuity;
 use OEModule\OphCiExamination\models\interfaces\BEOSidedData;
 use OEModule\OphCiExamination\models\interfaces\SidedData;
@@ -49,6 +50,8 @@ class DefaultControllerNearVisualAcuityTest extends BaseDefaultControllerTest
      */
     public function saving_only_one_side($side, $eye_id)
     {
+        $this->mockCurrentInstitution();
+
         // simple save to ensure full success of save to the database
         $saved_element = $this->createElementWithDataWithController([
             "eye_id" => $eye_id,

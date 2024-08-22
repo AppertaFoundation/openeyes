@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -14,6 +15,7 @@
  * @copyright Copyright (c) 2019, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/agpl-3.0.html The GNU Affero General Public License V3.0
  */
+
 ?>
 
 <div class="row divider">
@@ -46,7 +48,7 @@
         </thead>
         <tbody>
             <?php foreach ($data_provider->getData() as $medication) { ?>
-                <tr data-url="/OphDrPrescription/OphDrPrescriptionAdmin/dmdDrugsAdmin/edit/<?=$medication->id;?>">
+                <tr data-url="/OphDrPrescription/OphDrPrescriptionAdmin/<?= $medication->source_type == 'LOCAL' ? 'local' : 'dmd' ?>DrugsAdmin/edit/<?=$medication->id;?>">
                     <td><?=$medication->preferred_code ? $medication->preferred_code : '<i>(empty)</i>'?></td>
                     <td><?=$medication->getLabel(true)?></td>
                 </tr>

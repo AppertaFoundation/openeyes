@@ -74,6 +74,8 @@ if (!empty($subspecialty)) { ?>
     let min_value = new Date();
     let max_value = new Date();
 
+    const chartRangeChangedEvent = new Event('chartRangeChanged');
+
     $(document).ready(function () {
         $('.js-oes-eyeside[data-side="both"]').click();
 
@@ -86,6 +88,23 @@ if (!empty($subspecialty)) { ?>
                 $(charts[key][eye_side]).find('.cursor-crosshair, .cursor-ew-resize').css("cursor", 'none');
             }
         });
+
+        function rangesAreEqual(range0, range1) {
+            if(range0.length != 2 || range1.length != 2) {
+                return false;
+            }
+            range0_min = range0[0];
+            range0_max = range0[1];
+            range1_min = range1[0];
+            range1_max = range1[1];
+            if((range0_min instanceof Date) && (range0_max instanceof Date) &&
+               (range1_min instanceof Date) && (range1_max instanceof Date) &&
+               (range0_min.getTime() == range1_min.getTime()) &&
+               (range0_max.getTime() == range1_max.getTime())) {
+                return true;
+            }
+            return false;
+        }
 
         $('.plotly-right, .plotly-left').on('mouseover', function (e) {
             if ($(this).hasClass('plotly-right') || $(this).hasClass('plotly-left')) {
@@ -102,17 +121,21 @@ if (!empty($subspecialty)) { ?>
                 //set min max
                 for (let i = 0; i < chart_list.length; i++) {
                     //test min
-                    if (my_min_value < chart_list[i]['layout']['xaxis']['range'][0])
+                    if (typeof chart_list[i]['layout']['xaxis']['range'][0] === 'string' && (my_min_value < chart_list[i]['layout']['xaxis']['range'][0]))
                         my_min_value = new Date(chart_list[i]['layout']['xaxis']['range'][0]);
                     //test max
-                    if (my_max_value > chart_list[i]['layout']['xaxis']['range'][1])
+                    if (typeof chart_list[i]['layout']['xaxis']['range'][1] === 'string' && (my_max_value > chart_list[i]['layout']['xaxis']['range'][1]))
                         my_max_value = new Date(chart_list[i]['layout']['xaxis']['range'][1]);
                 }
                 // set these ranges to the min and max values
                 let current_range = [my_min_value, my_max_value];
                 // end
                 for (let i = 0; i < chart_list.length; i++) {
-                    Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
+                    const previous_range = chart_list[i]['layout']['xaxis']['range'];
+                    if(!rangesAreEqual(current_range, previous_range)) {
+                        Plotly.relayout(chart_list[i], 'xaxis.range', current_range);
+                        chart_list[i].dispatchEvent(chartRangeChangedEvent);
+                    }
                 }
             };
         });
@@ -125,7 +148,11 @@ if (!empty($subspecialty)) { ?>
 
             $.each(['right', 'left'], function (index, eye_side) {
                 Object.keys(chart_list).forEach(function (chart_key) {
-                    Plotly.relayout(chart_list[chart_key][eye_side], 'xaxis.range', current_range);
+                    const previous_range = chart_list[chart_key][eye_side]['layout']['xaxis']['range'];
+                    if(!rangesAreEqual(current_range, previous_range)) {
+                        Plotly.relayout(chart_list[chart_key][eye_side], 'xaxis.range', current_range);
+                        chart_list[chart_key][eye_side].dispatchEvent(chartRangeChangedEvent);
+                    }
                 })
             })
         });
@@ -175,6 +202,7 @@ if (!empty($subspecialty)) { ?>
                 switch (level) {
                     case "1m": // 1 month intentionally flows down
                     case "6m": // 6 month intentionally flows down
+                    case "YTD": // YTD intentionally flows down
                     case "1y": // 1 year    
                         // init locals
                         min = new Date(-8640000000000000);
@@ -188,9 +216,6 @@ if (!empty($subspecialty)) { ?>
                             if (max > charts[i][eye_side]['layout']['xaxis']['range'][1])
                                 max = new Date(charts[i][eye_side]['layout']['xaxis']['range'][1]);
                         }
-                        break;
-
-                    case "YTD": //don't bother here as we are using the current date
                         break;
 
                         // Reset Zoom
@@ -214,7 +239,9 @@ if (!empty($subspecialty)) { ?>
                 case "YTD": //Year to current date
                     temp = new Date();
                     limits[eye_side].max = new Date(temp);
-                    limits[eye_side].min = new Date(temp.setYear(temp.getFullYear() - 1));
+                    temp.setMonth(0);
+                    temp.setDate(1);
+                    limits[eye_side].min = new Date(temp.setYear(temp.getFullYear()));
                     break;
 
                 case "1y": // 1 year                       
