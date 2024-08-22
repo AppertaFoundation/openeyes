@@ -80,6 +80,8 @@ $training_hub_url = Yii::App()->params['training_hub_url'] ? htmlspecialchars(Yi
             <?= SettingMetadata::model()->getSetting('helpdesk_hours') ? "<br/>(" . $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_hours')) . ")" : null ?>
         <?php elseif ($tech_support_provider) : ?>
           <a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a>
+        <?php else :?>
+          <p>Paid for support and maintenance is available from our Accredited Professional Services Partner network.<br>A list of available partners can be found at the following link <a href="http://openeyes.apperta.org" target="_blank">openeyes.apperta.org</a></p>
         <?php endif; ?>
     </p>
 
