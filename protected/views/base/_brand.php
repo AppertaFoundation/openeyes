@@ -20,6 +20,7 @@
 
 $logoUrl = Yii::app()->assetManager->getPublishedUrl(Yii::getPathOfAlias('application.assets.newblue'), true) . '/dist/svg/oe-logo.svg';
 $settings = new SettingMetadata();
+$default_tech_support_provider = SettingMetadata::model()->find("`key` = 'tech_support_provider'")->default_value;
 $tech_support_provider = Yii::App()->params['tech_support_provider'] ? htmlspecialchars(Yii::App()->params['tech_support_provider']) : htmlspecialchars($settings->getSetting('tech_support_provider'));
 $tech_support_url = Yii::App()->params['tech_support_url'] ? htmlspecialchars(Yii::App()->params['tech_support_url']) : htmlspecialchars($settings->getSetting('tech_support_url'));
 $training_hub_text = Yii::App()->params['training_hub_text'] ? htmlspecialchars(Yii::App()->params['training_hub_text']) : htmlspecialchars($settings->getSetting('training_hub_text'));
@@ -78,7 +79,7 @@ $training_hub_url = Yii::App()->params['training_hub_url'] ? htmlspecialchars(Yi
             <?= SettingMetadata::model()->getSetting('helpdesk_phone') ? $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_phone')) : null ?>
             <?= SettingMetadata::model()->getSetting('helpdesk_email') ? $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_email')) : null ?>
             <?= SettingMetadata::model()->getSetting('helpdesk_hours') ? "<br/>(" . $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_hours')) . ")" : null ?>
-        <?php elseif ($tech_support_provider) : ?>
+        <?php elseif ($tech_support_provider && $tech_support_provider !== $default_tech_support_provider) : ?>
           <a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a>
         <?php else :?>
           <p>Paid for support and maintenance is available from our Accredited Professional Services Partner network.<br>A list of available partners can be found at the following link <a href="http://openeyes.apperta.org" target="_blank">openeyes.apperta.org</a></p>
