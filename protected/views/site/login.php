@@ -39,7 +39,7 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
         <?php if (isset($login_type) && $login_type === BaseEsignElement::ESIGN_DEVICE_TYPE) :?>
             <h1>OpenEyes e-Sign</h1>
         <?php else : ?>
-            <h1>OpenEyes</h1>
+            <h1><b>OpenEyes&#8482;</b></h1>
         <?php endif; ?>
         <div class="login-details">
             <ul class="row-list">
@@ -72,7 +72,6 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
             <?php echo $form->error($model, 'password', array('class' => 'alert-box error')); ?>
             <?php echo $form->error($model, 'institution_id', array('class' => 'alert-box error')); ?>
             <?php echo $form->error($model, 'site_id', array('class' => 'alert-box error')); ?>
-
             <?= $form->hiddenField($model, 'institution_id', ['class' => 'js-institution-id']) ?>
             <?= $form->hiddenField($model, 'site_id', ['class' => 'js-site-id']) ?>
 
@@ -106,17 +105,13 @@ $display_site = ($institution_required || $has_site_specific_auth) || $instituti
                 Please login using your OpenEyes username to link with this device
             <?php else : ?>
                 <div class="flex-layout">
-                <span class="large-text"> Need Help?&nbsp;
-                  <?php  $purifier = new CHtmlPurifier(); ?>
-                    <?php if (SettingMetadata::model()->getSetting('helpdesk_phone') || SettingMetadata::model()->getSetting('helpdesk_email')) : ?>
-                        <?= SettingMetadata::model()->getSetting('helpdesk_phone') ? "<strong>" . $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_phone')) . "</strong>" : null ?></strong>
-                        <?= SettingMetadata::model()->getSetting('helpdesk_email') ? "<br/>" . $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_email')) : null ?>
-                        <?= SettingMetadata::model()->getSetting('helpdesk_hours') ? "<br/> (" . $purifier->purify(SettingMetadata::model()->getSetting('helpdesk_hours')) . ")" : null ?>
-                    <?php elseif ($tech_support_provider) : ?>
-                        <strong><a href="<?= $tech_support_url ?>" target="_blank"><?= $tech_support_provider ?></a></strong>
-                    <?php endif; ?>
-                </span>
-                    <a href="#" onclick="$('#js-openeyes-btn').click();">About</a>
+                  <center>
+                    <a href="http://apperta.org" target="_blank"><img src="<?php echo Yii::app()->assetManager->createUrl('img/logo/logo.png') ?>" alt="Apperta Foundation CIC Logo" width="30%" style="padding-right:20px"></a>
+                    <a href="https://digitalpublicgoods.net/who-we-are/" target="_blank"><img src="<?php echo Yii::app()->assetManager->createUrl('img/logo/dpga_logo_2.svg') ?>" alt="Digital Public Good Alliance Logo" width="30%" style="padding-right:20px">
+                    <a href="https://digitalhealthatlas.org/" target="_blank"><img src="<?php echo Yii::app()->assetManager->createUrl('img/logo/logo-dha.svg') ?>" alt="Digital Health Atlas Logo" width="30%"></a></br></br>
+                     Copyright&#169; Apperta Foundation CIC <?= date('Y') ?>
+                  </center>
+                  <a href="#" onclick="$('#js-openeyes-btn').click();">About</a>
                 </div>
             <?php endif; ?>
             <!-- info -->
