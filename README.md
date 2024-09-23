@@ -35,7 +35,7 @@ OpenEyes is provided under an GNU Affero GPL v3.0  (AGPL v3.0)  license and all 
 # Setup
 ---------
 
-Detailed installation instructions to build each version can be found on the project wiki page [here](https://github.com/AppertaFoundation/openeyes/wiki/Installation-Instructions-v4.0.3).
+Detailed installation instructions to build each version can be found on the project wiki page [here](https://github.com/AppertaFoundation/openeyes/wiki/).
     
 # Issues and support
 
