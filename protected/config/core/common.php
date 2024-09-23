@@ -978,6 +978,7 @@ $config = array(
         'training_hub_url' => !empty(trim(getenv('OE_TRAINING_HUB_URL'))) ? getenv('OE_TRAINING_HUB_URL') : null,
         'breakglass_enabled' => $breakGlassEnabled,
         'user_breakglass_field' => $userBreakGlassField,
+        'enable_default_support_text' => true,
     ),
 );
 
