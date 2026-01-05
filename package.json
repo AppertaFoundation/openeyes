@@ -16,7 +16,7 @@
     "@nesk/puphpeteer": "^2.0.0",
     "cropper": "^2.3.4",
     "fabric": "^3.6.6",
-    "jspdf": "2.5.1",
+    "jspdf": "4.0.0",
     "lodash": "^4.17.4",
     "mustache": "^4.2.0",
     "pdfjs-dist": "^2.3.200",
